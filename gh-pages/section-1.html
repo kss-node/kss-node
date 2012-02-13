@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <title>KSS: Living Styleguide</title>
+  <meta name="description" content="">
+  <meta name="generator" content="kss-node [http://github.com/hughsk/kss-node]" />
+
+  <meta name="viewport" content="width=device-width">
+
+  <link href='http://fonts.googleapis.com/css?family=Alfa+Slab+One|Cabin|Asap:400,700,400italic|Enriqueta' rel='stylesheet' type='text/css'>
+
+  <!--<link rel="stylesheet/less" href="public/style.less">-->
+  <link rel="stylesheet" href="public/kss.css">
+  <link rel="stylesheet" href="public/style.css">
+
+  <!--<script type="text/javascript" src="public/less.js"></script>-->
+
+</head>
+<body><div id="kss-guide">
+  <header class="kss-format">
+    <hgroup><h1>node-kss Styleguide</h1></hgroup>
+  </header>
+  <div role="main" id="kss-content">
+    <aside class="kss-format">
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        
+          <li><a href="section-1.html">1.0: Modules</a></li>
+        
+          <li><a href="section-2.html">2.0: Forms</a></li>
+        
+      </ul>
+    </aside>
+    <article>
+      
+        
+          <h1 class="kss-title kss-title-main"><span class="kss-ref">1.0</span> - Modules</h1>
+          <div class="kss-format">
+            
+              <p>Reusable elements that can be used across the site.
+So far this just includes buttons. </p>
+
+            
+          </div>
+        
+        
+            
+              <section class="kss-section kss-has-modifiers kss-mod">
+                
+                <h1 class="kss-title"><span class="kss-ref">1.1</span> - Buttons</h1>
+                <div class="kss-format">
+                  <div class="kss-box kss-md"><p>A majority of buttons in the site are built from the same base class.</p>
+</div>
+                </div>
+                <table class="kss-mod-list">
+                  <tr>
+                    <td class="kss-mod-desc"><p>Default styling</p></td>
+                    <td class="kss-mod-name"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2"><a href="#" class="button {$modifiers}">Link Button</a>
+<button class="button {$modifiers}">Button Element</button>
+<input type="button" class="button {$modifiers}" value="input[type='button']"/></td>
+                  </tr>
+                
+                  <tr>
+                    <td class="kss-mod-desc"><p>Highlight the button when hovered.</p>
+</td>
+                    <td class="kss-mod-name">:hover</td>
+                  </tr>
+                  <tr>
+                    <td colspan="2"><a href="#" class="button pseudo-class-hover">Link Button</a>
+<button class="button pseudo-class-hover">Button Element</button>
+<input type="button" class="button pseudo-class-hover" value="input[type='button']"/></td>
+                  </tr>
+                
+                  <tr>
+                    <td class="kss-mod-desc"><p>Make the button change appearance to reflect it being disabled.</p>
+</td>
+                    <td class="kss-mod-name">:disabled</td>
+                  </tr>
+                  <tr>
+                    <td colspan="2"><a href="#" class="button pseudo-class-disabled">Link Button</a>
+<button class="button pseudo-class-disabled">Button Element</button>
+<input type="button" class="button pseudo-class-disabled" value="input[type='button']"/></td>
+                  </tr>
+                
+                  <tr>
+                    <td class="kss-mod-desc"><p>Indicate that the button is the primary feature of this form.</p>
+</td>
+                    <td class="kss-mod-name">.primary</td>
+                  </tr>
+                  <tr>
+                    <td colspan="2"><a href="#" class="button primary">Link Button</a>
+<button class="button primary">Button Element</button>
+<input type="button" class="button primary" value="input[type='button']"/></td>
+                  </tr>
+                
+                  <tr>
+                    <td class="kss-mod-desc"><p>Indicate that the button will remove a feature, or other negative connotations.</p>
+</td>
+                    <td class="kss-mod-name">.remove</td>
+                  </tr>
+                  <tr>
+                    <td colspan="2"><a href="#" class="button remove">Link Button</a>
+<button class="button remove">Button Element</button>
+<input type="button" class="button remove" value="input[type='button']"/></td>
+                  </tr>
+                
+                </table>
+                <div class="kss-markup">
+                  <pre class="prettyprint lang-html">&lt;a href=&quot;#&quot; class=&quot;button {$modifiers}&quot;&gt;Link Button&lt;/a&gt;
+&lt;button class=&quot;button {$modifiers}&quot;&gt;Button Element&lt;/button&gt;
+&lt;input type=&quot;button&quot; class=&quot;button {$modifiers}&quot; value=&quot;input[type=&#x27;button&#x27;]&quot;/&gt;</pre>
+                </div>
+              </section>
+            
+        
+      
+    </article>
+  </div>
+  <footer>
+
+  </footer>
+  <!-- SCRIPTS -->
+  <script src="public/kss.js"></script>
+  <script src="public/prettify.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script>$(document).ready(function(){
+    $('pre>code').addClass('prettyprint');
+    prettyPrint();
+  });</script>
+</div></body>
+</html>

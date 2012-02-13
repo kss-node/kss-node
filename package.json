@@ -1,0 +1,33 @@
+{
+  "author": "Hugh Kennedy <hughskennedy@gmail.com> (http://hughskennedy.com)",
+  "name": "kss",
+  "description": "NodeJS port of kss: A methodology for documenting CSS and generating styleguides",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/hughsk/kss-node.git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "bin": {
+    "kss-node": "./bin/kss-node"
+  },
+  "engines": {
+    "node": "~0.6.2"
+  },
+  "dependencies": {
+    "marked": "0.1.x",
+    "natural": "0.0.65",
+    "handlebars": "1.0.x",
+    "wrench": "1.3.x",
+    "less": "1.2.x",
+    "optimist": "0.3.x",
+    "clean-css": "0.3.x"
+  },
+  "devDependencies": {
+    "mocha": "0.4.x"
+  },
+  "homepage": "http://hughsk.github.com/kss-node"
+}
