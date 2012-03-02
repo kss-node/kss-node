@@ -12,7 +12,7 @@
 
   <meta name="viewport" content="width=device-width">
 
-  <link href='http://fonts.googleapis.com/css?family=Alfa+Slab+One|Cabin|Asap:400,700,400italic|Enriqueta' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'>
 
   <!--<link rel="stylesheet/less" href="public/style.less">-->
   <link rel="stylesheet" href="public/kss.css">
@@ -21,39 +21,35 @@
   <!--<script type="text/javascript" src="public/less.js"></script>-->
 
 </head>
-<body><div id="kss-guide">
-  <header class="kss-format">
+<body><div id="kss-wrapper">
+  <aside id="kss-nav">
+    <nav><ul>
+      <li><a href="index.html">Overview</a></li>
+      {{#each sectionRoots}}
+        <li><a href="section-{{this}}.html">{{this}}.0{{#section this}}: {{header}}{{/section}}</a></li>
+      {{/each}}
+    </nav></ul>
+  </aside>
+  <!-- <header id="kss-header">
     <hgroup><h1>node-kss Styleguide</h1></hgroup>
-  </header>
-  <div role="main" id="kss-content">
-    <aside class="kss-format">
-      <ul>
-        <li><a href="index.html">Overview</a></li>
-        {{#each sectionRoots}}
-          <li><a href="section-{{this}}.html">{{this}}.0{{#section this}}: {{header}}{{/section}}</a></li>
-        {{/each}}
-      </ul>
-    </aside>
-    <article>
+  </header> -->
+  <div role="main" id="kss-main">
+    <article id="kss-content">
       {{#if overview}}
-        <section class="kss-section kss-has-no-modifiers kss-md kss-format kss-overview">
-          {{html overview}}
-        </section>
+        {{html overview}}
       {{else}}
         {{#section rootNumber}}
-          <h1 class="kss-title kss-title-main"><span class="kss-ref">{{ reference }}.0</span>{{#if header}} - {{ header }}{{/if}}</h1>
-          <div class="kss-format">
-            {{#if description}}
-              {{html description}}
-            {{/if}}
-          </div>
+          <h1 class="kss-title" id="kss-title-main"><span class="kss-ref">{{ reference }}.0</span>{{#if header}} - {{ header }}{{/if}}</h1>
+          {{#if description}}
+            {{html description}}
+          {{/if}}
         {{/section}}
         {{#eachSection rootNumber}}
             {{#ifAny markup modifiers}}
               <section class="kss-section kss-has-modifiers kss-mod">
                 {{deprecated}}
                 <h1 class="kss-title"><span class="kss-ref">{{ reference }}</span> - {{ header }}</h1>
-                <div class="kss-format">
+                <div class="">
                   <div class="kss-box kss-md">{{html description}}</div>
                 </div>
                 <table class="kss-mod-list">
@@ -96,10 +92,28 @@
   <!-- SCRIPTS -->
   <script src="public/kss.js"></script>
   <script src="public/prettify.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-  <script>$(document).ready(function(){
-    $('pre>code').addClass('prettyprint');
-    prettyPrint();
-  });</script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script>
+    $(document).ready(function(){
+      var sidebarAdjust = function() {
+        // Match footer/body height
+        var heightNav  = $('#kss-nav').height(),
+            heightMain = $('#kss-main').height();
+
+        if (heightNav > heightMain) { $('#kss-main').height(heightNav); }
+        if (heightMain > heightNav) { $('#kss-nav').height(heightMain); }
+        console.log('adjust');
+      };
+
+      $(window).resize(sidebarAdjust);
+      $(window).scroll(sidebarAdjust);
+      sidebarAdjust();
+
+      // Ensure code blocks are highlighted properly...
+      $('pre>code').addClass('prettyprint');
+      prettyPrint();
+
+    });
+  </script>
 </div></body>
 </html>
