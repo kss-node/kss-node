@@ -152,11 +152,22 @@ suite('KssStyleguide', function() {
 
 				assert.deepEqual(references.sort(), expectedReferences.sort());
 			});
+
 			sectionQuery('/4/ only returns section 4', /4/, options, function(styleguide, sections) {
 				assert.ok(sections);
 				assert.equal(sections.length, 1);
 				assert.equal(sections[0].data.reference, '4');
 				assert.equal(sections[0].data.header, 'DEPTH OF 1');
+			});
+
+			sectionQuery('Sections should be returned in order', /9.*/, { mask: 'sections-order.less' }, function(styleguide, sections) {
+				var i, l = sections.length;
+
+				assert.equal(5, sections.length);
+				
+				for (i = 0; i < l; i += 1) {
+					assert.equal( i+1, sections[i].data.reference.match(/[0-9]+$/g)[0] );
+				}			
 			});
 		});
 	});
