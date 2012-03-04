@@ -47,7 +47,7 @@ suite('KssStyleguide', function() {
 				}
 				assert.deepEqual(results.sort(), expected.sort());
 			});
-		})
+		});
 		suite('Exact References', function() {
 			sectionQuery('Depth: 1', '4', options, function(styleguide, section) {
 				assert.ok(section);
@@ -130,6 +130,16 @@ suite('KssStyleguide', function() {
 						break;
 					}
 				});
+			});
+
+			sectionQuery('Sections should be returned in order', '9.x', { mask: 'sections-order.less' }, function(styleguide, sections) {
+				var i, l = sections.length;
+
+				assert.equal(5, sections.length);
+				
+				for (i = 0; i < l; i += 1) {
+					assert.equal( i+1, sections[i].data.reference.match(/[0-9]+$/g)[0] );
+				}			
 			});
 		});
 		suite('Regex Queries', function() {
