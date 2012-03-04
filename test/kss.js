@@ -298,6 +298,11 @@ suite('#traverse', function() {
 					assert.ok(!section.data.experimental);
 				}, 'Only works when included at the beginning of a paragraph/header', { multiline: true});
 			});
+			suite('.reference', function() {
+				common.testSection('Reference with trailing zero...', 'section-queries.less', function(section) {
+					assert.equal(section.data.reference, '8');
+				}, 'Sections labelled "X.0" should be equivalent to "X"', { multiline: true });
+			});
 		});
 	});
 	suite('options', function() {
