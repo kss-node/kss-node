@@ -1,217 +1,61 @@
-/* -----------------------------------------
- * @group CSS Reset
- * ----------------------------------------- */
+@import 'markdown';
 
-/* 
-html5doctor.com Reset Stylesheet
-v1.6.1
-Last Updated: 2010-09-17
-Author: Richard Clark - http://richclarkdesign.com 
-Twitter: @rich_clark
-*/
-html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary, time, mark, audio, video { margin:0; padding:0; border:0; outline:0; font-size:100%; vertical-align:baseline; background:transparent; } body { line-height:1; } article,aside,details,figcaption,figure, footer,header,hgroup,menu,nav,section { display:block; } nav ul { list-style:none; } blockquote, q { quotes:none; } blockquote:before, blockquote:after, q:before, q:after { content:''; content:none; } a { margin:0; padding:0; font-size:100%; vertical-align:baseline; background:transparent; } ins { background-color:#ff9; color:#000; text-decoration:none; } mark { background-color:#ff9; color:#000; font-style:italic; font-weight:bold; } del { text-decoration: line-through; } abbr[title], dfn[title] { border-bottom:1px dotted; cursor:help; } table { border-collapse:collapse; border-spacing:0; }  hr { display:block; height:1px; border:0; border-top:1px solid #cccccc; margin:1em 0; padding:0; } input, select { vertical-align:middle; }
-/* @end */
+#kss-nav {
+	width:20%;
+	background-color:#eee;
 
-/* -----------------------------------------
- * @group Layout
- * ----------------------------------------- */
-#kss-content, #kss-guide>header>hgroup {
-	width: 1000px;
-	margin:0 auto;
-	position:relative;
-}
-#kss-guide {
-	&>header {
-		height:50px;
-		font-size:24px;
-		background:#ddd;
-		h1 {
-			line-height:50px;
-			margin:0;
-		}
+	nav>ul {
+		padding:0;
+		margin:2em;
+    margin-top:2.5em;
+		list-style-type:none;
 	}
-}
-#kss-content {
-	&>aside {
-		width:199px;
-		float:left;
 
-		ul {
-			list-style-type:none;
-			li {
-				font-size:18px;
-				line-height:30px;
-				// border-bottom:1px solid #000;
-				a {
-					text-decoration:none;
-				}
-			}
-		}
-	}
-	&>article {
-		width:780px;
-		padding-left:20px;
-		border-left:1px solid #eee;
-		padding-bottom:80px;
-		float:left;
-	}
-	&>aside, &>article {
-		padding-top:20px;
-	}
-}
-/* @end */
-
-/* -----------------------------------------
- * @group Typography
- * ----------------------------------------- */
-.kss-format, .kss-md {
-	h1, h2, h3, h4, h5, h6 {
-		font-family:'Asap', Helvetica;
-		line-height:1.5em;
-		margin-top:40px;
-		margin-bottom:8px;
-	}
-	article, p, ul, ol, section, aside {
-		font-family:'Asap', Helvetica;
-		color:#333;
-	}
-	pre, code {
-		font-family:'Ubuntu Mono', monospace;
-		white-space:pre-wrap;
-	}
-	code {
-		background-color:#eee;
-		border:1px solid #bbb;
-		color:#333;
-	}
-	pre {
-		padding:12px;
-		background-color:#eee;
-		border:1px solid #c8c8c8;
-		margin-top:25px;
-		margin-bottom:25px;
-
-		&>code {
-			border:0;
-			background-color:transparent;
-		}
-	}
-	a {
-		color:#888;
-		&:hover {
-			color:#8ad;
-		}
-	}
-	p, ul, ol {
-		margin-bottom:15px;
-		font-size:16px;
-		line-height:1.5em;
-	}
-	blockquote {
-		margin:0 20px;
-		margin-bottom:15px;
-		padding:10px;
-
-		p {
-			color:#666;
-		}
-		&>p:last-child {
-			margin-bottom:0;
-		}
-	}
-}
-.kss-md ul, .kss-md ol {
-	margin-left:30px;
-}
-.kss-section {
-	.kss-title {
-		margin:0;
-	}
-}
-.kss-title {
-	font-family:'Asap', Helvetica;
-}
-.kss-section .kss-title-main, .kss-title-main {
-	font-size:36px!important;
-	line-height:1em;
-	padding-bottom:20px;
-	margin-bottom:20px;
-	position:relative;
-	left:-20px;
-	padding-left:20px;
-	padding-right:20px;
-	border-bottom:1px solid #ddd;
+	box-shadow: inset -15px 0px 15px -15px rgba(45, 45, 45, 0.25);
 }
 
-section>.kss-title {
-	font-size:26px;
-	color:#222;
+#kss-header h1 {
+  font-size:1.5em;
+  margin-top:5/3em;
+  margin-left:4/3em;
 }
 
-.kss-md {
-	h1 { font-size:30px; }
-	h2 { font-size:26px; }
-	h3 { font-size:22px; }
-	h4 { font-size:18px; }
-	h5 { font-size:16px; }
-	h6 { font-size:15px; }
+#kss-main, #kss-nav {
+	position:absolute;
+	top:0;
+	left:0;
 }
 
-.kss-mod {
-	background:#ddd;
-	border:1px solid #aaa;
-	margin-bottom:30px;
-
-	.kss-title {
-		background:#ddd;
-		color:#444;
-		padding:14px 0 0 14px;
-		font-size:18px;
-	}
-}
-
-.kss-desc {
-	margin-top:30px;
-	margin-bottom:40px;
-	&>.kss-title{
-		margin-bottom:10px;
-	}
-}
-
-.kss-markup {
-	padding:20px;
-	background:#e5e5e5;
-	line-height:1.2em;
-}
-
-.kss-box {
-	padding:14px;
-	padding-bottom:0;
-}
-
-.kss-mod-list {
-	width:100%;
-	background:#fff;
-	border-bottom:1px solid #aaa;
-
-	td {
-		padding:10px;
-		line-height:1.35em;
-		font-size:14px;
-		font-family:'Trebuchet MS';
-	}
+#kss-main {
+	padding-left:2.5%;
+	width:77.5%;
+	max-width:48em;
+	left:20%;
 }
 
 .kss-mod-name {
-	font-weight:bold;
-	text-align:right;
-	width:30%;
+  text-align:right;
+  width:20%;
+  font-size:0.75em;
+}
 
+.kss-mod-example {
+  padding-bottom:20px;
+         
+         display:block;
+  &>td { display:block; }
 }
-td.kss-mod-name, td.kss-mod-desc {
-	padding-bottom:0;
-	border-top:1px solid #aaa;
+
+.kss-markup {
+  margin-bottom:40px;
 }
+
+.kss-depth-1 > h1 { font-size: 2.5em * 0.950; }
+.kss-depth-2 > h1 { font-size: 2.5em * 0.900; }
+.kss-depth-3 > h1 { font-size: 2.5em * 0.850; }
+.kss-depth-4 > h1 { font-size: 2.5em * 0.800; }
+.kss-depth-5 > h1 { font-size: 2.5em * 0.750; }
+.kss-depth-6 > h1 { font-size: 2.5em * 0.700; }
 
 // ------------------------------------------------------------------------------
 //   @group prettyprint.js styling
@@ -268,34 +112,3 @@ li.L3,
 li.L5,
 li.L7,
 li.L9 { background: #eee }
-
-// @end
-
-// ------------------------------------------------------------------------------
-//   @group Smaller Dimensions
-// ------------------------------------------------------------------------------
-@media screen and (max-width:1000px) {
-	#kss-content > aside {
-		margin-left:20px;
-	}
-	#kss-content > article, #kss-content, #kss-guide>header>hgroup {
-		width:auto;
-	}
-	#kss-content > article {
-		padding-right:20px;
-	}
-	#kss-guide>header>hgroup>h1 {
-		margin-left:20px;
-	}
-	h1 {
-		/*text-align:center;*/
-	}
-	.kss-section .kss-title-main, .kss-title-main {
-		position:inherit;
-		left:0;
-		top:0;
-		padding-left:0;
-		padding-right:0;
-	}
-}
-// @end

@@ -22,17 +22,19 @@
 
 </head>
 <body><div id="kss-wrapper">
-  <aside id="kss-nav">
-    <nav><ul>
-      <li><a href="index.html">Overview</a></li>
-      {{#each sectionRoots}}
-        <li><a href="section-{{this}}.html">{{this}}.0{{#section this}}: {{header}}{{/section}}</a></li>
-      {{/each}}
-    </nav></ul>
-  </aside>
-  <!-- <header id="kss-header">
-    <hgroup><h1>node-kss Styleguide</h1></hgroup>
-  </header> -->
+  <div id="kss-nav">
+    <header id="kss-header">
+      <hgroup><h1>node-kss Styleguide</h1></hgroup>
+    </header>
+    <aside>
+      <nav><ul>
+        <li><a href="index.html">Overview</a></li>
+        {{#each sectionRoots}}
+          <li><a href="section-{{this}}.html">{{this}}.0{{#section this}}: {{header}}{{/section}}</a></li>
+        {{/each}}
+      </nav></ul>
+    </aside>
+  </div>
   <div role="main" id="kss-main">
     <article id="kss-content">
       {{#if overview}}
@@ -46,26 +48,23 @@
         {{/section}}
         {{#eachSection rootNumber}}
             {{#ifAny markup modifiers}}
-              <section class="kss-section kss-has-modifiers kss-mod">
-                {{deprecated}}
-                <h1 class="kss-title"><span class="kss-ref">{{ reference }}</span> - {{ header }}</h1>
-                <div class="">
-                  <div class="kss-box kss-md">{{html description}}</div>
-                </div>
+              <section class="kss-depth-{{ refDepth }}">
+                <h1><span class="kss-ref">{{ reference }}</span> - {{ header }}</h1>
+                <div class="kss-box">{{html description}}</div>
                 <table class="kss-mod-list">
-                  <tr>
+                  <tr class="kss-mod-desc-group">
                     <td class="kss-mod-desc"><p>Default styling</p></td>
                     <td class="kss-mod-name"></td>
                   </tr>
-                  <tr>
+                  <tr class="kss-mod-example">
                     <td colspan="2">{{modifierMarkup}}</td>
                   </tr>
                 {{#eachModifier}}
-                  <tr>
+                  <tr class="kss-mod-desc-group">
                     <td class="kss-mod-desc">{{html description}}</td>
-                    <td class="kss-mod-name">{{name}}</td>
+                    <td class="kss-mod-name"><p>{{name}}</p></td>
                   </tr>
-                  <tr>
+                  <tr class="kss-mod-example">
                     <td colspan="2">{{modifierMarkup}}</td>
                   </tr>
                 {{/eachModifier}}
@@ -75,7 +74,7 @@
                 </div>
               </section>
             {{else}}
-              <section class="kss-section kss-has-no-modifiers kss-md kss-desc">
+              <section class="kss-depth-{{ refDepth }}">
                 <h1 class="kss-title"><span class="kss-ref">{{ reference }}</span> - {{ header }}</h1>
                 {{#if description}}
                   {{html description}}

@@ -12,7 +12,7 @@
 
   <meta name="viewport" content="width=device-width">
 
-  <link href='http://fonts.googleapis.com/css?family=Alfa+Slab+One|Cabin|Asap:400,700,400italic|Enriqueta' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'>
 
   <!--<link rel="stylesheet/less" href="public/style.less">-->
   <link rel="stylesheet" href="public/kss.css">
@@ -21,25 +21,26 @@
   <!--<script type="text/javascript" src="public/less.js"></script>-->
 
 </head>
-<body><div id="kss-guide">
-  <header class="kss-format">
-    <hgroup><h1>node-kss Styleguide</h1></hgroup>
-  </header>
-  <div role="main" id="kss-content">
-    <aside class="kss-format">
-      <ul>
+<body><div id="kss-wrapper">
+  <div id="kss-nav">
+    <header id="kss-header">
+      <hgroup><h1>node-kss Styleguide</h1></hgroup>
+    </header>
+    <aside>
+      <nav><ul>
         <li><a href="index.html">Overview</a></li>
         
           <li><a href="section-1.html">1.0: Modules</a></li>
         
           <li><a href="section-2.html">2.0: Forms</a></li>
         
-      </ul>
+      </nav></ul>
     </aside>
-    <article>
+  </div>
+  <div role="main" id="kss-main">
+    <article id="kss-content">
       
-        <section class="kss-section kss-has-no-modifiers kss-md kss-format kss-overview">
-          <h1 class="kss-title kss-title-main"> Overview </h1>
+        <h1 class="kss-title kss-title-main"> Overview </h1>
 
 <p>This is a demo of <a href="http://github.com/hughsk/kss-node">kss-node</a>&apos;s built-in styleguide generator. The module is essentially a reimplementation of Kyle Kneath&apos;s original Ruby library, <a href="http://github.com/kneath/kss">KSS</a>, in Node:
 
@@ -237,7 +238,6 @@ a.button.star{
 <p>The goal here is to create an organizational structure that is flexible, but  rigid enough to be machine processed and referenced inside of documentation.
 </p>
 
-        </section>
       
     </article>
   </div>
@@ -247,10 +247,28 @@ a.button.star{
   <!-- SCRIPTS -->
   <script src="public/kss.js"></script>
   <script src="public/prettify.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-  <script>$(document).ready(function(){
-    $('pre>code').addClass('prettyprint');
-    prettyPrint();
-  });</script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script>
+    $(document).ready(function(){
+      var sidebarAdjust = function() {
+        // Match footer/body height
+        var heightNav  = $('#kss-nav').height(),
+            heightMain = $('#kss-main').height();
+
+        if (heightNav > heightMain) { $('#kss-main').height(heightNav); }
+        if (heightMain > heightNav) { $('#kss-nav').height(heightMain); }
+        console.log('adjust');
+      };
+
+      $(window).resize(sidebarAdjust);
+      $(window).scroll(sidebarAdjust);
+      sidebarAdjust();
+
+      // Ensure code blocks are highlighted properly...
+      $('pre>code').addClass('prettyprint');
+      prettyPrint();
+
+    });
+  </script>
 </div></body>
 </html>

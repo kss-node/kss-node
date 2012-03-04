@@ -4,14 +4,20 @@
 	width:20%;
 	background-color:#eee;
 
-	&>nav>ul {
+	nav>ul {
 		padding:0;
 		margin:2em;
+    margin-top:2.5em;
 		list-style-type:none;
 	}
 
 	box-shadow: inset -15px 0px 15px -15px rgba(45, 45, 45, 0.25);
-	// inset 0px -100px 100px -100px rgba(255, 255, 255, 1), 
+}
+
+#kss-header h1 {
+  font-size:1.5em;
+  margin-top:5/3em;
+  margin-left:4/3em;
 }
 
 #kss-main, #kss-nav {
@@ -26,6 +32,30 @@
 	max-width:48em;
 	left:20%;
 }
+
+.kss-mod-name {
+  text-align:right;
+  width:20%;
+  font-size:0.75em;
+}
+
+.kss-mod-example {
+  padding-bottom:20px;
+         
+         display:block;
+  &>td { display:block; }
+}
+
+.kss-markup {
+  margin-bottom:40px;
+}
+
+.kss-depth-1 > h1 { font-size: 2.5em * 0.950; }
+.kss-depth-2 > h1 { font-size: 2.5em * 0.900; }
+.kss-depth-3 > h1 { font-size: 2.5em * 0.850; }
+.kss-depth-4 > h1 { font-size: 2.5em * 0.800; }
+.kss-depth-5 > h1 { font-size: 2.5em * 0.750; }
+.kss-depth-6 > h1 { font-size: 2.5em * 0.700; }
 
 // ------------------------------------------------------------------------------
 //   @group prettyprint.js styling
@@ -82,34 +112,3 @@ li.L3,
 li.L5,
 li.L7,
 li.L9 { background: #eee }
-
-// @end
-
-// ------------------------------------------------------------------------------
-//   @group Smaller Dimensions
-// ------------------------------------------------------------------------------
-// @media screen and (max-width:1000px) {
-// 	#kss-content > aside {
-// 		margin-left:20px;
-// 	}
-// 	#kss-content > article, #kss-content, #kss-guide>header>hgroup {
-// 		width:auto;
-// 	}
-// 	#kss-content > article {
-// 		padding-right:20px;
-// 	}
-// 	#kss-guide>header>hgroup>h1 {
-// 		margin-left:20px;
-// 	}
-// 	h1 {
-// 		/*text-align:center;*/
-// 	}
-// 	.kss-section .kss-title-main, .kss-title-main {
-// 		position:inherit;
-// 		left:0;
-// 		top:0;
-// 		padding-left:0;
-// 		padding-right:0;
-// 	}
-// }
-// @end
