@@ -96,12 +96,13 @@
     $(document).ready(function(){
       var sidebarAdjust = function() {
         // Match footer/body height
-        var heightNav  = $('#kss-nav').height(),
-            heightMain = $('#kss-main').height();
+        var height = Math.max($(window).height(), $('#kss-main').height());
 
-        if (heightNav > heightMain) { $('#kss-main').height(heightNav); }
-        if (heightMain > heightNav) { $('#kss-nav').height(heightMain); }
-        console.log('adjust');
+        if ($(window).width() <= 768) {
+          $('#kss-main, #kss-nav').height('auto');
+        } else {
+          $('#kss-main, #kss-nav').height(height);
+        }
       };
 
       $(window).resize(sidebarAdjust);

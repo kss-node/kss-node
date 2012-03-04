@@ -112,3 +112,39 @@ li.L3,
 li.L5,
 li.L7,
 li.L9 { background: #eee }
+
+// ------------------------------------------------------------------------------
+//   @group Mobile/Tablet Styling
+// ------------------------------------------------------------------------------
+@media screen and (max-width: 768px) {
+  #kss-main {
+    position:static;
+    width:90%;
+    margin:0 auto;
+  }
+
+  #kss-nav {
+    position:static;
+    display:block;
+    width:auto;
+    margin:0;
+    background:0;
+    box-shadow:none;
+    border-bottom:1px solid #ddd;
+    nav>ul {
+      margin-top:0.5em;
+      margin-bottom:0.5em;
+
+      &>li {
+        display:inline-block;
+        padding-right:1.5em;
+      }
+    }
+  }
+
+  #kss-header>hgroup>h1 {
+    margin-top:0;
+    margin-bottom:0;
+  }
+}
+// @end

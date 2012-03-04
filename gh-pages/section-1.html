@@ -88,6 +88,17 @@ So far this just includes buttons. </p>
                   </tr>
                 
                   <tr class="kss-mod-desc-group">
+                    <td class="kss-mod-desc"><p>&quot;Press&quot; the button down when clicked.</p>
+</td>
+                    <td class="kss-mod-name"><p>:active</p></td>
+                  </tr>
+                  <tr class="kss-mod-example">
+                    <td colspan="2"><a href="#" class="button pseudo-class-active">Link Button</a>
+<button class="button pseudo-class-active">Button Element</button>
+<input type="button" class="button pseudo-class-active" value="input[type='button']"/></td>
+                  </tr>
+                
+                  <tr class="kss-mod-desc-group">
                     <td class="kss-mod-desc"><p>Indicate that the button is the primary feature of this form.</p>
 </td>
                     <td class="kss-mod-name"><p>.primary</p></td>
@@ -132,12 +143,13 @@ So far this just includes buttons. </p>
     $(document).ready(function(){
       var sidebarAdjust = function() {
         // Match footer/body height
-        var heightNav  = $('#kss-nav').height(),
-            heightMain = $('#kss-main').height();
+        var height = Math.max($(window).height(), $('#kss-main').height());
 
-        if (heightNav > heightMain) { $('#kss-main').height(heightNav); }
-        if (heightMain > heightNav) { $('#kss-nav').height(heightMain); }
-        console.log('adjust');
+        if ($(window).width() <= 768) {
+          $('#kss-main, #kss-nav').height('auto');
+        } else {
+          $('#kss-main, #kss-nav').height(height);
+        }
       };
 
       $(window).resize(sidebarAdjust);
