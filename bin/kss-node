@@ -17,7 +17,7 @@ var kss = require(__dirname + '/../lib/kss.js'),
 		sourceDirectory: __dirname + '/../demo',
 		destinationDirectory: process.cwd() + '/styleguide'
 	},
-	argv;
+	KSS_FAILED = false,	argv;
 
 
 
@@ -84,7 +84,7 @@ wrench.copyDirSyncRecursive(
 // Generate the static HTML pages in the next tick, i.e. after the other functions have
 // been defined and handlebars helpers set up.
 process.nextTick(function() {
-	less.render('@import "' + options.destinationDirectory + '/public/kss.less";', function(err, css) {
+	less.render('@import "' + path.relative(process.cwd(), options.destinationDirectory) + '/public/kss.less";', function(err, css) {
 		if (err) {
 			console.log(err);
 			throw err;
@@ -365,7 +365,15 @@ handlebars.registerHelper('html', function(arg) {
 });
 
 process.on('exit', function() {
-	console.log('');
-	console.log('Generation completed successfully!');
-	console.log('');
+	if (!KSS_FAILED) {
+		console.log('');
+		console.log('Generation completed successfully!');
+		console.log('');
+	}
 });
+
+process.on('uncaughtException', function(err) {
+	console.log(err.message);
+	KSS_FAILED = true;
+	process.exit(1);
+})
