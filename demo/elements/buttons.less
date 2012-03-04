@@ -9,6 +9,7 @@
 // 
 // :hover               - Highlight the button when hovered.
 // :disabled            - Make the button change appearance to reflect it being disabled.
+// :active              - "Press" the button down when clicked.
 // .primary             - Indicate that the button is the primary feature of this form.
 // .remove              - Indicate that the button will remove a feature, or other negative connotations.
 //
@@ -23,6 +24,9 @@
 	padding:10px 20px;
 	
 	color:#fff;
+	&:visited, &:hover, &:active {
+		color:#fff;
+	}
 
 	font-family:Helvetica, Arial, sans-serif;
 	font-size:16px;
@@ -38,7 +42,10 @@
 	&:hover {
 		.button-colorize(lighten(@color, 8%));
 		border:1px solid darken(@color, 20%);
-		color:#fff;
+	}
+	&:active {
+		position:relative; top:3px;
+		box-shadow:none!important;
 	}
 	&.primary {
 		.button-colorize(#5c4);

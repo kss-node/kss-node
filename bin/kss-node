@@ -20,6 +20,7 @@ var kss = require(__dirname + '/../lib/kss.js'),
 	argv;
 
 
+
 /**
  * CLI argument parsing, thanks to Substack's optimist.
  * @type {Object}
@@ -83,7 +84,7 @@ wrench.copyDirSyncRecursive(
 // Generate the static HTML pages in the next tick, i.e. after the other functions have
 // been defined and handlebars helpers set up.
 process.nextTick(function() {
-	less.render(fs.readFileSync(options.destinationDirectory + '/public/kss.less', 'utf8'), function(err, css) {
+	less.render('@import "' + options.destinationDirectory + '/public/kss.less";', function(err, css) {
 		if (err) {
 			console.log(err);
 			throw err;
