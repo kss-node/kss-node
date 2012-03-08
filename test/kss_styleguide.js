@@ -38,7 +38,8 @@ suite('KssStyleguide', function() {
 					expected = [
 						'4', '4.1',
 						'4.1.1', '4.1.2',
-						'4.1.1.1', '4.1.1.2', '4.1.2.2'
+						'4.1.1.1', '4.1.1.2', '4.1.2.2',
+						'8'
 					];
 				assert.ok(sections);
 				for (key in sections) {
@@ -46,7 +47,7 @@ suite('KssStyleguide', function() {
 				}
 				assert.deepEqual(results.sort(), expected.sort());
 			});
-		})
+		});
 		suite('Exact References', function() {
 			sectionQuery('Depth: 1', '4', options, function(styleguide, section) {
 				assert.ok(section);
@@ -130,6 +131,16 @@ suite('KssStyleguide', function() {
 					}
 				});
 			});
+
+			sectionQuery('Sections should be returned in order', '9.x', { mask: 'sections-order.less' }, function(styleguide, sections) {
+				var i, l = sections.length;
+
+				assert.equal(5, sections.length);
+				
+				for (i = 0; i < l; i += 1) {
+					assert.equal( i+1, sections[i].data.reference.match(/[0-9]+$/g)[0] );
+				}			
+			});
 		});
 		suite('Regex Queries', function() {
 			sectionQuery('/4.*/ returns section 4 and all of its descendants', /4.*/, options, function(styleguide, sections) {
@@ -141,11 +152,22 @@ suite('KssStyleguide', function() {
 
 				assert.deepEqual(references.sort(), expectedReferences.sort());
 			});
+
 			sectionQuery('/4/ only returns section 4', /4/, options, function(styleguide, sections) {
 				assert.ok(sections);
 				assert.equal(sections.length, 1);
 				assert.equal(sections[0].data.reference, '4');
 				assert.equal(sections[0].data.header, 'DEPTH OF 1');
+			});
+
+			sectionQuery('Sections should be returned in order', /9.*/, { mask: 'sections-order.less' }, function(styleguide, sections) {
+				var i, l = sections.length;
+
+				assert.equal(5, sections.length);
+				
+				for (i = 0; i < l; i += 1) {
+					assert.equal( i+1, sections[i].data.reference.match(/[0-9]+$/g)[0] );
+				}			
 			});
 		});
 	});
