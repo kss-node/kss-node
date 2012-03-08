@@ -86,7 +86,7 @@ wrench.copyDirSyncRecursive(
 process.nextTick(function() {
 	less.render('@import "' + path.relative(process.cwd(), options.destinationDirectory) + '/public/kss.less";', function(err, css) {
 		if (err) {
-			console.log(err);
+			console.error(err);
 			throw err;
 		}
 
@@ -210,7 +210,8 @@ generatePage = function(styleguide, sections, root, pages, sectionRoots) {
 			sections: jsonSections(sections),
 			rootNumber: root,
 			sectionRoots: sectionRoots,
-			overview: false
+			overview: false,
+			argv: argv || {}
 		})
 	);
 };
@@ -226,6 +227,7 @@ generateIndex = function(styleguide, sections, pages, sectionRoots) {
 				sectionRoots: sectionRoots,
 				sections: jsonSections(sections),
 				rootNumber: 0,
+				argv: argv || {},
 				overview: marked(fs.readFileSync(options.sourceDirectory + '/styleguide.md', 'utf8'))
 			})
 		);

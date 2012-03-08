@@ -1,6 +1,6 @@
 <h1 class="kss-title kss-title-main"> Overview </h1>
 
-This is a demo of [kss-node](http://github.com/hughsk/kss-node)'s built-in styleguide generator. The module is essentially a reimplementation of Kyle Kneath's original Ruby library, [KSS](http://github.com/kneath/kss), in Node:
+This is a demo of [kss-node](http://github.com/hughsk/kss-node)'s built-in styleguide generator. The module is essentially a reimplementation of the [KSS](http://github.com/kneath/kss) Ruby parser, in Node:
 
 > Inspired by TomDoc, KSS attempts to provide a methodology for writing maintainable, documented CSS within a team.
 > Specifically, KSS is a documentation specification and styleguide format.

@@ -24,9 +24,13 @@ You'll need to specify a directory containing all of your CSS files to be parsed
 
     $ kss-node demo styleguide --less demo/styles.less
 
-You can create your own templates too, either by editing the contents of the `lib/template` directory or using the `--template` flag to point to your own.
+You can create your own templates too, either by editing the contents of the `lib/template` directory or using the `--template` flag to point to your own. The default template should look something like this:
+
+![CLI Template Preview](https://raw.github.com/hughsk/kss-node/develop/demo/preview.png)
 
 ## Using kss-node from Node
+
+Check out the [Module API](https://github.com/hughsk/kss-node/wiki/Module-API) a full explanation. Here's an example:
 
     var kss = require('kss'),
         options = {
@@ -36,17 +40,17 @@ You can create your own templates too, either by editing the contents of the `li
     kss.traverse('public/stylesheets/', options, function(err, styleguide) {
         if (err) { throw err; }
     
-    	styleguide.section('2.1.1')                                   // <KssSection>
+        styleguide.section('2.1.1')                                   // <KssSection>
     
-    	styleguide.section('2.1.1').description()                     // A button suitable for giving stars to someone
+        styleguide.section('2.1.1').description()                     // A button suitable for giving stars to someone
     
-    	styleguide.section('2.1.1').modifiers(0)                      // <KssModifier>
+        styleguide.section('2.1.1').modifiers(0)                      // <KssModifier>
     
-    	styleguide.section('2.1.1').modifiers(0).name                 // ':hover'
+        styleguide.section('2.1.1').modifiers(0).name                 // ':hover'
     
         styleguide.section('2.1.1').modifiers(0).description          // 'Subtle hover highlight'
     
-    	styleguide.section('2.1.1').modifiers(':hover').description() // 'Subtle hover highlight'
+        styleguide.section('2.1.1').modifiers(':hover').description() // 'Subtle hover highlight'
     
         styleguide.section('2.1.1').modifiers(0).className()          // 'pseudo-class-hover'
     
@@ -56,11 +60,10 @@ You can create your own templates too, either by editing the contents of the `li
     
     });
 
-Check out the [Module API](https://github.com/hughsk/kss-node/wiki/Module-API) for more information.
 
 ## Differences
 
-I've tried to avoid cluttering up the module with extra features, but have made a couple of optional additions to completely automate a few more things.
+Included are a few additional (optional) features to allow for completely automated styleguide generation.
 
 Take a look at the [demo project](http://github.com/hughsk/kss-node/tree/master/demo) for some examples.
 
