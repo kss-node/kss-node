@@ -9,7 +9,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha -u tdd --reporter spec"
+    "test": "./node_modules/mocha/bin/_mocha -u tdd --reporter spec"
   },
   "bin": {
     "kss-node": "./bin/kss-node"
