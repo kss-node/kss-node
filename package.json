@@ -15,7 +15,7 @@
     "kss-node": "./bin/kss-node"
   },
   "engines": {
-    "node": "~0.6.2"
+    "node": ">0.6.0"
   },
   "dependencies": {
     "marked": "0.1.x",
