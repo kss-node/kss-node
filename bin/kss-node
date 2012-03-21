@@ -26,19 +26,15 @@ var kss = require(__dirname + '/../lib/kss.js'),
  * @type {Object}
  */
 argv = require('optimist')
-	.usage('Usage:\n $0 sourcedir [destdir] --less [file] --css [file]')
+	.usage('Usage:\n $0 sourcedir [destdir] --less [file] --css [file] --init [directory]')
 	.check(function(args) {
-		if (args._.length < 1) {
+		if (args._.length < 1 && !args.init) {
 			throw new Error('Please provide a source directory');
 		}
 	})
 	.string('l')
 	.alias('l', 'less')
 	.describe('l', 'Compile and include a LESS stylesheet')
-
-	// .string('s')
-	// .alias('s', 'sass')
-	// .describe('s', 'Compile and include a SASS stylesheet')
 
 	.string('c')
 	.alias('c', 'css')
@@ -48,7 +44,27 @@ argv = require('optimist')
 	.alias('t', 'template')
 	.describe('t', 'Use a custom template to build your styleguide')
 
+	.alias('i', 'init')
+	.describe('Create a new styleguide template to work from')
+
 	.argv;
+
+// Create a new styleguide template to play with using the `--init` tag.
+if (argv.init) {
+	if (typeof argv.init !== 'string') {
+		argv.init = path.resolve('./styleguide-template');
+	} else {
+		argv.init = path.resolve(argv.init);
+	}
+
+	console.log('Creating a new styleguide template...');
+	wrench.copyDirSyncRecursive( __dirname + '/../lib/template', argv.init );
+	console.log('You can change it as you like, and use it with your styleguide like so:');
+	console.log('');
+	console.log('kss-node [sourcedir] --template "'+argv.init+'"');
+	console.log('');
+	return;
+}
 
 options.sourceDirectory = path.relative(process.cwd(), argv['_'][0]);
 if (argv['_'].length > 1) {
