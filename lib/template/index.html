@@ -37,24 +37,23 @@
       {{#if overview}}
         {{html overview}}
       {{else}}
-        {{! Top Page Heading }}
-
-        {{#section rootNumber}}
-          <h1 class="kss-title" id="kss-title-main"><span class="kss-ref">{{ reference }}.0</span>{{#if header}} - {{ header }}{{/if}}</h1>
-          {{#if description}}
-            {{html description}}
-          {{/if}}
-        {{/section}}
 
         {{!
           Find each section, in order.
           If there's no markup or modifiers supplied, use a Markdown-only
           layout instead.
+
+          The "root" element comes first in this loop, and can be detected using
+          the "#whenDepth 1" block as seen below.
         }}
         {{#eachSection rootNumber}}
+          {{#whenDepth 1}}
+            <h1 class="kss-title"><span class="kss-ref">{{ reference }}.0</span> - {{ header }}</h1>
+          {{else}}
+           <section class="kss-depth-{{ refDepth }}">
+            <h1 class="kss-title"><span class="kss-ref">{{ reference }}</span> - {{ header }}</h1>
+          {{/whenDepth}}
             {{#ifAny markup modifiers}}
-              <section class="kss-depth-{{ refDepth }}">
-                <h1><span class="kss-ref">{{ reference }}</span> - {{ header }}</h1>
                 <div class="kss-box">{{html description}}</div>
                 <table class="kss-mod-list">
                   <tr class="kss-mod-desc-group">
@@ -77,15 +76,14 @@
                 <div class="kss-markup">
                   <pre class="prettyprint lang-html">{{markup}}</pre>
                 </div>
-              </section>
             {{else}}
-              <section class="kss-depth-{{ refDepth }}">
-                <h1 class="kss-title"><span class="kss-ref">{{ reference }}</span> - {{ header }}</h1>
                 {{#if description}}
                   {{html description}}
                 {{/if}}
-              </section>
             {{/ifAny}}
+          {{#whenDepth 1}} {{else}}
+            </section>
+          {{/whenDepth}}
         {{/eachSection}}
       {{/if}}
     </article>
