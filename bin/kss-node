@@ -320,10 +320,28 @@ handlebars.registerHelper('eachSection', function(query) {
 		query = query + ".x.*";
 	}
 	sections = styleguide.section(query);
-	if (!sections) return false;
+	if (!sections) return '';
 
 	l = sections.length;
-	for (i = 0; i < l; i++) {
+	for (i = 0; i < l; i += 1) {
+		buffer += arguments[arguments.length-1](sections[i].data);
+	}
+
+	return buffer;
+});
+
+/**
+ * Loop over each section root, i.e. each section only one level deep.
+ */
+handlebars.registerHelper('eachRoot', function() {
+	var sections,
+		i, l, buffer = "";
+
+	sections = styleguide.section('x');
+	if (!sections) return '';
+
+	l = sections.length;
+	for (i = 0; i < l; i += 1) {
 		buffer += arguments[arguments.length-1](sections[i].data);
 	}
 
