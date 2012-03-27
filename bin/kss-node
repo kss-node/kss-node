@@ -348,6 +348,15 @@ handlebars.registerHelper('eachRoot', function() {
 	return buffer;
 });
 
+/**
+ * Equivalent to "if the current section is X levels deep". e.g:
+ * 
+ * {{#refDepth 1}}
+ * 	 ROOT ELEMENTS ONLY
+ * 	{{else}}
+ * 	 ANYTHING ELSE
+ * {{/refDepth}}
+ */
 handlebars.registerHelper('whenDepth', function(depth, context) {
 	if (!(context && this.refDepth)) {
 		return '';
