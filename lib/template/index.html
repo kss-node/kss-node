@@ -21,14 +21,14 @@
 <body><div id="kss-wrapper">
   <div id="kss-nav">
     <header id="kss-header">
-      <hgroup><h1>node-kss Styleguide</h1></hgroup>
+      <hgroup><h1>kss-node Styleguide</h1></hgroup>
     </header>
     <aside>
       <nav><ul>
-        <li><a href="index.html">Overview</a></li>
-        {{#each sectionRoots}}
-          <li><a href="section-{{this}}.html">{{this}}.0{{#section this}}: {{header}}{{/section}}</a></li>
-        {{/each}}
+        <li><a href="index.html">0.0: Overview</a></li>
+        {{#eachRoot}}
+          <li><a href="section-{{reference}}.html">{{reference}}.0: {{header}}</a></li>
+        {{/eachRoot}}
       </nav></ul>
     </aside>
   </div>
@@ -38,6 +38,7 @@
         {{html overview}}
       {{else}}
         {{! Top Page Heading }}
+
         {{#section rootNumber}}
           <h1 class="kss-title" id="kss-title-main"><span class="kss-ref">{{ reference }}.0</span>{{#if header}} - {{ header }}{{/if}}</h1>
           {{#if description}}
