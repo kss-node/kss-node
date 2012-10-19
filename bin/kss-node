@@ -192,7 +192,7 @@ generateStylesheet = function(argv) {
 				});
 			break;
 			case 'css':
-				stylebuffer += fs.readFileSync(projectStyles[Key]);
+				stylebuffer += fs.readFileSync(projectStyles[type]);
 			break;
 		}
 	}
