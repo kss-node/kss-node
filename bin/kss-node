@@ -82,6 +82,9 @@ console.log(' * Destination: ' + path.resolve(options.destinationDirectory));
 console.log(' * Template: ' + path.resolve(options.templateDirectory));
 console.log('');
 
+// the pre-compiler object
+preCompiler = preCompiler.get(__dirname + '/../lib/precompilers/', argv);
+
 // Compile the Handlebars template
 template = fs.readFileSync(options.templateDirectory + '/index.html', 'utf8');
 template = handlebars.compile(template);
