@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 
 var kss = require(__dirname + '/../lib/kss.js'),
+	preCompiler = require(__dirname + '/../lib/precompiler.js'),
 	handlebars = require('handlebars'),
 	cleanCss = require('clean-css'),
 	optimist = require('optimist'),
 	marked = require('marked'),
 	wrench = require('wrench'),
+	stylus =require('stylus'),
 	util = require('util'),
 	less = require('less'),
 	path = require('path'),
@@ -25,24 +27,22 @@ var kss = require(__dirname + '/../lib/kss.js'),
  * CLI argument parsing, thanks to Substack's optimist.
  * @type {Object}
  */
+var preCompSwitches = '--css [file] ';
 argv = require('optimist')
-	.usage('Usage:\n $0 sourcedir [destdir] --less [file] --css [file] --init [directory]')
+	.usage('Usage:\n $0 sourcedir [destdir] --init [directory] --style [file]')
 	.check(function(args) {
 		if (args._.length < 1 && !args.init) {
 			throw new Error('Please provide a source directory');
 		}
 	})
-	.string('l')
-	.alias('l', 'less')
-	.describe('l', 'Compile and include a LESS stylesheet')
-
-	.string('c')
-	.alias('c', 'css')
-	.describe('c', 'Compile and include a CSS stylesheet')
 
 	.string('t')
 	.alias('t', 'template')
 	.describe('t', 'Use a custom template to build your styleguide')
+
+	.string('s')
+	.alias('s', 'style')
+	.describe('s', 'Compile and include a stylesheet')
 
 	.alias('i', 'init')
 	.describe('i', 'Create a new styleguide template to work from')
@@ -82,6 +82,9 @@ console.log(' * Destination: ' + path.resolve(options.destinationDirectory));
 console.log(' * Template: ' + path.resolve(options.templateDirectory));
 console.log('');
 
+// the pre-compiler object
+preCompiler = preCompiler.get(__dirname + '/../lib/precompilers/', argv);
+
 // Compile the Handlebars template
 template = fs.readFileSync(options.templateDirectory + '/index.html', 'utf8');
 template = handlebars.compile(template);
@@ -116,7 +119,8 @@ process.nextTick(function() {
 		kss.traverse(options.sourceDirectory, {
 			multiline : true,
 			markdown  : true,
-			markup    : true
+			markup    : true,
+			mask      : preCompiler.mask
 		}, function(err, sg) {
 			styleguide = sg;
 
@@ -139,7 +143,7 @@ process.nextTick(function() {
 					sectionRoots.push(currentRoot);
 				}
 			}
-			
+
 			sectionRoots.sort();
 			rootCount = sectionRoots.length;
 
@@ -160,52 +164,41 @@ process.nextTick(function() {
 	});
 });
 
-// Compile LESS/CSS files into a single "style.css" if required
+// Compile LESS/Stylus/CSS files into a single "style.css" if required
 generateStylesheet = function(argv) {
-	var stylebuffer = '',
-		count  =  0,
-		type,
-		projectStyles = {
-			less: argv.less,
-			css : argv.css
-		};
+	var projectStyle = argv.style,
+			stylebuffer = '',
+			compilers = preCompiler.compilers,
+			count  =  1,
+			type,
+			fext = projectStyle.match(/(?:\.([^.]+))?$/)[1];
 
 	console.log('...compiling additional stylesheets');
 
-	for (type in projectStyles) {
-		if (typeof projectStyles[type] === 'undefined') continue;
-		switch (type) {
-			case 'less':
-				count += 1;
+	// Vanilla CSS
+	if (fext === 'css') {
+		saveStylesheet(fs.readFileSync(projectStyle));
 
-				// Hackish? Sure. But it works.
-				less.render("@import '"+path.relative(process.cwd(), projectStyles[type])+"';", function(err, css) {
-					if (err) {
-						throw err;
-					}
-					stylebuffer += css;
-					count -= 1;
+	// Or some pre-compile stuff
+	} else {
 
-					if (count < 1) {
-						saveStylesheet(stylebuffer);
-					}
+		for (type in compilers) if (compilers.hasOwnProperty(type)) {
+
+			if (compilers[type].ext === fext) {
+
+				console.log('...' + compilers[type].name);
+				compilers[type].render(path.relative(process.cwd(), projectStyle), function (css) {
+					saveStylesheet(css);
 				});
-			break;
-			case 'css':
-				stylebuffer += fs.readFileSync(projectStyles[type]);
-			break;
+			}
 		}
-	}
-
-	if (!count) {
-		saveStylesheet(stylebuffer);
 	}
 };
 
-// Used by generateStylesheet to minify and then 
+// Used by generateStylesheet to minify and then
 // save its final buffer to a single CSS file.
 saveStylesheet = function(buffer) {
-	buffer = cleanCss.process(buffer);
+	buffer = cleanCss.process(buffer.toString());
 	fs.writeFileSync(
 		options.destinationDirectory + '/public/style.css',
 		buffer, 'utf8'
@@ -260,7 +253,7 @@ jsonSections = function(sections) {
 			description: section.description(),
 			reference: section.reference(),
 			depth: section.data.refDepth,
-			deprecated: section.deprecated(),	
+			deprecated: section.deprecated(),
 			experimental: section.experimental(),
 			modifiers: jsonModifiers(section.modifiers())
 		};
@@ -271,9 +264,9 @@ jsonSections = function(sections) {
 jsonModifiers = function(modifiers) {
 	return modifiers.map(function(modifier) {
 		return {
-			name: modifier.name(),	
-			description: modifier.description(),	
-			className: modifier.className()	
+			name: modifier.name(),
+			description: modifier.description(),
+			className: modifier.className()
 		};
 	});
 };
@@ -350,7 +343,7 @@ handlebars.registerHelper('eachRoot', function() {
 
 /**
  * Equivalent to "if the current section is X levels deep". e.g:
- * 
+ *
  * {{#refDepth 1}}
  * 	 ROOT ELEMENTS ONLY
  * 	{{else}}
