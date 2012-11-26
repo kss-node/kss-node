@@ -7,7 +7,8 @@ var kss = require(__dirname + '/../lib/kss.js'),
 	optimist = require('optimist'),
 	marked = require('marked'),
 	wrench = require('wrench'),
-	stylus =require('stylus'),
+	stylus = require('stylus'),
+	async = require('async'),
 	util = require('util'),
 	less = require('less'),
 	path = require('path'),
@@ -27,9 +28,8 @@ var kss = require(__dirname + '/../lib/kss.js'),
  * CLI argument parsing, thanks to Substack's optimist.
  * @type {Object}
  */
-var preCompSwitches = '--css [file] ';
 argv = require('optimist')
-	.usage('Usage:\n $0 sourcedir [destdir] --init [directory] --style [file]')
+	.usage('Usage:\n $0 sourcedir [destdir] --init [directory] --{style,less,sass,stylus} [file]')
 	.check(function(args) {
 		if (args._.length < 1 && !args.init) {
 			throw new Error('Please provide a source directory');
@@ -42,7 +42,23 @@ argv = require('optimist')
 
 	.string('s')
 	.alias('s', 'style')
-	.describe('s', 'Compile and include a stylesheet')
+	.describe('s', 'Compile and include a stylesheet - the precompiler is chosen based on file extension')
+
+	.string('l')
+	.alias('l', 'less')
+	.describe('l', 'Compile and include a LESS stylesheet')
+
+	.string('y')
+	.alias('y', 'stylus')
+	.describe('y', 'Compile and include a Stylus stylesheet')
+
+	.string('S')
+	.alias('S', 'sass')
+	.describe('S', 'Compile and include a SASS stylesheet')
+
+	.string('c')
+	.alias('c', 'css')
+	.describe('c', 'Compile and include a CSS stylesheet')
 
 	.alias('i', 'init')
 	.describe('i', 'Create a new styleguide template to work from')
@@ -100,6 +116,7 @@ wrench.copyDirSyncRecursive(
 // Generate the static HTML pages in the next tick, i.e. after the other functions have
 // been defined and handlebars helpers set up.
 process.nextTick(function() {
+	console.log('...compiling LESS');
 	less.render('@import "' + path.relative(process.cwd(), options.destinationDirectory) + '/public/kss.less";', function(err, css) {
 		if (err) {
 			console.error(err);
@@ -108,11 +125,11 @@ process.nextTick(function() {
 
 		css = cleanCss.process(css);
 
-		console.log('...compiling LESS');
 		// Write the compiled LESS styles from the template.
 		fs.writeFileSync(options.destinationDirectory + '/public/kss.css', css, 'utf8');
 
 		console.log('...parsing your styleguide');
+
 		kss.traverse(options.sourceDirectory, {
 			multiline : true,
 			markdown  : true,
@@ -163,33 +180,54 @@ process.nextTick(function() {
 
 // Compile LESS/Stylus/CSS files into a single "style.css" if required
 generateStylesheet = function(argv) {
-	var projectStyle = argv.style,
-			stylebuffer = '',
-			compilers = preCompiler.compilers,
-			count  =  1,
-			type,
-			fext = projectStyle.match(/(?:\.([^.]+))?$/)[1];
+	var compilers = preCompiler.compilers,
+		files
 
 	console.log('...compiling additional stylesheets');
 
-	// Vanilla CSS
-	if (fext === 'css') {
-		saveStylesheet(fs.readFileSync(projectStyle));
+	files = [ false, 'less', 'stylus', 'sass', 'css' ].map(function (type) {
+		var key = type || 'style';
 
-	// Or some pre-compile stuff
-	} else {
+		if (!argv[key]) return;
 
-		for (type in compilers) if (compilers.hasOwnProperty(type)) {
+		return {
+			  files: Array.isArray(argv[key]) ? argv[key] : [argv[key]]
+			, type: type
+		};
+	});
 
-			if (compilers[type].ext === fext) {
+	async.reduce(files, [], function (combined, group, next) {
+		if (!group) return next(null, combined)
 
-				console.log('...' + compilers[type].name);
-				compilers[type].render(path.relative(process.cwd(), projectStyle), function (css) {
-					saveStylesheet(css);
-				});
+
+		async.map(group.files, function (filename, next) {
+			var type = group.type
+			  , extension
+
+			// Type-guessing for --style option
+			if (!type) {
+				extension = path.extname(filename).slice(1)
+				Object.keys(compilers).forEach(function(name) {
+					if (compilers[name].extensions.indexOf(extension) !== -1) type = name
+				})
+				type = type || 'CSS'
 			}
-		}
-	}
+
+			console.log(' - ' + filename + ' (' + type + ')')
+
+			if (type === 'CSS') return next(null, fs.readFileSync(filename, 'utf8'))
+			compilers[type].render(filename, next)
+
+		}, function(err, output) {
+			if (err) return next(err)
+			combined += '\n'
+			combined += output.join('\n')
+			return next(null, combined)
+		});
+	}, function (err, combined) {
+		if (err) throw err
+		saveStylesheet(combined)
+	});
 };
 
 // Used by generateStylesheet to minify and then
