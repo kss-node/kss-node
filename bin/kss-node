@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var kss = require(__dirname + '/../lib/kss.js'),
-	preCompiler = require(__dirname + '/../lib/precompiler.js'),
+	preCompiler = require(__dirname + '/../lib/precompiler.js')(),
 	handlebars = require('handlebars'),
 	cleanCss = require('clean-css'),
 	optimist = require('optimist'),
