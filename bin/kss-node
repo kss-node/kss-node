@@ -22,8 +22,6 @@ var kss = require(__dirname + '/../lib/kss.js'),
 	},
 	KSS_FAILED = false,	argv;
 
-
-
 /**
  * CLI argument parsing, thanks to Substack's optimist.
  * @type {Object}
@@ -59,6 +57,10 @@ argv = require('optimist')
 	.string('c')
 	.alias('c', 'css')
 	.describe('c', 'Compile and include a CSS stylesheet')
+
+	.string('m')
+	.alias('m', 'mask')
+	.describe('m', 'Use a custom mask for detecting stylesheets, e.g. "*.css"')
 
 	.alias('i', 'init')
 	.describe('i', 'Create a new styleguide template to work from')
@@ -134,7 +136,7 @@ process.nextTick(function() {
 			multiline : true,
 			markdown  : true,
 			markup    : true,
-			mask      : preCompiler.mask
+			mask      : argv.mask || preCompiler.mask
 		}, function(err, sg) {
 			styleguide = sg;
 
