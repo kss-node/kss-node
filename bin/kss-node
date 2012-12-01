@@ -461,6 +461,7 @@ process.on('exit', function() {
 
 process.on('uncaughtException', function(err) {
 	console.log(err.message);
+	console.log(err.stack);
 	KSS_FAILED = true;
 	process.exit(1);
 })
