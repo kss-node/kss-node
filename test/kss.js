@@ -277,7 +277,7 @@ suite('#traverse', function() {
 				}, 'Only works when included at the beginning of a paragraph/header', { multiline: true});
 			});
 			suite('.experimental', function() {
-				
+
 				common.testSection('Experimental: Spacing above and below', 'sections-status.less', function(section) {
 					assert.ok(section.data.experimental);
 				}, 'Still works with vertical line space', { multiline: true});
@@ -341,6 +341,9 @@ suite('#traverse', function() {
 			suite('Default', function() {
 				common.shouldFindFile('style.css', {}, true);
 				common.shouldFindFile('style.less', {}, true);
+				common.shouldFindFile('style.stylus', {}, true);
+				common.shouldFindFile('style.styl', {}, true);
+				common.shouldFindFile('style.sass', {}, true);
 				common.shouldFindFile('includes/buttons.less', {}, true);
 				common.shouldFindFile('includes/buttons.js', {}, false);
 			});
@@ -426,7 +429,7 @@ suite('#traverse', function() {
 					assert.equal(section.data.header, 'Misspelt Styleguide 4');
 				}, 'Style guide', { typos: true });
 			});
-			
+
 			suite('Experimental', function() {
 				common.testSection('Experimental: In Header', 'sections-status.less', function(section) {
 					assert.ok(section.data.experimental);
