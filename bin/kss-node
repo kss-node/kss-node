@@ -215,12 +215,13 @@ generateStylesheet = function(argv) {
 				Object.keys(compilers).forEach(function(name) {
 					if (compilers[name].extensions.indexOf(extension) !== -1) type = name
 				})
-				type = type || 'CSS'
+				type = type || 'css'
 			}
 
+			type = type.toLowerCase()
 			console.log(' - ' + filename + ' (' + type + ')')
 
-			if (type === 'CSS') return next(null, fs.readFileSync(filename, 'utf8'))
+			if (type === 'css') return next(null, fs.readFileSync(filename, 'utf8'))
 			compilers[type].render(filename, next)
 
 		}, function(err, output) {
