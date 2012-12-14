@@ -143,6 +143,10 @@ process.nextTick(function() {
 		}, function(err, sg) {
 			styleguide = sg;
 
+			console.log(sg.data.files.map(function(file) {
+				return ' - ' + file
+			}).join('\n'))
+
 			var sections = styleguide.section('*.'),
 				i, sectionCount = sections.length,
 				sectionRoots = [], currentRoot,
