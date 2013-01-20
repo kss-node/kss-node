@@ -141,11 +141,9 @@ process.nextTick(function() {
 			markup    : true,
 			mask      : argv.mask || preCompiler.mask
 		}, function(err, sg) {
-			styleguide = sg;
+			if (err) throw err
 
-			console.log(sg.data.files.map(function(file) {
-				return ' - ' + file
-			}).join('\n'))
+			styleguide = sg;
 
 			var sections = styleguide.section('*.'),
 				i, sectionCount = sections.length,
@@ -153,9 +151,9 @@ process.nextTick(function() {
 				rootCount, childSections = [],
 				pages = {};
 
-			if (err) {
-				throw err;
-			}
+			console.log(sg.data.files.map(function(file) {
+				return ' - ' + file
+			}).join('\n'))
 
 			// Accumulate all of the sections' first indexes
 			// in case they don't have a root element.
