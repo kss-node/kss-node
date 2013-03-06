@@ -121,7 +121,7 @@ wrench.copyDirSyncRecursive(
 // Generate the static HTML pages in the next tick, i.e. after the other functions have
 // been defined and handlebars helpers set up.
 process.nextTick(function() {
-	console.log('...compiling LESS');
+	console.log('...compiling KSS styles');
 	less.render('@import "' + path.relative(process.cwd(), options.destinationDirectory) + '/public/kss.less";', function(err, css) {
 		if (err) {
 			console.error(err);
