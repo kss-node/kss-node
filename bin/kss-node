@@ -353,7 +353,7 @@ handlebars.registerHelper('eachSection', function(query) {
 		i, l, buffer = "";
 
 	if (!query.match(/x|\*/g)) {
-		query = new RegExp(query + ".*");
+		query = new RegExp('^' + query + '$|^' + query + "\\..*");
 	}
 	sections = styleguide.section(query);
 	if (!sections) return '';
