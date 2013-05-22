@@ -329,7 +329,7 @@ handlebars.registerHelper('ifAny', function() {
 		}
 	}
 
-	return success ? content(this) : content.inverse(this);
+	return success ? content.fn(this) : content.inverse(this);
 });
 
 /**
@@ -340,7 +340,7 @@ handlebars.registerHelper('section', function(reference) {
 	var section = styleguide.section(reference);
 	if (!section) return false;
 
-	return arguments[arguments.length-1](section.data);
+	return arguments[arguments.length-1].fn(section.data);
 });
 
 /**
@@ -360,7 +360,7 @@ handlebars.registerHelper('eachSection', function(query) {
 
 	l = sections.length;
 	for (i = 0; i < l; i += 1) {
-		buffer += arguments[arguments.length-1](sections[i].data);
+		buffer += arguments[arguments.length-1].fn(sections[i].data);
 	}
 
 	return buffer;
@@ -378,7 +378,7 @@ handlebars.registerHelper('eachRoot', function() {
 
 	l = sections.length;
 	for (i = 0; i < l; i += 1) {
-		buffer += arguments[arguments.length-1](sections[i].data);
+		buffer += arguments[arguments.length-1].fn(sections[i].data);
 	}
 
 	return buffer;
@@ -398,7 +398,7 @@ handlebars.registerHelper('whenDepth', function(depth, context) {
 		return '';
 	}
 	if (depth == this.refDepth) {
-		return context(this);
+		return context.fn(this);
 	}
 	if (context.inverse) {
 		return context.inverse(this);
@@ -420,7 +420,7 @@ handlebars.registerHelper('eachModifier', function(section) {
 
 	l = modifiers.length;
 	for (i = 0; i < l; i++) {
-		buffer += arguments[arguments.length-1](modifiers[i].data || '');
+		buffer += arguments[arguments.length-1].fn(modifiers[i].data || '');
 	}
 	return buffer;
 });
