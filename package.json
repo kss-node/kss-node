@@ -23,7 +23,7 @@
     "handlebars": "1.0.5beta",
     "wrench": "1.3.x",
     "less": "1.x.x",
-    "stylus": "0.30.x",
+    "stylus": "~0.37.0",
     "sass": "0.5.x",
     "optimist": "0.3.x",
     "clean-css": "0.3.x",
