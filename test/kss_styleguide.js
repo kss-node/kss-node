@@ -39,7 +39,7 @@ suite('KssStyleguide', function() {
 						'4', '4.1',
 						'4.1.1', '4.1.2',
 						'4.1.1.1', '4.1.1.2', '4.1.2.2',
-						'8'
+						'8', 'Forms', 'Forms.Checkboxes'
 					];
 				assert.ok(sections);
 				for (key in sections) {
@@ -94,6 +94,13 @@ suite('KssStyleguide', function() {
 				assert.equal(section.data.refDepth, 4);
 				assert.equal(section.data.reference, '4.1.2.2');
 			});
+
+			sectionQuery('Text reference: Depth: 2', 'Forms.Checkboxes', options, function(styleguide, section) {
+				assert.ok(section);
+				assert.equal(section.data.header, 'TEXT REFERENCE (B)');
+				assert.equal(section.data.refDepth, 2);
+				assert.equal(section.data.reference, 'Forms.Checkboxes');
+			}, 'Sections labeled with words will be parsed as the reference', { multiline: true });
 		});
 		suite('String Queries', function() {
 			sectionQuery('4.1.x returns 4.1.1 and 4.1.2', '4.1.x', options, function(styleguide, sections) {
@@ -102,6 +109,15 @@ suite('KssStyleguide', function() {
 				sections.map(function(section) {
 					assert.ok(section.data.reference === '4.1.1' || section.data.reference === '4.1.2');
 					assert.ok(section.data.header === 'DEPTH OF 3, NO MODIFIERS' || section.data.header === 'DEPTH OF 3, MODIFIERS');
+				});
+			});
+
+			sectionQuery('Forms.* returns Forms.Checkboxes', 'Forms.*', options, function(styleguide, sections) { 
+				assert.ok(sections);
+				assert.equal(sections.length, 1);
+				sections.map(function(section) {
+					assert.ok(section.data.reference === "Forms.Checkboxes");
+					assert.ok(section.data.header === 'TEXT REFERENCE (B)')
 				});
 			});
 

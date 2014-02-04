@@ -302,6 +302,12 @@ suite('#traverse', function() {
 				common.testSection('Reference with trailing zero...', 'section-queries.less', function(section) {
 					assert.equal(section.data.reference, '8');
 				}, 'Sections labelled "X.0" should be equivalent to "X"', { multiline: true });
+				common.testSection('TEXT REFERENCE (A)', 'section-queries.less', function(section) {
+					assert.equal(section.data.reference, 'Forms');
+				}, 'Sections labeled with words will be parsed as the reference', { multiline: true });
+				common.testSection('TEXT REFERENCE (B)', 'section-queries.less', function(section) {
+					assert.equal(section.data.reference, 'Forms.Checkboxes');
+				}, 'Sections labeled with words, separated by . (Forms.Checkboxes) will be parsed as reference', { multiline: true });
 			});
 		});
 	});
