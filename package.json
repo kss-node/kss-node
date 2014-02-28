@@ -6,7 +6,8 @@
   "repository": {
     "type": "git",
     "url": "git://github.com/hughsk/kss-node.git"
-  },
+  }, 
+  "licence": "MIT",
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/mocha/bin/_mocha -u tdd --reporter spec"
