@@ -121,69 +121,115 @@ wrench.copyDirSyncRecursive(
 // Generate the static HTML pages in the next tick, i.e. after the other functions have
 // been defined and handlebars helpers set up.
 process.nextTick(function() {
-	console.log('...compiling KSS styles');
-	less.render('@import "' + path.relative(process.cwd(), options.destinationDirectory) + '/public/kss.less";', function(err, css) {
-		if (err) {
-			console.error(err);
-			throw err;
-		}
 
-		css = cleanCss.process(css);
-
-		// Write the compiled LESS styles from the template.
-		fs.writeFileSync(options.destinationDirectory + '/public/kss.css', css, 'utf8');
-
-		console.log('...parsing your styleguide');
-
-		kss.traverse(options.sourceDirectory, {
-			multiline : true,
-			markdown  : true,
-			markup    : true,
-			mask      : argv.mask || preCompiler.mask
-		}, function(err, sg) {
-			if (err) throw err
-
-			styleguide = sg;
-
-			var sections = styleguide.section('*.'),
-				i, sectionCount = sections.length,
-				sectionRoots = [], currentRoot,
-				rootCount, childSections = [],
-				pages = {};
-
-			console.log(sg.data.files.map(function(file) {
-				return ' - ' + file
-			}).join('\n'))
-
-			// Accumulate all of the sections' first indexes
-			// in case they don't have a root element.
-			for (i = 0; i < sectionCount; i += 1) {
-				currentRoot = sections[i].reference().match(/[0-9]*\.?/)[0].replace('.', '');
-
-				if (!~sectionRoots.indexOf(currentRoot)) {
-					sectionRoots.push(currentRoot);
-				}
-			}
-
-			sectionRoots.sort();
-			rootCount = sectionRoots.length;
-
-			// Now, group all of the sections by their root
-			// reference, and make a page for each.
-			for (i = 0; i < rootCount; i += 1) {
-				childSections = styleguide.section(sectionRoots[i]+'.*');
-
-				generatePage(
-					styleguide, childSections,
-					sectionRoots[i], pages, sectionRoots
-				);
-			}
-
-			generateIndex(styleguide, childSections, pages, sectionRoots);
-			generateStylesheet(argv);
-		});
+	// Compile the KSS docs stylesheets before generating the templates.
+	// A KSS stylesheet can be: kss.less, kss.scss or kss.sass
+	compileKssStylesheet(function() {
+		generateTemplates();
 	});
 });
+
+// Compile the KSS stylesheet used by the generated templates
+compileKssStylesheet = function(callback) {
+
+	// Search for a KSS preprocessor to compile
+	var stylesheetPath = path.relative(process.cwd(), options.destinationDirectory) + '/public/kss.';
+	var preprocessors = ['sass', 'scss', 'less'];
+  var foundPreCompiler = false;
+
+	for(var i = 0, l = preprocessors.length; i < l; i++) {
+
+		var preprocessorPath = stylesheetPath + preprocessors[i];
+
+		if (!fs.existsSync(preprocessorPath)) {
+			continue;
+		}
+
+    foundPreCompiler = true;
+
+		console.log('...compiling KSS styles');
+		console.log(' - ' + preprocessorPath);
+
+		// Compile the stylesheet
+		preCompiler.compilers[preprocessors[i]].render(preprocessorPath, function(err, css) {
+
+			if (err) {
+				console.error(err);
+				throw err;
+			}
+
+			css = cleanCss.process(css);
+
+			// Write the compiled styles
+			fs.writeFileSync(options.destinationDirectory + '/public/kss.css', css, 'utf8');
+
+			if (callback) {
+				callback();
+			}
+		});
+
+		break;
+	}
+
+  if (!foundPreCompiler) {
+    console.info('Could not compile docs stylesheet. KSS source file not found.\n');
+    callback();
+  }
+}
+
+// Generate the docs HTML files
+generateTemplates = function() {
+
+	console.log('...parsing your styleguide');
+
+	kss.traverse(options.sourceDirectory, {
+		multiline : true,
+		markdown  : true,
+		markup    : true,
+		mask      : argv.mask || preCompiler.mask
+	}, function(err, sg) {
+		if (err) throw err
+
+		styleguide = sg;
+
+		var sections = styleguide.section('*.'),
+			i, sectionCount = sections.length,
+			sectionRoots = [], currentRoot,
+			rootCount, childSections = [],
+			pages = {};
+
+		console.log(sg.data.files.map(function(file) {
+			return ' - ' + file
+		}).join('\n'))
+
+		// Accumulate all of the sections' first indexes
+		// in case they don't have a root element.
+		for (i = 0; i < sectionCount; i += 1) {
+			currentRoot = sections[i].reference().match(/[0-9]*\.?/)[0].replace('.', '');
+
+			if (!~sectionRoots.indexOf(currentRoot)) {
+				sectionRoots.push(currentRoot);
+			}
+		}
+
+		sectionRoots.sort();
+		rootCount = sectionRoots.length;
+
+		// Now, group all of the sections by their root
+		// reference, and make a page for each.
+		for (i = 0; i < rootCount; i += 1) {
+			childSections = styleguide.section(sectionRoots[i]+'.*');
+
+			generatePage(
+				styleguide, childSections,
+				sectionRoots[i], pages, sectionRoots
+			);
+		}
+
+		generateIndex(styleguide, childSections, pages, sectionRoots);
+		generateStylesheet(argv);
+	});
+}
 
 // Compile LESS/Stylus/CSS files into a single "style.css" if required
 generateStylesheet = function(argv) {
@@ -192,7 +238,7 @@ generateStylesheet = function(argv) {
 
 	console.log('...compiling additional stylesheets');
 
-	files = [ false, 'less', 'stylus', 'sass', 'css' ].map(function (type) {
+	files = [ false, 'less', 'stylus', 'sass', 'scss', 'css' ].map(function (type) {
 		var key = type || 'style';
 
 		if (!argv[key]) return;
@@ -208,6 +254,7 @@ generateStylesheet = function(argv) {
 
 
 		async.map(group.files, function (filename, next) {
+
 			var type = group.type
 			  , extension
 
