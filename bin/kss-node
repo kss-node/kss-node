@@ -432,6 +432,27 @@ handlebars.registerHelper('eachSection', function(query, options) {
 });
 
 /**
+* If the template exists as *reference*.html in the templates folder, inject it.
+* @param  {String|Number} reference The reference number to search for.
+*/
+handlebars.registerHelper('loadSectionTemplate', function (context) {
+	var template;
+
+	if (!argv.template)
+		return;
+
+	try {
+		template = fs.readFileSync(path.relative(process.cwd(), argv.template) + '/' + context.reference + '.hbs', 'utf8');
+	} catch (e) {
+		return;
+	}
+
+	console.log("...injecting template for section " + context.reference);
+
+	return handlebars.compile(template)(context);
+});
+
+/**
  * Loop over each section root, i.e. each section only one level deep.
  */
 handlebars.registerHelper('eachRoot', function(options) {

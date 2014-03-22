@@ -65,6 +65,14 @@
         <div class="kss-box">{{{description}}}</div>
       {{/if}}
 
+      {{{loadSectionTemplate}}}
+      {{! If the section doesn't have markup, assume the template is the markup. }}
+      {{#unless markup}}
+        <div class="kss-markup">
+          <pre class="prettyprint lang-html">{{loadSectionTemplate}}</pre>
+        </div>
+      {{/unless}}
+
       {{#if markup}}
         <table class="kss-mod-list">
           <tr class="kss-mod-desc-group">
