@@ -80,6 +80,10 @@
                 {{#if description}}
                   {{html description}}
                 {{/if}}
+                {{{loadSectionTemplate}}}
+                <div class="kss-markup">
+                  <pre class="prettyprint lang-html">{{loadSectionTemplate}}</pre>
+                </div>
             {{/ifAny}}
           {{#whenDepth 1}} {{else}}
             </section>
