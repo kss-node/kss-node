@@ -224,7 +224,7 @@ generateStylesheet = function(argv) {
 			console.log(' - ' + filename + ' (' + type + ')')
 
 			if (type === 'css') return next(null, fs.readFileSync(filename, 'utf8'))
-			compilers[type].render(filename, next)
+			compilers[type].render(filename, next, argv)
 
 		}, function(err, output) {
 			if (err) return next(err)
