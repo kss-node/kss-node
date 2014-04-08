@@ -471,8 +471,15 @@ process.on('exit', function() {
 });
 
 process.on('uncaughtException', function(err) {
-	console.log(err.message);
-	console.log(err.stack);
-	KSS_FAILED = true;
-	process.exit(1);
+	console.log('\nError during generation\n');
+
+	if (err.message || err.stack) {
+		console.log(err.message)
+		console.log(err.stack)
+	}
+	else
+		console.log(err)
+
+	KSS_FAILED = true
+	process.exit(1)
 })
