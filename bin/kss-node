@@ -67,12 +67,14 @@ argv = require('optimist')
 	.alias('i', 'init')
 	.describe('i', 'Create a new styleguide template to work from')
 
-	.alias('I', 'include')
-	.describe('I', 'Include a path for precompiler imports')
+	.alias('L', 'loadPath')
+	.describe('L', 'Include a load path for precompiler imports')
 
 	.argv;
 
-argv.include = argv.include && !Array.isArray(argv.include) ? [argv.include] : argv.include
+console.log(argv);
+
+argv.loadPath = argv.loadPath && !Array.isArray(argv.loadPath) ? [argv.loadPath] : argv.loadPath
 
 // Create a new styleguide template to play with using the `--init` tag.
 if (argv.init) {
