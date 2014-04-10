@@ -73,8 +73,6 @@ argv = require('optimist')
 
 	.argv;
 
-console.log(argv);
-
 argv.loadPath = argv['load-path']
 argv.loadPath = argv.loadPath && !Array.isArray(argv.loadPath) ? [argv.loadPath] : argv.loadPath
 
