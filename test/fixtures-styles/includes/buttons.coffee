@@ -1,0 +1,2 @@
+random = (seed) ->
+  4
