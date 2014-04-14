@@ -1,3 +1,3 @@
-function random(seed){
+function button(seed){
   return 4;
 }

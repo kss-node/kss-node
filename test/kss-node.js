@@ -1,4 +1,5 @@
 var exec = require('child_process').exec,
+	fs = require('fs'),
 	path = require('path'),
 	assert = require('assert'),
 	styleDirectory = path.normalize(__dirname + '/fixtures-styles/'),
@@ -8,12 +9,12 @@ function cleanup() {
 	common.rmdir('test-tmp');
 };
 
-function kss(args, assertCallback) {
+function kss(args, done, assertCallback) {
 	args.unshift('bin/kss-node');
-	console.log(args.join(' '));
 	exec(args.join(' '), function(err, stdout, stderr) {
 		assertCallback(err, stdout, stderr);
 		cleanup();
+		done();
 	});
 }
 
@@ -23,7 +24,6 @@ suite('#kss-node', function() {
 			kss([], function(err, stdout, stderr) {
 				assert.ok(/Usage:/g.test(stderr));
 				assert.ok(/Options:/g.test(stderr));
-				done();
 			});
 		});
 	});
@@ -34,10 +34,9 @@ suite('#kss-node', function() {
 				'test/fixtures-styles/with-include', 'test-tmp',
 				'--sass', 'test/fixtures-styles/with-include/style.scss'
 			];
-			kss(args, function(err, stdout, stderr) {
+			kss(args, done, function(err, stdout, stderr) {
 				assert.ok(/Error during generation/g.test(stdout));
 				assert.ok(/error: file to import not found or unreadable: "buttons"/g.test(stdout));
-				done();
 			});
 		});
 		test('Succeeds when load path specified', function(done) {
@@ -46,9 +45,27 @@ suite('#kss-node', function() {
 				'-L', 'test/fixtures-styles/includes',
 				'--sass', 'test/fixtures-styles/with-include/style.scss'
 			];
-			kss(args, function(err, stdout, stderr) {
+			kss(args, done, function(err, stdout, stderr) {
 				assert.ok(/Generation completed successfully/g.test(stdout));
-				done();
+			});
+		});
+	});
+
+	suite('including other files', function() {
+		test('Includes files with pass-thru compiler (css + js)', function(done) {
+			var args = [
+				'test/fixtures-styles/with-include', 'test-tmp',
+				'--js', 'test/fixtures-styles/includes/buttons.js',
+				'--css', 'test/fixtures-styles/includes/buttons.css'
+			];
+			kss(args, done, function(err, stdout, stderr) {
+				assert.ok(/Generation completed successfully/g.test(stdout));
+
+				var data = fs.readFileSync('test-tmp/public/style.css', 'utf8')
+				assert.ok(/.button/g.test(data));
+
+				var data = fs.readFileSync('test-tmp/public/script.js', 'utf8')
+				assert.ok(/button/g.test(data));
 			});
 		});
 	});

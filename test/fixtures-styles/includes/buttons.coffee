@@ -1,2 +1,2 @@
-random = (seed) ->
+button = (seed) ->
   4
