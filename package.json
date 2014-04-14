@@ -28,6 +28,7 @@
     "node-sass": "0.8.x",
     "optimist": "0.3.x",
     "clean-css": "0.3.x",
+    "coffee-script": "1.7.x",
     "async": "0.1.x"
   },
   "devDependencies": {

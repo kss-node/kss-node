@@ -87,5 +87,22 @@ suite('#kss-node', function() {
 				assert.ok(/button/g.test(data));
 			});
 		});
+
+		test('Includes files with actual compiler (scss + coffee)', function(done) {
+			args = [
+				'test/fixtures-styles/with-include', 'test-tmp',
+				'--coffee', 'test/fixtures-styles/includes/buttons.coffee',
+				'--sass', 'test/fixtures-styles/includes/buttons.scss'
+			];
+			kss(args, done, function(err, stdout, stderr) {
+				assert.ok(/Generation completed successfully/g.test(stdout), 'Not successful!');
+
+				data = fs.readFileSync('test-tmp/public/style.css', 'utf8')
+				assert.ok(/.button/g.test(data));
+
+				data = fs.readFileSync('test-tmp/public/script.js', 'utf8')
+				assert.ok(/button/g.test(data));
+			});
+		});
 	});
 });
