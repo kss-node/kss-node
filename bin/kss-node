@@ -186,19 +186,20 @@ process.nextTick(function() {
 			}
 
 			generateIndex(styleguide, childSections, pages, sectionRoots);
-			generateStylesheet(argv);
+			compileImportedFiles([false, 'less', 'stylus', 'sass', 'css'], 'style.css', argv);
+			// compileImportedFiles(['js', 'coffee'], 'script.js', argv);
 		});
 	});
 });
 
 // Compile LESS/Stylus/CSS files into a single "style.css" if required
-generateStylesheet = function(argv) {
+compileImportedFiles = function(fileTypes, outputFilename, argv) {
 	var compilers = preCompiler.compilers,
 		files
 
-	console.log('...compiling additional stylesheets');
+	console.log('...compiling additional imports for', fileypes);
 
-	files = [ false, 'less', 'stylus', 'sass', 'css' ].map(function (type) {
+	files = fileTypes.map(function (type) {
 		var key = type || 'style';
 
 		if (!argv[key]) return;
@@ -240,16 +241,17 @@ generateStylesheet = function(argv) {
 		});
 	}, function (err, combined) {
 		if (err) throw err
-		saveStylesheet(combined)
+		saveFileToPublicDir(outputFilename, combined)
 	});
 };
 
-// Used by generateStylesheet to minify and then
+// Used by compileImportedFiles to minify and then
 // save its final buffer to a single CSS file.
-saveStylesheet = function(buffer) {
+saveFileToPublicDir = function(filename, buffer) {
+	console.log(path.join(options.destinationDirectory, '/public/', filename));
 	buffer = cleanCss.process(buffer.toString());
 	fs.writeFileSync(
-		options.destinationDirectory + '/public/style.css',
+		path.join(options.destinationDirectory, '/public/', filename),
 		buffer, 'utf8'
 	);
 };

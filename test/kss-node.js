@@ -13,6 +13,7 @@ function cleanup() {
 
 function kss(args, done, assertCallback) {
 	args.unshift('bin/kss-node');
+	console.log(args.join(' '));
 	exec(args.join(' '), function(err, stdout, stderr) {
 		assertCallback(err, stdout, stderr);
 		cleanup();
@@ -61,13 +62,13 @@ suite('#kss-node', function() {
 				'--css', 'test/fixtures-styles/includes/buttons.css'
 			];
 			kss(args, done, function(err, stdout, stderr) {
-				assert.ok(/Generation completed successfully/g.test(stdout));
+				assert.ok(/Generation completed successfully/g.test(stdout), 'Not successful!');
 
 				data = fs.readFileSync('test-tmp/public/style.css', 'utf8')
 				assert.ok(/.button/g.test(data));
 
-				data = fs.readFileSync('test-tmp/public/script.js', 'utf8')
-				assert.ok(/button/g.test(data));
+				// data = fs.readFileSync('test-tmp/public/script.js', 'utf8')
+				// assert.ok(/button/g.test(data));
 			});
 		});
 	});
