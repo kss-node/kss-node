@@ -228,16 +228,12 @@ process.nextTick(function() {
 
 // Compile LESS/Stylus/CSS files into a single "style.css" if required
 compileImportedFiles = function(fileTypes, outputFilename, argv) {
-	var compilers = preCompiler.compilers,
-		files
-
 	console.log('...compiling additional imports for', fileTypes);
 
 	async.reduce(fileTypes, [], function (combined, fileType, next) {
 		if (!fileType || !argv[fileType]) return next(null, combined)
 
-		files = argv[fileType]
-		async.map(files, function (filename, next) {
+		async.map(argv[fileType], function (filename, next) {
 			console.log(' - ' + filename + ' (' + fileType.toLowerCase() + ')')
 			compilers[fileType].render(filename, next, argv)
 
