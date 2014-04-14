@@ -1,6 +1,6 @@
 module.exports = function(styleDirectory) {
 
-	var testSection, shouldFindFile, testAllSections, hasMethod,
+	var testSection, shouldFindFile, testAllSections, hasMethod, rmdir,
 		kss = require('../index.js'),
 		assert = require('assert'),
 		path = require('path'),
@@ -74,11 +74,34 @@ module.exports = function(styleDirectory) {
 		});
 	};
 
+	// From: https://gist.github.com/tkihira/2367067
+	rmdir = function(dir) {
+		if (!fs.existsSync(dir)) return;
+
+		var list = fs.readdirSync(dir);
+		for(var i = 0; i < list.length; i++) {
+			var filename = path.join(dir, list[i]);
+			var stat = fs.lstatSync(filename);
+
+			if(filename == "." || filename == "..") {
+				// pass these files
+			} else if(stat.isDirectory()) {
+				// rmdir recursively
+				rmdir(filename);
+			} else {
+				// rm fiilename
+				fs.unlinkSync(filename);
+			}
+		}
+		fs.rmdirSync(dir);
+	};
+
 	return {
 		testSection: testSection,
 		shouldFindFile: shouldFindFile,
 		testAllSections: testAllSections,
-		hasMethod: hasMethod
+		hasMethod: hasMethod,
+		rmdir: rmdir
 	};
 
 };

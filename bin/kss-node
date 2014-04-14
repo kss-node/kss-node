@@ -2,6 +2,7 @@
 
 var kss = require(__dirname + '/../lib/kss.js'),
 	preCompiler = kss.precompilers,
+	compilers = preCompiler.compilers,
 	handlebars = require('handlebars'),
 	cleanCss = require('clean-css'),
 	optimist = require('optimist'),
@@ -58,17 +59,29 @@ argv = require('optimist')
 	.alias('c', 'css')
 	.describe('c', 'Compile and include a CSS stylesheet')
 
+	.string('J')
+	.alias('J', 'js')
+	.describe('J', 'Include a JavaScript file (written to public/script.js)')
+
+	.string('C')
+	.alias('C', 'coffee')
+	.describe('C', 'Include a CoffeeScript file (written to public/script.js)')
+
 	.string('m')
 	.alias('m', 'mask')
 	.describe('m', 'Use a custom mask for detecting stylesheets, e.g. "*.css"')
 
-	.alias('i', 'init')
-	.describe('i', 'Create a new styleguide template to work from')
+	.string('L')
+	.alias('L', 'load-path')
+	.describe('L', 'Include a load path for precompiler imports')
 
 	.alias('i', 'init')
 	.describe('i', 'Create a new styleguide template to work from')
 
 	.argv;
+
+argv.loadPath = argv['load-path']
+argv.loadPath = argv.loadPath && !Array.isArray(argv.loadPath) ? [argv.loadPath] : argv.loadPath
 
 // Create a new styleguide template to play with using the `--init` tag.
 if (argv.init) {
@@ -94,6 +107,33 @@ if (argv['_'].length > 1) {
 if (argv.template) {
 	options.templateDirectory = path.relative(process.cwd(), argv.template);
 }
+
+// normlaize the include arguments (--css, --sass, etc.)
+argumentsToNormalize = Object.keys(compilers)
+argumentsToNormalize.push('style')
+argumentsToNormalize.forEach(function(name){
+	if (argv[name])
+		argv[name] = Array.isArray(argv[name]) ? argv[name] : [argv[name]]
+});
+
+// Type-guessing for --style option
+if (argv.style) {
+	argv.style.forEach(function(filename){
+		var type,
+			extension = path.extname(filename).slice(1)
+
+		Object.keys(compilers).forEach(function(name) {
+			if (compilers[name].extensions.indexOf(extension) !== -1) type = name
+		})
+		type = type || 'css'
+
+		argv[type] = argv[type] || []
+		argv[type].push(filename)
+	});
+	delete argv.style
+}
+
+console.log(argv);
 
 console.log('');
 console.log('Generating your KSS Styleguide!');
@@ -180,51 +220,22 @@ process.nextTick(function() {
 			}
 
 			generateIndex(styleguide, childSections, pages, sectionRoots);
-			generateStylesheet(argv);
+			compileImportedFiles(['less', 'stylus', 'sass', 'css'], 'style.css', argv);
+			compileImportedFiles(['js', 'coffee'], 'script.js', argv);
 		});
 	});
 });
 
 // Compile LESS/Stylus/CSS files into a single "style.css" if required
-generateStylesheet = function(argv) {
-	var compilers = preCompiler.compilers,
-		files
+compileImportedFiles = function(fileTypes, outputFilename, argv) {
+	console.log('...compiling additional imports for', fileTypes);
 
-	console.log('...compiling additional stylesheets');
+	async.reduce(fileTypes, [], function (combined, fileType, next) {
+		if (!fileType || !argv[fileType]) return next(null, combined)
 
-	files = [ false, 'less', 'stylus', 'sass', 'css' ].map(function (type) {
-		var key = type || 'style';
-
-		if (!argv[key]) return;
-
-		return {
-			  files: Array.isArray(argv[key]) ? argv[key] : [argv[key]]
-			, type: type
-		};
-	});
-
-	async.reduce(files, [], function (combined, group, next) {
-		if (!group) return next(null, combined)
-
-
-		async.map(group.files, function (filename, next) {
-			var type = group.type
-			  , extension
-
-			// Type-guessing for --style option
-			if (!type) {
-				extension = path.extname(filename).slice(1)
-				Object.keys(compilers).forEach(function(name) {
-					if (compilers[name].extensions.indexOf(extension) !== -1) type = name
-				})
-				type = type || 'css'
-			}
-
-			type = type.toLowerCase()
-			console.log(' - ' + filename + ' (' + type + ')')
-
-			if (type === 'css') return next(null, fs.readFileSync(filename, 'utf8'))
-			compilers[type].render(filename, next)
+		async.map(argv[fileType], function (filename, next) {
+			console.log(' - ' + filename + ' (' + fileType.toLowerCase() + ')')
+			compilers[fileType].render(filename, next, argv)
 
 		}, function(err, output) {
 			if (err) return next(err)
@@ -234,16 +245,20 @@ generateStylesheet = function(argv) {
 		});
 	}, function (err, combined) {
 		if (err) throw err
-		saveStylesheet(combined)
+		saveFileToPublicDir(outputFilename, combined)
 	});
 };
 
-// Used by generateStylesheet to minify and then
+// Used by compileImportedFiles to minify and then
 // save its final buffer to a single CSS file.
-saveStylesheet = function(buffer) {
-	buffer = cleanCss.process(buffer.toString());
+saveFileToPublicDir = function(filename, buffer) {
+	if (path.extname(filename) == '.css'){
+		console.log('...minifying CSS for', filename);
+		buffer = cleanCss.process(buffer.toString());
+	}
+
 	fs.writeFileSync(
-		options.destinationDirectory + '/public/style.css',
+		path.join(options.destinationDirectory, '/public/', filename),
 		buffer, 'utf8'
 	);
 };
@@ -466,8 +481,15 @@ process.on('exit', function() {
 });
 
 process.on('uncaughtException', function(err) {
-	console.log(err.message);
-	console.log(err.stack);
-	KSS_FAILED = true;
-	process.exit(1);
+	console.log('\nError during generation\n');
+
+	if (err.message || err.stack) {
+		console.log(err.message)
+		console.log(err.stack)
+	}
+	else
+		console.log(err)
+
+	KSS_FAILED = true
+	process.exit(1)
 })

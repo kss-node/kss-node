@@ -1,0 +1,2 @@
+button = (seed) ->
+  4
