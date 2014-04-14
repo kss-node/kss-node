@@ -54,6 +54,23 @@ suite('#kss-node', function() {
 		});
 	});
 
+	suite('--style option', function() {
+		test('Works with different files', function(done) {
+			args = [
+				'test/fixtures-styles/with-include', 'test-tmp',
+				'--style', 'test/fixtures-styles/includes/nav.css',
+				'--style', 'test/fixtures-styles/includes/buttons.scss'
+			];
+			kss(args, done, function(err, stdout, stderr) {
+				assert.ok(/Generation completed successfully/g.test(stdout));
+
+				data = fs.readFileSync('test-tmp/public/style.css', 'utf8')
+				assert.ok(/.nav/g.test(data));
+				assert.ok(/.button/g.test(data));
+			});
+		});
+	});
+
 	suite('including other files', function() {
 		test('Includes files with pass-thru compiler (css + js)', function(done) {
 			args = [
