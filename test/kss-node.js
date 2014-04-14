@@ -13,7 +13,6 @@ function cleanup() {
 
 function kss(args, done, assertCallback) {
 	args.unshift('bin/kss-node');
-	console.log(args.join(' '));
 	exec(args.join(' '), function(err, stdout, stderr) {
 		assertCallback(err, stdout, stderr);
 		cleanup();
