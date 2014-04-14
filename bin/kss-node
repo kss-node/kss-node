@@ -187,7 +187,7 @@ process.nextTick(function() {
 
 			generateIndex(styleguide, childSections, pages, sectionRoots);
 			compileImportedFiles([false, 'less', 'stylus', 'sass', 'css'], 'style.css', argv);
-			// compileImportedFiles(['js', 'coffee'], 'script.js', argv);
+			compileImportedFiles(['js', 'coffee'], 'script.js', argv);
 		});
 	});
 });
@@ -197,7 +197,7 @@ compileImportedFiles = function(fileTypes, outputFilename, argv) {
 	var compilers = preCompiler.compilers,
 		files
 
-	console.log('...compiling additional imports for', fileypes);
+	console.log('...compiling additional imports for', fileTypes);
 
 	files = fileTypes.map(function (type) {
 		var key = type || 'style';

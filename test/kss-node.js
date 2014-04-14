@@ -67,8 +67,8 @@ suite('#kss-node', function() {
 				data = fs.readFileSync('test-tmp/public/style.css', 'utf8')
 				assert.ok(/.button/g.test(data));
 
-				// data = fs.readFileSync('test-tmp/public/script.js', 'utf8')
-				// assert.ok(/button/g.test(data));
+				data = fs.readFileSync('test-tmp/public/script.js', 'utf8')
+				assert.ok(/button/g.test(data));
 			});
 		});
 	});
