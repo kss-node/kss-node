@@ -2,6 +2,7 @@
 
 var kss = require(__dirname + '/../lib/kss.js'),
 	preCompiler = kss.precompilers,
+	compilers = preCompiler.compilers,
 	handlebars = require('handlebars'),
 	cleanCss = require('clean-css'),
 	optimist = require('optimist'),
@@ -107,6 +108,33 @@ if (argv.template) {
 	options.templateDirectory = path.relative(process.cwd(), argv.template);
 }
 
+// normlaize the include arguments (--css, --sass, etc.)
+argumentsToNormalize = Object.keys(compilers)
+argumentsToNormalize.push('style')
+argumentsToNormalize.forEach(function(name){
+	if (argv[name])
+		argv[name] = Array.isArray(argv[name]) ? argv[name] : [argv[name]]
+});
+
+// Type-guessing for --style option
+if (argv.style) {
+	argv.style.forEach(function(filename){
+		var type,
+			extension = path.extname(filename).slice(1)
+
+		Object.keys(compilers).forEach(function(name) {
+			if (compilers[name].extensions.indexOf(extension) !== -1) type = name
+		})
+		type = type || 'css'
+
+		argv[type] = argv[type] || []
+		argv[type].push(filename)
+	});
+	delete argv.style
+}
+
+console.log(argv);
+
 console.log('');
 console.log('Generating your KSS Styleguide!');
 console.log('');
@@ -192,7 +220,7 @@ process.nextTick(function() {
 			}
 
 			generateIndex(styleguide, childSections, pages, sectionRoots);
-			compileImportedFiles([false, 'less', 'stylus', 'sass', 'css'], 'style.css', argv);
+			compileImportedFiles(['less', 'stylus', 'sass', 'css'], 'style.css', argv);
 			compileImportedFiles(['js', 'coffee'], 'script.js', argv);
 		});
 	});
@@ -205,38 +233,13 @@ compileImportedFiles = function(fileTypes, outputFilename, argv) {
 
 	console.log('...compiling additional imports for', fileTypes);
 
-	files = fileTypes.map(function (type) {
-		var key = type || 'style';
+	async.reduce(fileTypes, [], function (combined, fileType, next) {
+		if (!fileType || !argv[fileType]) return next(null, combined)
 
-		if (!argv[key]) return;
-
-		return {
-			  files: Array.isArray(argv[key]) ? argv[key] : [argv[key]]
-			, type: type
-		};
-	});
-
-	async.reduce(files, [], function (combined, group, next) {
-		if (!group) return next(null, combined)
-
-
-		async.map(group.files, function (filename, next) {
-			var type = group.type
-			  , extension
-
-			// Type-guessing for --style option
-			if (!type) {
-				extension = path.extname(filename).slice(1)
-				Object.keys(compilers).forEach(function(name) {
-					if (compilers[name].extensions.indexOf(extension) !== -1) type = name
-				})
-				type = type || 'css'
-			}
-
-			type = type.toLowerCase()
-			console.log(' - ' + filename + ' (' + type + ')')
-
-			compilers[type].render(filename, next, argv)
+		files = argv[fileType]
+		async.map(files, function (filename, next) {
+			console.log(' - ' + filename + ' (' + fileType.toLowerCase() + ')')
+			compilers[fileType].render(filename, next, argv)
 
 		}, function(err, output) {
 			if (err) return next(err)
