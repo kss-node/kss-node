@@ -5,6 +5,8 @@ var exec = require('child_process').exec,
 	styleDirectory = path.normalize(__dirname + '/fixtures-styles/'),
 	common = require('./common.js')(styleDirectory);
 
+var data, args;
+
 function cleanup() {
 	common.rmdir('test-tmp');
 };
@@ -30,7 +32,7 @@ suite('#kss-node', function() {
 
 	suite('load-path option', function() {
 		test('Fails when no load path specified', function(done) {
-			var args = [
+			args = [
 				'test/fixtures-styles/with-include', 'test-tmp',
 				'--sass', 'test/fixtures-styles/with-include/style.scss'
 			];
@@ -40,7 +42,7 @@ suite('#kss-node', function() {
 			});
 		});
 		test('Succeeds when load path specified', function(done) {
-			var args = [
+			args = [
 				'test/fixtures-styles/with-include', 'test-tmp',
 				'-L', 'test/fixtures-styles/includes',
 				'--sass', 'test/fixtures-styles/with-include/style.scss'
@@ -53,7 +55,7 @@ suite('#kss-node', function() {
 
 	suite('including other files', function() {
 		test('Includes files with pass-thru compiler (css + js)', function(done) {
-			var args = [
+			args = [
 				'test/fixtures-styles/with-include', 'test-tmp',
 				'--js', 'test/fixtures-styles/includes/buttons.js',
 				'--css', 'test/fixtures-styles/includes/buttons.css'
@@ -61,10 +63,10 @@ suite('#kss-node', function() {
 			kss(args, done, function(err, stdout, stderr) {
 				assert.ok(/Generation completed successfully/g.test(stdout));
 
-				var data = fs.readFileSync('test-tmp/public/style.css', 'utf8')
+				data = fs.readFileSync('test-tmp/public/style.css', 'utf8')
 				assert.ok(/.button/g.test(data));
 
-				var data = fs.readFileSync('test-tmp/public/script.js', 'utf8')
+				data = fs.readFileSync('test-tmp/public/script.js', 'utf8')
 				assert.ok(/button/g.test(data));
 			});
 		});
