@@ -71,9 +71,6 @@ argv = require('optimist')
 	.alias('i', 'init')
 	.describe('i', 'Create a new styleguide template to work from')
 
-	.alias('i', 'init')
-	.describe('i', 'Create a new styleguide template to work from')
-
 	.alias('L', 'load-path')
 	.describe('L', 'Include a load path for precompiler imports')
 
