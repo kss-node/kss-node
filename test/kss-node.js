@@ -31,7 +31,7 @@ suite('#kss-node', function() {
 		});
 	});
 
-	suite('load-path option', function() {
+	suite('--load-path option', function() {
 		test('Fails when no load path specified', function(done) {
 			args = [
 				'test/fixtures-styles/with-include', 'test-tmp',
