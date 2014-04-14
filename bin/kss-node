@@ -58,9 +58,11 @@ argv = require('optimist')
 	.alias('c', 'css')
 	.describe('c', 'Compile and include a CSS stylesheet')
 
+	.string('J')
 	.alias('J', 'js')
 	.describe('J', 'Include a JavaScript file (written to public/script.js)')
 
+	.string('C')
 	.alias('C', 'coffee')
 	.describe('C', 'Include a CoffeeScript file (written to public/script.js)')
 
@@ -68,11 +70,12 @@ argv = require('optimist')
 	.alias('m', 'mask')
 	.describe('m', 'Use a custom mask for detecting stylesheets, e.g. "*.css"')
 
-	.alias('i', 'init')
-	.describe('i', 'Create a new styleguide template to work from')
-
+	.string('L')
 	.alias('L', 'load-path')
 	.describe('L', 'Include a load path for precompiler imports')
+
+	.alias('i', 'init')
+	.describe('i', 'Create a new styleguide template to work from')
 
 	.argv;
 
