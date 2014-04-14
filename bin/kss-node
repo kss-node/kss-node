@@ -252,7 +252,11 @@ compileImportedFiles = function(fileTypes, outputFilename, argv) {
 // Used by compileImportedFiles to minify and then
 // save its final buffer to a single CSS file.
 saveFileToPublicDir = function(filename, buffer) {
-	buffer = cleanCss.process(buffer.toString());
+	if (path.extname(filename) == '.css'){
+		console.log('...minifying CSS for', filename);
+		buffer = cleanCss.process(buffer.toString());
+	}
+
 	fs.writeFileSync(
 		path.join(options.destinationDirectory, '/public/', filename),
 		buffer, 'utf8'
