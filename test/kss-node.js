@@ -24,7 +24,7 @@ function kss(args, done, assertCallback) {
 suite('#kss-node', function() {
 	suite('No arguments', function() {
 		test('Should display help', function(done) {
-			kss([], function(err, stdout, stderr) {
+			kss([], done, function(err, stdout, stderr) {
 				assert.ok(/Usage:/g.test(stderr));
 				assert.ok(/Options:/g.test(stderr));
 			});
