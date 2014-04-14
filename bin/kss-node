@@ -58,6 +58,12 @@ argv = require('optimist')
 	.alias('c', 'css')
 	.describe('c', 'Compile and include a CSS stylesheet')
 
+	.alias('J', 'js')
+	.describe('J', 'Include a JavaScript file (written to public/script.js)')
+
+	.alias('C', 'coffee')
+	.describe('C', 'Include a CoffeeScript file (written to public/script.js)')
+
 	.string('m')
 	.alias('m', 'mask')
 	.describe('m', 'Use a custom mask for detecting stylesheets, e.g. "*.css"')
