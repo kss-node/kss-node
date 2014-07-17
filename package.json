@@ -5,7 +5,7 @@
   "version": "0.3.7",
   "repository": {
     "type": "git",
-    "url": "git://github.com/hughsk/kss-node.git"
+    "url": "git://github.com/kss-node/kss-node.git"
   },
   "licence": "MIT",
   "main": "index.js",
@@ -33,5 +33,5 @@
   "devDependencies": {
     "mocha": "0.14.x"
   },
-  "homepage": "http://hughsk.github.com/kss-node"
+  "homepage": "http://kss-node.github.com/kss-node"
 }

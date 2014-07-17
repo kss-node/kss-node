@@ -1,8 +1,8 @@
-# kss-node [![Build Status](https://secure.travis-ci.org/hughsk/kss-node.png?branch=master)](http://travis-ci.org/hughsk/kss-node)
+# kss-node [![Build Status](https://secure.travis-ci.org/kss-node/kss-node.png?branch=master)](http://travis-ci.org/kss-node/kss-node)
 
 This is a NodeJS implementation of [Knyle Style Sheets](https://github.com/kneath/kss) (KSS), "a documentation syntax for CSS". Beyond that, it's intended to have syntax readable by humans *and* machines - hence, this module can be used to create a "living styleguide". The methodology and ideas behind Knyle Style Sheets are contained in [the specification](https://github.com/kneath/kss/blob/master/SPEC.md).
 
-There's an example project in the [demo directory](https://github.com/hughsk/kss-node/tree/master/demo) of this repo.
+There's an example project in the [demo directory](https://github.com/kss-node/kss-node/tree/master/demo) of this repo.
 
 ## Installation
 
@@ -33,11 +33,11 @@ You'll need to specify a directory containing all of your CSS files to be parsed
 
 You can create your own templates too, either by editing the contents of the `lib/template` directory or using the `--template` flag to point to your own. The default template should look something like this:
 
-![CLI Template Preview](https://raw.github.com/hughsk/kss-node/develop/demo/preview.png)
+![CLI Template Preview](https://raw.github.com/kss-node/kss-node/develop/demo/preview.png)
 
 ## Using kss-node from Node
 
-Check out the [Module API](https://github.com/hughsk/kss-node/wiki/Module-API) a full explanation. Here's an example:
+Check out the [Module API](https://github.com/kss-node/kss-node/wiki/Module-API) a full explanation. Here's an example:
 
 ``` javascript
 var kss = require('kss'),
@@ -64,7 +64,7 @@ kss.traverse('public/stylesheets/', options, function(err, styleguide) {
 
 Included are a few additional (optional) features to allow for completely automated styleguide generation.
 
-Take a look at the [demo project](http://github.com/hughsk/kss-node/tree/master/demo) for some examples.
+Take a look at the [demo project](https://github.com/kss-node/kss-node/tree/master/demo) for some examples.
 
 *Overview Document**. This "overview" page is generated from a Markdown file, which you should place in the directory you're generating from, just name it `styleguide.md` and it will be included in the final styleguide automatically.
 
@@ -94,6 +94,6 @@ To generate a new version of the demo styleguide, use `make gh-pages`. After com
 
 ## Contributors
 
-* [Warin](http://github.com/Warin)
-* [Manuel Goerlich](http://github.com/MaThGo)
-* [Kevin Lamping](http://github.com/klamping)
+* [Warin](https://github.com/Warin)
+* [Manuel Goerlich](https://github.com/MaThGo)
+* [Kevin Lamping](https://github.com/klamping)

@@ -1,6 +1,6 @@
 <h1 class="kss-title kss-title-main"> Overview </h1>
 
-This is a demo of [kss-node](http://github.com/hughsk/kss-node)'s built-in styleguide generator. The module is essentially a reimplementation of the [KSS](http://github.com/kneath/kss) Ruby parser, in Node:
+This is a demo of [kss-node](https://github.com/kss-node/kss-node)'s built-in styleguide generator. The module is essentially a reimplementation of the [KSS](https://github.com/kneath/kss) Ruby parser, in Node:
 
 > Inspired by TomDoc, KSS attempts to provide a methodology for writing maintainable, documented CSS within a team.
 > Specifically, KSS is a documentation specification and styleguide format.
@@ -8,9 +8,9 @@ This is a demo of [kss-node](http://github.com/hughsk/kss-node)'s built-in style
 >
 > KSS is a set of guidelines to help you produce an HTML styleguide tied to CSS documentation that is nice to read in plain text, yet structured enough to be automatically extracted and processed by a machine.
 
-The upshot of this is that KSS can be used for generating CSS documentation pages. This site is generated with the `kss-node` command-line tool used on this [demo project](https://github.com/hughsk/kss-node/tree/master/demo).
+The upshot of this is that KSS can be used for generating CSS documentation pages. This site is generated with the `kss-node` command-line tool used on this [demo project](https://github.com/kss-node/kss-node/tree/master/demo).
 
-Check out the [project on Github](https://github.com/hughsk/kss-node) for more information, or read on for details on how to document your stylesheets for KSS.
+Check out the [project on Github](https://github.com/kss-node/kss-node) for more information, or read on for details on how to document your stylesheets for KSS.
 
 # Specification
 
