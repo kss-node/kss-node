@@ -27,7 +27,7 @@
     "stylus": "0.30.x",
     "sass": "0.5.x",
     "optimist": "0.3.x",
-    "clean-css": "0.3.x",
+    "clean-css": "1.1.x",
     "async": "0.1.x"
   },
   "devDependencies": {
