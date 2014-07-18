@@ -55,7 +55,7 @@
         <div class="kss-box">{{html description}}</div>
       {{/if}}
 
-      {{#ifAny markup modifiers}}
+      {{#if markup}}
         <table class="kss-mod-list">
           <tr class="kss-mod-desc-group">
             <td class="kss-mod-desc"><p>Default styling</p></td>
@@ -78,7 +78,7 @@
         <div class="kss-markup">
           <pre class="prettyprint lang-html">{{markup}}</pre>
         </div>
-      {{/ifAny}}
+      {{/if}}
 
       {{#whenDepth 1}} {{else}}
       </section>

@@ -326,6 +326,11 @@ handlebars.registerHelper('ifAny', function() {
 		success = true,
 		i;
 
+	// Warn the user that IfAny is deprecated. The only usage in kss-node was
+	// {{#ifAny markup modifiers}} and, since modifiers is an object and, always
+	// evals to true (even when empty), #ifAny was effectively a dupe of #If.
+	console.log('IfAny is deprecated; if your template has {{#ifAny markup modifiers}}...{{/ifAny}}, replace it with {{#ifAny markup}}...{{/if}}.');
+
 	for (i = 0; i < numItems; i += 1) {
 		if (!arguments[i]) {
 			success = false;
