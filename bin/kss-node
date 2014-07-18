@@ -318,29 +318,28 @@ jsonModifiers = function(modifiers) {
  * Equivalent to the {#if} block helper with multiple arguments.
  */
 handlebars.registerHelper('ifAny', function() {
-	var argLength = arguments.length - 2,
-		content = arguments[argLength + 1],
+	var numItems = arguments.length - 1,
+		options = arguments[numItems],
 		success = true;
 
-	for (var i = 0; i < argLength; i += 1) {
+	for (var i = 0; i < numItems; i += 1) {
 		if (!arguments[i]) {
 			success = false;
 			break;
 		}
 	}
 
-	return success ? content.fn(this) : content.inverse(this);
+	return success ? options.fn(this) : options.inverse(this);
 });
 
 /**
  * Returns a single section, found by its reference number
  * @param  {String|Number} reference The reference number to search for.
  */
-handlebars.registerHelper('section', function(reference) {
+handlebars.registerHelper('section', function(reference, options) {
 	var section = styleguide.section(reference);
-	if (!section) return false;
 
-	return arguments[arguments.length-1].fn(section.data);
+	return section ? options.fn(section.data) : false;
 });
 
 /**
@@ -348,7 +347,7 @@ handlebars.registerHelper('section', function(reference) {
  * a query for all children and descendants of that reference.
  * @param  {Mixed} query The section query
  */
-handlebars.registerHelper('eachSection', function(query) {
+handlebars.registerHelper('eachSection', function(query, options) {
 	var sections,
 		i, l, buffer = "";
 
@@ -360,7 +359,7 @@ handlebars.registerHelper('eachSection', function(query) {
 
 	l = sections.length;
 	for (i = 0; i < l; i += 1) {
-		buffer += arguments[arguments.length-1].fn(sections[i].data);
+		buffer += options.fn(sections[i].data);
 	}
 
 	return buffer;
@@ -369,7 +368,7 @@ handlebars.registerHelper('eachSection', function(query) {
 /**
  * Loop over each section root, i.e. each section only one level deep.
  */
-handlebars.registerHelper('eachRoot', function() {
+handlebars.registerHelper('eachRoot', function(options) {
 	var sections,
 		i, l, buffer = "";
 
@@ -378,7 +377,7 @@ handlebars.registerHelper('eachRoot', function() {
 
 	l = sections.length;
 	for (i = 0; i < l; i += 1) {
-		buffer += arguments[arguments.length-1].fn(sections[i].data);
+		buffer += options.fn(sections[i].data);
 	}
 
 	return buffer;
@@ -393,34 +392,29 @@ handlebars.registerHelper('eachRoot', function() {
  * 	 ANYTHING ELSE
  * {{/refDepth}}
  */
-handlebars.registerHelper('whenDepth', function(depth, context) {
-	if (!(context && this.refDepth)) {
+handlebars.registerHelper('whenDepth', function(depth, options) {
+	if (!this.refDepth) {
 		return '';
 	}
-	if (depth == this.refDepth) {
-		return context.fn(this);
-	}
-	if (context.inverse) {
-		return context.inverse(this);
-	}
+	return (depth == this.refDepth) ? options.fn(this) : options.inverse(this);
 });
 
 /**
  * Similar to the {#eachSection} helper, however will loop over each modifier
  * @param  {Object} section Supply a section object to loop over it's modifiers. Defaults to the current section.
  */
-handlebars.registerHelper('eachModifier', function(section) {
+handlebars.registerHelper('eachModifier', function(options) {
 	var modifiers, i, l, buffer = '';
 
 	// Default to current modifiers, but allow supplying a custom section
-	if (section.data) modifiers = section.data.modifiers;
+	if (options.data) modifiers = options.data.modifiers;
 	modifiers = modifiers || this.modifiers || false;
 
 	if (!modifiers) return {};
 
 	l = modifiers.length;
 	for (i = 0; i < l; i++) {
-		buffer += arguments[arguments.length-1].fn(modifiers[i].data || '');
+		buffer += options.fn(modifiers[i].data || '');
 	}
 	return buffer;
 });
