@@ -87,12 +87,12 @@ if (argv.init) {
 	return;
 }
 
-config.sourceDirectory = path.relative(process.cwd(), argv['_'][0]);
+config.sourceDirectory = path.resolve(argv['_'][0]);
 if (argv['_'].length > 1) {
-	config.destinationDirectory = path.relative(process.cwd(), argv['_'][1]);
+	config.destinationDirectory = path.resolve(argv['_'][1]);
 }
 if (argv.template) {
-	config.templateDirectory = path.relative(process.cwd(), argv.template);
+	config.templateDirectory = path.resolve(argv.template);
 }
 
 console.log('');
@@ -122,7 +122,7 @@ wrench.copyDirSyncRecursive(
 // been defined and handlebars helpers set up.
 process.nextTick(function() {
 	console.log('...compiling KSS styles');
-	less.render('@import "' + path.relative(process.cwd(), config.destinationDirectory) + '/public/kss.less";', function(err, css) {
+	less.render('@import "' + path.resolve(config.destinationDirectory) + '/public/kss.less";', function(err, css) {
 		if (err) {
 			console.error(err);
 			throw err;
