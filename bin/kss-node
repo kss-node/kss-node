@@ -15,7 +15,7 @@ var kss = require(__dirname + '/../lib/kss.js'),
 	fs = require('fs'),
 	template, styleguide,
 	generatePage, generateStylesheet,
-	options = {
+	config = {
 		templateDirectory: __dirname + '/../lib/template',
 		sourceDirectory: __dirname + '/../demo',
 		destinationDirectory: process.cwd() + '/styleguide'
@@ -87,42 +87,42 @@ if (argv.init) {
 	return;
 }
 
-options.sourceDirectory = path.relative(process.cwd(), argv['_'][0]);
+config.sourceDirectory = path.relative(process.cwd(), argv['_'][0]);
 if (argv['_'].length > 1) {
-	options.destinationDirectory = path.relative(process.cwd(), argv['_'][1]);
+	config.destinationDirectory = path.relative(process.cwd(), argv['_'][1]);
 }
 if (argv.template) {
-	options.templateDirectory = path.relative(process.cwd(), argv.template);
+	config.templateDirectory = path.relative(process.cwd(), argv.template);
 }
 
 console.log('');
 console.log('Generating your KSS Styleguide!');
 console.log('');
-console.log(' * Source: ' + path.resolve(options.sourceDirectory));
-console.log(' * Destination: ' + path.resolve(options.destinationDirectory));
-console.log(' * Template: ' + path.resolve(options.templateDirectory));
+console.log(' * Source: ' + path.resolve(config.sourceDirectory));
+console.log(' * Destination: ' + path.resolve(config.destinationDirectory));
+console.log(' * Template: ' + path.resolve(config.templateDirectory));
 console.log('');
 
 // Compile the Handlebars template
-template = fs.readFileSync(options.templateDirectory + '/index.html', 'utf8');
+template = fs.readFileSync(config.templateDirectory + '/index.html', 'utf8');
 template = handlebars.compile(template);
 
 // Create a new "styleguide" directory and copy the contents
 // of "public" over.
 try {
-	fs.mkdirSync(options.destinationDirectory);
+	fs.mkdirSync(config.destinationDirectory);
 } catch (e) {}
 
 wrench.copyDirSyncRecursive(
-	options.templateDirectory + '/public',
-	options.destinationDirectory + '/public'
+	config.templateDirectory + '/public',
+	config.destinationDirectory + '/public'
 );
 
 // Generate the static HTML pages in the next tick, i.e. after the other functions have
 // been defined and handlebars helpers set up.
 process.nextTick(function() {
 	console.log('...compiling KSS styles');
-	less.render('@import "' + path.relative(process.cwd(), options.destinationDirectory) + '/public/kss.less";', function(err, css) {
+	less.render('@import "' + path.relative(process.cwd(), config.destinationDirectory) + '/public/kss.less";', function(err, css) {
 		if (err) {
 			console.error(err);
 			throw err;
@@ -131,11 +131,11 @@ process.nextTick(function() {
 		css = cleanCss.process(css);
 
 		// Write the compiled LESS styles from the template.
-		fs.writeFileSync(options.destinationDirectory + '/public/kss.css', css, 'utf8');
+		fs.writeFileSync(config.destinationDirectory + '/public/kss.css', css, 'utf8');
 
 		console.log('...parsing your styleguide');
 
-		kss.traverse(options.sourceDirectory, {
+		kss.traverse(config.sourceDirectory, {
 			multiline : true,
 			markdown  : true,
 			markup    : true,
@@ -243,7 +243,7 @@ generateStylesheet = function(argv) {
 saveStylesheet = function(buffer) {
 	buffer = cleanCss.process(buffer.toString());
 	fs.writeFileSync(
-		options.destinationDirectory + '/public/style.css',
+		config.destinationDirectory + '/public/style.css',
 		buffer, 'utf8'
 	);
 };
@@ -256,7 +256,7 @@ generatePage = function(styleguide, sections, root, pages, sectionRoots) {
 		styleguide.section(root) ? styleguide.section(root).header() : 'Unnamed',
 		']'
 	);
-	fs.writeFileSync(options.destinationDirectory + '/section-'+root+'.html',
+	fs.writeFileSync(config.destinationDirectory + '/section-'+root+'.html',
 		template({
 			styleguide: styleguide,
 			sections: jsonSections(sections),
@@ -273,14 +273,14 @@ generatePage = function(styleguide, sections, root, pages, sectionRoots) {
 generateIndex = function(styleguide, sections, pages, sectionRoots) {
 	try {
 		console.log('...generating styleguide overview');
-		fs.writeFileSync(options.destinationDirectory + '/index.html',
+		fs.writeFileSync(config.destinationDirectory + '/index.html',
 			template({
 				styleguide: styleguide,
 				sectionRoots: sectionRoots,
 				sections: jsonSections(sections),
 				rootNumber: 0,
 				argv: argv || {},
-				overview: marked(fs.readFileSync(options.sourceDirectory + '/styleguide.md', 'utf8'))
+				overview: marked(fs.readFileSync(config.sourceDirectory + '/styleguide.md', 'utf8'))
 			})
 		);
 	} catch(e) {
