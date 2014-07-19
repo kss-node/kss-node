@@ -5,126 +5,129 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-
   <title>KSS: Living Styleguide</title>
+
   <meta name="description" content="">
   <meta name="generator" content="kss-node" />
-
   <meta name="viewport" content="width=device-width">
 
-  <link href='http://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'>
-
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Droid+Serif">
   <link rel="stylesheet" href="public/kss.css">
   <link rel="stylesheet" href="public/style.css">
-
 </head>
 <body><div id="kss-wrapper">
-  <div id="kss-nav">
-    <header id="kss-header">
-      <hgroup><h1>kss-node Styleguide</h1></hgroup>
-    </header>
-    <aside>
-      <nav><ul>
-        <li><a href="index.html">0.0: Overview</a></li>
-        {{#eachRoot}}
-          <li><a href="section-{{reference}}.html">{{reference}}.0: {{header}}</a></li>
-        {{/eachRoot}}
-      </ul></nav>
-    </aside>
-  </div>
-  <div role="main" id="kss-main">
-    <article id="kss-content">
-      {{#if overview}}
-        {{html overview}}
-      {{else}}
 
-        {{!
-          Find each section, in order.
-          If there's no markup or modifiers supplied, use a Markdown-only
-          layout instead.
+<div id="kss-nav">
+  <header id="kss-header">
+    <hgroup><h1>kss-node Styleguide</h1></hgroup>
+  </header>
+  <aside>
+    <nav><ul>
+      <li><a href="index.html">0.0: Overview</a></li>
+    {{#eachRoot}}
+      <li><a href="section-{{reference}}.html">{{reference}}.0: {{header}}</a></li>
+    {{/eachRoot}}
+    </ul></nav>
+  </aside>
+</div>
+<div role="main" id="kss-main">
+  <article id="kss-content">
+  {{#if overview}}
+    {{html overview}}
+  {{else}}
 
-          The "root" element comes first in this loop, and can be detected using
-          the "#whenDepth 1" block as seen below.
-        }}
-        {{#eachSection rootNumber}}
-          {{#whenDepth 1}}
-            <h1 class="kss-title"><span class="kss-ref">{{ reference }}.0</span> - {{ header }}</h1>
-          {{else}}
-           <section class="kss-depth-{{ refDepth }}">
-            <h1 class="kss-title"><span class="kss-ref">{{ reference }}</span> - {{ header }}</h1>
-          {{/whenDepth}}
-            {{#ifAny markup modifiers}}
-                <div class="kss-box">{{html description}}</div>
-                <table class="kss-mod-list">
-                  <tr class="kss-mod-desc-group">
-                    <td class="kss-mod-desc"><p>Default styling</p></td>
-                    <td class="kss-mod-name"></td>
-                  </tr>
-                  <tr class="kss-mod-example">
-                    <td colspan="2">{{modifierMarkup}}</td>
-                  </tr>
-                {{#eachModifier}}
-                  <tr class="kss-mod-desc-group">
-                    <td class="kss-mod-desc">{{html description}}</td>
-                    <td class="kss-mod-name"><p>{{name}}</p></td>
-                  </tr>
-                  <tr class="kss-mod-example">
-                    <td colspan="2">{{modifierMarkup}}</td>
-                  </tr>
-                {{/eachModifier}}
-                </table>
-                <div class="kss-markup">
-                  <pre class="prettyprint lang-html">{{markup}}</pre>
-                </div>
-            {{else}}
-                {{#if description}}
-                  {{html description}}
-                {{/if}}
-            {{/ifAny}}
-          {{#whenDepth 1}} {{else}}
-            </section>
-          {{/whenDepth}}
-        {{/eachSection}}
+    {{!
+      Find each section, in order.
+      If there's no markup or modifiers supplied, use a Markdown-only
+      layout instead.
+
+      The "root" element comes first in this loop, and can be detected using
+      the "#whenDepth 1" block as seen below.
+    }}
+    {{#eachSection rootNumber}}
+      {{#whenDepth 1}} {{else}}
+      <section class="kss-depth-{{ refDepth }}">
+      {{/whenDepth}}
+
+      <h1 class="kss-title"><span class="kss-ref">{{ reference }}{{#whenDepth 1}}.0{{/whenDepth}}</span> - {{ header }}</h1>
+
+      {{#if description}}
+        <div class="kss-box">{{html description}}</div>
       {{/if}}
-    </article>
-  </div>
-  <footer>
-    {{#if argv.xdemo}}<a href="https://github.com/kss-node/kss-node"><img id="kss-github" style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/30f550e0d38ceb6ef5b81500c64d970b7fb0f028/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub"></a>{{/if}}
-  </footer>
-  <!-- SCRIPTS -->
-  <script src="public/kss.js"></script>
-  <script src="public/prettify.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-  <script>
-    $(document).ready(function(){
-      var sidebarAdjust = function() {
-        // Match footer/body height
-        var height = Math.max($(window).height(), $('#kss-main').height());
 
-        if ($(window).width() <= 768) {
-          $('#kss-main, #kss-nav').height('auto');
-        } else {
-          $('#kss-main, #kss-nav').height(height);
-        }
-      };
+      {{#ifAny markup modifiers}}
+        <table class="kss-mod-list">
+          <tr class="kss-mod-desc-group">
+            <td class="kss-mod-desc"><p>Default styling</p></td>
+            <td class="kss-mod-name"></td>
+          </tr>
+          <tr class="kss-mod-example">
+            <td colspan="2">{{modifierMarkup}}</td>
+          </tr>
+        {{#eachModifier}}
+          <tr class="kss-mod-desc-group">
+            <td class="kss-mod-desc">{{html description}}</td>
+            <td class="kss-mod-name"><p>{{name}}</p></td>
+          </tr>
+          <tr class="kss-mod-example">
+            <td colspan="2">{{modifierMarkup}}</td>
+          </tr>
+        {{/eachModifier}}
+        </table>
 
-      $(window).resize(sidebarAdjust);
-      $(window).scroll(sidebarAdjust);
-      sidebarAdjust();
+        <div class="kss-markup">
+          <pre class="prettyprint lang-html">{{markup}}</pre>
+        </div>
+      {{/ifAny}}
 
-      // Ensure code blocks are highlighted properly...
-      $('pre>code').addClass('prettyprint');
-      prettyPrint();
-
-    });
-  </script>
-
-  {{! This won't be included in the demo page }}
-  {{#if argv.xdemo}}
-    <script type="text/javascript">
-    var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-12249588-4']); _gaq.push(['_trackPageview']);
-    (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();
-    </script>
+      {{#whenDepth 1}} {{else}}
+      </section>
+      {{/whenDepth}}
+    {{/eachSection}}
   {{/if}}
+  </article>
+</div>
+
+{{#if argv.xdemo}}
+<footer>
+  <a href="https://github.com/you"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
+</footer>
+{{/if}}
+
+<!-- SCRIPTS -->
+<script src="public/kss.js"></script>
+<script src="public/prettify.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script>
+  $(document).ready(function(){
+    var sidebarAdjust = function() {
+      // Match footer/body height
+      var height = Math.max($(window).height(), $('#kss-main').height());
+
+      if ($(window).width() <= 768) {
+        $('#kss-main, #kss-nav').height('auto');
+      } else {
+        $('#kss-main, #kss-nav').height(height);
+      }
+    };
+
+    $(window).resize(sidebarAdjust);
+    $(window).scroll(sidebarAdjust);
+    sidebarAdjust();
+
+    // Ensure code blocks are highlighted properly...
+    $('pre>code').addClass('prettyprint');
+    prettyPrint();
+  });
+</script>
+
+{{! This won't be included in the demo page }}
+{{#if argv.xdemo}}
+  <script type="text/javascript">
+  var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-12249588-4']); _gaq.push(['_trackPageview']);
+  (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();
+  </script>
+{{/if}}
+
 </div></body>
 </html>

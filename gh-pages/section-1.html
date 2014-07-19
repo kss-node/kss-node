@@ -5,177 +5,188 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-
   <title>KSS: Living Styleguide</title>
+
   <meta name="description" content="">
   <meta name="generator" content="kss-node" />
-
   <meta name="viewport" content="width=device-width">
 
-  <link href='http://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'>
-
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Droid+Serif">
   <link rel="stylesheet" href="public/kss.css">
   <link rel="stylesheet" href="public/style.css">
-
 </head>
 <body><div id="kss-wrapper">
-  <div id="kss-nav">
-    <header id="kss-header">
-      <hgroup><h1>kss-node Styleguide</h1></hgroup>
-    </header>
-    <aside>
-      <nav><ul>
-        <li><a href="index.html">0.0: Overview</a></li>
-        
-          <li><a href="section-1.html">1.0: Modules</a></li>
-        
-          <li><a href="section-2.html">2.0: Forms</a></li>
-        
-      </ul></nav>
-    </aside>
-  </div>
-  <div role="main" id="kss-main">
-    <article id="kss-content">
+
+<div id="kss-nav">
+  <header id="kss-header">
+    <hgroup><h1>kss-node Styleguide</h1></hgroup>
+  </header>
+  <aside>
+    <nav><ul>
+      <li><a href="index.html">0.0: Overview</a></li>
+    
+      <li><a href="section-1.html">1.0: Modules</a></li>
+    
+      <li><a href="section-2.html">2.0: Forms</a></li>
+    
+    </ul></nav>
+  </aside>
+</div>
+<div role="main" id="kss-main">
+  <article id="kss-content">
+  
+
+    
+    
+       
+
+      <h1 class="kss-title"><span class="kss-ref">1.0</span> - Modules</h1>
+
+      
+        <div class="kss-box"><p>Reusable elements that can be used across the site.
+So far this just includes buttons. </p>
+</div>
       
 
-        
-        
-          
-            <h1 class="kss-title"><span class="kss-ref">1.0</span> - Modules</h1>
-          
-            
-                
-                  <p>Reusable elements that can be used across the site.
-So far this just includes buttons. </p>
+      
 
-                
-            
-           
-        
-          
-           <section class="kss-depth-2">
-            <h1 class="kss-title"><span class="kss-ref">1.1</span> - Buttons</h1>
-          
-            
-                <div class="kss-box"><p>A majority of buttons in the site are built from the same base class.</p>
+       
+    
+      
+      <section class="kss-depth-2">
+      
+
+      <h1 class="kss-title"><span class="kss-ref">1.1</span> - Buttons</h1>
+
+      
+        <div class="kss-box"><p>A majority of buttons in the site are built from the same base class.</p>
 </div>
-                <table class="kss-mod-list">
-                  <tr class="kss-mod-desc-group">
-                    <td class="kss-mod-desc"><p>Default styling</p></td>
-                    <td class="kss-mod-name"></td>
-                  </tr>
-                  <tr class="kss-mod-example">
-                    <td colspan="2"><a href="#" class="button {$modifiers}">Link Button</a>
+      
+
+      
+        <table class="kss-mod-list">
+          <tr class="kss-mod-desc-group">
+            <td class="kss-mod-desc"><p>Default styling</p></td>
+            <td class="kss-mod-name"></td>
+          </tr>
+          <tr class="kss-mod-example">
+            <td colspan="2"><a href="#" class="button {$modifiers}">Link Button</a>
 <button class="button {$modifiers}">Button Element</button>
 <input type="button" class="button {$modifiers}" value="input[type='button']"/></td>
-                  </tr>
-                
-                  <tr class="kss-mod-desc-group">
-                    <td class="kss-mod-desc"><p>Indicate that the button is the primary feature of this form.</p>
+          </tr>
+        
+          <tr class="kss-mod-desc-group">
+            <td class="kss-mod-desc"><p>Indicate that the button is the primary feature of this form.</p>
 </td>
-                    <td class="kss-mod-name"><p>.primary</p></td>
-                  </tr>
-                  <tr class="kss-mod-example">
-                    <td colspan="2"><a href="#" class="button primary">Link Button</a>
+            <td class="kss-mod-name"><p>.primary</p></td>
+          </tr>
+          <tr class="kss-mod-example">
+            <td colspan="2"><a href="#" class="button primary">Link Button</a>
 <button class="button primary">Button Element</button>
 <input type="button" class="button primary" value="input[type='button']"/></td>
-                  </tr>
-                
-                  <tr class="kss-mod-desc-group">
-                    <td class="kss-mod-desc"><p>Indicate that the button will remove a feature, or other negative connotations.</p>
+          </tr>
+        
+          <tr class="kss-mod-desc-group">
+            <td class="kss-mod-desc"><p>Indicate that the button will remove a feature, or other negative connotations.</p>
 </td>
-                    <td class="kss-mod-name"><p>.remove</p></td>
-                  </tr>
-                  <tr class="kss-mod-example">
-                    <td colspan="2"><a href="#" class="button remove">Link Button</a>
+            <td class="kss-mod-name"><p>.remove</p></td>
+          </tr>
+          <tr class="kss-mod-example">
+            <td colspan="2"><a href="#" class="button remove">Link Button</a>
 <button class="button remove">Button Element</button>
 <input type="button" class="button remove" value="input[type='button']"/></td>
-                  </tr>
-                
-                  <tr class="kss-mod-desc-group">
-                    <td class="kss-mod-desc"><p>Highlight the button when hovered.</p>
+          </tr>
+        
+          <tr class="kss-mod-desc-group">
+            <td class="kss-mod-desc"><p>Highlight the button when hovered.</p>
 </td>
-                    <td class="kss-mod-name"><p>:hover</p></td>
-                  </tr>
-                  <tr class="kss-mod-example">
-                    <td colspan="2"><a href="#" class="button pseudo-class-hover">Link Button</a>
+            <td class="kss-mod-name"><p>:hover</p></td>
+          </tr>
+          <tr class="kss-mod-example">
+            <td colspan="2"><a href="#" class="button pseudo-class-hover">Link Button</a>
 <button class="button pseudo-class-hover">Button Element</button>
 <input type="button" class="button pseudo-class-hover" value="input[type='button']"/></td>
-                  </tr>
-                
-                  <tr class="kss-mod-desc-group">
-                    <td class="kss-mod-desc"><p>Make the button change appearance to reflect it being disabled.</p>
+          </tr>
+        
+          <tr class="kss-mod-desc-group">
+            <td class="kss-mod-desc"><p>Make the button change appearance to reflect it being disabled.</p>
 </td>
-                    <td class="kss-mod-name"><p>:disabled</p></td>
-                  </tr>
-                  <tr class="kss-mod-example">
-                    <td colspan="2"><a href="#" class="button pseudo-class-disabled">Link Button</a>
+            <td class="kss-mod-name"><p>:disabled</p></td>
+          </tr>
+          <tr class="kss-mod-example">
+            <td colspan="2"><a href="#" class="button pseudo-class-disabled">Link Button</a>
 <button class="button pseudo-class-disabled">Button Element</button>
 <input type="button" class="button pseudo-class-disabled" value="input[type='button']"/></td>
-                  </tr>
-                
-                  <tr class="kss-mod-desc-group">
-                    <td class="kss-mod-desc"><p>&quot;Press&quot; the button down when clicked.</p>
+          </tr>
+        
+          <tr class="kss-mod-desc-group">
+            <td class="kss-mod-desc"><p>&quot;Press&quot; the button down when clicked.</p>
 </td>
-                    <td class="kss-mod-name"><p>:active</p></td>
-                  </tr>
-                  <tr class="kss-mod-example">
-                    <td colspan="2"><a href="#" class="button pseudo-class-active">Link Button</a>
+            <td class="kss-mod-name"><p>:active</p></td>
+          </tr>
+          <tr class="kss-mod-example">
+            <td colspan="2"><a href="#" class="button pseudo-class-active">Link Button</a>
 <button class="button pseudo-class-active">Button Element</button>
 <input type="button" class="button pseudo-class-active" value="input[type='button']"/></td>
-                  </tr>
-                
-                </table>
-                <div class="kss-markup">
-                  <pre class="prettyprint lang-html">&lt;a href=&quot;#&quot; class=&quot;button {$modifiers}&quot;&gt;Link Button&lt;/a&gt;
+          </tr>
+        
+        </table>
+
+        <div class="kss-markup">
+          <pre class="prettyprint lang-html">&lt;a href=&quot;#&quot; class=&quot;button {$modifiers}&quot;&gt;Link Button&lt;/a&gt;
 &lt;button class=&quot;button {$modifiers}&quot;&gt;Button Element&lt;/button&gt;
 &lt;input type=&quot;button&quot; class=&quot;button {$modifiers}&quot; value=&quot;input[type=&#x27;button&#x27;]&quot;/&gt;</pre>
-                </div>
-            
-          
-            </section>
-          
-        
+        </div>
       
-    </article>
-  </div>
-  <footer>
-    <a href="https://github.com/kss-node/kss-node"><img id="kss-github" style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/30f550e0d38ceb6ef5b81500c64d970b7fb0f028/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub"></a>
-  </footer>
-  <!-- SCRIPTS -->
-  <script src="public/kss.js"></script>
-  <script src="public/prettify.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-  <script>
-    $(document).ready(function(){
-      var sidebarAdjust = function() {
-        // Match footer/body height
-        var height = Math.max($(window).height(), $('#kss-main').height());
 
-        if ($(window).width() <= 768) {
-          $('#kss-main, #kss-nav').height('auto');
-        } else {
-          $('#kss-main, #kss-nav').height(height);
-        }
-      };
+      
+      </section>
+      
+    
+  
+  </article>
+</div>
 
-      $(window).resize(sidebarAdjust);
-      $(window).scroll(sidebarAdjust);
-      sidebarAdjust();
 
-      // Ensure code blocks are highlighted properly...
-      $('pre>code').addClass('prettyprint');
-      prettyPrint();
+<footer>
+  <a href="https://github.com/you"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
+</footer>
 
-    });
+
+<!-- SCRIPTS -->
+<script src="public/kss.js"></script>
+<script src="public/prettify.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script>
+  $(document).ready(function(){
+    var sidebarAdjust = function() {
+      // Match footer/body height
+      var height = Math.max($(window).height(), $('#kss-main').height());
+
+      if ($(window).width() <= 768) {
+        $('#kss-main, #kss-nav').height('auto');
+      } else {
+        $('#kss-main, #kss-nav').height(height);
+      }
+    };
+
+    $(window).resize(sidebarAdjust);
+    $(window).scroll(sidebarAdjust);
+    sidebarAdjust();
+
+    // Ensure code blocks are highlighted properly...
+    $('pre>code').addClass('prettyprint');
+    prettyPrint();
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-12249588-4']); _gaq.push(['_trackPageview']);
+  (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();
   </script>
 
-  
-  
-    <script type="text/javascript">
-    var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-12249588-4']); _gaq.push(['_trackPageview']);
-    (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();
-    </script>
-  
+
 </div></body>
 </html>
