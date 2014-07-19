@@ -65,11 +65,11 @@
         <div class="kss-box">{{{description}}}</div>
       {{/if}}
 
-      {{{loadSectionTemplate}}}
+      {{{sectionTemplate}}}
       {{! If the section doesn't have markup, assume the template is the markup. }}
       {{#unless markup}}
         <div class="kss-markup">
-          <pre class="prettyprint lang-html">{{loadSectionTemplate}}</pre>
+          <pre class="prettyprint lang-html">{{sectionTemplate}}</pre>
         </div>
       {{/unless}}
 
