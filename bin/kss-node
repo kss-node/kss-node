@@ -461,6 +461,9 @@ handlebars.registerHelper('modifierMarkup', function(modifier) {
  * @param  {String} arg The unescaped HTML
  */
 handlebars.registerHelper('html', function(arg) {
+	// Warn the user that html is deprecated.
+	console.log('{{html expression}} is deprecated; use HandleBars’ triple-stash instead: {{{expression}}}.');
+
 	return new handlebars.SafeString(arg || '');
 });
 

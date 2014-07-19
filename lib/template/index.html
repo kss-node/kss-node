@@ -33,7 +33,7 @@
 <div role="main" id="kss-main">
   <article id="kss-content">
   {{#if overview}}
-    {{html overview}}
+    {{{overview}}}
   {{else}}
 
     {{!
@@ -52,7 +52,7 @@
       <h1 class="kss-title"><span class="kss-ref">{{ reference }}{{#whenDepth 1}}.0{{/whenDepth}}</span> - {{ header }}</h1>
 
       {{#if description}}
-        <div class="kss-box">{{html description}}</div>
+        <div class="kss-box">{{{description}}}</div>
       {{/if}}
 
       {{#if markup}}
@@ -66,7 +66,7 @@
           </tr>
         {{#eachModifier}}
           <tr class="kss-mod-desc-group">
-            <td class="kss-mod-desc">{{html description}}</td>
+            <td class="kss-mod-desc">{{{description}}}</td>
             <td class="kss-mod-name"><p>{{name}}</p></td>
           </tr>
           <tr class="kss-mod-example">
