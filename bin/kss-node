@@ -438,11 +438,8 @@ handlebars.registerHelper('eachSection', function(query, options) {
 handlebars.registerHelper('loadSectionTemplate', function (context) {
 	var template;
 
-	if (!argv.template)
-		return;
-
 	try {
-		template = fs.readFileSync(path.relative(process.cwd(), argv.template) + '/' + context.reference + '.hbs', 'utf8');
+		template = fs.readFileSync(argv.template + '/' + context.reference + '.hbs', 'utf8');
 	} catch (e) {
 		return;
 	}
