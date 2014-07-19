@@ -409,14 +409,14 @@ handlebars.registerHelper('whenDepth', function(depth, options) {
  * Similar to the {#eachSection} helper, however will loop over each modifier
  * @param  {Object} section Supply a section object to loop over it's modifiers. Defaults to the current section.
  */
-handlebars.registerHelper('eachModifier', function(options) {
+handlebars.registerHelper('eachModifier', function() {
 	var modifiers,
+		options = arguments[arguments.length - 1],
 		buffer = '',
 		i, l;
 
-	// Default to current modifiers, but allow supplying a custom section
-	if (options.data) modifiers = options.data.modifiers;
-	modifiers = modifiers || this.modifiers || false;
+	// Default to current modifiers, but allow supplying a custom section.
+	modifiers = (arguments.length > 1 && arguments[0].data) ? arguments[0].data.modifiers : this.modifiers;
 
 	if (!modifiers) return {};
 
