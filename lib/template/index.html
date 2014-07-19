@@ -47,12 +47,10 @@
           the "#whenDepth 1" block as seen below.
         }}
         {{#eachSection rootNumber}}
-          {{#whenDepth 1}}
-            <h1 class="kss-title"><span class="kss-ref">{{ reference }}.0</span> - {{ header }}</h1>
-          {{else}}
-           <section class="kss-depth-{{ refDepth }}">
-            <h1 class="kss-title"><span class="kss-ref">{{ reference }}</span> - {{ header }}</h1>
+          {{#whenDepth 1}} {{else}}
+            <section class="kss-depth-{{ refDepth }}">
           {{/whenDepth}}
+          <h1 class="kss-title"><span class="kss-ref">{{ reference }}{{#whenDepth 1}}.0{{/whenDepth}}</span> - {{ header }}</h1>
             {{#ifAny markup modifiers}}
                 <div class="kss-box">{{html description}}</div>
                 <table class="kss-mod-list">
