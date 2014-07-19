@@ -438,9 +438,13 @@ handlebars.registerHelper('sectionTemplate', function(options) {
 	var template;
 
 	try {
-		template = fs.readFileSync(argv.template + '/' + this.reference + '.hbs', 'utf8');
+		template = fs.readFileSync(argv.template + '/' + this.reference + '.html', 'utf8');
 	} catch (e) {
-		return;
+		try {
+			template = fs.readFileSync(argv.template + '/' + this.reference + '.hbs', 'utf8');
+		} catch (e) {
+			return;
+		}
 	}
 
 	console.log("...injecting template for section " + this.reference);
