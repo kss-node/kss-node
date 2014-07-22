@@ -20,7 +20,9 @@ var kss = require(__dirname + '/../lib/kss.js'),
 		sourceDirectory: __dirname + '/../demo',
 		destinationDirectory: process.cwd() + '/styleguide'
 	},
-	KSS_FAILED = false,	argv;
+	KSS_FAILED = false,
+	argv,
+	error;
 
 /**
  * CLI argument parsing, thanks to Substack's optimist.
@@ -80,10 +82,19 @@ if (argv.init) {
 
 	console.log('Creating a new styleguide template...');
 	try {
-		wrench.copyDirSyncRecursive( __dirname + '/../lib/template', argv.init );
-	}
-	catch (e) {
-		console.log('Error! ' + argv.init + ' already exists.');
+		error = wrench.copyDirSyncRecursive(
+			__dirname + '/../lib/template',
+			argv.init,
+			{
+				forceDelete: false,
+				excludeHiddenUnix: true
+			}
+		);
+		if (error) {
+			throw error;
+		}
+	} catch (e) {
+		console.log('Error! This folder already exists: ' + argv.init);
 		return;
 	}
 	console.log('You can change it as you like, and use it with your styleguide like so:');
@@ -123,8 +134,8 @@ wrench.copyDirSyncRecursive(
 	config.templateDirectory + '/public',
 	config.destinationDirectory + '/public',
 	{
-	  forceDelete: true,
-	  excludeHiddenUnix: true
+		forceDelete: true,
+		excludeHiddenUnix: true
 	}
 );
 
