@@ -318,30 +318,6 @@ jsonModifiers = function(modifiers) {
 };
 
 /**
- * Equivalent to the {#if} block helper with multiple arguments.
- */
-handlebars.registerHelper('ifAny', function() {
-	var numItems = arguments.length - 1,
-		options = arguments[numItems],
-		success = true,
-		i;
-
-	// Warn the user that IfAny is deprecated. The only usage in kss-node was
-	// {{#ifAny markup modifiers}} and, since modifiers is an object and, always
-	// evals to true (even when empty), #ifAny was effectively a dupe of #If.
-	console.log('IfAny is deprecated; if your template has {{#ifAny markup modifiers}}...{{/ifAny}}, replace it with {{#ifAny markup}}...{{/if}}.');
-
-	for (i = 0; i < numItems; i += 1) {
-		if (!arguments[i]) {
-			success = false;
-			break;
-		}
-	}
-
-	return success ? options.fn(this) : options.inverse(this);
-});
-
-/**
  * Returns a single section, found by its reference number
  * @param  {String|Number} reference The reference number to search for.
  */
@@ -481,6 +457,30 @@ handlebars.registerHelper('html', function(arg) {
 	console.log('{{html expression}} is deprecated; use HandleBars’ triple-stash instead: {{{expression}}}.');
 
 	return new handlebars.SafeString(arg || '');
+});
+
+/**
+ * Equivalent to the {#if} block helper with multiple arguments.
+ */
+handlebars.registerHelper('ifAny', function() {
+	var numItems = arguments.length - 1,
+		options = arguments[numItems],
+		success = true,
+		i;
+
+	// Warn the user that IfAny is deprecated. The only usage in kss-node was
+	// {{#ifAny markup modifiers}} and, since modifiers is an object and, always
+	// evals to true (even when empty), #ifAny was effectively a dupe of #If.
+	console.log('IfAny is deprecated; if your template has {{#ifAny markup modifiers}}...{{/ifAny}}, replace it with {{#ifAny markup}}...{{/if}}.');
+
+	for (i = 0; i < numItems; i += 1) {
+		if (!arguments[i]) {
+			success = false;
+			break;
+		}
+	}
+
+	return success ? options.fn(this) : options.inverse(this);
 });
 
 /**
