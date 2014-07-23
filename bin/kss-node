@@ -65,6 +65,10 @@ argv = yargs
 		string    : true,
 		describe  : 'Source directory to parse for KSS comments'
 	})
+	.options('markup', {
+		string    : true,
+		describe  : 'The directory containing templates of each section of your styleguide'
+	})
 	.options('destination', {
 		string    : true,
 		describe  : 'Destination directory of generated styleguide',
@@ -152,6 +156,8 @@ if (!argv.source) {
 	return;
 }
 argv.source = path.resolve(argv.source);
+// Get the full markup path.
+argv.markup = (argv.markup) ? path.resolve(argv.markup) : argv.source;
 // Get the full destination path.
 if (argv.destination instanceof Array) {
 	argv.destination = argv.destination.pop();
@@ -178,6 +184,7 @@ console.log('');
 console.log('Generating your KSS Styleguide!');
 console.log('');
 console.log(' * KSS Source  : ' + argv.source);
+console.log(' * Markup      : ' + argv.markup);
 console.log(' * Destination : ' + argv.destination);
 console.log(' * Template    : ' + argv.template);
 console.log(' * Helpers     : ' + argv.helpers);
@@ -450,8 +457,8 @@ handlebars.registerHelper('sectionTemplate', function(options) {
 	// Build the cache for the list of handlebarsFiles.
 	if (!cache['handlebarsFiles']) {
 		cache['handlebarsFiles'] = {};
-		files = glob.sync(argv.source + '/**/*\.hbs');
-		files = files.concat(glob.sync(argv.source + '/**/*\.html'));
+		files = glob.sync(argv.markup + '/**/*\.hbs');
+		files = files.concat(glob.sync(argv.markup + '/**/*\.html'));
 		l = files.length;
 		for (i = 0; i < l; i++) {
 			cache['handlebarsFiles'][path.basename(files[i], path.extname(files[i]))] = files[i];
