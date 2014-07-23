@@ -307,7 +307,7 @@ generateIndex = function(styleguide, sections, pages, sectionRoots) {
 				overview: marked(fs.readFileSync(config.sourceDirectory + '/styleguide.md', 'utf8'))
 			})
 		);
-	} catch(e) {
+	} catch (e) {
 		console.log('...no styleguide overview generated:', e.message);
 	}
 };
@@ -374,7 +374,7 @@ handlebars.registerHelper('section', function(reference, options) {
  */
 handlebars.registerHelper('eachSection', function(query, options) {
 	var buffer = '',
-	  sections,
+		sections,
 		i, l;
 
 	if (!query.match(/x|\*/g)) {
@@ -396,7 +396,7 @@ handlebars.registerHelper('eachSection', function(query, options) {
  */
 handlebars.registerHelper('eachRoot', function(options) {
 	var buffer = '',
-	  sections,
+		sections,
 		i, l;
 
 	sections = styleguide.section('x');
