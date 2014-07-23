@@ -315,12 +315,16 @@ suite('#traverse', function() {
 				assert.equal(section.data.reference, '1.2');
 			}, false, { markup: true });
 
-			common.testSection('False-positive of multi-line comment block #1', 'options-comment-syntax.less', function(section) {
+			common.testSection('Comment syntax: multi-line, indented', 'options-comment-syntax.less', function(section) {
 				assert.equal(section.data.reference, '1.3');
 			}, false, { markup: true });
 
-			common.testSection('False-positive of multi-line comment block #2', 'options-comment-syntax.less', function(section) {
+			common.testSection('False-positive of multi-line comment block #1', 'options-comment-syntax.less', function(section) {
 				assert.equal(section.data.reference, '1.4');
+			}, false, { markup: true });
+
+			common.testSection('False-positive of multi-line comment block #2', 'options-comment-syntax.less', function(section) {
+				assert.equal(section.data.reference, '1.5');
 			}, false, { markup: true });
 		}),
 		suite('.markup', function() {
