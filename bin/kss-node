@@ -433,7 +433,7 @@ handlebars.registerHelper('eachSection', function(query, options) {
 });
 
 /**
-* If the template exists as *reference*.html in the templates folder, inject it.
+* If the template exists as *reference*.html in the source folder, inject it.
 */
 handlebars.registerHelper('sectionTemplate', function(options) {
 	var template;
@@ -450,10 +450,10 @@ handlebars.registerHelper('sectionTemplate', function(options) {
 	else {
 		// Otherwise, load the template from disk.
 		try {
-			template = fs.readFileSync(argv.template + '/' + this.reference + '.html', 'utf8');
+			template = fs.readFileSync(argv.source + '/' + this.reference + '.html', 'utf8');
 		} catch (e) {
 			try {
-				template = fs.readFileSync(argv.template + '/' + this.reference + '.hbs', 'utf8');
+				template = fs.readFileSync(argv.source + '/' + this.reference + '.hbs', 'utf8');
 			} catch (e) {
 				// If there's no template file, use an empty template to prevent
 				// repeatedly checking the disk.
