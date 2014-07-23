@@ -339,25 +339,6 @@ jsonModifiers = function(modifiers) {
 };
 
 /**
- * Equivalent to the {#if} block helper with multiple arguments.
- */
-handlebars.registerHelper('ifAny', function() {
-	var numItems = arguments.length - 1,
-		options = arguments[numItems],
-		success = true,
-		i;
-
-	for (i = 0; i < numItems; i += 1) {
-		if (!arguments[i]) {
-			success = false;
-			break;
-		}
-	}
-
-	return success ? options.fn(this) : options.inverse(this);
-});
-
-/**
  * Returns a single section, found by its reference number
  * @param  {String|Number} reference The reference number to search for.
  */
@@ -413,17 +394,33 @@ handlebars.registerHelper('eachRoot', function(options) {
 /**
  * Equivalent to "if the current section is X levels deep". e.g:
  *
- * {{#refDepth 1}}
+ * {{#ifDepth 1}}
  * 	 ROOT ELEMENTS ONLY
  * 	{{else}}
  * 	 ANYTHING ELSE
- * {{/refDepth}}
+ * {{/ifDepth}}
  */
-handlebars.registerHelper('whenDepth', function(depth, options) {
+handlebars.registerHelper('ifDepth', function(depth, options) {
 	if (!this.refDepth) {
 		return '';
 	}
 	return (depth == this.refDepth) ? options.fn(this) : options.inverse(this);
+});
+
+/**
+ * Equivalent to "unless the current section is X levels deep". e.g:
+ *
+ * {{#unlessDepth 1}}
+ * 	 ANYTHING ELSE
+ * 	{{else}}
+ * 	 ROOT ELEMENTS ONLY
+ * {{/unlessDepth}}
+ */
+handlebars.registerHelper('unlessDepth', function(depth, options) {
+	if (!this.refDepth) {
+		return '';
+	}
+	return (depth == this.refDepth) ? options.inverse(this) : options.fn(this);
 });
 
 /**
@@ -477,7 +474,43 @@ handlebars.registerHelper('modifierMarkup', function(modifier) {
  * @param  {String} arg The unescaped HTML
  */
 handlebars.registerHelper('html', function(arg) {
+	// Warn the user that html is deprecated.
+	console.log('{{html expression}} is deprecated; use HandleBars’ triple-stash instead: {{{expression}}}.');
+
 	return new handlebars.SafeString(arg || '');
+});
+
+/**
+ * Equivalent to the {#if} block helper with multiple arguments.
+ */
+handlebars.registerHelper('ifAny', function() {
+	var numItems = arguments.length - 1,
+		options = arguments[numItems],
+		success = true,
+		i;
+
+	// Warn the user that IfAny is deprecated. The only usage in kss-node was
+	// {{#ifAny markup modifiers}} and, since modifiers is an object and, always
+	// evals to true (even when empty), #ifAny was effectively a dupe of #If.
+	console.log('IfAny is deprecated; if your template has {{#ifAny markup modifiers}}...{{/ifAny}}, replace it with {{#ifAny markup}}...{{/if}}.');
+
+	for (i = 0; i < numItems; i += 1) {
+		if (!arguments[i]) {
+			success = false;
+			break;
+		}
+	}
+
+	return success ? options.fn(this) : options.inverse(this);
+});
+
+/**
+ * Equivalent to "if the current section is X levels deep".
+ */
+handlebars.registerHelper('whenDepth', function(depth, options) {
+	// Warn the user that whenDepth is deprecated.
+	console.log('{{whenDepth expression}} is deprecated; use {{ifDepth expression}} instead.');
+	return handlebars.helpers.ifDepth.call(this, depth, options);
 });
 
 process.on('exit', function() {

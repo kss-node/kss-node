@@ -33,7 +33,7 @@
 <div role="main" id="kss-main">
   <article id="kss-content">
   {{#if overview}}
-    {{html overview}}
+    {{{overview}}}
   {{else}}
 
     {{!
@@ -42,20 +42,20 @@
       layout instead.
 
       The "root" element comes first in this loop, and can be detected using
-      the "#whenDepth 1" block as seen below.
+      the "#ifDepth 1" block as seen below.
     }}
     {{#eachSection rootNumber}}
-      {{#whenDepth 1}} {{else}}
+      {{#unlessDepth 1}}
       <section class="kss-depth-{{ refDepth }}">
-      {{/whenDepth}}
+      {{/unlessDepth}}
 
-      <h1 class="kss-title"><span class="kss-ref">{{ reference }}{{#whenDepth 1}}.0{{/whenDepth}}</span> - {{ header }}</h1>
+      <h1 class="kss-title"><span class="kss-ref">{{ reference }}{{#ifDepth 1}}.0{{/ifDepth}}</span> - {{ header }}</h1>
 
       {{#if description}}
-        <div class="kss-box">{{html description}}</div>
+        <div class="kss-box">{{{description}}}</div>
       {{/if}}
 
-      {{#ifAny markup modifiers}}
+      {{#if markup}}
         <table class="kss-mod-list">
           <tr class="kss-mod-desc-group">
             <td class="kss-mod-desc"><p>Default styling</p></td>
@@ -66,7 +66,7 @@
           </tr>
         {{#eachModifier}}
           <tr class="kss-mod-desc-group">
-            <td class="kss-mod-desc">{{html description}}</td>
+            <td class="kss-mod-desc">{{{description}}}</td>
             <td class="kss-mod-name"><p>{{name}}</p></td>
           </tr>
           <tr class="kss-mod-example">
@@ -78,11 +78,11 @@
         <div class="kss-markup">
           <pre class="prettyprint lang-html">{{markup}}</pre>
         </div>
-      {{/ifAny}}
+      {{/if}}
 
-      {{#whenDepth 1}} {{else}}
+      {{#unlessDepth 1}}
       </section>
-      {{/whenDepth}}
+      {{/unlessDepth}}
     {{/eachSection}}
   {{/if}}
   </article>
