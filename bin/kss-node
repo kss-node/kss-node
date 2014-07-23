@@ -397,17 +397,33 @@ handlebars.registerHelper('eachRoot', function(options) {
 /**
  * Equivalent to "if the current section is X levels deep". e.g:
  *
- * {{#refDepth 1}}
+ * {{#ifDepth 1}}
  * 	 ROOT ELEMENTS ONLY
  * 	{{else}}
  * 	 ANYTHING ELSE
- * {{/refDepth}}
+ * {{/ifDepth}}
  */
-handlebars.registerHelper('whenDepth', function(depth, options) {
+handlebars.registerHelper('ifDepth', function(depth, options) {
 	if (!this.refDepth) {
 		return '';
 	}
 	return (depth == this.refDepth) ? options.fn(this) : options.inverse(this);
+});
+
+/**
+ * Equivalent to "unless the current section is X levels deep". e.g:
+ *
+ * {{#unlessDepth 1}}
+ * 	 ANYTHING ELSE
+ * 	{{else}}
+ * 	 ROOT ELEMENTS ONLY
+ * {{/unlessDepth}}
+ */
+handlebars.registerHelper('unlessDepth', function(depth, options) {
+	if (!this.refDepth) {
+		return '';
+	}
+	return (depth == this.refDepth) ? options.inverse(this) : options.fn(this);
 });
 
 /**
@@ -465,6 +481,15 @@ handlebars.registerHelper('html', function(arg) {
 	console.log('{{html expression}} is deprecated; use HandleBars’ triple-stash instead: {{{expression}}}.');
 
 	return new handlebars.SafeString(arg || '');
+});
+
+/**
+ * Equivalent to "if the current section is X levels deep".
+ */
+handlebars.registerHelper('whenDepth', function(depth, options) {
+	// Warn the user that whenDepth is deprecated.
+	console.log('{{whenDepth expression}} is deprecated; use {{ifDepth expression}} instead.');
+	return handlebars.helpers.ifDepth.call(this, depth, options);
 });
 
 process.on('exit', function() {

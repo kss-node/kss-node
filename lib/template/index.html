@@ -42,14 +42,14 @@
       layout instead.
 
       The "root" element comes first in this loop, and can be detected using
-      the "#whenDepth 1" block as seen below.
+      the "#ifDepth 1" block as seen below.
     }}
     {{#eachSection rootNumber}}
-      {{#whenDepth 1}} {{else}}
+      {{#unlessDepth 1}}
       <section class="kss-depth-{{ refDepth }}">
-      {{/whenDepth}}
+      {{/unlessDepth}}
 
-      <h1 class="kss-title"><span class="kss-ref">{{ reference }}{{#whenDepth 1}}.0{{/whenDepth}}</span> - {{ header }}</h1>
+      <h1 class="kss-title"><span class="kss-ref">{{ reference }}{{#ifDepth 1}}.0{{/ifDepth}}</span> - {{ header }}</h1>
 
       {{#if description}}
         <div class="kss-box">{{{description}}}</div>
@@ -80,9 +80,9 @@
         </div>
       {{/if}}
 
-      {{#whenDepth 1}} {{else}}
+      {{#unlessDepth 1}}
       </section>
-      {{/whenDepth}}
+      {{/unlessDepth}}
     {{/eachSection}}
   {{/if}}
   </article>
