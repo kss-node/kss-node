@@ -29,7 +29,7 @@ var kss = require(__dirname + '/../lib/kss.js'),
  * @type {Object}
  */
 argv = yargs
-	.usage('Usage:\n $0 sourcedir [destdir] --init [directory] --{style,less,sass,stylus} [file]')
+	.usage('Usage: kss-node <sourcedir> <destdir> [options]\n\n<destdir> defaults to "styleguide" if not specified.')
 	.check(function(args) {
 		if (args._.length < 1 && !args.init) {
 			throw new Error('Please provide a source directory');
