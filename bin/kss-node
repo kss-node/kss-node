@@ -155,10 +155,7 @@ process.nextTick(function() {
 			throw err;
 		}
 
-		css = new cleanCSS().minify(css);
-
-		// Write the compiled LESS styles from the template.
-		fs.writeFileSync(config.destinationDirectory + '/public/kss.css', css, 'utf8');
+		saveStylesheet(css, 'kss.css');
 
 		console.log('...parsing your styleguide');
 
@@ -263,16 +260,17 @@ generateStylesheet = function(argv) {
 		});
 	}, function (err, combined) {
 		if (err) throw err
-		saveStylesheet(combined)
+		saveStylesheet(combined, 'style.css')
 	});
 };
 
 // Used by generateStylesheet to minify and then
 // save its final buffer to a single CSS file.
-saveStylesheet = function(buffer) {
+saveStylesheet = function(buffer, filename) {
 	buffer = new cleanCSS().minify(buffer.toString());
+	filename = filename || 'style.css';
 	fs.writeFileSync(
-		config.destinationDirectory + '/public/style.css',
+		config.destinationDirectory + '/public/' + filename,
 		buffer, 'utf8'
 	);
 };
