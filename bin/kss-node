@@ -4,7 +4,7 @@ var kss = require(__dirname + '/../lib/kss.js'),
 	preCompiler = kss.precompilers,
 	handlebars = require('handlebars'),
 	cleanCss = require('clean-css'),
-	optimist = require('optimist'),
+	yargs = require('yargs'),
 	marked = require('marked'),
 	wrench = require('wrench'),
 	stylus = require('stylus'),
@@ -25,10 +25,10 @@ var kss = require(__dirname + '/../lib/kss.js'),
 	error;
 
 /**
- * CLI argument parsing, thanks to Substack's optimist.
+ * CLI argument parsing.
  * @type {Object}
  */
-argv = require('optimist')
+argv = yargs
 	.usage('Usage:\n $0 sourcedir [destdir] --init [directory] --{style,less,sass,stylus} [file]')
 	.check(function(args) {
 		if (args._.length < 1 && !args.init) {
@@ -36,9 +36,20 @@ argv = require('optimist')
 		}
 	})
 
+	.alias('i', 'init')
+	.describe('i', 'Create a new styleguide template to work from')
+
 	.string('t')
 	.alias('t', 'template')
 	.describe('t', 'Use a custom template to build your styleguide')
+
+	.string('m')
+	.alias('m', 'mask')
+	.describe('m', 'Use a custom mask for detecting stylesheets in the source directory, e.g. "*.css"')
+
+	.string('c')
+	.alias('c', 'css')
+	.describe('c', 'Include a CSS stylesheet')
 
 	.string('s')
 	.alias('s', 'style')
@@ -48,24 +59,13 @@ argv = require('optimist')
 	.alias('l', 'less')
 	.describe('l', 'Compile and include a LESS stylesheet')
 
-	.string('y')
-	.alias('y', 'stylus')
-	.describe('y', 'Compile and include a Stylus stylesheet')
-
 	.string('S')
 	.alias('S', 'sass')
 	.describe('S', 'Compile and include a SASS stylesheet')
 
-	.string('c')
-	.alias('c', 'css')
-	.describe('c', 'Compile and include a CSS stylesheet')
-
-	.string('m')
-	.alias('m', 'mask')
-	.describe('m', 'Use a custom mask for detecting stylesheets, e.g. "*.css"')
-
-	.alias('i', 'init')
-	.describe('i', 'Create a new styleguide template to work from')
+	.string('y')
+	.alias('y', 'stylus')
+	.describe('y', 'Compile and include a Stylus stylesheet')
 
 	.alias('L', 'load-path')
 	.describe('L', 'Include a load path for precompiler imports')
