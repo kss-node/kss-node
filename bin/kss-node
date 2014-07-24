@@ -4,7 +4,7 @@ var kss = require(__dirname + '/../lib/kss.js'),
 	preCompiler = kss.precompilers,
 	handlebars = require('handlebars'),
 	cleanCss = require('clean-css'),
-	optimist = require('optimist'),
+	yargs = require('yargs'),
 	marked = require('marked'),
 	wrench = require('wrench'),
 	stylus = require('stylus'),
@@ -25,10 +25,10 @@ var kss = require(__dirname + '/../lib/kss.js'),
 	error;
 
 /**
- * CLI argument parsing, thanks to Substack's optimist.
+ * CLI argument parsing.
  * @type {Object}
  */
-argv = require('optimist')
+argv = yargs
 	.usage('Usage:\n $0 sourcedir [destdir] --init [directory] --{style,less,sass,stylus} [file]')
 	.check(function(args) {
 		if (args._.length < 1 && !args.init) {
