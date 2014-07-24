@@ -148,67 +148,65 @@ wrench.copyDirSyncRecursive(
 // Generate the static HTML pages in the next tick, i.e. after the other functions have
 // been defined and handlebars helpers set up.
 process.nextTick(function() {
+	// Optionally compile the template's kss.less stylesheet.
 	console.log('...compiling KSS styles');
-	less.render('@import "' + path.resolve(config.destinationDirectory) + '/public/kss.less";', function(err, css) {
-		if (err) {
-			console.error(err);
-			throw err;
+	less.render('@import "' + config.destinationDirectory + '/public/kss.less";', function(err, css) {
+		if (!err) {
+			saveStylesheet(css, 'kss.css');
+		}
+	});
+
+	console.log('...parsing your styleguide');
+
+	kss.traverse(config.sourceDirectory, {
+		multiline : true,
+		markdown  : true,
+		markup    : true,
+		mask      : argv.mask || preCompiler.mask
+	}, function(err, sg) {
+		if (err) throw err
+
+		styleguide = sg;
+
+		var sections = styleguide.section('*.'),
+			sectionCount = sections.length,
+			sectionRoots = [],
+			rootCount,
+			currentRoot,
+			childSections = [],
+			pages = {},
+			i;
+
+		console.log(sg.data.files.map(function(file) {
+			return ' - ' + file
+		}).join('\n'))
+
+		// Accumulate all of the sections' first indexes
+		// in case they don't have a root element.
+		for (i = 0; i < sectionCount; i += 1) {
+			currentRoot = sections[i].reference().match(/[0-9]*\.?/)[0].replace('.', '');
+
+			if (!~sectionRoots.indexOf(currentRoot)) {
+				sectionRoots.push(currentRoot);
+			}
 		}
 
-		saveStylesheet(css, 'kss.css');
+		sectionRoots.sort();
+		rootCount = sectionRoots.length;
 
-		console.log('...parsing your styleguide');
+		// Now, group all of the sections by their root
+		// reference, and make a page for each.
+		for (i = 0; i < rootCount; i += 1) {
+			childSections = styleguide.section(sectionRoots[i]+'.*');
 
-		kss.traverse(config.sourceDirectory, {
-			multiline : true,
-			markdown  : true,
-			markup    : true,
-			mask      : argv.mask || preCompiler.mask
-		}, function(err, sg) {
-			if (err) throw err
+			generatePage(
+				styleguide, childSections,
+				sectionRoots[i], pages, sectionRoots
+			);
+		}
 
-			styleguide = sg;
-
-			var sections = styleguide.section('*.'),
-				sectionCount = sections.length,
-				sectionRoots = [],
-				rootCount,
-				currentRoot,
-				childSections = [],
-				pages = {},
-				i;
-
-			console.log(sg.data.files.map(function(file) {
-				return ' - ' + file
-			}).join('\n'))
-
-			// Accumulate all of the sections' first indexes
-			// in case they don't have a root element.
-			for (i = 0; i < sectionCount; i += 1) {
-				currentRoot = sections[i].reference().match(/[0-9]*\.?/)[0].replace('.', '');
-
-				if (!~sectionRoots.indexOf(currentRoot)) {
-					sectionRoots.push(currentRoot);
-				}
-			}
-
-			sectionRoots.sort();
-			rootCount = sectionRoots.length;
-
-			// Now, group all of the sections by their root
-			// reference, and make a page for each.
-			for (i = 0; i < rootCount; i += 1) {
-				childSections = styleguide.section(sectionRoots[i]+'.*');
-
-				generatePage(
-					styleguide, childSections,
-					sectionRoots[i], pages, sectionRoots
-				);
-			}
-
-			generateIndex(styleguide, childSections, pages, sectionRoots);
-			generateStylesheet(argv);
-		});
+		generateIndex(styleguide, childSections, pages, sectionRoots);
+		generateStylesheet(argv);
 	});
 });
 
