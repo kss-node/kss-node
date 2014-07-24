@@ -67,7 +67,16 @@ argv = require('optimist')
 	.alias('i', 'init')
 	.describe('i', 'Create a new styleguide template to work from')
 
+	.alias('L', 'load-path')
+	.describe('L', 'Include a load path for precompiler imports')
+
 	.argv;
+
+// Set loadPath to an array containing all the paths specified.
+argv.loadPath = [];
+if (argv['load-path']) {
+	argv.loadPath = Array.isArray(argv['load-path']) ? argv['load-path'] : [argv['load-path']];
+}
 
 // Create a new styleguide template to play with using the `--init` tag.
 if (argv.init) {
@@ -245,7 +254,7 @@ generateStylesheet = function(argv) {
 			console.log(' - ' + filename + ' (' + type + ')')
 
 			if (type === 'css') return next(null, fs.readFileSync(filename, 'utf8'))
-			compilers[type].render(filename, next)
+			compilers[type].render(filename, next, argv)
 
 		}, function(err, output) {
 			if (err) return next(err)
@@ -519,8 +528,15 @@ process.on('exit', function() {
 });
 
 process.on('uncaughtException', function(err) {
-	console.log(err.message);
-	console.log(err.stack);
+	console.log('\nError during generation\n');
+
+	if (err.message || err.stack) {
+		console.log(err.message);
+		console.log(err.stack);
+	}
+	else
+		console.log(err);
+
 	KSS_FAILED = true;
 	process.exit(1);
 })
