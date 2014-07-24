@@ -67,9 +67,6 @@ argv = require('optimist')
 	.alias('i', 'init')
 	.describe('i', 'Create a new styleguide template to work from')
 
-	.alias('i', 'init')
-	.describe('i', 'Create a new styleguide template to work from')
-
 	.argv;
 
 // Create a new styleguide template to play with using the `--init` tag.
