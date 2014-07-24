@@ -72,8 +72,8 @@ argv = require('optimist')
 
 	.argv;
 
-argv.loadPath = argv['load-path']
-argv.loadPath = argv.loadPath && !Array.isArray(argv.loadPath) ? [argv.loadPath] : argv.loadPath
+argv.loadPath = argv['load-path'];
+argv.loadPath = argv.loadPath && !Array.isArray(argv.loadPath) ? [argv.loadPath] : argv.loadPath;
 
 // Create a new styleguide template to play with using the `--init` tag.
 if (argv.init) {
@@ -528,12 +528,12 @@ process.on('uncaughtException', function(err) {
 	console.log('\nError during generation\n');
 
 	if (err.message || err.stack) {
-		console.log(err.message)
-		console.log(err.stack)
+		console.log(err.message);
+		console.log(err.stack);
 	}
 	else
-		console.log(err)
+		console.log(err);
 
-	KSS_FAILED = true
-	process.exit(1)
+	KSS_FAILED = true;
+	process.exit(1);
 })
