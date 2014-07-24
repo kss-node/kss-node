@@ -13,27 +13,34 @@ Just one line: `npm install kss`. If you want to use the command line interface,
 To get you up and running quickly, a styleguide generator is included that can be used from the command line. It parses a directory of stylesheets and spits out a set of static HTML files like the ones used on this site.
 
 ```
-Usage:
- kss-node sourcedir [destdir] --init [directory] --{style,less,sass,stylus} [file]
+Usage: kss-node <sourcedir> <destdir> [options]
+
+<destdir> defaults to "styleguide" if not specified.
 
 Options:
-  -t, --template  Use a custom template to build your styleguide [string]
-  -s, --style     Compile and include a stylesheet               [string]
-  -l, --less      Compile and include a LESS stylesheet          [string]
-  -y, --stylus    Compile and include a Stylus stylesheet        [string]
-  -S, --sass      Compile and include a SASS stylesheet          [string]
-  -c, --css       Compile and include a CSS stylesheet           [string]
-  -m, --mask      Use a custom mask for detecting stylesheets    [string]
-  -i, --init      Create a new styleguide template to work from
+  -i, --init       Create a new styleguide template to work from
+  -t, --template   Use a custom template to build your styleguide
+  -m, --mask       Use a custom mask for detecting stylesheets in the source directory, e.g. "*.css"
+  -c, --css        Include a CSS stylesheet
+  -s, --style      Compile and include a stylesheet - the precompiler is chosen based on file extension
+  -l, --less       Compile and include a LESS stylesheet
+  -S, --sass       Compile and include a SASS stylesheet
+  -y, --stylus     Compile and include a Stylus stylesheet
+  -L, --load-path  Include a load path for precompiler imports
 ```
 
-You'll need to specify a directory containing all of your CSS files to be parsed for documentation as the first argument. Optionally, the second argument can be used to specify a target directory. Your CSS won't be included by default, hence you should use the `--less`, `--css`, etc. flags to point to a stylesheet to compile and include. You can generate a copy of the demo styleguide like so:
+You'll need to specify a directory containing all of your stylesheet files to be parsed for documentation as the first argument. Optionally, the second argument can be used to specify a target directory. Your CSS won't be included by default, hence you should use the `--less`, `--css`, etc. flags to point to a stylesheet to compile and include. You can generate a copy of the demo styleguide like so:
 
     $ kss-node demo styleguide --less demo/styles.less
 
-You can create your own templates too, either by editing the contents of the `lib/template` directory or using the `--template` flag to point to your own. The default template should look something like this:
+You can create your own templates too. Use the `node-kss --init` command to initialize a copy of the default template so you can edit it and use it when generating your styleguide with the `--template` flag:
 
-![CLI Template Preview](https://raw.github.com/kss-node/kss-node/develop/demo/preview.png)
+    $ kss-node --init custom-template
+    $ kss-node ../path/to/sass styleguide --template custom-template
+
+The default template should look something like this:
+
+![CLI Template Preview](https://raw.github.com/kss-node/kss-node/master/demo/preview.png)
 
 ## Using kss-node from Node
 
@@ -94,6 +101,7 @@ To generate a new version of the demo styleguide, use `make gh-pages`. After com
 
 ## Contributors
 
+* [John Albin Wilkins](https://github.com/JohnAlbin)
 * [Warin](https://github.com/Warin)
 * [Manuel Goerlich](https://github.com/MaThGo)
 * [Kevin Lamping](https://github.com/klamping)
