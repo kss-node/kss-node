@@ -72,8 +72,11 @@ argv = require('optimist')
 
 	.argv;
 
-argv.loadPath = argv['load-path'];
-argv.loadPath = argv.loadPath && !Array.isArray(argv.loadPath) ? [argv.loadPath] : argv.loadPath;
+// Set loadPath to an array containing all the paths specified.
+argv.loadPath = [];
+if (argv['load-path']) {
+	argv.loadPath = Array.isArray(argv['load-path']) ? argv['load-path'] : [argv['load-path']];
+}
 
 // Create a new styleguide template to play with using the `--init` tag.
 if (argv.init) {
