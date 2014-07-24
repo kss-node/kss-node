@@ -27,7 +27,7 @@
     "stylus": "0.46.x",
     "node-sass": "0.8.x",
     "yargs": "1.x.x",
-    "clean-css": "1.1.x",
+    "clean-css": "2.x.x",
     "async": "0.1.x"
   },
   "devDependencies": {

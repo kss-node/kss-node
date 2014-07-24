@@ -3,7 +3,7 @@
 var kss = require(__dirname + '/../lib/kss.js'),
 	preCompiler = kss.precompilers,
 	handlebars = require('handlebars'),
-	cleanCss = require('clean-css'),
+	cleanCSS = require('clean-css'),
 	yargs = require('yargs'),
 	marked = require('marked'),
 	wrench = require('wrench'),
@@ -155,7 +155,7 @@ process.nextTick(function() {
 			throw err;
 		}
 
-		css = cleanCss.process(css);
+		css = new cleanCSS().minify(css);
 
 		// Write the compiled LESS styles from the template.
 		fs.writeFileSync(config.destinationDirectory + '/public/kss.css', css, 'utf8');
@@ -236,7 +236,6 @@ generateStylesheet = function(argv) {
 	async.reduce(files, [], function (combined, group, next) {
 		if (!group) return next(null, combined)
 
-
 		async.map(group.files, function (filename, next) {
 			var type = group.type,
 				extension;
@@ -271,7 +270,7 @@ generateStylesheet = function(argv) {
 // Used by generateStylesheet to minify and then
 // save its final buffer to a single CSS file.
 saveStylesheet = function(buffer) {
-	buffer = cleanCss.process(buffer.toString());
+	buffer = new cleanCSS().minify(buffer.toString());
 	fs.writeFileSync(
 		config.destinationDirectory + '/public/style.css',
 		buffer, 'utf8'
