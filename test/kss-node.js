@@ -14,15 +14,15 @@ suite('#kss-node', function() {
 	});
 
 	suite('load-path option', function() {
-		test('Fails when no load path specified', function(done) {
-			exec('bin/kss-node test/fixtures-styles/with-include test-tmp --sass test/fixtures-styles/with-include/style.scss', function(err, stdout, stderr) {
+		test('Fails without load-path, when using --sass', function(done) {
+			exec('bin/kss-node test/fixtures-styles/with-include test/output --sass test/fixtures-styles/with-include/style.scss', function(err, stdout, stderr) {
 				assert.ok(/Error during generation/g.test(stdout));
 				assert.ok(/error: file to import not found or unreadable: "buttons"/g.test(stdout));
 				done();
 			});
 		});
-		test('Succeeds when load path specified', function(done) {
-			exec('bin/kss-node test/fixtures-styles/with-include test-tmp -L test/fixtures-styles/includes --sass test/fixtures-styles/with-include/style.scss', function(err, stdout, stderr) {
+		test('Succeeds with load-path, when using --sass', function(done) {
+			exec('bin/kss-node test/fixtures-styles/with-include test/output -L test/fixtures-styles/includes --sass test/fixtures-styles/with-include/style.scss', function(err, stdout, stderr) {
 				assert.ok(/Generation completed successfully/g.test(stdout));
 				done();
 			});
