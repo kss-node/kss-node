@@ -260,6 +260,10 @@ suite('#traverse', function() {
 					assert.ok(section.data.deprecated);
 				}, 'Still works with vertical line space', { multiline: true});
 
+				common.testSection('Deprecated: Indented', 'sections-status.less', function(section) {
+					assert.ok(section.data.deprecated);
+				}, 'Still works with indentation', { multiline: true});
+
 				common.testSection('Deprecated: In Header', 'sections-status.less', function(section) {
 					assert.ok(section.data.deprecated);
 				}, 'Works when included in header', { multiline: true});
@@ -281,6 +285,10 @@ suite('#traverse', function() {
 				common.testSection('Experimental: Spacing above and below', 'sections-status.less', function(section) {
 					assert.ok(section.data.experimental);
 				}, 'Still works with vertical line space', { multiline: true});
+
+				common.testSection('Experimental: Indented', 'sections-status.less', function(section) {
+					assert.ok(section.data.experimental);
+				}, 'Still works with indentation', { multiline: true});
 
 				common.testSection('Experimental: In Header', 'sections-status.less', function(section) {
 					assert.ok(section.data.experimental);
