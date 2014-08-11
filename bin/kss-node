@@ -487,9 +487,12 @@ if (fs.existsSync('helpers')) {
 	var helperFiles = fs.readdirSync('helpers');
 
 	helperFiles.forEach(function(fileName) {
+		if (path.extname(filename) !== '.js') {
+			return;
+		}
 		var helper = require(config.helpersDirectory + '/' + fileName);
 		if (typeof helper.register === 'function') {
-		    helper.register(handlebars);
+			helper.register(handlebars);
 		}
 	});
 }
