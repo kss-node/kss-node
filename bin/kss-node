@@ -341,14 +341,16 @@ jsonModifiers = function(modifiers) {
 };
 
 // Load custom Handlebars helpers.
-var helperFiles = fs.readdirSync('helpers');
+if (fs.existsSync('helpers')) {
+	var helperFiles = fs.readdirSync('helpers');
 
-helperFiles.forEach(function(fileName) {
-	var helper = require(config.helpersDirectory + '/' + fileName);
-	if (typeof helper.register === 'function') {
-	    helper.register(handlebars);
-	}
-});
+	helperFiles.forEach(function(fileName) {
+		var helper = require(config.helpersDirectory + '/' + fileName);
+		if (typeof helper.register === 'function') {
+			helper.register(handlebars);
+		}
+	});
+}
 
 /**
  * Returns a single section, found by its reference number
