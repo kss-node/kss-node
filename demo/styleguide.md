@@ -8,11 +8,11 @@ This is a demo of [kss-node](https://github.com/kss-node/kss-node)'s built-in st
 >
 > KSS is a set of guidelines to help you produce an HTML styleguide tied to CSS documentation that is nice to read in plain text, yet structured enough to be automatically extracted and processed by a machine.
 
-The upshot of this is that KSS can be used for generating CSS documentation pages. This site is generated with the `kss-node` command-line tool used on this [demo project](https://github.com/kss-node/kss-node/tree/master/demo).
+The upshot of this is that KSS can be used for generating site styleguides or CSS documentation pages. This site is generated with the `kss-node` command-line tool used on this [demo project](https://github.com/kss-node/kss-node/tree/master/demo).
 
-Check out the [project on Github](https://github.com/kss-node/kss-node) for more information, or read on for details on how to document your stylesheets for KSS.
+Check out the [project on Github](https://github.com/kss-node/kss-node) for more information about the code, or read on for details on how to document your stylesheets for KSS.
 
-# Specification
+# KSS Specification
 
 The text from here on is mostly taken from the [KSS specification](https://github.com/kneath/kss/blob/master/SPEC.md).
 
@@ -26,6 +26,8 @@ The basic format for KSS documentation can be best explained in an example:
 
 ```css
 /*
+Button
+
 A button suitable for giving stars to someone.
 
 :hover             - Subtle hover highlight.
@@ -33,15 +35,16 @@ A button suitable for giving stars to someone.
 .stars-given:hover - Subtle hover highlight on top of stars-given styling.
 .disabled          - Dims the button to indicate it cannot be used.
 
-Styleguide 2.1.3.
+Styleguide 2.1.3
 */
-a.button.star{
+
+.button {
   ...
 }
-a.button.star.stars-given{
+.button.stars-given {
   ...
 }
-a.button.star.disabled{
+.button.disabled {
   ...
 }
 ```
@@ -49,6 +52,8 @@ a.button.star.disabled{
 When using a preprocessor that supports the functionality, use `//` to prefix your comment sections (SCSS example):
 
 ```less
+// Button
+//
 // A button suitable for giving stars to someone.
 //
 // :hover             - Subtle hover highlight.
@@ -56,10 +61,11 @@ When using a preprocessor that supports the functionality, use `//` to prefix yo
 // .stars-given:hover - Subtle hover highlight on top of stars-given styling.
 // .disabled          - Dims the button to indicate it cannot be used.
 //
-// Styleguide 2.1.3.
-a.button.star{
+// Styleguide 2.1.3
+
+.button{
   ...
-  &.star-given{
+  &.stars-given{
     ...
   }
   &.disabled{
@@ -68,7 +74,11 @@ a.button.star{
 }
 ```
 
-Each KSS documentation block consists of three parts: a description of what the element does or looks like, a list of modifier classes or pseudo-classes and how they modify the element, and a reference to the element's position in the styleguide.
+Each KSS documentation block consists of four parts:
+1. a name (required)
+2. a description of what the element does or looks like (optional)
+3. a list of modifier classes or pseudo-classes and how they modify the element (optional)
+4. a reference to the element's position in the styleguide (required)
 
 ## Style Documentation
 
@@ -112,12 +122,12 @@ If the UI element you are documenting has multiple states or styles depending on
 If the UI element you are documenting has an example in the styleguide, you should reference it using the "Styleguide [ref]" syntax.
 
 ```less
-// Styleguide 2.1.3.
+// Styleguide 2.1.3
 ```
 
 References should be integer sections separated by periods. Each period denotes a hierarchy of the styleguide. Styleguide references can point to entire sections, a portion of the section, or a specific example.
 
-If there is no example, then you must note that there is no reference.
+If there is no example, then you should note that there is no reference since it will not be included in the styleguide.
 
 ```less
 // No styleguide reference.
@@ -160,6 +170,8 @@ If you use a CSS preprocessor like SCSS or LESS, you should document all helper 
 ```
 
 Each documentation block should have a description section, parameters section, and compatibility section.  The description section follows the same guidelines as style documentation.
+
+Note: kss-node does not yet add helper documentation to the styleguide. See the [related issue on GitHub](https://github.com/kss-node/kss-node/issues/22).
 
 ## The parameters section
 
