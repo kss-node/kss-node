@@ -44,6 +44,10 @@ argv = yargs
 	.alias('t', 'template')
 	.describe('t', 'Use a custom template to build your styleguide')
 
+	.string('h')
+	.alias('h', 'helpers')
+	.describe('t', 'Specify custom handlebars templates for your styleguide')
+
 	.string('m')
 	.alias('m', 'mask')
 	.describe('m', 'Use a custom mask for detecting stylesheets in the source directory, e.g. "*.css"')
@@ -118,6 +122,9 @@ if (argv['_'].length > 1) {
 if (argv.template) {
 	config.templateDirectory = path.resolve(argv.template);
 }
+if (argv.helpers) {
+	config.helpersDirectory = path.resolve(argv.helpers);
+}
 
 console.log('');
 console.log('Generating your KSS Styleguide!');
@@ -125,6 +132,7 @@ console.log('');
 console.log(' * Source: ' + path.resolve(config.sourceDirectory));
 console.log(' * Destination: ' + path.resolve(config.destinationDirectory));
 console.log(' * Template: ' + path.resolve(config.templateDirectory));
+console.log(' * Helpers: ' + path.resolve(config.helpersDirectory));
 console.log('');
 
 // Compile the Handlebars template
@@ -340,7 +348,9 @@ jsonModifiers = function(modifiers) {
 	});
 };
 
-// Load custom Handlebars helpers.
+/**
+ * Load custom Handlebars helpers.
+ */
 if (fs.existsSync('helpers')) {
 	var helperFiles = fs.readdirSync('helpers');
 
