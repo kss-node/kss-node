@@ -33,7 +33,7 @@ You'll need to specify a directory containing all of your stylesheet files to be
 
     $ kss-node demo styleguide --less demo/styles.less
 
-You can create your own templates too. Use the `node-kss --init` command to initialize a copy of the default template so you can edit it and use it when generating your styleguide with the `--template` flag. This option is best when you need to compile your stylesheets with a preprocessor workflow not supported by kss-node; simply link the generated CSS from inside the custom template's index.html.
+You can create your own templates too. Use the `kss-node --init` command to initialize a copy of the default template so you can edit it and use it when generating your styleguide with the `--template` flag. This option is best when you need to compile your stylesheets with a preprocessor workflow not supported by kss-node; simply link the generated CSS from inside the custom template's index.html.
 
     $ kss-node --init custom-template
     $ kss-node ../path/to/sass styleguide --template custom-template
