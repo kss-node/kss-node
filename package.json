@@ -19,16 +19,16 @@
     "node": ">=0.10.0"
   },
   "dependencies": {
-    "marked": "0.1.x",
-    "natural": "0.0.65",
-    "handlebars": "1.3.x",
-    "wrench": "1.5.x",
-    "less": "1.x.x",
-    "stylus": "0.46.x",
-    "node-sass": "0.8.x",
-    "yargs": "1.x.x",
+    "async": "0.9.x",
     "clean-css": "2.x.x",
-    "async": "0.1.x"
+    "handlebars": "2.0.x",
+    "less": "1.x.x",
+    "marked": "^0.3.2",
+    "natural": "0.1.x",
+    "node-sass": "0.9.x",
+    "stylus": "0.48.x",
+    "wrench": "1.5.x",
+    "yargs": "1.x.x"
   },
   "devDependencies": {
     "mocha": "1.x"
