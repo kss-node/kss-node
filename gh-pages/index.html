@@ -24,143 +24,115 @@
   <aside>
     <nav><ul>
       <li><a href="index.html">0.0: Overview</a></li>
-    
       <li><a href="section-1.html">1.0: Modules</a></li>
-    
       <li><a href="section-2.html">2.0: Forms</a></li>
-    
     </ul></nav>
   </aside>
 </div>
 <div role="main" id="kss-main">
   <article id="kss-content">
-  
     <h1 class="kss-title kss-title-main"> Overview </h1>
 
-<p>This is a demo of <a href="https://github.com/kss-node/kss-node">kss-node</a>&apos;s built-in styleguide generator. The module is essentially a reimplementation of the <a href="https://github.com/kneath/kss">KSS</a> Ruby parser, in Node:
-
-</p>
+<p>This is a demo of <a href="https://github.com/kss-node/kss-node">kss-node</a>&#39;s built-in styleguide generator. The module is essentially a reimplementation of the <a href="https://github.com/kneath/kss">KSS</a> Ruby parser, in Node:</p>
 <blockquote>
 <p>Inspired by TomDoc, KSS attempts to provide a methodology for writing maintainable, documented CSS within a team.
 Specifically, KSS is a documentation specification and styleguide format.
-It is <strong>not</strong> a preprocessor, CSS framework, naming convention, or specificity guideline.
-
-</p>
-<p>KSS is a set of guidelines to help you produce an HTML styleguide tied to CSS documentation that is nice to read in plain text, yet structured enough to be automatically extracted and processed by a machine.
-
-</p>
+It is <strong>not</strong> a preprocessor, CSS framework, naming convention, or specificity guideline.</p>
+<p>KSS is a set of guidelines to help you produce an HTML styleguide tied to CSS documentation that is nice to read in plain text, yet structured enough to be automatically extracted and processed by a machine.</p>
 </blockquote>
-<p>The upshot of this is that KSS can be used for generating CSS documentation pages. This site is generated with the <code>kss-node</code> command-line tool used on this <a href="https://github.com/kss-node/kss-node/tree/master/demo">demo project</a>.
+<p>The upshot of this is that KSS can be used for generating site styleguides or CSS documentation pages. This site is generated with the <code>kss-node</code> command-line tool used on this <a href="https://github.com/kss-node/kss-node/tree/master/demo">demo project</a>.</p>
+<p>Check out the <a href="https://github.com/kss-node/kss-node">project on Github</a> for more information about the code, or read on for details on how to document your stylesheets for KSS.</p>
+<h1 id="kss-specification">KSS Specification</h1>
+<p>The text from here on is mostly taken from the <a href="https://github.com/kneath/kss/blob/master/SPEC.md">KSS specification</a>.</p>
+<p>Unlike TomDoc, not every CSS rule should be documented. You should document a rule declaration when the rule can accurately describe a visual UI element in the styleguide. Each element should have one documentation block describing that particular UI element&#39;s various states.</p>
+<p>KSS documentation is hierarchical in nature — any documentation blocks at any point within the styleguide hierarchy apply to the documentation blocks beneath that level. This means that documentation for 2.1 applies to documentation for 2.1.3.</p>
+<h2 id="format">Format</h2>
+<p>The basic format for KSS documentation can be best explained in an example:</p>
+<pre><code class="lang-css">/*
+Button
 
-</p>
-<p>Check out the <a href="https://github.com/kss-node/kss-node">project on Github</a> for more information, or read on for details on how to document your stylesheets for KSS.
-
-</p>
-<h1>Specification</h1>
-<p>The text from here on is mostly taken from the <a href="https://github.com/kneath/kss/blob/master/SPEC.md">KSS specification</a>.
-
-</p>
-<p>Unlike TomDoc, not every CSS rule should be documented. You should document a rule declaration when the rule can accurately describe a visual UI element in the styleguide. Each element should have one documentation block describing that particular UI element&apos;s various states.
-
-</p>
-<p>KSS documentation is hierarchical in nature — any documentation blocks at any point within the styleguide hierarchy apply to the documentation blocks beneath that level. This means that documentation for 2.1 applies to documentation for 2.1.3.
-
-</p>
-<h2>Format</h2>
-<p>The basic format for KSS documentation can be best explained in an example:
-
-</p>
-<pre><code class="css">/*
 A button suitable for giving stars to someone.
 
 :hover             - Subtle hover highlight.
-.stars-given       - A highlight indicating you&apos;ve already given a star.
+.stars-given       - A highlight indicating you&#39;ve already given a star.
 .stars-given:hover - Subtle hover highlight on top of stars-given styling.
 .disabled          - Dims the button to indicate it cannot be used.
 
-Styleguide 2.1.3.
+Styleguide 2.1.3
 */
-a.button.star{
-  ...
-}
-a.button.star.stars-given{
-  ...
-}
-a.button.star.disabled{
-  ...
-}</code></pre>
-<p>When using a preprocessor that supports the functionality, use <code>//</code> to prefix your comment sections (SCSS example):
 
-</p>
-<pre><code class="less">// A button suitable for giving stars to someone.
+.button {
+  ...
+}
+.button.stars-given {
+  ...
+}
+.button.disabled {
+  ...
+}
+</code></pre>
+<p>When using a preprocessor that supports the functionality, use <code>//</code> to prefix your comment sections (SCSS example):</p>
+<pre><code class="lang-less">// Button
+//
+// A button suitable for giving stars to someone.
 //
 // :hover             - Subtle hover highlight.
-// .stars-given       - A highlight indicating you&apos;ve already given a star.
+// .stars-given       - A highlight indicating you&#39;ve already given a star.
 // .stars-given:hover - Subtle hover highlight on top of stars-given styling.
 // .disabled          - Dims the button to indicate it cannot be used.
 //
-// Styleguide 2.1.3.
-a.button.star{
+// Styleguide 2.1.3
+
+.button{
   ...
-  &amp;.star-given{
+  &amp;.stars-given{
     ...
   }
   &amp;.disabled{
     ...
   }
-}</code></pre>
-<p>Each KSS documentation block consists of three parts: a description of what the element does or looks like, a list of modifier classes or pseudo-classes and how they modify the element, and a reference to the element&apos;s position in the styleguide.
-
-</p>
-<h2>Style Documentation</h2>
-<p>The description should be plain sentences of what the CSS rule or hierarchy does and looks like. A good description gives guidance toward the application of elements the CSS rules style.
-
-</p>
-<p>CSS rules that depend on specific HTML structures should describe those structures using <code>&lt;element#id.class:pseudo&gt;</code> notation. For example:
-
-</p>
-<pre><code class="less">// A feed of activity items. Within each &lt;section.feed&gt;, there should be many
-// &lt;article&gt;s which are the  feed items.</code></pre>
-<p>To describe the status of a set of rules, you should prefix the description with <strong>Experimental</strong> or <strong>Deprecated</strong>.
-
-</p>
-<p><strong>Experimental</strong> indicates CSS rules that apply to experimental styling. This can be useful when testing out new designs before they launch (staff only), alternative layouts in A/B tests, or beta features.
-
-</p>
-<pre><code class="less">// Experimental: An alternative signup button styling used in AB Test #195.</code></pre>
-<p><strong>Deprecated</strong> indicates that the rule is slated for removal. Rules that are deprecated should not be used in future development. This description should explain what developers should do when encountering this style.
-
-</p>
-<pre><code class="less">// Deprecated: Styling for legacy wikis. We&apos;ll drop support for these wikis on
-// July 13, 2007.</code></pre>
-<h2>The modifiers section</h2>
-<p>If the UI element you are documenting has multiple states or styles depending on added classes or pseudo-classes, you should document them in the modifiers section.
-
-</p>
-<pre><code class="less">// :hover             - Subtle hover highlight.
-// .stars-given       - A highlight indicating you&apos;ve already given a star.
+}
+</code></pre>
+<p>Each KSS documentation block consists of four parts:</p>
+<ol>
+<li>a name (required)</li>
+<li>a description of what the element does or looks like (optional)</li>
+<li>a list of modifier classes or pseudo-classes and how they modify the element (optional)</li>
+<li>a reference to the element&#39;s position in the styleguide (required)</li>
+</ol>
+<h2 id="style-documentation">Style Documentation</h2>
+<p>The description should be plain sentences of what the CSS rule or hierarchy does and looks like. A good description gives guidance toward the application of elements the CSS rules style.</p>
+<p>CSS rules that depend on specific HTML structures should describe those structures using <code>&lt;element#id.class:pseudo&gt;</code> notation. For example:</p>
+<pre><code class="lang-less">// A feed of activity items. Within each &lt;section.feed&gt;, there should be many
+// &lt;article&gt;s which are the  feed items.
+</code></pre>
+<p>To describe the status of a set of rules, you should prefix the description with <strong>Experimental</strong> or <strong>Deprecated</strong>.</p>
+<p><strong>Experimental</strong> indicates CSS rules that apply to experimental styling. This can be useful when testing out new designs before they launch (staff only), alternative layouts in A/B tests, or beta features.</p>
+<pre><code class="lang-less">// Experimental: An alternative signup button styling used in AB Test #195.
+</code></pre>
+<p><strong>Deprecated</strong> indicates that the rule is slated for removal. Rules that are deprecated should not be used in future development. This description should explain what developers should do when encountering this style.</p>
+<pre><code class="lang-less">// Deprecated: Styling for legacy wikis. We&#39;ll drop support for these wikis on
+// July 13, 2007.
+</code></pre>
+<h2 id="the-modifiers-section">The modifiers section</h2>
+<p>If the UI element you are documenting has multiple states or styles depending on added classes or pseudo-classes, you should document them in the modifiers section.</p>
+<pre><code class="lang-less">// :hover             - Subtle hover highlight.
+// .stars-given       - A highlight indicating you&#39;ve already given a star.
 // .stars-given:hover - Subtle hover highlight on top of stars-given styling.
-// .disabled          - Dims the button to indicate it cannot be used.</code></pre>
-<h2>The styleguide section</h2>
-<p>If the UI element you are documenting has an example in the styleguide, you should reference it using the &quot;Styleguide [ref]&quot; syntax.
-
-</p>
-<pre><code class="less">// Styleguide 2.1.3.</code></pre>
-<p>References should be integer sections separated by periods. Each period denotes a hierarchy of the styleguide. Styleguide references can point to entire sections, a portion of the section, or a specific example.
-
-</p>
-<p>If there is no example, then you must note that there is no reference.
-
-</p>
-<pre><code class="less">// No styleguide reference.</code></pre>
-<h2>The markup section</h2>
-<p><em>Note: This section is unofficial, and only implemented in <code>kss-node</code>.</em>
-
-</p>
-<p>If you wish to include example HTML for the UI element you are documenting, you should include an additional paragraph with sample markup and prefix it with <code>Markup:</code>. You should also note the placement of modifier classes with <code>{$modifiers}</code>, like so:
-
-</p>
-<pre><code class="less">// Buttons
+// .disabled          - Dims the button to indicate it cannot be used.
+</code></pre>
+<h2 id="the-styleguide-section">The styleguide section</h2>
+<p>If the UI element you are documenting has an example in the styleguide, you should reference it using the &quot;Styleguide [ref]&quot; syntax.</p>
+<pre><code class="lang-less">// Styleguide 2.1.3
+</code></pre>
+<p>References should be integer sections separated by periods. Each period denotes a hierarchy of the styleguide. Styleguide references can point to entire sections, a portion of the section, or a specific example.</p>
+<p>If there is no example, then you should note that there is no reference since it will not be included in the styleguide.</p>
+<pre><code class="lang-less">// No styleguide reference.
+</code></pre>
+<h2 id="the-markup-section">The markup section</h2>
+<p><em>Note: This section is unofficial, and only implemented in <code>kss-node</code>.</em></p>
+<p>If you wish to include example HTML for the UI element you are documenting, you should include an additional paragraph with sample markup and prefix it with <code>Markup:</code>. You should also note the placement of modifier classes with <code>{$modifiers}</code>, like so:</p>
+<pre><code class="lang-less">// Buttons
 //
 // :hover - Highlight the button when hovering.
 //
@@ -168,15 +140,12 @@ a.button.star{
 // &lt;a href=&quot;#&quot; class=&quot;button {$modifiers}&quot;&gt;Link&lt;/a&gt;
 // &lt;button class=&quot;button {$modifiers}&quot;&gt;Button&lt;/button&gt;
 //
-// Styleguide 2.1.3.</code></pre>
-<p>If you&apos;re using the <code>kss-node</code> module or CLI, make sure not to include any double line-breaks, as only the first paragraph prefixed with <code>Markup:</code> will be included.
-
-</p>
-<h1>Preprocessor Helper Documentation</h1>
-<p>If you use a CSS preprocessor like SCSS or LESS, you should document all helper functions (sometimes called mixins).
-
-</p>
-<pre><code class="less">// Creates a linear gradient background, from top to bottom.
+// Styleguide 2.1.3.
+</code></pre>
+<p>If you&#39;re using the <code>kss-node</code> module or CLI, make sure not to include any double line-breaks, as only the first paragraph prefixed with <code>Markup:</code> will be included.</p>
+<h1 id="preprocessor-helper-documentation">Preprocessor Helper Documentation</h1>
+<p>If you use a CSS preprocessor like SCSS or LESS, you should document all helper functions (sometimes called mixins).</p>
+<pre><code class="lang-less">// Creates a linear gradient background, from top to bottom.
 //
 // $start - The color hex at the top.
 // $end   - The color hex at the bottom.
@@ -184,39 +153,28 @@ a.button.star{
 // Compatible in IE6+, Firefox 2+, Safari 4+.
 @mixin gradient($start, $end){
   ...
-}</code></pre>
-<p>Each documentation block should have a description section, parameters section, and compatibility section.  The description section follows the same guidelines as style documentation.
-
-</p>
-<h2>The parameters section</h2>
-<p>If the mixin takes parameters, you should document each parameter and describe what sort of input it expects (hex, number, etc).
-
-</p>
-<pre><code class="less">// $start - The color hex at the top.
-// $end   - The color hex at the bottom.</code></pre>
-<h2>The compatibility section</h2>
-<p>You must list out what browsers this helper method is compatible in.
-
-</p>
-<pre><code class="less">// Compatible in IE6+, Firefox 2+, Safari 4+.</code></pre>
-<p>If you do not know the compatibility, you should state as such.
-
-</p>
-<pre><code class="less">// Compatibility untested.</code></pre>
-<h1>Styleguide</h1>
-<p>In order to fully take advantage of KSS, you should create a living styleguide. A living styleguide is a <em>part of your application</em> and should include all of the CSS, Javascript, and layout the rest of your application does.
-
-</p>
-<p>To get started quickly use the CLI tool, which supports custom templates too. If you&apos;re feeling game you can (and should) build it up from scratch using the module&apos;s API.
-
-</p>
-<p>Overall, keep in mind that styleguides should adapt to the application they are referencing and be easy to maintain and as automatic as possible.
-
-</p>
-<h2>Organization</h2>
-<p>The styleguide should be organized by numbered sections. These sections can go as deep as you like. Every element should have a numbered section to refer to. For example:
-
-</p>
+}
+</code></pre>
+<p>Each documentation block should have a description section, parameters section, and compatibility section.  The description section follows the same guidelines as style documentation.</p>
+<p>Note: kss-node does not yet add helper documentation to the styleguide. See the <a href="https://github.com/kss-node/kss-node/issues/22">related issue on GitHub</a>.</p>
+<h2 id="the-parameters-section">The parameters section</h2>
+<p>If the mixin takes parameters, you should document each parameter and describe what sort of input it expects (hex, number, etc).</p>
+<pre><code class="lang-less">// $start - The color hex at the top.
+// $end   - The color hex at the bottom.
+</code></pre>
+<h2 id="the-compatibility-section">The compatibility section</h2>
+<p>You must list out what browsers this helper method is compatible in.</p>
+<pre><code class="lang-less">// Compatible in IE6+, Firefox 2+, Safari 4+.
+</code></pre>
+<p>If you do not know the compatibility, you should state as such.</p>
+<pre><code class="lang-less">// Compatibility untested.
+</code></pre>
+<h1 id="styleguide">Styleguide</h1>
+<p>In order to fully take advantage of KSS, you should create a living styleguide. A living styleguide is a <em>part of your application</em> and should include all of the CSS, Javascript, and layout the rest of your application does.</p>
+<p>To get started quickly use the CLI tool, which supports custom templates too. If you&#39;re feeling game you can (and should) build it up from scratch using the module&#39;s API.</p>
+<p>Overall, keep in mind that styleguides should adapt to the application they are referencing and be easy to maintain and as automatic as possible.</p>
+<h2 id="organization">Organization</h2>
+<p>The styleguide should be organized by numbered sections. These sections can go as deep as you like. Every element should have a numbered section to refer to. For example:</p>
 <pre><code>1. Buttons
   1.1 Form Buttons
     1.1.1 Generic form button
@@ -229,19 +187,15 @@ a.button.star{
 3. Text styling
 4. Tables
   4.1 Number tables
-  4.2 Diagram tables</code></pre>
-<p>The goal here is to create an organizational structure that is flexible, but  rigid enough to be machine processed and referenced inside of documentation.
-</p>
+  4.2 Diagram tables
+</code></pre><p>The goal here is to create an organizational structure that is flexible, but  rigid enough to be machine processed and referenced inside of documentation.</p>
 
-  
   </article>
 </div>
-
 
 <footer>
   <a href="https://github.com/kss-node/kss-node"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
 </footer>
-
 
 <!-- SCRIPTS -->
 <script src="public/kss.js"></script>
@@ -270,13 +224,10 @@ a.button.star{
   });
 </script>
 
-
-
   <script type="text/javascript">
   var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-12249588-4']); _gaq.push(['_trackPageview']);
   (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();
   </script>
-
 
 </div></body>
 </html>
