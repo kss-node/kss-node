@@ -3,8 +3,8 @@
 var kss = require(__dirname + '/../lib/kss.js'),
 	preCompiler = kss.precompilers,
 	handlebars = require('handlebars'),
-	cleanCss = require('clean-css'),
-	optimist = require('optimist'),
+	cleanCSS = require('clean-css'),
+	yargs = require('yargs'),
 	marked = require('marked'),
 	wrench = require('wrench'),
 	stylus = require('stylus'),
@@ -25,20 +25,31 @@ var kss = require(__dirname + '/../lib/kss.js'),
 	error;
 
 /**
- * CLI argument parsing, thanks to Substack's optimist.
+ * CLI argument parsing.
  * @type {Object}
  */
-argv = require('optimist')
-	.usage('Usage:\n $0 sourcedir [destdir] --init [directory] --{style,less,sass,stylus} [file]')
+argv = yargs
+	.usage('Usage: kss-node <sourcedir> <destdir> [options]\n\n<destdir> defaults to "styleguide" if not specified.')
 	.check(function(args) {
 		if (args._.length < 1 && !args.init) {
 			throw new Error('Please provide a source directory');
 		}
 	})
 
+	.alias('i', 'init')
+	.describe('i', 'Create a new styleguide template to work from')
+
 	.string('t')
 	.alias('t', 'template')
 	.describe('t', 'Use a custom template to build your styleguide')
+
+	.string('m')
+	.alias('m', 'mask')
+	.describe('m', 'Use a custom mask for detecting stylesheets in the source directory, e.g. "*.css"')
+
+	.string('c')
+	.alias('c', 'css')
+	.describe('c', 'Include a CSS stylesheet')
 
 	.string('s')
 	.alias('s', 'style')
@@ -48,29 +59,24 @@ argv = require('optimist')
 	.alias('l', 'less')
 	.describe('l', 'Compile and include a LESS stylesheet')
 
-	.string('y')
-	.alias('y', 'stylus')
-	.describe('y', 'Compile and include a Stylus stylesheet')
-
 	.string('S')
 	.alias('S', 'sass')
 	.describe('S', 'Compile and include a SASS stylesheet')
 
-	.string('c')
-	.alias('c', 'css')
-	.describe('c', 'Compile and include a CSS stylesheet')
+	.string('y')
+	.alias('y', 'stylus')
+	.describe('y', 'Compile and include a Stylus stylesheet')
 
-	.string('m')
-	.alias('m', 'mask')
-	.describe('m', 'Use a custom mask for detecting stylesheets, e.g. "*.css"')
-
-	.alias('i', 'init')
-	.describe('i', 'Create a new styleguide template to work from')
-
-	.alias('i', 'init')
-	.describe('i', 'Create a new styleguide template to work from')
+	.alias('L', 'load-path')
+	.describe('L', 'Include a load path for precompiler imports')
 
 	.argv;
+
+// Set loadPath to an array containing all the paths specified.
+argv.loadPath = [];
+if (argv['load-path']) {
+	argv.loadPath = Array.isArray(argv['load-path']) ? argv['load-path'] : [argv['load-path']];
+}
 
 // Create a new styleguide template to play with using the `--init` tag.
 if (argv.init) {
@@ -142,70 +148,65 @@ wrench.copyDirSyncRecursive(
 // Generate the static HTML pages in the next tick, i.e. after the other functions have
 // been defined and handlebars helpers set up.
 process.nextTick(function() {
+	// Optionally compile the template's kss.less stylesheet.
 	console.log('...compiling KSS styles');
-	less.render('@import "' + path.resolve(config.destinationDirectory) + '/public/kss.less";', function(err, css) {
-		if (err) {
-			console.error(err);
-			throw err;
+	less.render('@import "' + config.destinationDirectory + '/public/kss.less";', function(err, css) {
+		if (!err) {
+			saveStylesheet(css, 'kss.css');
+		}
+	});
+
+	console.log('...parsing your styleguide');
+
+	kss.traverse(config.sourceDirectory, {
+		multiline : true,
+		markdown  : true,
+		markup    : true,
+		mask      : argv.mask || preCompiler.mask
+	}, function(err, sg) {
+		if (err) throw err
+
+		styleguide = sg;
+
+		var sections = styleguide.section('*.'),
+			sectionCount = sections.length,
+			sectionRoots = [],
+			rootCount,
+			currentRoot,
+			childSections = [],
+			pages = {},
+			i;
+
+		console.log(sg.data.files.map(function(file) {
+			return ' - ' + file
+		}).join('\n'))
+
+		// Accumulate all of the sections' first indexes
+		// in case they don't have a root element.
+		for (i = 0; i < sectionCount; i += 1) {
+			currentRoot = sections[i].reference().match(/[0-9]*\.?/)[0].replace('.', '');
+
+			if (!~sectionRoots.indexOf(currentRoot)) {
+				sectionRoots.push(currentRoot);
+			}
 		}
 
-		css = cleanCss.process(css);
+		sectionRoots.sort();
+		rootCount = sectionRoots.length;
 
-		// Write the compiled LESS styles from the template.
-		fs.writeFileSync(config.destinationDirectory + '/public/kss.css', css, 'utf8');
+		// Now, group all of the sections by their root
+		// reference, and make a page for each.
+		for (i = 0; i < rootCount; i += 1) {
+			childSections = styleguide.section(sectionRoots[i]+'.*');
 
-		console.log('...parsing your styleguide');
+			generatePage(
+				styleguide, childSections,
+				sectionRoots[i], pages, sectionRoots
+			);
+		}
 
-		kss.traverse(config.sourceDirectory, {
-			multiline : true,
-			markdown  : true,
-			markup    : true,
-			mask      : argv.mask || preCompiler.mask
-		}, function(err, sg) {
-			if (err) throw err
-
-			styleguide = sg;
-
-			var sections = styleguide.section('*.'),
-				sectionCount = sections.length,
-				sectionRoots = [],
-				rootCount,
-				currentRoot,
-				childSections = [],
-				pages = {},
-				i;
-
-			console.log(sg.data.files.map(function(file) {
-				return ' - ' + file
-			}).join('\n'))
-
-			// Accumulate all of the sections' first indexes
-			// in case they don't have a root element.
-			for (i = 0; i < sectionCount; i += 1) {
-				currentRoot = sections[i].reference().match(/[0-9]*\.?/)[0].replace('.', '');
-
-				if (!~sectionRoots.indexOf(currentRoot)) {
-					sectionRoots.push(currentRoot);
-				}
-			}
-
-			sectionRoots.sort();
-			rootCount = sectionRoots.length;
-
-			// Now, group all of the sections by their root
-			// reference, and make a page for each.
-			for (i = 0; i < rootCount; i += 1) {
-				childSections = styleguide.section(sectionRoots[i]+'.*');
-
-				generatePage(
-					styleguide, childSections,
-					sectionRoots[i], pages, sectionRoots
-				);
-			}
-
-			generateIndex(styleguide, childSections, pages, sectionRoots);
-			generateStylesheet(argv);
-		});
+		generateIndex(styleguide, childSections, pages, sectionRoots);
+		generateStylesheet(argv);
 	});
 });
 
@@ -230,7 +231,6 @@ generateStylesheet = function(argv) {
 	async.reduce(files, [], function (combined, group, next) {
 		if (!group) return next(null, combined)
 
-
 		async.map(group.files, function (filename, next) {
 			var type = group.type,
 				extension;
@@ -248,7 +248,7 @@ generateStylesheet = function(argv) {
 			console.log(' - ' + filename + ' (' + type + ')')
 
 			if (type === 'css') return next(null, fs.readFileSync(filename, 'utf8'))
-			compilers[type].render(filename, next)
+			compilers[type].render(filename, next, argv)
 
 		}, function(err, output) {
 			if (err) return next(err)
@@ -258,16 +258,17 @@ generateStylesheet = function(argv) {
 		});
 	}, function (err, combined) {
 		if (err) throw err
-		saveStylesheet(combined)
+		saveStylesheet(combined, 'style.css')
 	});
 };
 
 // Used by generateStylesheet to minify and then
 // save its final buffer to a single CSS file.
-saveStylesheet = function(buffer) {
-	buffer = cleanCss.process(buffer.toString());
+saveStylesheet = function(buffer, filename) {
+	buffer = new cleanCSS().minify(buffer.toString());
+	filename = filename || 'style.css';
 	fs.writeFileSync(
-		config.destinationDirectory + '/public/style.css',
+		config.destinationDirectory + '/public/' + filename,
 		buffer, 'utf8'
 	);
 };
@@ -492,7 +493,7 @@ handlebars.registerHelper('ifAny', function() {
 	// Warn the user that IfAny is deprecated. The only usage in kss-node was
 	// {{#ifAny markup modifiers}} and, since modifiers is an object and, always
 	// evals to true (even when empty), #ifAny was effectively a dupe of #If.
-	console.log('IfAny is deprecated; if your template has {{#ifAny markup modifiers}}...{{/ifAny}}, replace it with {{#ifAny markup}}...{{/if}}.');
+	console.log('IfAny is deprecated; if your template has {{#ifAny markup modifiers}}...{{/ifAny}}, replace it with {{#if markup}}...{{/if}}.');
 
 	for (i = 0; i < numItems; i += 1) {
 		if (!arguments[i]) {
@@ -522,8 +523,15 @@ process.on('exit', function() {
 });
 
 process.on('uncaughtException', function(err) {
-	console.log(err.message);
-	console.log(err.stack);
+	console.log('\nError during generation\n');
+
+	if (err.message || err.stack) {
+		console.log(err.message);
+		console.log(err.stack);
+	}
+	else
+		console.log(err);
+
 	KSS_FAILED = true;
 	process.exit(1);
 })
