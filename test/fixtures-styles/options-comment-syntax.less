@@ -13,6 +13,7 @@ Markup:
 Styleguide 1.1
 */
 
+
 // Comment syntax: inline
 //
 // Using inline comment syntax.
@@ -20,13 +21,29 @@ Styleguide 1.1
 // Styleguide 1.2
 
 
-.example-1-3 {
+/*
+  Comment syntax: multi-line, indented
+
+  Using multi-line comment syntax.
+
+  Markup:
+  <a href="#" class="{$modifiers}">Hello World</a>
+
+  :hover    - Highlights when moused over
+  :disabled - Dims when unavailable
+  .primary  - Indicates this is a key element
+
+  Styleguide 1.3
+*/
+
+
+.example-1-4 {
   content: 'This string includes the start of a multi-line comment: /*';
 }
 
 // False-positive of multi-line comment block #1
 //
-// Styleguide 1.3
+// Styleguide 1.4
 
 // This single-line comment includes the end of a multi-line comment: */
 
@@ -42,6 +59,6 @@ Styleguide 1.1
 // :disabled - Dims when unavailable
 // .primary  - Indicates this is a key element
 //
-// Styleguide 1.4
+// Styleguide 1.5
 
 // This single-line comment includes the end of a multi-line comment: */
