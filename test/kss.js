@@ -174,11 +174,15 @@ suite('#traverse', function() {
 
 				common.testSection('Variable White Space', 'sections-modifiers.less', function(section) {
 					var modifiers = section.data.modifiers;
-					assert.equal(modifiers.length, 2);
+					assert.equal(modifiers.length, 4);
 					assert.equal(modifiers[0].data.name, ':hover');
 					assert.equal(modifiers[0].data.description, 'HOVER');
 					assert.equal(modifiers[1].data.name, ':disabled');
 					assert.equal(modifiers[1].data.description, 'DISABLED');
+					assert.equal(modifiers[2].data.name, ':focus');
+					assert.equal(modifiers[2].data.description, 'INCLUDING MULTIPLE LINES');
+					assert.equal(modifiers[3].data.name, ':link');
+					assert.equal(modifiers[3].data.description, 'WITH TABS');
 				});
 
 				common.testSection('Classes', 'sections-modifiers.less', function(section) {
