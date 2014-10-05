@@ -338,6 +338,14 @@ suite('#traverse', function() {
 			common.testSection('False-positive of multi-line comment block #2', 'options-comment-syntax.less', function(section) {
 				assert.equal(section.data.reference, '1.5');
 			}, false, { markup: true });
+
+			common.testSection('Comment syntax: inline, directly before multi-line', 'options-comment-syntax.less', function(section) {
+				assert.equal(section.data.reference, '1.6');
+			}, false, { markup: true });
+
+			common.testSection('Comment syntax: multi-line, directly after inline', 'options-comment-syntax.less', function(section) {
+				assert.equal(section.data.reference, '1.7');
+			}, false, { markup: true });
 		}),
 		suite('.markup', function() {
 			common.testSection('Second paragraph', 'options-markup.less', function(section) {
