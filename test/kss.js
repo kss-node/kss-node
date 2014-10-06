@@ -117,13 +117,13 @@ suite('#traverse', function() {
 					});
 				});
 
-				test('each comment block in the array should be from .data.body (disregarding whitespace)', function() {
+				test('each comment block in the array should be from .data.body (disregarding whitespace and asterisks)', function() {
 					var id, section, data = this.data,
-						filteredBody = data.body.replace(/\/\/|\/\*|\*\/|\s/g, '');
+						filteredBody = data.body.replace(/\/\/|\/\*+|\*\/|\s|\*/g, '');
 
 					for (id in data.sections) {
 						section = data.sections[id];
-						assert.notEqual(filteredBody.indexOf(section.data.raw.replace(/\s/g, '')), -1);
+						assert.notEqual(filteredBody.indexOf(section.data.raw.replace(/\s|\*/g, '')), -1);
 					}
 				});
 			});
@@ -345,6 +345,10 @@ suite('#traverse', function() {
 
 			common.testSection('Comment syntax: multi-line, directly after inline', 'options-comment-syntax.less', function(section) {
 				assert.equal(section.data.reference, '1.7');
+			}, false, { markup: true });
+
+			common.testSection('Docblock comment syntax', 'options-comment-syntax.less', function(section) {
+				assert.equal(section.data.reference, '1.8');
 			}, false, { markup: true });
 		}),
 		suite('.markup', function() {
