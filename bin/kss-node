@@ -18,7 +18,8 @@ var kss = require(__dirname + '/../lib/kss.js'),
 	config = {
 		templateDirectory: __dirname + '/../lib/template',
 		sourceDirectory: __dirname + '/../demo',
-		destinationDirectory: process.cwd() + '/styleguide'
+		destinationDirectory: process.cwd() + '/styleguide',
+        helpersDirectory: __dirname + '/../helpers'
 	},
 	KSS_FAILED = false,
 	argv,
@@ -69,6 +70,10 @@ argv = yargs
 
 	.alias('L', 'load-path')
 	.describe('L', 'Include a load path for precompiler imports')
+
+    .string('h')
+    .alias('h', 'helpers')
+    .describe('t', 'Specify custom handlebars templates for your styleguide')
 
 	.argv;
 
@@ -124,6 +129,7 @@ console.log('');
 console.log(' * Source: ' + path.resolve(config.sourceDirectory));
 console.log(' * Destination: ' + path.resolve(config.destinationDirectory));
 console.log(' * Template: ' + path.resolve(config.templateDirectory));
+console.log(' * Helpers: ' + path.resolve(config.helpersDirectory));
 console.log('');
 
 // Compile the Handlebars template
@@ -480,6 +486,25 @@ handlebars.registerHelper('html', function(arg) {
 
 	return new handlebars.SafeString(arg || '');
 });
+
+/**
+ * Load custom Handlebars helpers
+ */
+if (argv.helpers) {
+    config.helpersDirectory = path.resolve(argv.helpers);
+}
+if (fs.existsSync('helpers')) {
+    // Load custom Handlebars helpers
+    var helperFiles = fs.readdirSync('helpers');
+
+    helperFiles.forEach(function(fileName) {
+        var helper = require(config.helpersDirectory + "/" + fileName);
+
+        if (typeof helper.register === 'function') {
+            helper.register(handlebars);
+        }
+    });
+}
 
 /**
  * Equivalent to the {#if} block helper with multiple arguments.
