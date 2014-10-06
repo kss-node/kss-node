@@ -18,7 +18,8 @@ var kss = require(__dirname + '/../lib/kss.js'),
 	config = {
 		templateDirectory: __dirname + '/../lib/template',
 		sourceDirectory: __dirname + '/../demo',
-		destinationDirectory: process.cwd() + '/styleguide'
+		destinationDirectory: process.cwd() + '/styleguide',
+		helpersDirectory: __dirname + '/../helpers'
 	},
 	KSS_FAILED = false,
 	argv,
@@ -338,6 +339,16 @@ jsonModifiers = function(modifiers) {
 		};
 	});
 };
+
+// Load custom Handlebars helpers
+var helperFiles = fs.readdirSync('helpers');
+
+helperFiles.forEach(function(fileName) {
+	var helper = require(config.helpersDirectory + '/' + fileName);
+	if (typeof helper.register === 'function') {
+	    helper.register(handlebars);
+	}
+});
 
 /**
  * Returns a single section, found by its reference number
