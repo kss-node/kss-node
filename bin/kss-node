@@ -18,7 +18,8 @@ var kss = require(__dirname + '/../lib/kss.js'),
 	config = {
 		templateDirectory: __dirname + '/../lib/template',
 		sourceDirectory: __dirname + '/../demo',
-		destinationDirectory: process.cwd() + '/styleguide'
+		destinationDirectory: process.cwd() + '/styleguide',
+		helpersDirectory: __dirname + '/../helpers'
 	},
 	KSS_FAILED = false,
 	argv,
@@ -480,6 +481,22 @@ handlebars.registerHelper('html', function(arg) {
 
 	return new handlebars.SafeString(arg || '');
 });
+
+if (fs.existsSync('helpers')) {
+	// Load custom Handlebars helpers
+	var helperFiles = fs.readdirSync('helpers');
+
+	helperFiles.forEach(function(fileName) {
+		if (path.extname(filename) !== '.js') {
+			return;
+		}
+		var helper = require(config.helpersDirectory + '/' + fileName);
+		if (typeof helper.register === 'function') {
+			helper.register(handlebars);
+		}
+	});
+}
+
 
 /**
  * Equivalent to the {#if} block helper with multiple arguments.
