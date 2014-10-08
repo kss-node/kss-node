@@ -18,7 +18,8 @@ var kss = require(__dirname + '/../lib/kss.js'),
 	config = {
 		templateDirectory: __dirname + '/../lib/template',
 		sourceDirectory: __dirname + '/../demo',
-		destinationDirectory: process.cwd() + '/styleguide'
+		destinationDirectory: process.cwd() + '/styleguide',
+		helpersDirectory: __dirname + '/../lib/template/helpers'
 	},
 	KSS_FAILED = false,
 	argv,
@@ -43,6 +44,9 @@ argv = yargs
 	.alias('t', 'template')
 	.describe('t', 'Use a custom template to build your styleguide')
 
+	.string('helpers')
+	.describe('helpers', 'Specify the location of custom handlebars helpers')
+
 	.string('m')
 	.alias('m', 'mask')
 	.describe('m', 'Use a custom mask for detecting stylesheets in the source directory, e.g. "*.css"')
@@ -61,7 +65,7 @@ argv = yargs
 
 	.string('S')
 	.alias('S', 'sass')
-	.describe('S', 'Compile and include a SASS stylesheet')
+	.describe('S', 'Compile and include a Sass stylesheet')
 
 	.string('y')
 	.alias('y', 'stylus')
@@ -116,6 +120,10 @@ if (argv['_'].length > 1) {
 }
 if (argv.template) {
 	config.templateDirectory = path.resolve(argv.template);
+	config.helpersDirectory = config.templateDirectory + '/helpers';
+}
+if (argv.helpers) {
+	config.helpersDirectory = path.resolve(argv.helpers);
 }
 
 console.log('');
@@ -124,6 +132,7 @@ console.log('');
 console.log(' * Source: ' + path.resolve(config.sourceDirectory));
 console.log(' * Destination: ' + path.resolve(config.destinationDirectory));
 console.log(' * Template: ' + path.resolve(config.templateDirectory));
+console.log(' * Helpers: ' + path.resolve(config.helpersDirectory));
 console.log('');
 
 // Compile the Handlebars template
@@ -338,6 +347,23 @@ jsonModifiers = function(modifiers) {
 		};
 	});
 };
+
+/**
+ * Load custom Handlebars helpers.
+ */
+if (fs.existsSync(config.helpersDirectory)) {
+	var helperFiles = fs.readdirSync(config.helpersDirectory);
+
+	helperFiles.forEach(function(fileName) {
+		if (path.extname(fileName) !== '.js') {
+			return;
+		}
+		var helper = require(config.helpersDirectory + '/' + fileName);
+		if (typeof helper.register === 'function') {
+			helper.register(handlebars);
+		}
+	});
+}
 
 /**
  * Returns a single section, found by its reference number
