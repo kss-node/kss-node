@@ -19,7 +19,7 @@ var kss = require(__dirname + '/../lib/kss.js'),
 		templateDirectory: __dirname + '/../lib/template',
 		sourceDirectory: __dirname + '/../demo',
 		destinationDirectory: process.cwd() + '/styleguide',
-		helpersDirectory: __dirname + '/../helpers'
+		helpersDirectory: __dirname + '/../lib/template/helpers'
 	},
 	KSS_FAILED = false,
 	argv,
@@ -121,6 +121,7 @@ if (argv['_'].length > 1) {
 }
 if (argv.template) {
 	config.templateDirectory = path.resolve(argv.template);
+	config.helpersDirectory = config.templateDirectory + '/helpers';
 }
 if (argv.helpers) {
 	config.helpersDirectory = path.resolve(argv.helpers);
