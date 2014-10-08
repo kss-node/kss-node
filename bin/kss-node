@@ -352,8 +352,8 @@ jsonModifiers = function(modifiers) {
 /**
  * Load custom Handlebars helpers.
  */
-if (fs.existsSync('helpers')) {
-	var helperFiles = fs.readdirSync('helpers');
+if (fs.existsSync(config.helpersDirectory)) {
+	var helperFiles = fs.readdirSync(config.helpersDirectory);
 
 	helperFiles.forEach(function(fileName) {
 		if (path.extname(fileName) !== '.js') {
