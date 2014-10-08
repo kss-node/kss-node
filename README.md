@@ -20,23 +20,25 @@ Usage: kss-node <sourcedir> <destdir> [options]
 Options:
   -i, --init       Create a new styleguide template to work from
   -t, --template   Use a custom template to build your styleguide
+  --helpers        Specify the location of custom handlebars helpers
   -m, --mask       Use a custom mask for detecting stylesheets in the source directory, e.g. "*.css"
   -c, --css        Include a CSS stylesheet
-  -s, --style      Compile and include a stylesheet - the precompiler is chosen based on file extension
-  -l, --less       Compile and include a LESS stylesheet
-  -S, --sass       Compile and include a SASS stylesheet
-  -y, --stylus     Compile and include a Stylus stylesheet
+  -s, --style      Compile and include a stylesheet; the precompiler is chosen based on the file extension [deprecated]
+  -l, --less       Compile and include a LESS stylesheet [deprecated]
+  -S, --sass       Compile and include a Sass stylesheet [deprecated]
+  -y, --stylus     Compile and include a Stylus stylesheet [deprecated]
   -L, --load-path  Include a load path for precompiler imports
+  -h, --help       Show help
 ```
 
 You'll need to specify a directory containing all of your stylesheet files to be parsed for documentation as the first argument. Optionally, the second argument can be used to specify a target directory. Your CSS won't be included by default, hence you should use the `--less`, `--css`, etc. flags to point to a stylesheet to compile and include. You can generate a copy of the demo styleguide like so:
 
     $ kss-node demo styleguide --less demo/styles.less
 
-You can create your own templates too. Use the `kss-node --init` command to initialize a copy of the default template so you can edit it and use it when generating your styleguide with the `--template` flag. This option is best when you need to compile your stylesheets with a preprocessor workflow not supported by kss-node; simply link the generated CSS from inside the custom template's index.html.
+You can create your own templates too. Use the `kss-node --init` command to initialize a copy of the default template so you can edit it and use it when generating your styleguide with the `--template` flag. **This option is best when you need to compile your stylesheets with a preprocessor workflow not supported by kss-node**; simply link the generated CSS from inside the custom template's index.html.
 
     $ kss-node --init custom-template
-    $ kss-node ../path/to/sass styleguide --template custom-template
+    $ kss-node path/to/sass styleguide --template custom-template
 
 The default template should look something like this:
 
