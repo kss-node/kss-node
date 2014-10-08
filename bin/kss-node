@@ -31,49 +31,58 @@ var kss = require(__dirname + '/../lib/kss.js'),
  */
 argv = yargs
 	.usage('Usage: kss-node <sourcedir> <destdir> [options]\n\n<destdir> defaults to "styleguide" if not specified.')
+
+	// We only require the <sourcedir> if not doing an --init.
 	.check(function(args) {
 		if (args._.length < 1 && !args.init) {
 			throw new Error('Please provide a source directory');
 		}
 	})
 
-	.alias('i', 'init')
-	.describe('i', 'Create a new styleguide template to work from')
+	.options('i', {
+		alias     : 'init',
+		describe  : 'Create a new styleguide template to work from'
+	})
+	.options('t', {
+		alias     : 'template',
+		describe  : 'Use a custom template to build your styleguide'
+	})
+	.options('helpers', {
+		describe  : 'Specify the location of custom handlebars helpers; see http://bit.ly/kss-helpers'
+	})
 
-	.string('t')
-	.alias('t', 'template')
-	.describe('t', 'Use a custom template to build your styleguide')
+	.options('m', {
+		alias     : 'mask',
+		describe  : 'Use a custom mask for detecting stylesheets in the source directory, e.g. "*.css"'
+	})
+	.options('c', {
+		alias     : 'css',
+		describe  : 'Include a CSS stylesheet'
+	})
 
-	.string('helpers')
-	.describe('helpers', 'Specify the location of custom handlebars helpers')
+	.options('s', {
+		alias     : 'style',
+		describe  : 'Compile and include a stylesheet; the precompiler is chosen based on the file extension [deprecated]'
+	})
+	.options('l', {
+		alias     : 'less',
+		describe  : 'Compile and include a LESS stylesheet [deprecated]'
+	})
+	.options('S', {
+		alias     : 'sass',
+		describe  : 'Compile and include a Sass stylesheet [deprecated]'
+	})
+	.options('y', {
+		alias     : 'stylus',
+		describe  : 'Compile and include a Stylus stylesheet [deprecated]'
+	})
+	.options('L', {
+		alias     : 'load-path',
+		describe  : 'Include a load path for precompiler imports'
+	})
 
-	.string('m')
-	.alias('m', 'mask')
-	.describe('m', 'Use a custom mask for detecting stylesheets in the source directory, e.g. "*.css"')
-
-	.string('c')
-	.alias('c', 'css')
-	.describe('c', 'Include a CSS stylesheet')
-
-	.string('s')
-	.alias('s', 'style')
-	.describe('s', 'Compile and include a stylesheet - the precompiler is chosen based on file extension')
-
-	.string('l')
-	.alias('l', 'less')
-	.describe('l', 'Compile and include a LESS stylesheet')
-
-	.string('S')
-	.alias('S', 'sass')
-	.describe('S', 'Compile and include a Sass stylesheet')
-
-	.string('y')
-	.alias('y', 'stylus')
-	.describe('y', 'Compile and include a Stylus stylesheet')
-
-	.alias('L', 'load-path')
-	.describe('L', 'Include a load path for precompiler imports')
-
+	.help('h')
+	.alias('h', 'help')
 	.argv;
 
 // Set loadPath to an array containing all the paths specified.
