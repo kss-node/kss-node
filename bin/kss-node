@@ -44,9 +44,8 @@ argv = yargs
 	.alias('t', 'template')
 	.describe('t', 'Use a custom template to build your styleguide')
 
-	.string('h')
-	.alias('h', 'helpers')
-	.describe('t', 'Specify custom handlebars templates for your styleguide')
+	.string('helpers')
+	.describe('helpers', 'Specify the location of custom handlebars helpers')
 
 	.string('m')
 	.alias('m', 'mask')
