@@ -65,7 +65,7 @@ argv = yargs
 
 	.string('S')
 	.alias('S', 'sass')
-	.describe('S', 'Compile and include a SASS stylesheet')
+	.describe('S', 'Compile and include a Sass stylesheet')
 
 	.string('y')
 	.alias('y', 'stylus')
