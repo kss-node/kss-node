@@ -48,12 +48,12 @@ argv = yargs
 		describe  : 'Use a custom template to build your styleguide'
 	})
 	.options('helpers', {
-		describe  : 'Specify the location of custom handlebars helpers; see http://bit.ly/kss-helpers'
+		describe  : 'Specify the location of custom handlebars helpers'
 	})
 
 	.options('m', {
 		alias     : 'mask',
-		describe  : 'Use a custom mask for detecting stylesheets in the source directory, e.g. "*.css"'
+		describe  : 'Use a mask for detecting files in the source directory'
 	})
 	.options('c', {
 		alias     : 'css',
@@ -62,7 +62,7 @@ argv = yargs
 
 	.options('s', {
 		alias     : 'style',
-		describe  : 'Compile and include a stylesheet; the precompiler is chosen based on the file extension [deprecated]'
+		describe  : 'Compile and include an auto-detected stylesheet [deprecated]'
 	})
 	.options('l', {
 		alias     : 'less',
@@ -78,7 +78,7 @@ argv = yargs
 	})
 	.options('L', {
 		alias     : 'load-path',
-		describe  : 'Include a load path for precompiler imports'
+		describe  : 'Include a load path for preprocessor imports'
 	})
 
 	.help('h')
