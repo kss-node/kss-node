@@ -27,7 +27,7 @@ suite('#traverse', function() {
 				assert.ifError(err);
 				kss.traverse(styleDirectory, {}, function(err, sgb) {
 					assert.ifError(err);
-					// Need to find an alternative for this test.
+					// @TODO: Need to find an alternative for this test.
 					// At the moment it gets stuck asserting recursively.
 					// assert.deepEqual(sga, sgb);
 					done();

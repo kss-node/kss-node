@@ -16,9 +16,9 @@ var kss = require(__dirname + '/../lib/kss.js'),
 	template, styleguide,
 	generatePage, generateStylesheet,
 	config = {
-		templateDirectory: __dirname + '/../lib/template',
 		sourceDirectory: __dirname + '/../demo',
 		destinationDirectory: process.cwd() + '/styleguide',
+		templateDirectory: __dirname + '/../lib/template',
 		helpersDirectory: __dirname + '/../lib/template/helpers'
 	},
 	KSS_FAILED = false,
@@ -91,7 +91,7 @@ if (argv['load-path']) {
 	argv.loadPath = Array.isArray(argv['load-path']) ? argv['load-path'] : [argv['load-path']];
 }
 
-// Create a new styleguide template to play with using the `--init` tag.
+// Create a new styleguide template using the `--init` tag.
 if (argv.init) {
 	if (typeof argv.init !== 'string') {
 		argv.init = path.resolve('./styleguide-template');
@@ -292,7 +292,7 @@ saveStylesheet = function(buffer, filename) {
 };
 
 // Renders the handlebars template for a section and saves it to a file.
-// Needs refactoring for clarity.
+// @TODO: Needs refactoring for clarity.
 generatePage = function(styleguide, sections, root, pages, sectionRoots) {
 	console.log(
 		'...generating section '+root+' [',
@@ -357,9 +357,7 @@ jsonModifiers = function(modifiers) {
 	});
 };
 
-/**
- * Load custom Handlebars helpers.
- */
+// Load custom Handlebars helpers.
 if (fs.existsSync(config.helpersDirectory)) {
 	var helperFiles = fs.readdirSync(config.helpersDirectory);
 
