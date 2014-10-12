@@ -39,45 +39,56 @@ argv = yargs
 			throw new Error('Please provide a source directory');
 		}
 	})
+	.wrap(80)
+	.strict()
 
 	.options('i', {
 		alias     : 'init',
 		describe  : 'Create a new styleguide template to work from'
 	})
 	.options('t', {
+	  string    : true,
 		alias     : 'template',
 		describe  : 'Use a custom template to build your styleguide'
 	})
 	.options('helpers', {
+	  string    : true,
 		describe  : 'Specify the location of custom handlebars helpers'
 	})
 
 	.options('m', {
+	  string    : true,
 		alias     : 'mask',
 		describe  : 'Use a mask for detecting files in the source directory'
 	})
 	.options('c', {
+	  string    : true,
 		alias     : 'css',
 		describe  : 'Include a CSS stylesheet'
 	})
 
 	.options('s', {
+	  string    : true,
 		alias     : 'style',
 		describe  : 'Compile and include an auto-detected stylesheet [deprecated]'
 	})
 	.options('l', {
+	  string    : true,
 		alias     : 'less',
 		describe  : 'Compile and include a LESS stylesheet [deprecated]'
 	})
 	.options('S', {
+	  string    : true,
 		alias     : 'sass',
 		describe  : 'Compile and include a Sass stylesheet [deprecated]'
 	})
 	.options('y', {
+	  string    : true,
 		alias     : 'stylus',
 		describe  : 'Compile and include a Stylus stylesheet [deprecated]'
 	})
 	.options('L', {
+	  string    : true,
 		alias     : 'load-path',
 		describe  : 'Include a load path for preprocessor imports'
 	})
