@@ -94,6 +94,8 @@ argv = yargs
 	  string    : true,
 		describe  : 'Destination directory'
 	})
+	.config('config')
+	.describe('config', 'Load the kss-node configuration from a json file')
 
 	.version(version, 'version')
 	.help('h')

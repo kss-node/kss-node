@@ -47,6 +47,15 @@ suite('Command Line Interface', function() {
 		});
 	});
 
+	suite('Option: --config', function() {
+		test('Should load configuration from json file', function(done) {
+			exec('bin/kss-node --config test/cli-option-config.json', function(err, stdout, stderr) {
+				assert.ok(/Generation completed successfully/g.test(stdout));
+				done();
+			});
+		});
+	});
+
 	suite('Handlebars helper', function() {
 		// @TODO: Doing a "cat" of the output file seems inelegant.
 		test('Should load additional Handlerbars helpers with --helpers option', function(done) {
