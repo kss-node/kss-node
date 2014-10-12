@@ -97,6 +97,11 @@ argv = yargs
 	.config('config')
 	.describe('config', 'Load the kss-node configuration from a json file')
 
+	.options('xdemo', {
+		boolean   : true,
+		alias     : 'xdemo'
+	})
+
 	.version(version, 'version')
 	.help('h')
 	.alias('h', 'help')
