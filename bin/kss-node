@@ -182,20 +182,27 @@ console.log('');
 template = fs.readFileSync(config.templateDirectory + '/index.html', 'utf8');
 template = handlebars.compile(template);
 
-// Create a new "styleguide" directory and copy the contents
-// of "public" over.
+// Create a new "styleguide" directory.
 try {
 	fs.mkdirSync(config.destinationDirectory);
 } catch (e) {}
 
-wrench.copyDirSyncRecursive(
-	config.templateDirectory + '/public',
-	config.destinationDirectory + '/public',
-	{
-		forceDelete: true,
-		excludeHiddenUnix: true
-	}
-);
+// Optionally copy the contents of "public" over.
+try {
+	wrench.copyDirSyncRecursive(
+		config.templateDirectory + '/public',
+		config.destinationDirectory + '/public',
+		{
+			forceDelete: true,
+			excludeHiddenUnix: true
+		}
+	);
+} catch (e) {}
+
+// Ensure a "public" folder exists.
+try {
+	fs.mkdirSync(config.destinationDirectory + '/public');
+} catch (e) {}
 
 // Generate the static HTML pages in the next tick, i.e. after the other functions have
 // been defined and handlebars helpers set up.
