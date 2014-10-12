@@ -1,1 +1,0 @@
-# KSS-node test suite

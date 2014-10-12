@@ -364,7 +364,7 @@ generateIndex = function(styleguide, sections, pages, sectionRoots) {
 				sections: jsonSections(sections),
 				rootNumber: 0,
 				argv: argv || {},
-				overview: marked(fs.readFileSync(config.sourceDirectory + '/styleguide.md', 'utf8'))
+				overview: ' ' + marked(fs.readFileSync(config.sourceDirectory + '/styleguide.md', 'utf8'))
 			})
 		);
 	} catch (e) {

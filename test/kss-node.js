@@ -17,6 +17,8 @@ suite('Command Line Interface', function() {
 		test('Should read source directory from option', function(done) {
 			exec('bin/kss-node --source test/fixtures-styles/with-include --destination test/output', function(err, stdout, stderr) {
 				assert.ok(/\* Source: .+test\/fixtures\-styles\/with\-include/g.test(stdout));
+				// Ensure empty styleguide.md doesn't cause failure.
+				assert.strictEqual(/no styleguide overview generated/g.test(stdout), false);
 				done();
 			});
 		});
