@@ -20,14 +20,24 @@ Usage: kss-node <sourcedir> <destdir> [options]
 Options:
   -i, --init       Create a new styleguide template to work from
   -t, --template   Use a custom template to build your styleguide
-  --helpers        Specify the location of custom handlebars helpers
-  -m, --mask       Use a custom mask for detecting stylesheets in the source directory, e.g. "*.css"
+  --helpers        Specify the location of custom handlebars helpers; see
+                   http://bit.ly/kss-helpers
+
   -c, --css        Include a CSS stylesheet
-  -s, --style      Compile and include a stylesheet; the precompiler is chosen based on the file extension [deprecated]
+  -s, --style      Compile and include a stylesheet; preprocessor is chosen
+                   based on stylesheet file extension [deprecated]
   -l, --less       Compile and include a LESS stylesheet [deprecated]
   -S, --sass       Compile and include a Sass stylesheet [deprecated]
   -y, --stylus     Compile and include a Stylus stylesheet [deprecated]
-  -L, --load-path  Include a load path for precompiler imports
+  -L, --load-path  Include a load path for preprocessor imports
+
+  --source         Source directory to parse for KSS comments
+  -m, --mask       Use a mask for detecting stylesheets in the source
+                   directory, e.g. "*.css"
+  --destination    Destination directory of generated styleguide
+  --config         Load the kss-node configuration from a json file
+
+  --version        Show version number
   -h, --help       Show help
 ```
 

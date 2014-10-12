@@ -46,14 +46,9 @@ argv = yargs
 	})
 	.options('helpers', {
 	  string    : true,
-		describe  : 'Specify the location of custom handlebars helpers'
+		describe  : 'Specify the location of custom handlebars helpers; see http://bit.ly/kss-helpers'
 	})
 
-	.options('m', {
-	  string    : true,
-		alias     : 'mask',
-		describe  : 'Use a mask for detecting files in the source directory'
-	})
 	.options('c', {
 	  string    : true,
 		alias     : 'css',
@@ -63,7 +58,7 @@ argv = yargs
 	.options('s', {
 	  string    : true,
 		alias     : 'style',
-		describe  : 'Compile and include an auto-detected stylesheet [deprecated]'
+		describe  : 'Compile and include a stylesheet; preprocessor is chosen based on stylesheet file extension [deprecated]'
 	})
 	.options('l', {
 	  string    : true,
@@ -88,11 +83,16 @@ argv = yargs
 
 	.options('source', {
 	  string    : true,
-		describe  : 'Source directory'
+		describe  : 'Source directory to parse for KSS comments'
+	})
+	.options('m', {
+	  string    : true,
+		alias     : 'mask',
+		describe  : 'Use a mask for detecting stylesheets in the source directory, e.g. "*.css"'
 	})
 	.options('destination', {
 	  string    : true,
-		describe  : 'Destination directory'
+		describe  : 'Destination directory of generated styleguide'
 	})
 	.config('config')
 	.describe('config', 'Load the kss-node configuration from a json file')
