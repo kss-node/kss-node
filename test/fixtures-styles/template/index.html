@@ -7,8 +7,57 @@
 </head>
 <body>
 
-<div id="kss-test--helpers">
+<div id="kss-test--option-helpers">
 {{test}}
+</div>
+
+<div id="kss-test--section">
+{{#section rootNumber}}
+  <h2>Handlebars Section Helper Test {{reference}}</h2>
+  {{{description}}}
+{{/section}}
+</div>
+
+<div id="kss-test--eachSection">
+{{#eachSection "2"}}
+  <h2>Handlebars eachSection Helper Test {{reference}}</h2>
+  {{{description}}}
+{{/eachSection}}
+</div>
+
+<div id="kss-test--eachRoot">
+{{#eachRoot}}
+  <h2>Handlebars eachRoot Helper Test {{reference}}</h2>
+{{/eachRoot}}
+</div>
+
+<div id="kss-test--ifDepth">
+{{#if rootNumber}}
+{{#eachSection rootNumber}}
+  {{#ifDepth 2}}
+    <h2>Handlebars ifDepth Helper Test {{reference}}</h2>
+  {{/ifDepth}}
+  {{#unlessDepth 2}}
+    <h2>Handlebars unlessDepth Helper Test {{reference}}</h2>
+  {{/unlessDepth}}
+{{/eachSection}}
+{{/if}}
+</div>
+
+<div id="kss-test--eachModifier">
+{{#section "2.1.3"}}
+  {{#eachModifier}}
+    <h3>Handlebars eachModifier Helper: {{name}}</h2>
+  {{/eachModifier}}
+{{/section}}
+</div>
+
+<div id="kss-test--modifierMarkup">
+{{#section "2.1.3"}}
+  {{#eachModifier}}
+    {{modifierMarkup}}
+  {{/eachModifier}}
+{{/section}}
 </div>
 
 </body>

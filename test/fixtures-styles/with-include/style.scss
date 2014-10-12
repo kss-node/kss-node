@@ -1,8 +1,19 @@
+// Buttons
+//
+// Styleguide 2
+
 @import "buttons";
+
+// Star buttons
+//
+// Styleguide 2.1.
 
 // A button suitable for giving stars to someone.
 //
 //     Testing indentation for Markdown code.
+//
+// Markup:
+// <h2>Handlebars modifierMarkup Helper: {$modifiers}</h2>
 //
 // :hover             - Subtle hover highlight.
 // .stars-given       - A highlight indicating you've already given a star.
@@ -35,3 +46,9 @@ a.button.star{
   &.disabled{
   }
 }
+
+// Section 3
+//
+// Section 3 has been successfully loaded.
+//
+// Styleguide 3
