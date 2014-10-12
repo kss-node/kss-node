@@ -23,7 +23,8 @@ var kss = require(__dirname + '/../lib/kss.js'),
 	},
 	KSS_FAILED = false,
 	argv,
-	error;
+	error,
+	version = require(__dirname + '/../package.json').version;
 
 /**
  * CLI argument parsing.
@@ -81,6 +82,7 @@ argv = yargs
 		describe  : 'Include a load path for preprocessor imports'
 	})
 
+	.version(version, 'version')
 	.help('h')
 	.alias('h', 'help')
 	.argv;
