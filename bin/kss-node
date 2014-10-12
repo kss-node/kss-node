@@ -32,13 +32,6 @@ var kss = require(__dirname + '/../lib/kss.js'),
  */
 argv = yargs
 	.usage('Usage: kss-node <sourcedir> <destdir> [options]\n\n<destdir> defaults to "styleguide" if not specified.')
-
-	// We only require the <sourcedir> if not doing an --init.
-	.check(function(args) {
-		if (args._.length < 1 && !args.init) {
-			throw new Error('Please provide a source directory');
-		}
-	})
 	.wrap(80)
 	.strict()
 
@@ -93,6 +86,15 @@ argv = yargs
 		describe  : 'Include a load path for preprocessor imports'
 	})
 
+	.options('source', {
+	  string    : true,
+		describe  : 'Source directory'
+	})
+	.options('destination', {
+	  string    : true,
+		describe  : 'Destination directory'
+	})
+
 	.version(version, 'version')
 	.help('h')
 	.alias('h', 'help')
@@ -136,8 +138,20 @@ if (argv.init) {
 	return;
 }
 
-config.sourceDirectory = path.resolve(argv['_'][0]);
-if (argv['_'].length > 1) {
+if (argv.source) {
+	config.sourceDirectory = path.resolve(argv.source);
+}
+else if (argv['_'].length > 0) {
+	config.sourceDirectory = path.resolve(argv['_'][0]);
+}
+else {
+  yargs.showHelp();
+  return;
+}
+if (argv.destination) {
+	config.destinationDirectory = path.resolve(argv.destination);
+}
+else if (argv['_'].length > 1) {
 	config.destinationDirectory = path.resolve(argv['_'][1]);
 }
 if (argv.template) {
