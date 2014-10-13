@@ -37,7 +37,8 @@ argv = yargs
 
 	.options('i', {
 		alias     : 'init',
-		describe  : 'Create a new styleguide template to customize'
+		describe  : 'Create a new styleguide template to customize',
+		default   : 'styleguide-template'
 	})
 	.options('t', {
 		string    : true,
@@ -115,12 +116,8 @@ if (argv['load-path']) {
 }
 
 // Create a new styleguide template using the `--init` tag.
-if (argv.init) {
-	if (typeof argv.init !== 'string') {
-		argv.init = path.resolve('./styleguide-template');
-	} else {
-		argv.init = path.resolve(argv.init);
-	}
+if ("init" in yargs.argv) {
+	argv.init = path.resolve(argv.init);
 
 	console.log('Creating a new styleguide template...');
 	try {
