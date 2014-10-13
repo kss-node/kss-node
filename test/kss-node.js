@@ -30,6 +30,14 @@ suite('Command Line Interface', function() {
 				done();
 			});
 		});
+		test('Warn if homepage content is not found', function(done) {
+			exec('bin/kss-node --source test/fixtures-styles/missing-homepage --destination test/output', function(err, stdout, stderr) {
+				// Ensure missing styleguide.md doesn't cause failure.
+				assert.ok(/no homepage content found/g.test(stdout), 'Warning about no homepage content found');
+				assert.strictEqual(/no styleguide overview generated/g.test(stdout), false, 'Styleguide homepage not generated from missing file');
+				done();
+			});
+		});
 	});
 
 	suite('Option: --destination', function() {

@@ -360,8 +360,16 @@ generatePage = function(styleguide, sections, root, pages, sectionRoots) {
 // Equivalent to generatePage, however will take `styleguide.md` and render it
 // using first Markdown and then Handlebars
 generateIndex = function(styleguide, sections, pages, sectionRoots) {
+	var overviewText;
+	console.log('...generating styleguide homepage overview');
+	// Ensure overview is a non-false value.
 	try {
-		console.log('...generating styleguide overview');
+		overviewText = ' ' + marked(fs.readFileSync(config.sourceDirectory + '/styleguide.md', 'utf8'));
+	} catch (e) {
+		overviewText = ' ';
+		console.log('...no homepage content found:', e.message);
+	}
+	try {
 		fs.writeFileSync(config.destinationDirectory + '/index.html',
 			template({
 				styleguide: styleguide,
@@ -369,7 +377,7 @@ generateIndex = function(styleguide, sections, pages, sectionRoots) {
 				sections: jsonSections(sections),
 				rootNumber: 0,
 				argv: argv || {},
-				overview: ' ' + marked(fs.readFileSync(config.sourceDirectory + '/styleguide.md', 'utf8'))
+				overview: overviewText
 			})
 		);
 	} catch (e) {
