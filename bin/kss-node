@@ -15,12 +15,6 @@ var kss = require(__dirname + '/../lib/kss.js'),
 	fs = require('fs'),
 	template, styleguide,
 	generatePage, generateStylesheet,
-	config = {
-		sourceDirectory: '',
-		destinationDirectory: process.cwd() + '/styleguide',
-		templateDirectory: __dirname + '/../lib/template',
-		helpersDirectory: __dirname + '/../lib/template/helpers'
-	},
 	configFile = {},
 	KSS_FAILED = false,
 	argv,
@@ -164,7 +158,7 @@ if (!argv.source) {
 	yargs.showHelp();
 	return;
 }
-config.sourceDirectory = path.resolve(argv.source);
+argv.source = path.resolve(argv.source);
 // Get the full destination path.
 if (argv.destination instanceof Array) {
 	argv.destination = argv.destination.pop();
@@ -172,12 +166,12 @@ if (argv.destination instanceof Array) {
 else if (!("destination" in yargs.argv) && argv['_'].length > 1) {
 	argv.destination = argv['_'][1];
 }
-config.destinationDirectory = path.resolve(argv.destination);
+argv.destination = path.resolve(argv.destination);
 // Get the full template path.
 if (argv.template instanceof Array) {
 	argv.template = argv.template.pop();
 }
-config.templateDirectory = path.resolve(argv.template);
+argv.template = path.resolve(argv.template);
 // Get the full helpers path.
 if (argv.helpers instanceof Array) {
 	argv.helpers = argv.helpers.pop();
@@ -185,31 +179,31 @@ if (argv.helpers instanceof Array) {
 else if (!("helpers" in yargs.argv) && !("helpers" in configFile)) {
 	argv.helpers = argv.template + '/helpers';
 }
-config.helpersDirectory = path.resolve(argv.helpers);
+argv.helpers = path.resolve(argv.helpers);
 
 console.log('');
 console.log('Generating your KSS Styleguide!');
 console.log('');
-console.log(' * Source: ' + path.resolve(config.sourceDirectory));
-console.log(' * Destination: ' + path.resolve(config.destinationDirectory));
-console.log(' * Template: ' + path.resolve(config.templateDirectory));
-console.log(' * Helpers: ' + path.resolve(config.helpersDirectory));
+console.log(' * Source      : ' + argv.source);
+console.log(' * Destination : ' + argv.destination);
+console.log(' * Template    : ' + argv.template);
+console.log(' * Helpers     : ' + argv.helpers);
 console.log('');
 
 // Compile the Handlebars template
-template = fs.readFileSync(config.templateDirectory + '/index.html', 'utf8');
+template = fs.readFileSync(argv.template + '/index.html', 'utf8');
 template = handlebars.compile(template);
 
 // Create a new "styleguide" directory.
 try {
-	fs.mkdirSync(config.destinationDirectory);
+	fs.mkdirSync(argv.destination);
 } catch (e) {}
 
 // Optionally copy the contents of "public" over.
 try {
 	wrench.copyDirSyncRecursive(
-		config.templateDirectory + '/public',
-		config.destinationDirectory + '/public',
+		argv.template + '/public',
+		argv.destination + '/public',
 		{
 			forceDelete: true,
 			excludeHiddenUnix: true
@@ -219,7 +213,7 @@ try {
 
 // Ensure a "public" folder exists.
 try {
-	fs.mkdirSync(config.destinationDirectory + '/public');
+	fs.mkdirSync(argv.destination + '/public');
 } catch (e) {}
 
 // Generate the static HTML pages in the next tick, i.e. after the other functions have
@@ -227,7 +221,7 @@ try {
 process.nextTick(function() {
 	// Optionally compile the template's kss.less stylesheet.
 	console.log('...compiling KSS styles');
-	less.render('@import "' + config.destinationDirectory + '/public/kss.less";', function(err, css) {
+	less.render('@import "' + argv.destination + '/public/kss.less";', function(err, css) {
 		if (!err) {
 			saveStylesheet(css, 'kss.css');
 		}
@@ -235,7 +229,7 @@ process.nextTick(function() {
 
 	console.log('...parsing your styleguide');
 
-	kss.traverse(config.sourceDirectory, {
+	kss.traverse(argv.source, {
 		multiline : true,
 		markdown  : true,
 		markup    : true,
@@ -350,7 +344,7 @@ saveStylesheet = function(buffer, filename) {
 	buffer = new cleanCSS().minify(buffer.toString());
 	filename = filename || 'style.css';
 	fs.writeFileSync(
-		config.destinationDirectory + '/public/' + filename,
+		argv.destination + '/public/' + filename,
 		buffer, 'utf8'
 	);
 };
@@ -363,7 +357,7 @@ generatePage = function(styleguide, sections, root, pages, sectionRoots) {
 		styleguide.section(root) ? styleguide.section(root).header() : 'Unnamed',
 		']'
 	);
-	fs.writeFileSync(config.destinationDirectory + '/section-'+root+'.html',
+	fs.writeFileSync(argv.destination + '/section-'+root+'.html',
 		template({
 			styleguide: styleguide,
 			sections: jsonSections(sections),
@@ -382,13 +376,13 @@ generateIndex = function(styleguide, sections, pages, sectionRoots) {
 	console.log('...generating styleguide homepage overview');
 	// Ensure overview is a non-false value.
 	try {
-		overviewText = ' ' + marked(fs.readFileSync(config.sourceDirectory + '/styleguide.md', 'utf8'));
+		overviewText = ' ' + marked(fs.readFileSync(argv.source + '/styleguide.md', 'utf8'));
 	} catch (e) {
 		overviewText = ' ';
 		console.log('...no homepage content found:', e.message);
 	}
 	try {
-		fs.writeFileSync(config.destinationDirectory + '/index.html',
+		fs.writeFileSync(argv.destination + '/index.html',
 			template({
 				styleguide: styleguide,
 				sectionRoots: sectionRoots,
@@ -430,14 +424,14 @@ jsonModifiers = function(modifiers) {
 };
 
 // Load custom Handlebars helpers.
-if (fs.existsSync(config.helpersDirectory)) {
-	var helperFiles = fs.readdirSync(config.helpersDirectory);
+if (fs.existsSync(argv.helpers)) {
+	var helperFiles = fs.readdirSync(argv.helpers);
 
 	helperFiles.forEach(function(fileName) {
 		if (path.extname(fileName) !== '.js') {
 			return;
 		}
-		var helper = require(config.helpersDirectory + '/' + fileName);
+		var helper = require(argv.helpers + '/' + fileName);
 		if (typeof helper.register === 'function') {
 			helper.register(handlebars);
 		}
