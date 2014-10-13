@@ -144,19 +144,17 @@ if ("init" in yargs.argv) {
 }
 
 // Get the full source path.
-if (argv.source) {
-	config.sourceDirectory = path.resolve(argv.source);
-}
-else if (argv['_'].length > 0) {
-	config.sourceDirectory = path.resolve(argv['_'][0]);
+if (!("source" in yargs.argv) && argv['_'].length > 0) {
+	argv.source = argv['_'][0];
 }
 else if (argv.xdemo) {
-	config.sourceDirectory = path.resolve(__dirname + '/../demo');
+	argv.source = __dirname + '/../demo';
 }
-else {
+if (!argv.source) {
 	yargs.showHelp();
 	return;
 }
+config.sourceDirectory = path.resolve(argv.source);
 // Get the full destination path.
 if (!("destination" in yargs.argv) && argv['_'].length > 1) {
 	argv.destination = argv['_'][1];
