@@ -31,7 +31,7 @@ var kss = require(__dirname + '/../lib/kss.js'),
  * @type {Object}
  */
 argv = yargs
-	.usage('Usage: kss-node <sourcedir> <destdir> [options]\n\n<destdir> defaults to "styleguide" if not specified.')
+	.usage('Usage: kss-node <sourcedir> <destdir> [options]')
 	.wrap(80)
 	.strict()
 
@@ -92,7 +92,8 @@ argv = yargs
 	})
 	.options('destination', {
 		string    : true,
-		describe  : 'Destination directory of generated styleguide'
+		describe  : 'Destination directory of generated styleguide',
+		default   : 'styleguide'
 	})
 	.config('config')
 	.describe('config', 'Load the kss-node configuration from a json file')
@@ -160,12 +161,10 @@ else {
 	return;
 }
 // Get the full destination path.
-if (argv.destination) {
-	config.destinationDirectory = path.resolve(argv.destination);
+if (!("destination" in yargs.argv) && argv['_'].length > 1) {
+	argv.destination = argv['_'][1];
 }
-else if (argv['_'].length > 1) {
-	config.destinationDirectory = path.resolve(argv['_'][1]);
-}
+config.destinationDirectory = path.resolve(argv.destination);
 // Get the full template path.
 if (argv.template) {
 	config.templateDirectory = path.resolve(argv.template);
