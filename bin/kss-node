@@ -37,7 +37,7 @@ argv = yargs
 
 	.options('i', {
 		alias     : 'init',
-		describe  : 'Create a new styleguide template to work from'
+		describe  : 'Create a new styleguide template to customize'
 	})
 	.options('t', {
 		string    : true,
