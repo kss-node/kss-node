@@ -22,6 +22,14 @@ suite('Command Line Interface', function() {
 				done();
 			});
 		});
+		test('Should not declare success if source directory is empty', function(done) {
+			exec('bin/kss-node --source test/fixtures-styles/empty-source --destination test/output', function(err, stdout, stderr) {
+				assert.ok(/\* Source: .+test\/fixtures\-styles\/empty\-source/g.test(stdout));
+				assert.strictEqual(/Generation completed successfully/g.test(stdout), false, 'Success incorrectly declared');
+				assert.ok(/No KSS documentation discovered in source files./g.test(stdout), 'Warning about no KSS docs given');
+				done();
+			});
+		});
 	});
 
 	suite('Option: --destination', function() {

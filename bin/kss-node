@@ -240,6 +240,11 @@ process.nextTick(function() {
 			return ' - ' + file
 		}).join('\n'))
 
+		// Throw an error if no KSS sections are found in the source files.
+		if (sectionCount == 0) {
+			throw 'No KSS documentation discovered in source files.';
+		}
+
 		// Accumulate all of the sections' first indexes
 		// in case they don't have a root element.
 		for (i = 0; i < sectionCount; i += 1) {
