@@ -145,6 +145,7 @@ if (argv.init) {
 	return;
 }
 
+// Get the full source path.
 if (argv.source) {
 	config.sourceDirectory = path.resolve(argv.source);
 }
@@ -155,16 +156,19 @@ else {
 	yargs.showHelp();
 	return;
 }
+// Get the full destination path.
 if (argv.destination) {
 	config.destinationDirectory = path.resolve(argv.destination);
 }
 else if (argv['_'].length > 1) {
 	config.destinationDirectory = path.resolve(argv['_'][1]);
 }
+// Get the full template path.
 if (argv.template) {
 	config.templateDirectory = path.resolve(argv.template);
 	config.helpersDirectory = config.templateDirectory + '/helpers';
 }
+// Get the full helpers path.
 if (argv.helpers) {
 	config.helpersDirectory = path.resolve(argv.helpers);
 }
