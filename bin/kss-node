@@ -15,7 +15,8 @@ var kss = require(__dirname + '/../lib/kss.js'),
 	fs = require('fs'),
 	template, styleguide,
 	generatePage, generateStylesheet,
-	configFile = {},
+	config = {},
+	configFile,
 	KSS_FAILED = false,
 	argv,
 	error,
@@ -106,12 +107,6 @@ argv = yargs
 	.alias('h', 'help')
 	.argv;
 
-// Set loadPath to an array containing all the paths specified.
-argv.loadPath = [];
-if (argv['load-path']) {
-	argv.loadPath = Array.isArray(argv['load-path']) ? argv['load-path'] : [argv['load-path']];
-}
-
 // Create a new styleguide template using the `--init` tag.
 if ("init" in yargs.argv) {
 	argv.init = path.resolve(argv.init);
@@ -142,7 +137,21 @@ if ("init" in yargs.argv) {
 
 // Determine which options are specified in a config json file.
 if (argv.config) {
-	configFile = require(path.resolve(argv.config));
+	configFile = path.resolve(argv.config);
+	config = require(configFile);
+	// Make config paths relative to config file.
+	for (var key in config) {
+		if (config[key] instanceof Array) {
+			config[key].forEach(
+				function(element, index) {
+					argv[key][index] = path.resolve(path.dirname(configFile), element);
+				}
+			);
+		}
+		else {
+			argv[key] = path.resolve(path.dirname(configFile), config[key]);
+		}
+	}
 }
 // Get the full source path.
 if (argv.source instanceof Array) {
@@ -176,10 +185,16 @@ argv.template = path.resolve(argv.template);
 if (argv.helpers instanceof Array) {
 	argv.helpers = argv.helpers.pop();
 }
-else if (!("helpers" in yargs.argv) && !("helpers" in configFile)) {
+else if (!("helpers" in yargs.argv) && !("helpers" in config)) {
 	argv.helpers = argv.template + '/helpers';
 }
 argv.helpers = path.resolve(argv.helpers);
+
+// Set loadPath to an array containing all the paths specified.
+argv.loadPath = [];
+if (argv['load-path']) {
+	argv.loadPath = Array.isArray(argv['load-path']) ? argv['load-path'] : [argv['load-path']];
+}
 
 console.log('');
 console.log('Generating your KSS Styleguide!');
