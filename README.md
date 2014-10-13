@@ -15,13 +15,13 @@ To get you up and running quickly, a styleguide generator is included that can b
 ```
 Usage: kss-node <sourcedir> <destdir> [options]
 
-<destdir> defaults to "styleguide" if not specified.
-
 Options:
-  -i, --init       Create a new styleguide template to work from
+  -i, --init       Create a new styleguide template to customize
+                                                [default: "styleguide-template"]
   -t, --template   Use a custom template to build your styleguide
+                                                       [default: "lib/template"]
   --helpers        Specify the location of custom handlebars helpers; see
-                   http://bit.ly/kss-helpers
+                   http://bit.ly/kss-helpers   [default: "lib/template/helpers"]
 
   -c, --css        Include a CSS stylesheet
   -s, --style      Compile and include a stylesheet; preprocessor is chosen
@@ -35,6 +35,7 @@ Options:
   -m, --mask       Use a mask for detecting stylesheets in the source
                    directory, e.g. "*.css"
   --destination    Destination directory of generated styleguide
+                                                         [default: "styleguide"]
   --config         Load the kss-node configuration from a json file
 
   --version        Show version number
