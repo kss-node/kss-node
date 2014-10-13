@@ -21,6 +21,7 @@ var kss = require(__dirname + '/../lib/kss.js'),
 		templateDirectory: __dirname + '/../lib/template',
 		helpersDirectory: __dirname + '/../lib/template/helpers'
 	},
+	configFile = {},
 	KSS_FAILED = false,
 	argv,
 	error,
@@ -43,11 +44,13 @@ argv = yargs
 	.options('t', {
 		string    : true,
 		alias     : 'template',
-		describe  : 'Use a custom template to build your styleguide'
+		describe  : 'Use a custom template to build your styleguide',
+		default   : path.relative(process.cwd(), __dirname + '/../lib/template')
 	})
 	.options('helpers', {
 		string    : true,
-		describe  : 'Specify the location of custom handlebars helpers; see http://bit.ly/kss-helpers'
+		describe  : 'Specify the location of custom handlebars helpers; see http://bit.ly/kss-helpers',
+		default   : path.relative(process.cwd(), __dirname + '/../lib/template/helpers')
 	})
 
 	.options('c', {
@@ -143,6 +146,10 @@ if ("init" in yargs.argv) {
 	return;
 }
 
+// Determine which options are specified in a config json file.
+if (argv.config) {
+	configFile = require(path.resolve(argv.config));
+}
 // Get the full source path.
 if (argv.source instanceof Array) {
 	argv.source = argv.source.pop();
@@ -170,17 +177,15 @@ config.destinationDirectory = path.resolve(argv.destination);
 if (argv.template instanceof Array) {
 	argv.template = argv.template.pop();
 }
-if (argv.template) {
-	config.templateDirectory = path.resolve(argv.template);
-	config.helpersDirectory = config.templateDirectory + '/helpers';
-}
+config.templateDirectory = path.resolve(argv.template);
 // Get the full helpers path.
 if (argv.helpers instanceof Array) {
 	argv.helpers = argv.helpers.pop();
 }
-if (argv.helpers) {
-	config.helpersDirectory = path.resolve(argv.helpers);
+else if (!("helpers" in yargs.argv) && !("helpers" in configFile)) {
+	argv.helpers = argv.template + '/helpers';
 }
+config.helpersDirectory = path.resolve(argv.helpers);
 
 console.log('');
 console.log('Generating your KSS Styleguide!');
