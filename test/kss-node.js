@@ -85,21 +85,21 @@ suite('Command Line Interface', function() {
 			exec('cat test/output/index.html', function(err, stdout, stderr) {
 				assert.ok(/Handlebars eachRoot Helper Test 2/g.test(stdout));
 				assert.ok(/Handlebars eachRoot Helper Test 3/g.test(stdout));
-				assert.notEqual(/Handlebars eachRoot Helper Test 2.1.3/g.test(stdout));
+				assert.strictEqual(/Handlebars eachRoot Helper Test 2.1.3/g.test(stdout), false);
 				done();
 			});
 		});
 		test('Should load Handlerbars helper: {{ifDepth [arg]}}', function(done) {
 			exec('cat test/output/section-2.html', function(err, stdout, stderr) {
 				assert.ok(/Handlebars ifDepth Helper Test 2.1</g.test(stdout));
-				assert.notEqual(/Handlebars ifDepth Helper Test 2.1.3</g.test(stdout));
+				assert.strictEqual(/Handlebars ifDepth Helper Test 2.1.3</g.test(stdout), false);
 				done();
 			});
 		});
 		test('Should load Handlerbars helper: {{unlessDepth [arg]}}', function(done) {
 			exec('cat test/output/section-2.html', function(err, stdout, stderr) {
 				assert.ok(/Handlebars unlessDepth Helper Test 2.1.3</g.test(stdout));
-				assert.notEqual(/Handlebars unlessDepth Helper Test 2.1</g.test(stdout));
+				assert.strictEqual(/Handlebars unlessDepth Helper Test 2.1</g.test(stdout), false);
 				done();
 			});
 		});
