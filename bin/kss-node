@@ -144,7 +144,10 @@ if ("init" in yargs.argv) {
 }
 
 // Get the full source path.
-if (!("source" in yargs.argv) && argv['_'].length > 0) {
+if (argv.source instanceof Array) {
+	argv.source = argv.source.pop();
+}
+else if (!("source" in yargs.argv) && argv['_'].length > 0) {
 	argv.source = argv['_'][0];
 }
 else if (argv.xdemo) {
@@ -156,16 +159,25 @@ if (!argv.source) {
 }
 config.sourceDirectory = path.resolve(argv.source);
 // Get the full destination path.
-if (!("destination" in yargs.argv) && argv['_'].length > 1) {
+if (argv.destination instanceof Array) {
+	argv.destination = argv.destination.pop();
+}
+else if (!("destination" in yargs.argv) && argv['_'].length > 1) {
 	argv.destination = argv['_'][1];
 }
 config.destinationDirectory = path.resolve(argv.destination);
 // Get the full template path.
+if (argv.template instanceof Array) {
+	argv.template = argv.template.pop();
+}
 if (argv.template) {
 	config.templateDirectory = path.resolve(argv.template);
 	config.helpersDirectory = config.templateDirectory + '/helpers';
 }
 // Get the full helpers path.
+if (argv.helpers instanceof Array) {
+	argv.helpers = argv.helpers.pop();
+}
 if (argv.helpers) {
 	config.helpersDirectory = path.resolve(argv.helpers);
 }
