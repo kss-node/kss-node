@@ -16,7 +16,7 @@ var kss = require(__dirname + '/../lib/kss.js'),
 	template, styleguide,
 	generatePage, generateStylesheet,
 	config = {
-		sourceDirectory: __dirname + '/../demo',
+		sourceDirectory: '',
 		destinationDirectory: process.cwd() + '/styleguide',
 		templateDirectory: __dirname + '/../lib/template',
 		helpersDirectory: __dirname + '/../lib/template/helpers'
@@ -151,6 +151,9 @@ if (argv.source) {
 }
 else if (argv['_'].length > 0) {
 	config.sourceDirectory = path.resolve(argv['_'][0]);
+}
+else if (argv.xdemo) {
+	config.sourceDirectory = path.resolve(__dirname + '/../demo');
 }
 else {
 	yargs.showHelp();
