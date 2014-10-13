@@ -40,58 +40,58 @@ argv = yargs
 		describe  : 'Create a new styleguide template to work from'
 	})
 	.options('t', {
-	  string    : true,
+		string    : true,
 		alias     : 'template',
 		describe  : 'Use a custom template to build your styleguide'
 	})
 	.options('helpers', {
-	  string    : true,
+		string    : true,
 		describe  : 'Specify the location of custom handlebars helpers; see http://bit.ly/kss-helpers'
 	})
 
 	.options('c', {
-	  string    : true,
+		string    : true,
 		alias     : 'css',
 		describe  : 'Include a CSS stylesheet'
 	})
 
 	.options('s', {
-	  string    : true,
+		string    : true,
 		alias     : 'style',
 		describe  : 'Compile and include a stylesheet; preprocessor is chosen based on stylesheet file extension [deprecated]'
 	})
 	.options('l', {
-	  string    : true,
+		string    : true,
 		alias     : 'less',
 		describe  : 'Compile and include a LESS stylesheet [deprecated]'
 	})
 	.options('S', {
-	  string    : true,
+		string    : true,
 		alias     : 'sass',
 		describe  : 'Compile and include a Sass stylesheet [deprecated]'
 	})
 	.options('y', {
-	  string    : true,
+		string    : true,
 		alias     : 'stylus',
 		describe  : 'Compile and include a Stylus stylesheet [deprecated]'
 	})
 	.options('L', {
-	  string    : true,
+		string    : true,
 		alias     : 'load-path',
 		describe  : 'Include a load path for preprocessor imports'
 	})
 
 	.options('source', {
-	  string    : true,
+		string    : true,
 		describe  : 'Source directory to parse for KSS comments'
 	})
 	.options('m', {
-	  string    : true,
+		string    : true,
 		alias     : 'mask',
 		describe  : 'Use a mask for detecting stylesheets in the source directory, e.g. "*.css"'
 	})
 	.options('destination', {
-	  string    : true,
+		string    : true,
 		describe  : 'Destination directory of generated styleguide'
 	})
 	.config('config')
@@ -152,8 +152,8 @@ else if (argv['_'].length > 0) {
 	config.sourceDirectory = path.resolve(argv['_'][0]);
 }
 else {
-  yargs.showHelp();
-  return;
+	yargs.showHelp();
+	return;
 }
 if (argv.destination) {
 	config.destinationDirectory = path.resolve(argv.destination);
