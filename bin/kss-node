@@ -67,7 +67,7 @@ argv = yargs
 	})
 	.options('markup', {
 		string    : true,
-		describe  : 'The directory containing templates of each section of your styleguide'
+		describe  : 'The directory containing templates of each section of your styleguide (defaults to the source directory)'
 	})
 	.options('destination', {
 		string    : true,
@@ -454,7 +454,7 @@ handlebars.registerHelper('sectionTemplate', function(options) {
 		cache['sectionTemplate'] = {};
 	}
 
-	// Build the cache for the list of handlebarsFiles.
+	// Build a list of possible handlebars files.
 	if (!cache['handlebarsFiles']) {
 		cache['handlebarsFiles'] = {};
 		files = glob.sync(argv.markup + '/**/*\.hbs');
