@@ -571,50 +571,6 @@ handlebars.registerHelper('modifierMarkup', function(modifier) {
 	);
 });
 
-/**
- * Quickly avoid escaping strings
- * @param  {String} arg The unescaped HTML
- */
-handlebars.registerHelper('html', function(arg) {
-	// Warn the user that html is deprecated.
-	console.log('{{html expression}} is deprecated; use HandleBars’ triple-stash instead: {{{expression}}}.');
-
-	return new handlebars.SafeString(arg || '');
-});
-
-/**
- * Equivalent to the {#if} block helper with multiple arguments.
- */
-handlebars.registerHelper('ifAny', function() {
-	var numItems = arguments.length - 1,
-		options = arguments[numItems],
-		success = true,
-		i;
-
-	// Warn the user that IfAny is deprecated. The only usage in kss-node was
-	// {{#ifAny markup modifiers}} and, since modifiers is an object and, always
-	// evals to true (even when empty), #ifAny was effectively a dupe of #If.
-	console.log('IfAny is deprecated; if your template has {{#ifAny markup modifiers}}...{{/ifAny}}, replace it with {{#if markup}}...{{/if}}.');
-
-	for (i = 0; i < numItems; i += 1) {
-		if (!arguments[i]) {
-			success = false;
-			break;
-		}
-	}
-
-	return success ? options.fn(this) : options.inverse(this);
-});
-
-/**
- * Equivalent to "if the current section is X levels deep".
- */
-handlebars.registerHelper('whenDepth', function(depth, options) {
-	// Warn the user that whenDepth is deprecated.
-	console.log('{{whenDepth expression}} is deprecated; use {{ifDepth expression}} instead.');
-	return handlebars.helpers.ifDepth.call(this, depth, options);
-});
-
 process.on('exit', function() {
 	if (!KSS_FAILED) {
 		console.log('');
