@@ -205,10 +205,6 @@ console.log(' * Template    : ' + argv.template);
 console.log(' * Helpers     : ' + argv.helpers);
 console.log('');
 
-// Compile the Handlebars template
-template = fs.readFileSync(argv.template + '/index.html', 'utf8');
-template = handlebars.compile(template);
-
 // Create a new "styleguide" directory.
 try {
 	fs.mkdirSync(argv.destination);
@@ -230,6 +226,10 @@ try {
 try {
 	fs.mkdirSync(argv.destination + '/public');
 } catch (e) {}
+
+// Compile the Handlebars template
+template = fs.readFileSync(argv.template + '/index.html', 'utf8');
+template = handlebars.compile(template);
 
 // Generate the static HTML pages in the next tick, i.e. after the other functions have
 // been defined and handlebars helpers set up.
