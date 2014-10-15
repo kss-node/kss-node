@@ -1,7 +1,5 @@
 {
   "source"      : "fixtures-styles/with-include",
   "destination" : "output",
-  "template"    : "fixtures-styles/template",
-  "load-path"   : "fixtures-styles/includes",
-  "sass"        : "fixtures-styles/with-include/style.scss"
+  "template"    : "fixtures-styles/template"
 }

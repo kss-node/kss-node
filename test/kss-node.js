@@ -47,22 +47,6 @@ suite('Command Line Interface', function() {
 		});
 	});
 
-	suite('Option: --load-path', function() {
-		test('Fails without load-path, when using --sass', function(done) {
-			exec('bin/kss-node test/fixtures-styles/with-include test/output --sass test/fixtures-styles/with-include/style.scss', function(err, stdout, stderr) {
-				assert.ok(/Error during generation/g.test(stdout), 'Missing load-path causes error');
-				assert.ok(/error: file to import not found or unreadable: "buttons"/g.test(stdout), 'Useful warning for missing load-path given');
-				done();
-			});
-		});
-		test('Succeeds with load-path, when using --sass', function(done) {
-			exec('bin/kss-node test/fixtures-styles/with-include test/output -L test/fixtures-styles/includes --sass test/fixtures-styles/with-include/style.scss', function(err, stdout, stderr) {
-				assert.ok(/Generation completed successfully/g.test(stdout), 'Read --load-path option');
-				done();
-			});
-		});
-	});
-
 	suite('Option: --config', function() {
 		test('Should load configuration from json file', function(done) {
 			exec('bin/kss-node --config test/cli-option-config.json', function(err, stdout, stderr) {

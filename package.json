@@ -22,11 +22,8 @@
     "async": "^0.9.0",
     "clean-css": "^2.2.16",
     "handlebars": "^2.0.0",
-    "less": "^1.7.5",
     "marked": "^0.3.2",
     "natural": "^0.1.28",
-    "node-sass": "^0.9.4",
-    "stylus": "^0.48.1",
     "wrench": "^1.5.8",
     "yargs": "^1.3.1"
   },
