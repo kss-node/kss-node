@@ -294,7 +294,7 @@ process.nextTick(function() {
 
 		// Generate the homepage.
 		childSections = [];
-		generateIndex(styleguide, childSections, sectionRoots);
+		generatePage(styleguide, childSections, 'styleguide.homepage', sectionRoots);
 
 		generateStylesheet(argv);
 	});
@@ -364,51 +364,39 @@ saveStylesheet = function(buffer, filename) {
 };
 
 // Renders the handlebars template for a section and saves it to a file.
-// @TODO: Needs refactoring for clarity.
 generatePage = function(styleguide, sections, root, sectionRoots) {
-	console.log(
-		'...generating section '+root+' [',
-		styleguide.section(root) ? styleguide.section(root).header() : 'Unnamed',
-		']'
-	);
-	fs.writeFileSync(argv.destination + '/section-'+root+'.html',
+	var filename = '',
+		homepageText = false;
+
+	if (root == 'styleguide.homepage') {
+	  filename = 'index.html';
+		console.log('...generating styleguide homepage overview');
+		// Ensure homepageText is a non-false value.
+		try {
+			homepageText = ' ' + marked(fs.readFileSync(argv.source + '/styleguide.md', 'utf8'));
+		} catch (e) {
+			homepageText = ' ';
+			console.log('...no homepage content found:', e.message);
+		}
+	}
+	else {
+		filename = 'section-'+root+'.html';
+		console.log(
+			'...generating section '+root+' [',
+			styleguide.section(root) ? styleguide.section(root).header() : 'Unnamed',
+			']'
+		);
+	}
+	fs.writeFileSync(argv.destination + '/' + filename,
 		template({
 			styleguide: styleguide,
+			sectionRoots: sectionRoots,
 			sections: jsonSections(sections),
 			rootNumber: root,
-			sectionRoots: sectionRoots,
-			overview: false,
-			argv: argv || {}
+			argv: argv || {},
+			overview: homepageText
 		})
 	);
-};
-
-// Equivalent to generatePage, however will take `styleguide.md` and render it
-// using first Markdown and then Handlebars
-generateIndex = function(styleguide, sections, sectionRoots) {
-	var overviewText;
-	console.log('...generating styleguide homepage overview');
-	// Ensure overview is a non-false value.
-	try {
-		overviewText = ' ' + marked(fs.readFileSync(argv.source + '/styleguide.md', 'utf8'));
-	} catch (e) {
-		overviewText = ' ';
-		console.log('...no homepage content found:', e.message);
-	}
-	try {
-		fs.writeFileSync(argv.destination + '/index.html',
-			template({
-				styleguide: styleguide,
-				sectionRoots: sectionRoots,
-				sections: jsonSections(sections),
-				rootNumber: 0,
-				argv: argv || {},
-				overview: overviewText
-			})
-		);
-	} catch (e) {
-		console.log('...no styleguide overview generated:', e.message);
-	}
 };
 
 // Convert an array of `KssSection` instances to a JSON object.
