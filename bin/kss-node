@@ -260,7 +260,6 @@ process.nextTick(function() {
 			rootCount,
 			currentRoot,
 			childSections = [],
-			pages = {},
 			i;
 
 		console.log(sg.data.files.map(function(file) {
@@ -290,13 +289,13 @@ process.nextTick(function() {
 		for (i = 0; i < rootCount; i += 1) {
 			childSections = styleguide.section(sectionRoots[i]+'.*');
 
-			generatePage(
-				styleguide, childSections,
-				sectionRoots[i], pages, sectionRoots
-			);
+			generatePage(styleguide, childSections, sectionRoots[i], sectionRoots);
 		}
 
-		generateIndex(styleguide, childSections, pages, sectionRoots);
+		// Generate the homepage.
+		childSections = [];
+		generateIndex(styleguide, childSections, sectionRoots);
+
 		generateStylesheet(argv);
 	});
 });
@@ -366,7 +365,7 @@ saveStylesheet = function(buffer, filename) {
 
 // Renders the handlebars template for a section and saves it to a file.
 // @TODO: Needs refactoring for clarity.
-generatePage = function(styleguide, sections, root, pages, sectionRoots) {
+generatePage = function(styleguide, sections, root, sectionRoots) {
 	console.log(
 		'...generating section '+root+' [',
 		styleguide.section(root) ? styleguide.section(root).header() : 'Unnamed',
@@ -386,7 +385,7 @@ generatePage = function(styleguide, sections, root, pages, sectionRoots) {
 
 // Equivalent to generatePage, however will take `styleguide.md` and render it
 // using first Markdown and then Handlebars
-generateIndex = function(styleguide, sections, pages, sectionRoots) {
+generateIndex = function(styleguide, sections, sectionRoots) {
 	var overviewText;
 	console.log('...generating styleguide homepage overview');
 	// Ensure overview is a non-false value.
