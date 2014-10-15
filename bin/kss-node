@@ -199,7 +199,7 @@ if (argv['load-path']) {
 console.log('');
 console.log('Generating your KSS Styleguide!');
 console.log('');
-console.log(' * Source      : ' + argv.source);
+console.log(' * KSS Source  : ' + argv.source);
 console.log(' * Destination : ' + argv.destination);
 console.log(' * Template    : ' + argv.template);
 console.log(' * Helpers     : ' + argv.helpers);
