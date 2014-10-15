@@ -23,18 +23,18 @@ var kss = require(__dirname + '/../lib/kss.js'),
  * @type {Object}
  */
 argv = yargs
-	.usage('Usage: kss-node <sourcedir> <destdir> [options]')
+	.usage('Usage: kss-node <source> [destination] [options]')
 	.wrap(80)
 	.strict()
 
-	.options('i', {
-		alias     : 'init',
+	.options('init', {
+		alias     : 'i',
 		describe  : 'Create a new styleguide template to customize',
 		default   : 'styleguide-template'
 	})
-	.options('t', {
+	.options('template', {
 		string    : true,
-		alias     : 'template',
+		alias     : 't',
 		describe  : 'Use a custom template to build your styleguide',
 		default   : path.relative(process.cwd(), __dirname + '/../lib/template')
 	})
@@ -44,28 +44,30 @@ argv = yargs
 		default   : path.relative(process.cwd(), __dirname + '/../lib/template/helpers')
 	})
 
-	.options('c', {
+	.options('mask', {
 		string    : true,
-		alias     : 'css',
-		describe  : 'Include a CSS stylesheet'
+		alias     : 'm',
+		describe  : 'Use a mask for detecting files containing KSS comments',
+		default   : '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
+	})
+	.options('css', {
+		string    : true,
+		alias     : 's',
+		describe  : 'Copies CSS stylesheets into the styleguide; WARNING: relative paths are not rewritten'
 	})
 
 	.options('source', {
 		string    : true,
 		describe  : 'Source directory to parse for KSS comments'
 	})
-	.options('m', {
-		string    : true,
-		alias     : 'mask',
-		describe  : 'Use a mask for detecting files containing KSS comments',
-		default   : '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
-	})
 	.options('destination', {
 		string    : true,
 		describe  : 'Destination directory of generated styleguide',
 		default   : 'styleguide'
 	})
+
 	.config('config')
+	.alias('config', 'c')
 	.describe('config', 'Load the kss-node configuration from a json file')
 
 	.options('xdemo', {
@@ -74,8 +76,9 @@ argv = yargs
 	})
 
 	.version(version, 'version')
-	.help('h')
-	.alias('h', 'help')
+	.help('help')
+	.alias('help', 'h')
+	.alias('help', '?')
 	.argv;
 
 // Create a new styleguide template using the `--init` tag.

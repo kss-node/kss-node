@@ -13,33 +13,28 @@ Just one line: `npm install kss`. If you want to use the command line interface,
 To get you up and running quickly, a styleguide generator is included that can be used from the command line. It parses a directory of stylesheets and spits out a set of static HTML files like the ones used on this site.
 
 ```
-Usage: kss-node <sourcedir> <destdir> [options]
+Usage: kss-node <source> [destination] [options]
 
 Options:
-  -i, --init       Create a new styleguide template to customize
+  --init, -i      Create a new styleguide template to customize
                                                 [default: "styleguide-template"]
-  -t, --template   Use a custom template to build your styleguide
+  --template, -t  Use a custom template to build your styleguide
                                                        [default: "lib/template"]
-  --helpers        Specify the location of custom handlebars helpers; see
-                   http://bit.ly/kss-helpers   [default: "lib/template/helpers"]
+  --helpers       Specify the location of custom handlebars helpers; see
+                  http://bit.ly/kss-helpers    [default: "lib/template/helpers"]
+  --mask, -m      Use a mask for detecting files containing KSS comments
+                         [default: "*.css|*.less|*.sass|*.scss|*.styl|*.stylus"]
+  --css, -s       Copies CSS stylesheets into the styleguide; WARNING: relative
+                  paths are not rewritten
 
-  -c, --css        Include a CSS stylesheet
-  -s, --style      Compile and include a stylesheet; preprocessor is chosen
-                   based on stylesheet file extension [deprecated]
-  -l, --less       Compile and include a LESS stylesheet [deprecated]
-  -S, --sass       Compile and include a Sass stylesheet [deprecated]
-  -y, --stylus     Compile and include a Stylus stylesheet [deprecated]
-  -L, --load-path  Include a load path for preprocessor imports
-
-  --source         Source directory to parse for KSS comments
-  -m, --mask       Use a mask for detecting stylesheets in the source
-                   directory, e.g. "*.css"
-  --destination    Destination directory of generated styleguide
+  --source        Source directory to parse for KSS comments
+  --destination   Destination directory of generated styleguide
                                                          [default: "styleguide"]
-  --config         Load the kss-node configuration from a json file
 
-  --version        Show version number
-  -h, --help       Show help
+  --config, -c    Load the kss-node configuration from a json file
+
+  --version       Show version number
+  --help, -h, -?  Show help
 ```
 
 You'll need to specify a directory containing all of your stylesheet files to be parsed for documentation as the first argument. Optionally, the second argument can be used to specify a target directory. Your CSS won't be included by default, hence you should use the `--less`, `--css`, etc. flags to point to a stylesheet to compile and include. You can generate a copy of the demo styleguide like so:
