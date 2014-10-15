@@ -202,7 +202,7 @@ template = handlebars.compile(template);
 // Generate the static HTML pages in the next tick, i.e. after the other functions have
 // been defined and handlebars helpers set up.
 process.nextTick(function() {
-	console.log('...parsing your styleguide');
+	console.log('...Parsing your styleguide:');
 
 	kss.traverse(argv.source, {
 		multiline : true,
@@ -241,6 +241,8 @@ process.nextTick(function() {
 			}
 		}
 
+		console.log('...Generating styleguide sections:');
+
 		sectionRoots.sort();
 		rootCount = sectionRoots.length;
 
@@ -266,7 +268,7 @@ process.nextTick(function() {
 aggregateStylesheet = function(argv) {
 	var files;
 
-	console.log('...aggregating additional stylesheets');
+	console.log('...Aggregating additional stylesheets:');
 
 	files = [{
 		files: Array.isArray(argv.css) ? argv.css : [argv.css],
@@ -314,19 +316,19 @@ generatePage = function(styleguide, sections, root, sectionRoots) {
 
 	if (root == 'styleguide.homepage') {
 	  filename = 'index.html';
-		console.log('...generating styleguide homepage overview');
+		console.log(' - homepage');
 		// Ensure homepageText is a non-false value.
 		try {
 			homepageText = ' ' + marked(fs.readFileSync(argv.source + '/styleguide.md', 'utf8'));
 		} catch (e) {
 			homepageText = ' ';
-			console.log('...no homepage content found:', e.message);
+			console.log('   ...no homepage content found: ', e.message);
 		}
 	}
 	else {
 		filename = 'section-'+root+'.html';
 		console.log(
-			'...generating section '+root+' [',
+			' - section '+root+' [',
 			styleguide.section(root) ? styleguide.section(root).header() : 'Unnamed',
 			']'
 		);
