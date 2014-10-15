@@ -37,11 +37,11 @@ Options:
   --help, -h, -?  Show help
 ```
 
-You'll need to specify a directory containing all of your stylesheet files to be parsed for documentation as the first argument. Optionally, the second argument can be used to specify a target directory. Your CSS won't be included by default, hence you should use the `--less`, `--css`, etc. flags to point to a stylesheet to compile and include. You can generate a copy of the demo styleguide like so:
+You'll need to specify a directory containing all of your stylesheet files to be parsed for documentation as the first argument. Optionally, the second argument can be used to specify a target directory. Your CSS won't be included by default, howerver, unless you use the inflexible `--css` option or create a flexible custom template with `--init`. You can generate a copy of the demo styleguide like so:
 
     $ kss-node --xdemo
 
-You can create your own templates too. Use the `kss-node --init` command to initialize a copy of the default template so you can edit it and use it when generating your styleguide with the `--template` flag. **This option is best when you need to compile your stylesheets with a preprocessor workflow not supported by kss-node**; simply link the generated CSS from inside the custom template's index.html.
+It is recommended that you create your own template, i.e. skin, theme. Use the `kss-node --init` command to initialize a copy of the default template so you can edit it and use it when generating your styleguide with the `--template` flag. Simply link the generated CSS from inside the custom template's index.html.
 
     $ kss-node --init custom-template
     $ kss-node path/to/sass styleguide --template custom-template
