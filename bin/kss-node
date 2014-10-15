@@ -87,7 +87,8 @@ argv = yargs
 	.options('m', {
 		string    : true,
 		alias     : 'mask',
-		describe  : 'Use a mask for detecting stylesheets in the source directory, e.g. "*.css"'
+		describe  : 'Use a mask for detecting files containing KSS comments',
+		default   : '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
 	})
 	.options('destination', {
 		string    : true,
