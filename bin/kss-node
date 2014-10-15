@@ -1,20 +1,17 @@
 #!/usr/bin/env node
 
 var kss = require(__dirname + '/../lib/kss.js'),
-	preCompiler = kss.precompilers,
 	handlebars = require('handlebars'),
 	cleanCSS = require('clean-css'),
 	yargs = require('yargs'),
 	marked = require('marked'),
 	wrench = require('wrench'),
-	stylus = require('stylus'),
 	async = require('async'),
 	util = require('util'),
-	less = require('less'),
 	path = require('path'),
 	fs = require('fs'),
 	template, styleguide,
-	generatePage, generateStylesheet,
+	generatePage, aggregateStylesheet,
 	config = {},
 	configFile,
 	KSS_FAILED = false,
@@ -52,32 +49,6 @@ argv = yargs
 		string    : true,
 		alias     : 'css',
 		describe  : 'Include a CSS stylesheet'
-	})
-
-	.options('s', {
-		string    : true,
-		alias     : 'style',
-		describe  : 'Compile and include a stylesheet; preprocessor is chosen based on stylesheet file extension [deprecated]'
-	})
-	.options('l', {
-		string    : true,
-		alias     : 'less',
-		describe  : 'Compile and include a LESS stylesheet [deprecated]'
-	})
-	.options('S', {
-		string    : true,
-		alias     : 'sass',
-		describe  : 'Compile and include a Sass stylesheet [deprecated]'
-	})
-	.options('y', {
-		string    : true,
-		alias     : 'stylus',
-		describe  : 'Compile and include a Stylus stylesheet [deprecated]'
-	})
-	.options('L', {
-		string    : true,
-		alias     : 'load-path',
-		describe  : 'Include a load path for preprocessor imports'
 	})
 
 	.options('source', {
@@ -191,12 +162,6 @@ else if (!("helpers" in yargs.argv) && !("helpers" in config)) {
 }
 argv.helpers = path.resolve(argv.helpers);
 
-// Set loadPath to an array containing all the paths specified.
-argv.loadPath = [];
-if (argv['load-path']) {
-	argv.loadPath = Array.isArray(argv['load-path']) ? argv['load-path'] : [argv['load-path']];
-}
-
 console.log('');
 console.log('Generating your KSS Styleguide!');
 console.log('');
@@ -235,21 +200,13 @@ template = handlebars.compile(template);
 // Generate the static HTML pages in the next tick, i.e. after the other functions have
 // been defined and handlebars helpers set up.
 process.nextTick(function() {
-	// Optionally compile the template's kss.less stylesheet.
-	console.log('...compiling KSS styles');
-	less.render('@import "' + argv.destination + '/public/kss.less";', function(err, css) {
-		if (!err) {
-			saveStylesheet(css, 'kss.css');
-		}
-	});
-
 	console.log('...parsing your styleguide');
 
 	kss.traverse(argv.source, {
 		multiline : true,
 		markdown  : true,
 		markup    : true,
-		mask      : argv.mask || preCompiler.mask
+		mask      : argv.mask
 	}, function(err, sg) {
 		if (err) throw err
 
@@ -297,27 +254,22 @@ process.nextTick(function() {
 		childSections = [];
 		generatePage(styleguide, childSections, 'styleguide.homepage', sectionRoots);
 
-		generateStylesheet(argv);
+		if (argv.css) {
+			aggregateStylesheet(argv);
+		}
 	});
 });
 
-// Compile LESS/Stylus/CSS files into a single "style.css" if required
-generateStylesheet = function(argv) {
-	var compilers = preCompiler.compilers,
-		files;
+// Aggregate CSS files into a single "style.css" if required
+aggregateStylesheet = function(argv) {
+	var files;
 
-	console.log('...compiling additional stylesheets');
+	console.log('...aggregating additional stylesheets');
 
-	files = [ false, 'less', 'stylus', 'sass', 'css' ].map(function (type) {
-		var key = type || 'style';
-
-		if (!argv[key]) return;
-
-		return {
-			files: Array.isArray(argv[key]) ? argv[key] : [argv[key]],
-			type: type
-		};
-	});
+	files = [{
+		files: Array.isArray(argv.css) ? argv.css : [argv.css],
+		type: 'css'
+	}];
 
 	async.reduce(files, [], function (combined, group, next) {
 		if (!group) return next(null, combined)
@@ -326,20 +278,9 @@ generateStylesheet = function(argv) {
 			var type = group.type,
 				extension;
 
-			// Type-guessing for --style option
-			if (!type) {
-				extension = path.extname(filename).slice(1)
-				Object.keys(compilers).forEach(function(name) {
-					if (compilers[name].extensions.indexOf(extension) !== -1) type = name
-				})
-				type = type || 'css'
-			}
+			console.log(' - ' + filename);
 
-			type = type.toLowerCase()
-			console.log(' - ' + filename + ' (' + type + ')')
-
-			if (type === 'css') return next(null, fs.readFileSync(filename, 'utf8'))
-			compilers[type].render(filename, next, argv)
+			return next(null, fs.readFileSync(filename, 'utf8'));
 
 		}, function(err, output) {
 			if (err) return next(err)
@@ -353,7 +294,7 @@ generateStylesheet = function(argv) {
 	});
 };
 
-// Used by generateStylesheet to minify and then
+// Used by aggregateStylesheet to minify and then
 // save its final buffer to a single CSS file.
 saveStylesheet = function(buffer, filename) {
 	buffer = new cleanCSS().minify(buffer.toString());
