@@ -508,15 +508,11 @@ handlebars.registerHelper('modifierMarkup', function(modifier) {
 
 	// Maybe it's actually a section?
 	if (modifier.modifiers) {
-		return new handlebars.SafeString(
-			modifier.markup
-		);
+		return modifier.markup
 	}
 
 	// Otherwise return the modifier markup
-	return new handlebars.SafeString(
-		new kss.KssModifier(modifier).markup()
-	);
+	return new kss.KssModifier(modifier).markup();
 });
 
 process.on('exit', function() {

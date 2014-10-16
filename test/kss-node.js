@@ -110,7 +110,7 @@ suite('Command Line Interface', function() {
 				done();
 			});
 		});
-		test('Should load Handlerbars helper: {{modifierMarkup}}', function(done) {
+		test('Should load Handlerbars helper: {{{modifierMarkup}}}', function(done) {
 			exec('cat test/output/section-2.html', function(err, stdout, stderr) {
 				assert.ok(/Handlebars modifierMarkup Helper: pseudo\-class\-hover/g.test(stdout), 'test 1');
 				assert.ok(/Handlebars modifierMarkup Helper: stars\-given</g.test(stdout), 'test 2');
