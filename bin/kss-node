@@ -250,7 +250,7 @@ process.nextTick(function() {
 		markup    : true,
 		mask      : argv.mask || preCompiler.mask
 	}, function(err, sg) {
-		if (err) throw err
+		if (err) throw err;
 
 		styleguide = sg;
 
@@ -264,11 +264,11 @@ process.nextTick(function() {
 			i;
 
 		console.log(sg.data.files.map(function(file) {
-			return ' - ' + file
-		}).join('\n'))
+			return ' - ' + file;
+		}).join('\n'));
 
 		// Throw an error if no KSS sections are found in the source files.
-		if (sectionCount == 0) {
+		if (sectionCount === 0) {
 			throw 'No KSS documentation discovered in source files.';
 		}
 
@@ -320,7 +320,7 @@ generateStylesheet = function(argv) {
 	});
 
 	async.reduce(files, [], function (combined, group, next) {
-		if (!group) return next(null, combined)
+		if (!group) return next(null, combined);
 
 		async.map(group.files, function (filename, next) {
 			var type = group.type,
@@ -328,28 +328,28 @@ generateStylesheet = function(argv) {
 
 			// Type-guessing for --style option
 			if (!type) {
-				extension = path.extname(filename).slice(1)
+				extension = path.extname(filename).slice(1);
 				Object.keys(compilers).forEach(function(name) {
-					if (compilers[name].extensions.indexOf(extension) !== -1) type = name
-				})
-				type = type || 'css'
+					if (compilers[name].extensions.indexOf(extension) !== -1) type = name;
+				});
+				type = type || 'css';
 			}
 
-			type = type.toLowerCase()
-			console.log(' - ' + filename + ' (' + type + ')')
+			type = type.toLowerCase();
+			console.log(' - ' + filename + ' (' + type + ')');
 
-			if (type === 'css') return next(null, fs.readFileSync(filename, 'utf8'))
-			compilers[type].render(filename, next, argv)
+			if (type === 'css') return next(null, fs.readFileSync(filename, 'utf8'));
+			compilers[type].render(filename, next, argv);
 
 		}, function(err, output) {
-			if (err) return next(err)
-			combined += '\n'
-			combined += output.join('\n')
-			return next(null, combined)
+			if (err) return next(err);
+			combined += '\n';
+			combined += output.join('\n');
+			return next(null, combined);
 		});
 	}, function (err, combined) {
-		if (err) throw err
-		saveStylesheet(combined, 'style.css')
+		if (err) throw err;
+		saveStylesheet(combined, 'style.css');
 	});
 };
 
@@ -648,4 +648,4 @@ process.on('uncaughtException', function(err) {
 
 	KSS_FAILED = true;
 	process.exit(1);
-})
+});
