@@ -20,7 +20,8 @@ var kss = require(__dirname + '/../lib/kss.js'),
 	KSS_FAILED = false,
 	argv,
 	error,
-	version = require(__dirname + '/../package.json').version;
+	version = require(__dirname + '/../package.json').version,
+	pathResolveRecursive;
 
 /**
  * CLI argument parsing.
@@ -140,25 +141,30 @@ if (argv.config) {
 	configFile = path.resolve(argv.config);
 	config = require(configFile);
 	// Make config paths relative to config file.
-	for (var key in config) {
-		if (config[key] instanceof Array) {
-			config[key].forEach(
-				function(element, index) {
-					argv[key][index] = path.resolve(path.dirname(configFile), element);
+	pathResolveRecursive = function(from, item) {
+		var paths;
+		if (item instanceof Array) {
+			item.forEach(
+				function(value, index) {
+					paths[index] = path.resolve(from, value);
 				}
 			);
 		}
 		else {
-			argv[key] = path.resolve(path.dirname(configFile), config[key]);
+			paths = path.resolve(path.dirname(configFile), item);
 		}
+		return paths;
+	};
+	for (var key in config) {
+		argv[key] = pathResolveRecursive(path.dirname(configFile), config[key]);
 	}
 }
 // Get the full source path.
 if (argv.source instanceof Array) {
 	argv.source = argv.source.pop();
 }
-else if (!("source" in yargs.argv) && argv['_'].length > 0) {
-	argv.source = argv['_'][0];
+else if (!("source" in yargs.argv) && argv._.length > 0) {
+	argv.source = argv._[0];
 }
 else if (argv.xdemo) {
 	argv.source = __dirname + '/../demo';
@@ -172,8 +178,8 @@ argv.source = path.resolve(argv.source);
 if (argv.destination instanceof Array) {
 	argv.destination = argv.destination.pop();
 }
-else if (!("destination" in yargs.argv) && argv['_'].length > 1) {
-	argv.destination = argv['_'][1];
+else if (!("destination" in yargs.argv) && argv._.length > 1) {
+	argv.destination = argv._[1];
 }
 argv.destination = path.resolve(argv.destination);
 // Get the full template path.
