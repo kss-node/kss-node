@@ -13,8 +13,9 @@ suite('KssModifier', function() {
 	common.hasMethod(new KssModifier({}), 'name');
 	common.hasMethod(new KssModifier({}), 'description');
 	common.hasMethod(new KssModifier({}), 'className');
+	common.hasMethod(new KssModifier({}), 'markup');
 
-	suite('#name', function() {
+	suite('.name()', function() {
 		common.testAllSections('should return data.name', '*.less|*.css', function(section) {
 			var modifiers = section.modifiers(),
 				i, l = modifiers.length;
@@ -24,7 +25,7 @@ suite('KssModifier', function() {
 			}
 		});
 	});
-	suite('#description', function() {
+	suite('.description()', function() {
 		common.testAllSections('should return data.description', '*.less|*.css', function(section) {
 			var modifiers = section.modifiers(),
 				i, l = modifiers.length;
@@ -34,7 +35,7 @@ suite('KssModifier', function() {
 			}
 		});
 	});
-	suite('#className', function() {
+	suite('.className()', function() {
 		common.testAllSections('should be valid CSS classes', '*.less|*.css', function(section) {
 			var modifiers = section.modifiers(),
 				i, l = modifiers.length;
@@ -45,7 +46,7 @@ suite('KssModifier', function() {
 		});
 	});
 
-	suite('#markup', function() {
+	suite('.markup()', function() {
 		common.testAllSections('should return a filtered data.section.markup', '*.less|*.css', function(section) {
 			var modifiers = section.modifiers(),
 				i, l = modifiers.length;

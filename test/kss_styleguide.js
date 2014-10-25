@@ -22,7 +22,7 @@ suite('KssStyleguide', function() {
 
 	common.hasMethod(new KssStyleguide({}), 'section');
 
-	suite('#section', function() {
+	suite('.section()', function() {
 		var options = { mask: 'section-queries.less' };
 		suite('No Arguments', function() {
 			sectionQuery('Should return only referenced sections', '', options, function(styleguide, sections) {

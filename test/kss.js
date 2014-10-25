@@ -20,7 +20,7 @@ suite('Public Method/Class Check', function() {
 	common.hasMethod(kss, 'KssStyleguide');
 });
 
-suite('#traverse', function() {
+suite('.traverse()', function() {
 	suite('API/Validation Checks', function(done) {
 		test('Should function with and without options', function(done) {
 			kss.traverse(styleDirectory, function(err, sga) {

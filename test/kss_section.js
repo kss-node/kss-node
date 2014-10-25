@@ -17,19 +17,19 @@ suite('KssSection', function() {
 	common.hasMethod(new KssSection({}), 'modifiers');
 	common.hasMethod(new KssSection({}), 'firstModifier');
 
-	suite('#header', function() {
+	suite('.header()', function() {
 		common.testAllSections('returns section.data.header', '*.less|*.css', function(section) {
 			assert.strictEqual(section.header(), section.data.header);
 		});
 	});
 
-	suite('#description', function() {
+	suite('.description()', function() {
 		common.testAllSections('returns section.data.description', '*.less|*.css', function(section) {
 			assert.strictEqual(section.description(), section.data.description);
 		});
 	});
 
-	suite('#firstModifier', function() {
+	suite('.firstModifier()', function() {
 		common.testAllSections('returns section.data.modifiers[0], or first if not found', '*.less|*.css', function(section) {
 			if (section.data.modifiers.length) {
 				assert.equal(section.firstModifier(), section.modifiers(0));
@@ -37,25 +37,25 @@ suite('KssSection', function() {
 		});
 	});
 
-	suite('#deprecated', function() {
+	suite('.deprecated()', function() {
 		common.testAllSections('returns section.data.deprecated', '*.less|*.css', function(section) {
 			assert.equal(section.deprecated(), section.data.deprecated);
 		});
 	});
 
-	suite('#experimental', function() {
+	suite('.experimental()', function() {
 		common.testAllSections('returns section.data.experimental', '*.less|*.css', function(section) {
 			assert.equal(section.experimental(), section.data.experimental);
 		});
 	});
 
-	suite('#reference', function() {
+	suite('.reference()', function() {
 		common.testAllSections('returns section.data.reference', '*.less|*.css', function(section) {
 			assert.equal(section.reference(), section.data.reference);
 		});
 	});
 
-	suite('#modifiers', function() {
+	suite('.modifiers()', function() {
 		common.testAllSections('() returns section.data.modifiers', '*.less|*.css', function(section) {
 			assert.strictEqual(section.modifiers(), section.data.modifiers);
 		});
