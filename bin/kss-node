@@ -518,9 +518,10 @@ handlebars.registerHelper('modifierMarkup', function(modifier) {
 		);
 	}
 
-	// Otherwise return the modifier markup
+	// Otherwise return the modifier markup.
+	var kssModifier = new kss.KssModifier(modifier);
 	return new handlebars.SafeString(
-		new kss.KssModifier(modifier).markup()
+		kssModifier.markup().replace(/\{\$modifiers\}/g, kssModifier.className())
 	);
 });
 
