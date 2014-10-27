@@ -217,10 +217,10 @@ process.nextTick(function() {
 		markdown  : true,
 		markup    : true,
 		mask      : argv.mask
-	}, function(err, sg) {
+	}, function(err, guide) {
 		if (err) throw err;
 
-		styleguide = sg;
+		styleguide = guide;
 
 		var sections = styleguide.section('*.'),
 			sectionCount = sections.length,
@@ -230,7 +230,7 @@ process.nextTick(function() {
 			childSections = [],
 			i;
 
-		console.log(sg.data.files.map(function(file) {
+		console.log(styleguide.data.files.map(function(file) {
 			return ' - ' + file;
 		}).join('\n'));
 
@@ -248,14 +248,13 @@ process.nextTick(function() {
 				sectionRoots.push(currentRoot);
 			}
 		}
+		sectionRoots.sort();
 
 		console.log('...Generating styleguide sections:');
 
-		sectionRoots.sort();
-		rootCount = sectionRoots.length;
-
 		// Now, group all of the sections by their root
 		// reference, and make a page for each.
+		rootCount = sectionRoots.length;
 		for (i = 0; i < rootCount; i += 1) {
 			childSections = styleguide.section(sectionRoots[i]+'.*');
 
@@ -323,7 +322,7 @@ generatePage = function(styleguide, sections, root, sectionRoots) {
 		homepageText = false;
 
 	if (root == 'styleguide.homepage') {
-	  filename = 'index.html';
+		filename = 'index.html';
 		console.log(' - homepage');
 		// Ensure homepageText is a non-false value.
 		try {
@@ -492,7 +491,7 @@ handlebars.registerHelper('eachModifier', function() {
 	// Default to current modifiers, but allow supplying a custom section.
 	modifiers = (arguments.length > 1 && arguments[0].data) ? arguments[0].data.modifiers : this.modifiers;
 
-	if (!modifiers) return {};
+	if (!modifiers) return '';
 
 	l = modifiers.length;
 	for (i = 0; i < l; i++) {
