@@ -137,7 +137,7 @@ If there is no example, then you should note that there is no reference since it
 
 *Note: This section is unofficial, and only implemented in `kss-node`.*
 
-If you wish to include example HTML for the UI element you are documenting, you should include an additional paragraph with sample markup and prefix it with `Markup:`. You should also note the placement of modifier classes with `{$modifiers}`, like so:
+If you wish to include example HTML for the UI element you are documenting, you should include an additional paragraph with sample markup and prefix it with `Markup:`. You should also note the placement of modifier classes with `{{modifier_class}}`, like so:
 
 ```less
 // Buttons
@@ -145,8 +145,8 @@ If you wish to include example HTML for the UI element you are documenting, you 
 // :hover - Highlight the button when hovering.
 //
 // Markup:
-// <a href="#" class="button {$modifiers}">Link</a>
-// <button class="button {$modifiers}">Button</button>
+// <a href="#" class="button {{modifier_class}}">Link</a>
+// <button class="button {{modifier_class}}">Button</button>
 //
 // Styleguide 2.1.3.
 ```

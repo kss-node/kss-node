@@ -355,7 +355,7 @@ suite('.traverse()', function() {
 			common.testSection('Second paragraph', 'options-markup.less', function(section) {
 				assert.equal(
 					section.data.markup.toLowerCase(),
-					'<a href="#" class="{$modifiers}">Hello World</a>'.toLowerCase()
+					'<a href="#" class="{{modifier_class}}">Hello World</a>'.toLowerCase()
 				);
 
 				assert.equal(section.data.reference, '7.1');
@@ -366,7 +366,7 @@ suite('.traverse()', function() {
 			common.testSection('Below modifiers', 'options-markup.less', function(section) {
 				assert.equal(
 					section.data.markup.toLowerCase(),
-					'<a href="#" class="{$modifiers}">Lorem Ipsum</a>'.toLowerCase()
+					'<a href="#" class="{{modifier_class}}">Lorem Ipsum</a>'.toLowerCase()
 				);
 			});
 
@@ -376,7 +376,7 @@ suite('.traverse()', function() {
 
 					assert.equal(section.data.reference, '7.3');
 					assert.equal(section.data.header, 'Don\'t be the header');
-					assert.equal(section.data.markup, '<h1 class="{$modifiers}">Header</h1>');
+					assert.equal(section.data.markup, '<h1 class="{{modifier_class}}">Header</h1>');
 					assert.equal(section.data.modifiers[0].data.name, '.title');
 					done();
 				});

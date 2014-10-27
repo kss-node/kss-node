@@ -143,14 +143,14 @@ Styleguide 2.1.3
 </code></pre>
 <h2 id="the-markup-section">The markup section</h2>
 <p><em>Note: This section is unofficial, and only implemented in <code>kss-node</code>.</em></p>
-<p>If you wish to include example HTML for the UI element you are documenting, you should include an additional paragraph with sample markup and prefix it with <code>Markup:</code>. You should also note the placement of modifier classes with <code>{$modifiers}</code>, like so:</p>
+<p>If you wish to include example HTML for the UI element you are documenting, you should include an additional paragraph with sample markup and prefix it with <code>Markup:</code>. You should also note the placement of modifier classes with <code>{{modifier_class}}</code>, like so:</p>
 <pre><code class="lang-less">// Buttons
 //
 // :hover - Highlight the button when hovering.
 //
 // Markup:
-// &lt;a href=&quot;#&quot; class=&quot;button {$modifiers}&quot;&gt;Link&lt;/a&gt;
-// &lt;button class=&quot;button {$modifiers}&quot;&gt;Button&lt;/button&gt;
+// &lt;a href=&quot;#&quot; class=&quot;button {{modifier_class}}&quot;&gt;Link&lt;/a&gt;
+// &lt;button class=&quot;button {{modifier_class}}&quot;&gt;Button&lt;/button&gt;
 //
 // Styleguide 2.1.3.
 </code></pre>

@@ -90,7 +90,7 @@ Take a look at the [demo project](https://github.com/kss-node/kss-node/tree/mast
 //
 // Buttons can and should be clicked.
 //
-// Markup: <button class="button {$modifiers}">
+// Markup: <button class="button {{modifier_class}}">
 //
 // :hover - Highlight the button when hovered.
 //

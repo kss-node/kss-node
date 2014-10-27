@@ -47,7 +47,7 @@ suite('KssModifier', function() {
 	});
 
 	suite('.markup()', function() {
-		common.testAllSections('should return a filtered data.section.markup', '*.less|*.css', function(section) {
+		common.testAllSections('should return an unfiltered data.section.markup', '*.less|*.css', function(section) {
 			var modifiers = section.modifiers(),
 				i, l = modifiers.length;
 
@@ -55,10 +55,7 @@ suite('KssModifier', function() {
 				if (!modifiers[i].markup()) continue;
 
 				assert.equal(section.data.markup, modifiers[i].data.section.data.markup);
-				assert.equal(
-					section.data.markup.replace(/\{\$modifiers\}/g, modifiers[i].className()),
-					modifiers[i].markup().replace(/\{\$modifiers\}/g, '')
-				);
+				assert.equal(section.data.markup, modifiers[i].markup());
 			}
 		});
 	});

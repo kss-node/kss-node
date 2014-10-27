@@ -239,11 +239,15 @@ process.nextTick(function() {
 			throw 'No KSS documentation discovered in source files.';
 		}
 
-		// Accumulate all of the sections' first indexes
-		// in case they don't have a root element.
 		for (i = 0; i < sectionCount; i += 1) {
-			currentRoot = sections[i].reference().match(/[0-9]*\.?/)[0].replace('.', '');
+			// Register all the markup blocks as Handlebars partials.
+			if (sections[i].markup()) {
+				handlebars.registerPartial(sections[i].reference(), sections[i].markup());
+			}
 
+			// Accumulate all of the sections' first indexes
+			// in case they don't have a root element.
+			currentRoot = sections[i].reference().match(/[0-9]*\.?/)[0].replace('.', '');
 			if (!~sectionRoots.indexOf(currentRoot)) {
 				sectionRoots.push(currentRoot);
 			}
@@ -501,27 +505,42 @@ handlebars.registerHelper('eachModifier', function() {
 });
 
 /**
- * Outputs a modifier's markup, if possible.
- * @param  {Object} modifier Specify a particular modifier object. Defaults to the current modifier.
+ * Outputs a section or a modifier's markup, if possible.
+ * @param  {Object} modifier Specify a particular modifier object. Defaults to the current modifier or section.
  */
-handlebars.registerHelper('modifierMarkup', function(modifier) {
-	modifier = arguments.length < 2 ? this : modifier || this || false;
+handlebars.registerHelper('modifierMarkup', function() {
+	var element,
+		section,
+		kssModifier,
+		template,
+		data = {};
 
-	if (!modifier) {
-		return false;
+	element = arguments.length < 2 ? this : arguments[0] || this || false;
+
+	if (!element) {
+		return '';
 	}
 
-	// Maybe it's actually a section?
-	if (modifier.modifiers) {
-		return new handlebars.SafeString(
-			modifier.markup
-		);
+	// Determine if the element is a section object or a modifier object.
+	if (element.modifiers) {
+		// If this is the section object, use the default markup without a modifier class.
+		section = new kss.KssSection(element);
+		data.modifier_class = '';
+	}
+	else {
+		// If this is the markup object, find the modifier class and the section object.
+		kssModifier = new kss.KssModifier(element);
+		section = kssModifier.section();
+		data.modifier_class = kssModifier.className();
 	}
 
-	// Otherwise return the modifier markup
-	return new handlebars.SafeString(
-		new kss.KssModifier(modifier).markup()
-	);
+	// Compile the section's markup partial into a template.
+	template = handlebars.compile('{{> "' + section.reference() + '"}}');
+
+	// We don't wrap the rendered template in "new handlebars.SafeString()" since
+	// we want the ability to display it as a code sample with {{ }} and as
+	// rendered HTML with {{{ }}}.
+	return template(data);
 });
 
 process.on('exit', function() {
