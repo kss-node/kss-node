@@ -110,12 +110,12 @@ suite('Command Line Interface', function() {
 				done();
 			});
 		});
-		test('Should load Handlerbars helper: {{modifierMarkup}}', function(done) {
+		test('Should load Handlerbars helper: {{markup}}', function(done) {
 			exec('cat test/output/section-2.html', function(err, stdout, stderr) {
-				assert.ok(/Handlebars modifierMarkup Helper: pseudo\-class\-hover/g.test(stdout), 'test 1');
-				assert.ok(/Handlebars modifierMarkup Helper: stars\-given</g.test(stdout), 'test 2');
-				assert.ok(/Handlebars modifierMarkup Helper: stars\-given pseudo\-class\-hover/g.test(stdout), 'test 3');
-				assert.ok(/Handlebars modifierMarkup Helper: disabled/g.test(stdout), 'test 4');
+				assert.ok(/Handlebars markup Helper: pseudo\-class\-hover/g.test(stdout), 'test 1');
+				assert.ok(/Handlebars markup Helper: stars\-given</g.test(stdout), 'test 2');
+				assert.ok(/Handlebars markup Helper: stars\-given pseudo\-class\-hover/g.test(stdout), 'test 3');
+				assert.ok(/Handlebars markup Helper: disabled/g.test(stdout), 'test 4');
 				done();
 			});
 		});

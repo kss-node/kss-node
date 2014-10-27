@@ -505,33 +505,29 @@ handlebars.registerHelper('eachModifier', function() {
 });
 
 /**
- * Outputs a section or a modifier's markup, if possible.
- * @param  {Object} modifier Specify a particular modifier object. Defaults to the current modifier or section.
+ * Outputs the current section's or modifier's markup.
  */
-handlebars.registerHelper('modifierMarkup', function() {
-	var element,
-		section,
-		kssModifier,
+handlebars.registerHelper('markup', function() {
+	var section,
+		modifier,
 		template,
 		data = {};
 
-	element = arguments.length < 2 ? this : arguments[0] || this || false;
-
-	if (!element) {
+	if (!this) {
 		return '';
 	}
 
 	// Determine if the element is a section object or a modifier object.
-	if (element.modifiers) {
+	if (this.modifiers) {
 		// If this is the section object, use the default markup without a modifier class.
-		section = new kss.KssSection(element);
+		section = new kss.KssSection(this);
 		data.modifier_class = '';
 	}
 	else {
 		// If this is the markup object, find the modifier class and the section object.
-		kssModifier = new kss.KssModifier(element);
-		section = kssModifier.section();
-		data.modifier_class = kssModifier.className();
+		modifier = new kss.KssModifier(this);
+		section = modifier.section();
+		data.modifier_class = modifier.className();
 	}
 
 	// Compile the section's markup partial into a template.
@@ -541,6 +537,16 @@ handlebars.registerHelper('modifierMarkup', function() {
 	// we want the ability to display it as a code sample with {{ }} and as
 	// rendered HTML with {{{ }}}.
 	return template(data);
+});
+
+/**
+ * Outputs a section or a modifier's markup, if possible.
+ * @param  {Object} modifier Specify a particular modifier object. Defaults to the current modifier or section.
+ */
+handlebars.registerHelper('modifierMarkup', function() {
+	// Fail if the template still uses modifierMarkup, since it is deprecated.
+	// @TODO Remove this helper before the release of 2.0.0.
+	throw 'The modifierMarkup Handlebars helper is deprecated; if your template has {{modifierMarkup}}, replace it with {{{markup}}}.';
 });
 
 process.on('exit', function() {
