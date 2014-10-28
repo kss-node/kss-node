@@ -116,6 +116,7 @@ suite('Command Line Interface', function() {
 				assert.ok(/Handlebars markup Helper: stars\-given</g.test(stdout), 'test 2');
 				assert.ok(/Handlebars markup Helper: stars\-given pseudo\-class\-hover/g.test(stdout), 'test 3');
 				assert.ok(/Handlebars markup Helper: disabled/g.test(stdout), 'test 4');
+				assert.ok(/Nested Handlerbars partial part 1:part 2 of Nested Handlerbars partial/g.test(stdout), 'test 5');
 				done();
 			});
 		});
