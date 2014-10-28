@@ -441,55 +441,6 @@ handlebars.registerHelper('eachSection', function(query, options) {
 });
 
 /**
-* If the template exists as *reference*.html in the source folder, inject it.
-*/
-handlebars.registerHelper('sectionTemplate', function(options) {
-	var template,
-		files,
-		i,
-		l;
-
-	// Initialize the cache for sectionTemplate.
-	if (!cache['sectionTemplate']) {
-		cache['sectionTemplate'] = {};
-	}
-
-	// Build a list of possible handlebars files.
-	if (!cache['handlebarsFiles']) {
-		cache['handlebarsFiles'] = {};
-		files = glob.sync(argv.markup + '/**/*\.hbs');
-		files = files.concat(glob.sync(argv.markup + '/**/*\.html'));
-		l = files.length;
-		for (i = 0; i < l; i++) {
-			cache['handlebarsFiles'][path.basename(files[i], path.extname(files[i]))] = files[i];
-		}
-	}
-
-	// Check if this section's template is cached.
-	if (cache['sectionTemplate'][this.reference]) {
-		template = cache['sectionTemplate'][this.reference];
-	}
-	else {
-		// Otherwise, find the template in the handlebarsFiles list and load the
-		// template from disk.
-		try {
-			if (!cache['handlebarsFiles'][this.reference]) {
-				throw "Section template not found";
-			}
-			template = fs.readFileSync(cache['handlebarsFiles'][this.reference], 'utf8');
-		} catch (e) {
-			// If there's no template file, use an empty template to prevent
-			// repeatedly checking the disk.
-			template = '';
-		}
-		// Compile the template and save it to cache.
-		cache['sectionTemplate'][this.reference] = template = handlebars.compile(template);
-	}
-
-	return template(this);
-});
-
-/**
  * Loop over each section root, i.e. each section only one level deep.
  */
 handlebars.registerHelper('eachRoot', function(options) {

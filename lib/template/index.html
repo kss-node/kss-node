@@ -65,18 +65,6 @@
         <div class="kss-box">{{{description}}}</div>
       {{/if}}
 
-      {{! sectionTemplate is a helper (not a regular variable),
-          so we must use a sub-expression to check it with #if. }}
-      {{#if (sectionTemplate)}}
-        {{{sectionTemplate}}}
-        {{! If the section doesn't have markup, assume the template is the markup. }}
-        {{#unless markup}}
-          <div class="kss-markup">
-            <pre class="prettyprint lang-html">{{sectionTemplate}}</pre>
-          </div>
-        {{/unless}}
-      {{/if}}
-
       {{#if markup}}
         <table class="kss-mod-list">
           <tr class="kss-mod-desc-group">
