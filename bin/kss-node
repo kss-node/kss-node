@@ -281,7 +281,8 @@ process.nextTick(function() {
 					name: sections[i].reference(),
 					reference: sections[i].reference(),
 					file: '',
-					markup: sections[i].markup()
+					markup: sections[i].markup(),
+					data: {}
 				};
 				// If the markup is a file path, attempt to load the file.
 				if (partial.markup.match(/^[^\n]+\.(html|hbs)$/)) {
@@ -302,6 +303,14 @@ process.nextTick(function() {
 						// Load the partial's markup from file.
 						partial.file = files[0];
 						partial.markup = fs.readFileSync(partial.file, 'utf8');
+						// Load sample data for the partial from the sample .json file.
+						if (fs.existsSync(path.dirname(partial.file) + '/' + partial.name + '.json')) {
+							try {
+								partial.data = require(path.dirname(partial.file) + '/' + partial.name + '.json');
+							} catch (e) {
+								partial.data = {};
+							}
+						}
 					}
 				}
 				else {
@@ -310,10 +319,11 @@ process.nextTick(function() {
 				// Register the partial using the filename (without extension) or using
 				// the style guide reference.
 				handlebars.registerPartial(partial.name, partial.markup);
-				// Save the name of the partial for retrieval in the markup helper, where
-				// we only know the reference.
+				// Save the name of the partial and its data for retrieval in the markup
+				// helper, where we only know the reference.
 				cache.partial[partial.reference] = {
-					name: partial.name
+					name: partial.name,
+					data: partial.data
 				};
 			}
 
@@ -608,7 +618,7 @@ handlebars.registerHelper('markup', function() {
 		modifier = false,
 		template,
 		partial,
-		data = {};
+		data;
 
 	if (!this) {
 		return '';
@@ -629,7 +639,13 @@ handlebars.registerHelper('markup', function() {
 	partial = cache.partial[section.reference()];
 
 	// Prepare the sample data for the partial.
-	data.modifier_class = modifier ? modifier.className() : '';
+	data = JSON.parse(JSON.stringify(partial.data));
+	if (data.modifier_class) {
+		data.modifier_class += modifier ? ' ' + modifier.className() : '';
+	}
+	else {
+		data.modifier_class = modifier ? modifier.className() : '';
+	}
 
 	// Compile the section's markup partial into a template.
 	template = handlebars.compile('{{> "' + partial.name + '"}}');
