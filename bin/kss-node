@@ -17,7 +17,7 @@ var kss = require(__dirname + '/../lib/kss.js'),
 	config = {},
 	configFile,
 	KSS_FAILED = false,
-	cache = {},
+	cache = {partial: {}},
 	argv,
 	error,
 	version = require(__dirname + '/../package.json').version,
@@ -237,6 +237,8 @@ process.nextTick(function() {
 			rootCount,
 			currentRoot,
 			childSections = [],
+			partial,
+			files,
 			i;
 
 		console.log(styleguide.data.files.map(function(file) {
@@ -248,10 +250,44 @@ process.nextTick(function() {
 			throw 'No KSS documentation discovered in source files.';
 		}
 
+		console.log('...Determining section markup:');
+
 		for (i = 0; i < sectionCount; i += 1) {
 			// Register all the markup blocks as Handlebars partials.
 			if (sections[i].markup()) {
-				handlebars.registerPartial(sections[i].reference(), sections[i].markup());
+				partial = {
+					name: sections[i].reference(),
+					reference: sections[i].reference(),
+					file: '',
+					markup: sections[i].markup()
+				};
+				// If the markup is a file path, attempt to load the file.
+				if (partial.markup.match(/^[^\n]+\.(html|hbs)$/)) {
+					partial.file = partial.markup;
+					partial.name = path.basename(partial.file, path.extname(partial.file));
+					files = glob.sync(argv.markup + '/**/' + partial.file);
+					// If the markup file is not found, note that in the styleguide.
+					if (!files.length) {
+						partial.markup += ' NOT FOUND!';
+					}
+					console.log(' - ' + partial.reference + ': ' + partial.markup);
+					if (files.length) {
+						// Load the partial's markup from file.
+						partial.file = files[0];
+						partial.markup = fs.readFileSync(partial.file, 'utf8');
+					}
+				}
+				else {
+					console.log(' - ' + partial.reference + ': inline markup');
+				}
+				// Register the partial using the filename (without extension) or using
+				// the styleguide reference.
+				handlebars.registerPartial(partial.name, partial.markup);
+				// Save the name of the partial for retrieval in the markup helper, where
+				// we only know the reference.
+				cache.partial[partial.reference] = {
+					name: partial.name
+				};
 			}
 
 			// Accumulate all of the sections' first indexes
@@ -518,8 +554,9 @@ handlebars.registerHelper('eachModifier', function() {
  */
 handlebars.registerHelper('markup', function() {
 	var section,
-		modifier,
+		modifier = false,
 		template,
+		partial,
 		data = {};
 
 	if (!this) {
@@ -530,18 +567,21 @@ handlebars.registerHelper('markup', function() {
 	if (this.modifiers) {
 		// If this is the section object, use the default markup without a modifier class.
 		section = new kss.KssSection(this);
-		data.modifier_class = '';
 	}
 	else {
 		// If this is the markup object, find the modifier class and the section object.
 		modifier = new kss.KssModifier(this);
 		section = modifier.section();
-		data.modifier_class = modifier.className();
 	}
 
-	// Compile the section's markup partial into a template.
-	template = handlebars.compile('{{> "' + section.reference() + '"}}');
+	// Load the information about this section's markup partial.
+	partial = cache.partial[section.reference()];
 
+	// Prepare the sample data for the partial.
+	data.modifier_class = modifier ? modifier.className() : '';
+
+	// Compile the section's markup partial into a template.
+	template = handlebars.compile('{{> "' + partial.name + '"}}');
 	// We don't wrap the rendered template in "new handlebars.SafeString()" since
 	// we want the ability to display it as a code sample with {{ }} and as
 	// rendered HTML with {{{ }}}.
