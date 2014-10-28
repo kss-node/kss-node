@@ -67,10 +67,12 @@
 
       {{#if markup}}
         <table class="kss-mod-list">
+          {{#if modifiers}}
           <tr class="kss-mod-desc-group">
             <td class="kss-mod-desc"><p>Default styling</p></td>
             <td class="kss-mod-name"></td>
           </tr>
+          {{/if}}
           <tr class="kss-mod-example">
             <td colspan="2">{{{markup}}}</td>
           </tr>
