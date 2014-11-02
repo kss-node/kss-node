@@ -86,13 +86,23 @@ Take a look at the [demo project](https://github.com/kss-node/kss-node/tree/mast
 **HTML Markup**. In `kss-node` you can include sample markup in your styleguide entries. This is not only helpful for newcomers to a project, but is also used by the generator to include samples in your styleguide - just start a paragraph in your description section with `Markup:` like so:
 
 ``` javascript
-// Buttons
+// Button
 //
 // Buttons can and should be clicked.
 //
 // Markup: <button class="button {{modifier_class}}">
 //
 // :hover - Highlight the button when hovered.
+//
+// Styleguide 1.1
+```
+
+Alternatively, you can point at a separate file that contains your HTML. Either a plain *.html file or a Handlebars *.hbs file.
+
+``` javascript
+// Button
+//
+// Markup: button.hbs
 //
 // Styleguide 1.1
 ```
