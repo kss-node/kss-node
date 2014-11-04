@@ -47,6 +47,32 @@ suite('KssStyleguide', function() {
 				}
 				assert.deepEqual(results.sort(), expected.sort());
 			});
+			sectionQuery('Should return all "word key" sections', '', { mask: 'sections-word-keys.less' }, function(styleguide, sections) {
+				var key, section, results = [],
+					expected = [
+						'Base.Link',
+						'Components', 'Components.Message', 'Components.Tabs',
+						'Forms.Button', 'Forms.Input'
+					];
+				assert.ok(sections);
+				for (key in sections) {
+					results.push(sections[key].data.reference);
+				}
+				assert.deepEqual(results.sort(), expected.sort());
+			});
+			sectionQuery('Should return all "word phrases" sections', '', { mask: 'sections-word-phrases.less' }, function(styleguide, sections) {
+				var key, section, results = [],
+					expected = [
+						'Base - Link',
+						'Components', 'Components - Message box', 'Components - Tabs',
+						'Forms - Button', 'Forms - Input field'
+					];
+				assert.ok(sections);
+				for (key in sections) {
+					results.push(sections[key].data.reference);
+				}
+				assert.deepEqual(results.sort(), expected.sort());
+			});
 		});
 		suite('Exact References', function() {
 			sectionQuery('Depth: 1', '4', options, function(styleguide, section) {
