@@ -98,18 +98,29 @@ suite('KssStyleguide', function() {
 		suite('String Queries', function() {
 			sectionQuery('4.1.x returns 4.1.1 and 4.1.2', '4.1.x', options, function(styleguide, sections) {
 				assert.ok(sections);
-				assert.equal(sections.length, 2);
 				sections.map(function(section) {
 					assert.ok(section.data.reference === '4.1.1' || section.data.reference === '4.1.2');
 					assert.ok(section.data.header === 'DEPTH OF 3, NO MODIFIERS' || section.data.header === 'DEPTH OF 3, MODIFIERS');
 				});
+				assert.equal(sections.length, 2);
 			});
 
-			sectionQuery('4.1.* returns all descendants of 4.1', '4.1.*', options, function(styleguide, sections) {
+			sectionQuery('4.x.x returns 4.1, 4.1.1 and 4.1.2', '4.x.x', options, function(styleguide, sections) {
 				assert.ok(sections);
-				assert.equal(sections.length, 5);
+				sections.map(function(section) {
+					assert.ok(section.data.reference === '4.1' || section.data.reference === '4.1.1' || section.data.reference === '4.1.2');
+					assert.ok(section.data.header === 'DEPTH OF 2' || section.data.header === 'DEPTH OF 3, NO MODIFIERS' || section.data.header === 'DEPTH OF 3, MODIFIERS');
+				});
+				assert.equal(sections.length, 3);
+			});
+
+			sectionQuery('4.1.* returns 4.1 and all descendants', '4.1.*', options, function(styleguide, sections) {
+				assert.ok(sections);
 				sections.map(function(section){
 					switch (section.data.reference) {
+						case '4.1':
+							assert.equal(section.data.header, 'DEPTH OF 2');
+						break;
 						case '4.1.1':
 							assert.equal(section.data.header, 'DEPTH OF 3, NO MODIFIERS');
 						break;
@@ -126,10 +137,11 @@ suite('KssStyleguide', function() {
 							assert.equal(section.data.header, 'DEPTH OF 4 (C)');
 						break;
 						default:
-							throw new Error('Unexpected section!');
+							throw new Error('Section ' + section.data.reference + ' was not expected!');
 						break;
 					}
 				});
+				assert.equal(sections.length, 6);
 			});
 
 			sectionQuery('Sections should be returned in order', '9.x', { mask: 'sections-order.less' }, function(styleguide, sections) {
