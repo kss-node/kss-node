@@ -133,13 +133,14 @@ suite('KssStyleguide', function() {
 			});
 
 			sectionQuery('Sections should be returned in order', '9.x', { mask: 'sections-order.less' }, function(styleguide, sections) {
-				var i, l = sections.length;
+				var i,
+					l = sections.length,
+					expectedOrder = ['9.1', '9.2', '9.3', '9.4', '9.5'];
+				for (i = 1; i < l; i += 1) {
+					assert.equal( expectedOrder[i], sections[i].data.reference );
+				}
 
 				assert.equal(5, sections.length);
-				
-				for (i = 0; i < l; i += 1) {
-					assert.equal( i+1, sections[i].data.reference.match(/[0-9]+$/g)[0] );
-				}			
 			});
 		});
 		suite('Regex Queries', function() {
@@ -161,13 +162,13 @@ suite('KssStyleguide', function() {
 			});
 
 			sectionQuery('Sections should be returned in order', /9.*/, { mask: 'sections-order.less' }, function(styleguide, sections) {
-				var i, l = sections.length;
-
-				assert.equal(5, sections.length);
-				
-				for (i = 0; i < l; i += 1) {
-					assert.equal( i+1, sections[i].data.reference.match(/[0-9]+$/g)[0] );
-				}			
+				var i,
+					l = sections.length,
+					expectedOrder = ['9', '9.1', '9.1.1', '9.2', '9.3', '9.4', '9.5'];
+				for (i = 1; i < l; i += 1) {
+					assert.equal( expectedOrder[i], sections[i].data.reference );
+				}
+				assert.equal(7, sections.length);
 			});
 		});
 	});
