@@ -136,7 +136,7 @@ suite('KssStyleguide', function() {
 				var i,
 					l = sections.length,
 					expectedOrder = ['9.1', '9.2', '9.3', '9.4', '9.5'];
-				for (i = 1; i < l; i += 1) {
+				for (i = 0; i < l; i += 1) {
 					assert.equal( expectedOrder[i], sections[i].data.reference );
 				}
 
@@ -165,7 +165,7 @@ suite('KssStyleguide', function() {
 				var i,
 					l = sections.length,
 					expectedOrder = ['9', '9.1', '9.1.1', '9.2', '9.3', '9.4', '9.5'];
-				for (i = 1; i < l; i += 1) {
+				for (i = 0; i < l; i += 1) {
 					assert.equal( expectedOrder[i], sections[i].data.reference );
 				}
 				assert.equal(7, sections.length);
