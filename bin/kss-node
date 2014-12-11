@@ -28,19 +28,19 @@ var kss = require(__dirname + '/../lib/kss.js'),
  * @type {Object}
  */
 argv = yargs
-	.usage('Usage: kss-node <sourcedir> <destdir> [options]')
+	.usage('Usage: kss-node <source> [destination] [options]')
 	.wrap(80)
 	.strict()
 
 	.options('i', {
 		alias     : 'init',
-		describe  : 'Create a new styleguide template to customize',
+		describe  : 'Create a new style guide template to customize',
 		default   : 'styleguide-template'
 	})
 	.options('t', {
 		string    : true,
 		alias     : 'template',
-		describe  : 'Use a custom template to build your styleguide',
+		describe  : 'Use a custom template to build your style guide',
 		default   : path.relative(process.cwd(), __dirname + '/../lib/template')
 	})
 	.options('helpers', {
@@ -92,7 +92,7 @@ argv = yargs
 	})
 	.options('destination', {
 		string    : true,
-		describe  : 'Destination directory of generated styleguide',
+		describe  : 'Destination directory of generated style guide',
 		default   : 'styleguide'
 	})
 	.config('config')
@@ -108,11 +108,14 @@ argv = yargs
 	.alias('h', 'help')
 	.argv;
 
-// Create a new styleguide template using the `--init` tag.
+// Create a new style guide template using the `--init` tag.
+if ("i" in yargs.argv) {
+	yargs.argv.init = yargs.argv.i;
+}
 if ("init" in yargs.argv) {
 	argv.init = path.resolve(argv.init);
 
-	console.log('Creating a new styleguide template...');
+	console.log('Creating a new style guide template...');
 	try {
 		error = wrench.copyDirSyncRecursive(
 			__dirname + '/../lib/template',
@@ -129,7 +132,7 @@ if ("init" in yargs.argv) {
 		console.log('Error! This folder already exists: ' + argv.init);
 		return;
 	}
-	console.log('You can change it as you like, and use it with your styleguide like so:');
+	console.log('You can change it as you like, and use it with your style guide like so:');
 	console.log('');
 	console.log('kss-node [sourcedir] --template "'+argv.init+'"');
 	console.log('');
@@ -203,7 +206,7 @@ if (argv['load-path']) {
 }
 
 console.log('');
-console.log('Generating your KSS Styleguide!');
+console.log('Generating your KSS style guide!');
 console.log('');
 console.log(' * Source      : ' + argv.source);
 console.log(' * Destination : ' + argv.destination);
@@ -215,7 +218,7 @@ console.log('');
 template = fs.readFileSync(argv.template + '/index.html', 'utf8');
 template = handlebars.compile(template);
 
-// Create a new "styleguide" directory.
+// Create a new destination directory.
 try {
 	fs.mkdirSync(argv.destination);
 } catch (e) {}
@@ -248,7 +251,7 @@ process.nextTick(function() {
 		}
 	});
 
-	console.log('...parsing your styleguide');
+	console.log('...parsing your style guide');
 
 	kss.traverse(argv.source, {
 		multiline : true,
@@ -394,7 +397,7 @@ generatePage = function(styleguide, sections, root, pages, sectionRoots) {
 // using first Markdown and then Handlebars
 generateIndex = function(styleguide, sections, pages, sectionRoots) {
 	var overviewText;
-	console.log('...generating styleguide homepage overview');
+	console.log('...generating style guide homepage overview');
 	// Ensure overview is a non-false value.
 	try {
 		overviewText = ' ' + marked(fs.readFileSync(argv.source + '/styleguide.md', 'utf8'));
@@ -414,7 +417,7 @@ generateIndex = function(styleguide, sections, pages, sectionRoots) {
 			})
 		);
 	} catch (e) {
-		console.log('...no styleguide overview generated:', e.message);
+		console.log('...no style guide overview generated:', e.message);
 	}
 };
 
