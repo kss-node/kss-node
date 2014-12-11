@@ -25,12 +25,12 @@
     <nav><ul>
       <li><a href="./">0.0: Overview</a></li>
     {{#eachRoot}}
-      <li><a href="section-{{referenceURI}}.html">{{reference}}.0: {{header}}</a>
+      <li><a href="section-{{referenceURI}}.html">{{reference}}: {{header}}</a>
         {{!-- Uncomment this to add second-level navigation.
         <ul>
         {{#eachSection reference}}
           {{#ifDepth 2}}
-            <li><a href="section-{{../../referenceURI}}.html#{{referenceURI}}">{{reference}}: {{header}}</a></li>
+            <li><a href="section-{{../../referenceURI}}.html#kssref-{{referenceURI}}">{{reference}}: {{header}}</a></li>
           {{/ifDepth}}
         {{/eachSection}}
         </ul>
@@ -55,11 +55,12 @@
       the "#ifDepth 1" block as seen below.
     }}
     {{#eachSection rootName}}
-      {{#unlessDepth 1}}
-      <section class="kss-depth-{{depth}}">
-      {{/unlessDepth}}
-
-      <h1 class="kss-title"><span class="kss-ref">{{ reference }}{{#ifDepth 1}}.0{{/ifDepth}}</span> - {{ header }}</h1>
+      {{#ifDepth 1}}
+      <h1 class="kss-title"><span class="kss-ref">{{reference}}</span> - {{header}}</h1>
+      {{else}}
+      <section id="kssref-{{referenceURI}}" class="kss-depth-{{depth}}">
+        <h{{depth}} class="kss-title kss-title--level-{{depth}}"><a class="kss-permalink" href="#kssref-{{referenceURI}}"><span class="kss-ref">{{reference}}</span> - {{header}}</a></h{{depth}}>
+      {{/ifDepth}}
 
       {{#if description}}
         <div class="kss-box">{{{description}}}</div>
