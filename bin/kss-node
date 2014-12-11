@@ -91,6 +91,9 @@ argv = yargs
 	.argv;
 
 // Create a new styleguide template using the `--init` tag.
+if ("i" in yargs.argv) {
+	yargs.argv.init = yargs.argv.i;
+}
 if ("init" in yargs.argv) {
 	argv.init = path.resolve(argv.init);
 
