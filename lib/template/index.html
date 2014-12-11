@@ -56,7 +56,7 @@
     }}
     {{#eachSection rootNumber}}
       {{#unlessDepth 1}}
-      <section class="kss-depth-{{ refDepth }}">
+      <section class="kss-depth-{{depth}}">
       {{/unlessDepth}}
 
       <h1 class="kss-title"><span class="kss-ref">{{ reference }}{{#ifDepth 1}}.0{{/ifDepth}}</span> - {{ header }}</h1>

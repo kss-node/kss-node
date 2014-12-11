@@ -14,6 +14,8 @@ suite('KssSection', function() {
 	common.hasMethod(new KssSection({}), 'description');
 	common.hasMethod(new KssSection({}), 'deprecated');
 	common.hasMethod(new KssSection({}), 'experimental');
+	common.hasMethod(new KssSection({}), 'reference');
+	common.hasMethod(new KssSection({}), 'depth');
 	common.hasMethod(new KssSection({}), 'modifiers');
 	common.hasMethod(new KssSection({}), 'firstModifier');
 
@@ -26,14 +28,6 @@ suite('KssSection', function() {
 	suite('.description()', function() {
 		common.testAllSections('returns section.data.description', '*.less|*.css', function(section) {
 			assert.strictEqual(section.description(), section.data.description);
-		});
-	});
-
-	suite('.firstModifier()', function() {
-		common.testAllSections('returns section.data.modifiers[0], or first if not found', '*.less|*.css', function(section) {
-			if (section.data.modifiers.length) {
-				assert.equal(section.firstModifier(), section.modifiers(0));
-			}
 		});
 	});
 
@@ -52,6 +46,12 @@ suite('KssSection', function() {
 	suite('.reference()', function() {
 		common.testAllSections('returns section.data.reference', '*.less|*.css', function(section) {
 			assert.equal(section.reference(), section.data.reference);
+		});
+	});
+
+	suite('.depth()', function() {
+		common.testAllSections('returns section.data.depth', '*.less|*.css', function(section) {
+			assert.equal(section.depth(), section.data.depth);
 		});
 	});
 
@@ -115,6 +115,14 @@ suite('KssSection', function() {
 			var i, l = section.data.modifiers.length;
 			assert.equal(false, section.modifiers('__should_not_find___'));
 			if (l) { assert.ok(section.modifiers(section.modifiers(0).data.name)); }
+		});
+	});
+
+	suite('.firstModifier()', function() {
+		common.testAllSections('returns section.data.modifiers[0], or first if not found', '*.less|*.css', function(section) {
+			if (section.data.modifiers.length) {
+				assert.equal(section.firstModifier(), section.modifiers(0));
+			}
 		});
 	});
 });

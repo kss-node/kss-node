@@ -52,21 +52,21 @@ suite('KssStyleguide', function() {
 			sectionQuery('Depth: 1', '4', options, function(styleguide, section) {
 				assert.ok(section);
 				assert.equal(section.data.header, 'DEPTH OF 1');
-				assert.equal(section.data.refDepth, 1);
+				assert.equal(section.data.depth, 1);
 				assert.equal(section.data.reference, '4');
 			});
 
 			sectionQuery('Depth: 3 (No modifiers, should find)', '4.1.1', options, function(styleguide, section) {
 				assert.ok(section);
 				assert.equal(section.data.header, 'DEPTH OF 3, NO MODIFIERS');
-				assert.equal(section.data.refDepth, 3);
+				assert.equal(section.data.depth, 3);
 				assert.equal(section.data.reference, '4.1.1');
 			});
 
 			sectionQuery('Depth: 3 (Modifiers, should find)', '4.1.2', options, function(styleguide, section) {
 				assert.ok(section);
 				assert.equal(section.data.header, 'DEPTH OF 3, MODIFIERS');
-				assert.equal(section.data.refDepth, 3);
+				assert.equal(section.data.depth, 3);
 				assert.equal(section.data.reference, '4.1.2');
 			});
 
@@ -77,21 +77,21 @@ suite('KssStyleguide', function() {
 			sectionQuery('Depth: 4 (A)', '4.1.1.1', options, function(styleguide, section) {
 				assert.ok(section);
 				assert.equal(section.data.header, 'DEPTH OF 4 (A)');
-				assert.equal(section.data.refDepth, 4);
+				assert.equal(section.data.depth, 4);
 				assert.equal(section.data.reference, '4.1.1.1');
 			});
 
 			sectionQuery('Depth: 4 (B)', '4.1.1.2', options, function(styleguide, section) {
 				assert.ok(section);
 				assert.equal(section.data.header, 'DEPTH OF 4 (B)');
-				assert.equal(section.data.refDepth, 4);
+				assert.equal(section.data.depth, 4);
 				assert.equal(section.data.reference, '4.1.1.2');
 			});
 
 			sectionQuery('Depth: 4 (C)', '4.1.2.2', options, function(styleguide, section) {
 				assert.ok(section);
 				assert.equal(section.data.header, 'DEPTH OF 4 (C)');
-				assert.equal(section.data.refDepth, 4);
+				assert.equal(section.data.depth, 4);
 				assert.equal(section.data.reference, '4.1.2.2');
 			});
 		});

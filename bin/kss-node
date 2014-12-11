@@ -408,7 +408,7 @@ jsonSections = function(sections) {
 			header: section.header(),
 			description: section.description(),
 			reference: section.reference(),
-			depth: section.data.refDepth,
+			depth: section.depth(),
 			deprecated: section.deprecated(),
 			experimental: section.experimental(),
 			modifiers: jsonModifiers(section.modifiers())
@@ -505,10 +505,7 @@ handlebars.registerHelper('eachRoot', function(options) {
  * {{/ifDepth}}
  */
 handlebars.registerHelper('ifDepth', function(depth, options) {
-	if (!this.refDepth) {
-		return '';
-	}
-	return (depth == this.refDepth) ? options.fn(this) : options.inverse(this);
+	return (this.depth && depth == this.depth) ? options.fn(this) : options.inverse(this);
 });
 
 /**
@@ -521,10 +518,7 @@ handlebars.registerHelper('ifDepth', function(depth, options) {
  * {{/unlessDepth}}
  */
 handlebars.registerHelper('unlessDepth', function(depth, options) {
-	if (!this.refDepth) {
-		return '';
-	}
-	return (depth == this.refDepth) ? options.inverse(this) : options.fn(this);
+	return (!this.depth || depth != this.depth) ? options.fn(this) : options.inverse(this);
 });
 
 /**
@@ -589,13 +583,19 @@ handlebars.registerHelper('markup', function() {
 });
 
 /**
- * Outputs a section or a modifier's markup, if possible.
- * @param  {Object} modifier Specify a particular modifier object. Defaults to the current modifier or section.
+ * Deprecated helper that output a section or a modifier's markup.
  */
 handlebars.registerHelper('modifierMarkup', function() {
 	// Fail if the template still uses modifierMarkup, since it is deprecated.
-	// @TODO Remove this helper before the release of 2.0.0.
 	throw 'The modifierMarkup Handlebars helper is deprecated; if your template has {{modifierMarkup}}, replace it with {{{markup}}}.';
+});
+
+/**
+ * Deprecated variable.
+ */
+handlebars.registerHelper('refDepth', function() {
+	// Fail if the template still uses rootNumber, since it is deprecated.
+	throw 'The refDepth variable is deprecated; if your template has {{refDepth}}, replace it with {{depth}}.';
 });
 
 process.on('exit', function() {
