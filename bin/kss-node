@@ -34,13 +34,13 @@ argv = yargs
 
 	.options('init', {
 		alias     : 'i',
-		describe  : 'Create a new styleguide template to customize',
+		describe  : 'Create a new style guide template to customize',
 		default   : 'styleguide-template'
 	})
 	.options('template', {
 		string    : true,
 		alias     : 't',
-		describe  : 'Use a custom template to build your styleguide',
+		describe  : 'Use a custom template to build your style guide',
 		default   : path.relative(process.cwd(), __dirname + '/../lib/template')
 	})
 	.options('helpers', {
@@ -58,7 +58,7 @@ argv = yargs
 	.options('css', {
 		string    : true,
 		alias     : 's',
-		describe  : 'Copies CSS stylesheets into the styleguide; WARNING: relative paths are not rewritten'
+		describe  : 'Copies CSS stylesheets into the style guide; WARNING: relative paths are not rewritten'
 	})
 
 	.options('source', {
@@ -67,11 +67,11 @@ argv = yargs
 	})
 	.options('markup', {
 		string    : true,
-		describe  : 'The directory containing templates of each section of your styleguide (defaults to the source directory)'
+		describe  : 'The directory containing templates of each section of your style guide (defaults to the source directory)'
 	})
 	.options('destination', {
 		string    : true,
-		describe  : 'Destination directory of generated styleguide',
+		describe  : 'Destination directory of generated style guide',
 		default   : 'styleguide'
 	})
 
@@ -90,14 +90,14 @@ argv = yargs
 	.alias('help', '?')
 	.argv;
 
-// Create a new styleguide template using the `--init` tag.
+// Create a new style guide template using the `--init` tag.
 if ("i" in yargs.argv) {
 	yargs.argv.init = yargs.argv.i;
 }
 if ("init" in yargs.argv) {
 	argv.init = path.resolve(argv.init);
 
-	console.log('Creating a new styleguide template...');
+	console.log('Creating a new style guide template...');
 	try {
 		error = wrench.copyDirSyncRecursive(
 			__dirname + '/../lib/template',
@@ -114,7 +114,7 @@ if ("init" in yargs.argv) {
 		console.log('Error! This folder already exists: ' + argv.init);
 		return;
 	}
-	console.log('You can change it as you like, and use it with your styleguide like so:');
+	console.log('You can change it as you like, and use it with your style guide like so:');
 	console.log('');
 	console.log('kss-node [sourcedir] --template "'+argv.init+'"');
 	console.log('');
@@ -184,7 +184,7 @@ else if (!("helpers" in yargs.argv) && !("helpers" in config)) {
 argv.helpers = path.resolve(argv.helpers);
 
 console.log('');
-console.log('Generating your KSS Styleguide!');
+console.log('Generating your KSS style guide!');
 console.log('');
 console.log(' * KSS Source  : ' + argv.source);
 console.log(' * Markup      : ' + argv.markup);
@@ -193,7 +193,7 @@ console.log(' * Template    : ' + argv.template);
 console.log(' * Helpers     : ' + argv.helpers);
 console.log('');
 
-// Create a new "styleguide" directory.
+// Create a new destination directory.
 try {
 	fs.mkdirSync(argv.destination);
 } catch (e) {}
@@ -222,7 +222,7 @@ template = handlebars.compile(template);
 // Generate the static HTML pages in the next tick, i.e. after the other functions have
 // been defined and handlebars helpers set up.
 process.nextTick(function() {
-	console.log('...Parsing your styleguide:');
+	console.log('...Parsing your style guide:');
 
 	kss.traverse(argv.source, {
 		multiline : true,
@@ -269,7 +269,7 @@ process.nextTick(function() {
 					partial.file = partial.markup;
 					partial.name = path.basename(partial.file, path.extname(partial.file));
 					files = glob.sync(argv.markup + '/**/' + partial.file);
-					// If the markup file is not found, note that in the styleguide.
+					// If the markup file is not found, note that in the style guide.
 					if (!files.length) {
 						partial.markup += ' NOT FOUND!';
 					}
@@ -284,7 +284,7 @@ process.nextTick(function() {
 					console.log(' - ' + partial.reference + ': inline markup');
 				}
 				// Register the partial using the filename (without extension) or using
-				// the styleguide reference.
+				// the style guide reference.
 				handlebars.registerPartial(partial.name, partial.markup);
 				// Save the name of the partial for retrieval in the markup helper, where
 				// we only know the reference.
@@ -302,7 +302,7 @@ process.nextTick(function() {
 		}
 		sectionRoots.sort();
 
-		console.log('...Generating styleguide sections:');
+		console.log('...Generating style guide sections:');
 
 		// Now, group all of the sections by their root
 		// reference, and make a page for each.
