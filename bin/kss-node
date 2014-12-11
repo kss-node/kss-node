@@ -394,7 +394,7 @@ generatePage = function(styleguide, sections, root, sectionRoots) {
 			styleguide: styleguide,
 			sectionRoots: sectionRoots,
 			sections: jsonSections(sections),
-			rootNumber: root,
+			rootName: root,
 			argv: argv || {},
 			overview: homepageText
 		})
@@ -588,6 +588,14 @@ handlebars.registerHelper('markup', function() {
 handlebars.registerHelper('modifierMarkup', function() {
 	// Fail if the template still uses modifierMarkup, since it is deprecated.
 	throw 'The modifierMarkup Handlebars helper is deprecated; if your template has {{modifierMarkup}}, replace it with {{{markup}}}.';
+});
+
+/**
+ * Deprecated variable.
+ */
+handlebars.registerHelper('rootNumber', function() {
+	// Fail if the template still uses rootNumber, since it is deprecated.
+	throw 'The rootNumber variable is deprecated; if your template has {{rootNumber}}, replace it with {{rootName}}.';
 });
 
 /**
