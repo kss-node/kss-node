@@ -12,7 +12,7 @@
 </div>
 
 <div id="kss-test--section">
-{{#section rootNumber}}
+{{#section rootName}}
   <h2>Handlebars Section Helper Test {{reference}}</h2>
   {{{description}}}
 {{/section}}
@@ -32,8 +32,8 @@
 </div>
 
 <div id="kss-test--ifDepth">
-{{#if rootNumber}}
-{{#eachSection rootNumber}}
+{{#if rootName}}
+{{#eachSection rootName}}
   {{#ifDepth 2}}
     <h2>Handlebars ifDepth Helper Test {{reference}}</h2>
   {{/ifDepth}}

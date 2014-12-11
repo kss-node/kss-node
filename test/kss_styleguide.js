@@ -47,6 +47,32 @@ suite('KssStyleguide', function() {
 				}
 				assert.deepEqual(results.sort(), expected.sort());
 			});
+			sectionQuery('Should return all "word key" sections', '', { mask: 'sections-word-keys.less' }, function(styleguide, sections) {
+				var key, section, results = [],
+					expected = [
+						'Base.Link',
+						'Components', 'Components.Message', 'Components.Tabs',
+						'Forms.Button', 'Forms.Input'
+					];
+				assert.ok(sections);
+				for (key in sections) {
+					results.push(sections[key].data.reference);
+				}
+				assert.deepEqual(results.sort(), expected.sort());
+			});
+			sectionQuery('Should return all "word phrases" sections', '', { mask: 'sections-word-phrases.less' }, function(styleguide, sections) {
+				var key, section, results = [],
+					expected = [
+						'Base - Link',
+						'Components', 'Components - Message box', 'Components - Tabs',
+						'Forms - Button', 'Forms - Input field'
+					];
+				assert.ok(sections);
+				for (key in sections) {
+					results.push(sections[key].data.reference);
+				}
+				assert.deepEqual(results.sort(), expected.sort());
+			});
 		});
 		suite('Exact References', function() {
 			sectionQuery('Depth: 1', '4', options, function(styleguide, section) {
@@ -144,14 +170,33 @@ suite('KssStyleguide', function() {
 				assert.equal(sections.length, 6);
 			});
 
-			sectionQuery('Sections should be returned in order', '9.x', { mask: 'sections-order.less' }, function(styleguide, sections) {
+			sectionQuery('Numeric sections should be returned in order', '9.x', { mask: 'sections-order.less' }, function(styleguide, sections) {
 				var i,
 					l = sections.length,
-					expectedOrder = ['9.1', '9.2', '9.3', '9.4', '9.5'];
+					expectedOrder = ['9.1', '9.2', '9.3', '9.4', '9.5', '9.10', '9.11', '9.100'];
 				for (i = 0; i < l; i += 1) {
 					assert.equal( expectedOrder[i], sections[i].data.reference );
 				}
+				assert.equal(8, sections.length);
+			});
 
+			sectionQuery('"Word key" sections should be returned in order', 'alpha.x', { mask: 'sections-order.less' }, function(styleguide, sections) {
+				var i,
+					l = sections.length,
+					expectedOrder = ['alpha.alpha', 'alpha.beta', 'alpha.delta', 'alpha.epsilon', 'alpha.gamma'];
+				for (i = 0; i < l; i += 1) {
+					assert.equal( expectedOrder[i], sections[i].data.reference );
+				}
+				assert.equal(5, sections.length);
+			});
+
+			sectionQuery('"Word phrase" sections should be returned in order', 'beta.x', { mask: 'sections-order.less' }, function(styleguide, sections) {
+				var i,
+					l = sections.length,
+					expectedOrder = ['beta - alpha', 'beta - beta', 'beta - delta', 'beta - epsilon', 'beta - gamma'];
+				for (i = 0; i < l; i += 1) {
+					assert.equal( expectedOrder[i], sections[i].data.reference );
+				}
 				assert.equal(5, sections.length);
 			});
 		});
@@ -173,14 +218,34 @@ suite('KssStyleguide', function() {
 				assert.equal(sections[0].data.header, 'DEPTH OF 1');
 			});
 
-			sectionQuery('Sections should be returned in order', /9.*/, { mask: 'sections-order.less' }, function(styleguide, sections) {
+			sectionQuery('Numeric sections should be returned in order', /9.*/, { mask: 'sections-order.less' }, function(styleguide, sections) {
 				var i,
 					l = sections.length,
-					expectedOrder = ['9', '9.1', '9.1.1', '9.2', '9.3', '9.4', '9.5'];
+					expectedOrder = ['9', '9.1', '9.1.1', '9.2', '9.3', '9.4', '9.5', '9.10', '9.11', '9.100'];
+				for (i = 0; i < l; i += 1) {
+					assert.equal( expectedOrder[i], sections[i].data.reference );
+				}
+				assert.equal(10, sections.length);
+			});
+
+			sectionQuery('"Word key" sections should be returned in order', /alpha.*/, { mask: 'sections-order.less' }, function(styleguide, sections) {
+				var i,
+					l = sections.length,
+					expectedOrder = ['alpha', 'alpha.alpha', 'alpha.alpha.alpha', 'alpha.beta', 'alpha.delta', 'alpha.epsilon', 'alpha.gamma'];
 				for (i = 0; i < l; i += 1) {
 					assert.equal( expectedOrder[i], sections[i].data.reference );
 				}
 				assert.equal(7, sections.length);
+			});
+
+			sectionQuery('"Word phrase" sections should be returned in order', /beta - .*/, { mask: 'sections-order.less' }, function(styleguide, sections) {
+				var i,
+					l = sections.length,
+					expectedOrder = ['beta - alpha', 'beta - alpha - alpha', 'beta - beta', 'beta - delta', 'beta - epsilon', 'beta - gamma'];
+				for (i = 0; i < l; i += 1) {
+					assert.equal( expectedOrder[i], sections[i].data.reference );
+				}
+				assert.equal(6, sections.length);
 			});
 		});
 	});

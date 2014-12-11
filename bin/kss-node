@@ -231,7 +231,7 @@ process.nextTick(function() {
 
 		styleguide = guide;
 
-		var sections = styleguide.section('*.'),
+		var sections = styleguide.section('*'),
 			sectionCount = sections.length,
 			sectionRoots = [],
 			rootCount,
@@ -292,7 +292,7 @@ process.nextTick(function() {
 
 			// Accumulate all of the sections' first indexes
 			// in case they don't have a root element.
-			currentRoot = sections[i].reference().match(/[0-9]*\.?/)[0].replace('.', '');
+			currentRoot = sections[i].reference().split(/(?:\.|\s+\-\s+)/)[0];
 			if (!~sectionRoots.indexOf(currentRoot)) {
 				sectionRoots.push(currentRoot);
 			}
@@ -382,7 +382,7 @@ generatePage = function(styleguide, sections, root, sectionRoots) {
 		}
 	}
 	else {
-		filename = 'section-'+root+'.html';
+		filename = 'section-' + kss.KssSection.prototype.encodeReferenceURI(root) + '.html';
 		console.log(
 			' - section '+root+' [',
 			styleguide.section(root) ? styleguide.section(root).header() : 'Unnamed',
@@ -394,7 +394,7 @@ generatePage = function(styleguide, sections, root, sectionRoots) {
 			styleguide: styleguide,
 			sectionRoots: sectionRoots,
 			sections: jsonSections(sections),
-			rootNumber: root,
+			rootName: root,
 			argv: argv || {},
 			overview: homepageText
 		})
@@ -462,8 +462,8 @@ handlebars.registerHelper('eachSection', function(query, options) {
 		sections,
 		i, l;
 
-	if (!query.match(/x|\*/g)) {
-		query = new RegExp('^' + query + '$|^' + query + "\\..*");
+	if (!query.match(/\bx\b|\*/g)) {
+		query = query + '.*';
 	}
 	sections = styleguide.section(query);
 	if (!sections) return '';
@@ -588,6 +588,14 @@ handlebars.registerHelper('markup', function() {
 handlebars.registerHelper('modifierMarkup', function() {
 	// Fail if the template still uses modifierMarkup, since it is deprecated.
 	throw 'The modifierMarkup Handlebars helper is deprecated; if your template has {{modifierMarkup}}, replace it with {{{markup}}}.';
+});
+
+/**
+ * Deprecated variable.
+ */
+handlebars.registerHelper('rootNumber', function() {
+	// Fail if the template still uses rootNumber, since it is deprecated.
+	throw 'The rootNumber variable is deprecated; if your template has {{rootNumber}}, replace it with {{rootName}}.';
 });
 
 /**
