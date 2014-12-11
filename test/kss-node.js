@@ -51,7 +51,7 @@ suite('Command Line Interface', function() {
 		test('Fails without load-path, when using --sass', function(done) {
 			exec('bin/kss-node test/fixtures-styles/with-include test/output --sass test/fixtures-styles/with-include/style.scss', function(err, stdout, stderr) {
 				assert.ok(/Error during generation/g.test(stdout), 'Missing load-path causes error');
-				assert.ok(/error: file to import not found or unreadable: "buttons"/g.test(stdout), 'Useful warning for missing load-path given');
+				assert.ok(/file to import not found or unreadable: "buttons"/g.test(stdout), 'Useful warning for missing load-path given');
 				done();
 			});
 		});
