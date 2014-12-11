@@ -378,7 +378,7 @@ generatePage = function(styleguide, sections, root, sectionRoots) {
 			homepageText = ' ' + marked(fs.readFileSync(argv.source + '/styleguide.md', 'utf8'));
 		} catch (e) {
 			homepageText = ' ';
-			console.log('   ...no homepage content found: ', e.message);
+			console.log('   ...no homepage content found in styleguide.md: ', e.message);
 		}
 	}
 	else {
