@@ -16,6 +16,8 @@ suite('KssSection', function() {
 	common.hasMethod(new KssSection({}), 'experimental');
 	common.hasMethod(new KssSection({}), 'reference');
 	common.hasMethod(new KssSection({}), 'depth');
+	common.hasMethod(new KssSection({}), 'encodeReferenceURI');
+	common.hasMethod(new KssSection({}), 'referenceURI');
 	common.hasMethod(new KssSection({}), 'modifiers');
 	common.hasMethod(new KssSection({}), 'firstModifier');
 
@@ -52,6 +54,18 @@ suite('KssSection', function() {
 	suite('.depth()', function() {
 		common.testAllSections('returns section.data.depth', '*.less|*.css', function(section) {
 			assert.equal(section.depth(), section.data.depth);
+		});
+	});
+
+	suite('.encodeReferenceURI()', function() {
+		common.testAllSections('.encodeReferenceURI(section.reference()) equals .referenceURI()', '*.less|*.css', function(section) {
+			assert.equal(section.encodeReferenceURI(section.reference()), section.referenceURI());
+		});
+	});
+
+	suite('.referenceURI()', function() {
+		common.testAllSections('returns section.data.referenceURI', '*.less|*.css', function(section) {
+			assert.equal(section.referenceURI(), section.data.referenceURI);
 		});
 	});
 
