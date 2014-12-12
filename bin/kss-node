@@ -589,7 +589,6 @@ handlebars.registerHelper('markup', function() {
  * Deprecated helper that output a section or a modifier's markup.
  */
 handlebars.registerHelper('modifierMarkup', function() {
-	// Fail if the template still uses modifierMarkup, since it is deprecated.
 	throw 'The modifierMarkup Handlebars helper is deprecated; if your template has {{modifierMarkup}}, replace it with {{{markup}}}.';
 });
 
@@ -597,7 +596,6 @@ handlebars.registerHelper('modifierMarkup', function() {
  * Deprecated variable.
  */
 handlebars.registerHelper('rootNumber', function() {
-	// Fail if the template still uses rootNumber, since it is deprecated.
 	throw 'The rootNumber variable is deprecated; if your template has {{rootNumber}}, replace it with {{rootName}}.';
 });
 
@@ -605,8 +603,28 @@ handlebars.registerHelper('rootNumber', function() {
  * Deprecated variable.
  */
 handlebars.registerHelper('refDepth', function() {
-	// Fail if the template still uses rootNumber, since it is deprecated.
 	throw 'The refDepth variable is deprecated; if your template has {{refDepth}}, replace it with {{depth}}.';
+});
+
+/**
+ * Deprecated helper that quickly avoid escaping strings.
+ */
+handlebars.registerHelper('html', function(arg) {
+	throw '{{html expression}} is deprecated; use HandleBars’ triple-stash instead: {{{expression}}}.';
+});
+
+/**
+ * Deprecated helper that is equivalent to the {#if} block helper with multiple arguments.
+ */
+handlebars.registerHelper('ifAny', function() {
+	throw 'IfAny is deprecated; if your template has {{#ifAny markup modifiers}}...{{/ifAny}}, replace it with {{#if markup}}...{{/if}}.';
+});
+
+/**
+ * Deprecated helper that is equivalent to "if the current section is X levels deep".
+ */
+handlebars.registerHelper('whenDepth', function(depth, options) {
+	throw '{{whenDepth expression}} is deprecated; use {{ifDepth expression}} instead.';
 });
 
 process.on('exit', function() {
