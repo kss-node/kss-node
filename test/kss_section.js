@@ -54,6 +54,7 @@ suite('KssSection', function() {
 	suite('.depth()', function() {
 		common.testAllSections('returns section.data.depth', '*.less|*.css', function(section) {
 			assert.equal(section.depth(), section.data.depth);
+			assert.equal(section.depth(), section.reference().split(/(?:\.|\s+\-\s+)/).length);
 		});
 	});
 
@@ -66,6 +67,7 @@ suite('KssSection', function() {
 	suite('.referenceURI()', function() {
 		common.testAllSections('returns section.data.referenceURI', '*.less|*.css', function(section) {
 			assert.equal(section.referenceURI(), section.data.referenceURI);
+			assert.equal(section.referenceURI(), section.encodeReferenceURI(section.reference()));
 		});
 	});
 
