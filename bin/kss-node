@@ -91,11 +91,9 @@ argv = yargs
 	.alias('help', '?')
 	.argv;
 
-// Create a new style guide template using the `--init` tag.
-if ("i" in yargs.argv) {
-	yargs.argv.init = yargs.argv.i;
-}
-if ("init" in yargs.argv) {
+// argv.init contains the default value. Explicitly check if the --init option
+// was called and create a new style guide template.
+if ("init" in yargs.argv || "i" in yargs.argv) {
 	argv.init = path.resolve(argv.init);
 
 	console.log('Creating a new style guide template...');
@@ -150,7 +148,7 @@ if (argv.config) {
 if (argv.source instanceof Array) {
 	argv.source = argv.source.pop();
 }
-else if (!("source" in yargs.argv) && argv._.length > 0) {
+else if (!argv.source && argv._.length > 0) {
 	argv.source = argv._[0];
 }
 else if (argv.xdemo) {
@@ -180,7 +178,7 @@ argv.template = path.resolve(argv.template);
 if (argv.helpers instanceof Array) {
 	argv.helpers = argv.helpers.pop();
 }
-else if (!("helpers" in yargs.argv) && !("helpers" in config)) {
+else if (!("helpers" in yargs.argv) && !config.helpers) {
 	argv.helpers = argv.template + '/helpers';
 }
 argv.helpers = path.resolve(argv.helpers);
