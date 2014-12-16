@@ -2,6 +2,8 @@ test:
 	./node_modules/mocha/bin/mocha -u tdd --reporter spec
 
 gh-pages:
+	if [[ ! -e ./lib/template/node_modules/.bin/lessc ]]; then cd lib/template && npm install; fi
+	cd lib/template && npm run-script less
 	./bin/kss-node demo gh-pages --css demo/styles.css --xdemo
 
 .PHONY: test

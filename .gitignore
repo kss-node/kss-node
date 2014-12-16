@@ -1,3 +1,4 @@
 /node_modules
 .DS_Store
 /test/output
+/lib/template/node_modules/
