@@ -65,10 +65,6 @@ argv = yargs
 		string    : true,
 		describe  : 'Source directory to parse for KSS comments'
 	})
-	.options('markup', {
-		string    : true,
-		describe  : 'The directory containing templates of each section of your style guide (defaults to the source directory)'
-	})
 	.options('destination', {
 		string    : true,
 		describe  : 'Destination directory of generated style guide',
@@ -161,8 +157,6 @@ if (!argv.source) {
 	return;
 }
 argv.source = path.resolve(argv.source);
-// Get the full markup path.
-argv.markup = (argv.markup) ? path.resolve(argv.markup) : argv.source;
 // Get the full destination path.
 if (argv.destination instanceof Array) {
 	argv.destination = argv.destination.pop();
@@ -189,7 +183,6 @@ console.log('');
 console.log('Generating your KSS style guide!');
 console.log('');
 console.log(' * KSS Source  : ' + argv.source);
-console.log(' * Markup      : ' + argv.markup);
 console.log(' * Destination : ' + argv.destination);
 console.log(' * Template    : ' + argv.template);
 console.log(' * Helpers     : ' + argv.helpers);
@@ -270,7 +263,7 @@ process.nextTick(function() {
 				if (partial.markup.match(/^[^\n]+\.(html|hbs)$/)) {
 					partial.file = partial.markup;
 					partial.name = path.basename(partial.file, path.extname(partial.file));
-					files = glob.sync(argv.markup + '/**/' + partial.file);
+					files = glob.sync(argv.source + '/**/' + partial.file);
 					// If the markup file is not found, note that in the style guide.
 					if (!files.length) {
 						partial.markup += ' NOT FOUND!';
