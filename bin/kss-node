@@ -145,14 +145,16 @@ if (argv.config) {
 	}
 }
 // Get the full source path.
-if (argv.source instanceof Array) {
-	argv.source = argv.source.pop();
-}
-else if (!argv.source && argv._.length > 0) {
-	argv.source = argv._[0];
-}
-else if (argv.xdemo) {
+if (argv.xdemo) {
 	argv.source = __dirname + '/../demo';
+}
+else {
+	if (argv.source instanceof Array) {
+		argv.source = argv.source.pop();
+	}
+	else if (!argv.source && argv._.length > 0) {
+		argv.source = argv._[0];
+	}
 }
 if (!argv.source) {
 	yargs.showHelp();
