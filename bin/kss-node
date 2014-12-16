@@ -81,6 +81,7 @@ argv = yargs
 
 	.options('xdemo', {
 		boolean   : true,
+		// Alias is redundant, but prevents "Unknown argument: xdemo" error.
 		alias     : 'xdemo'
 	})
 
