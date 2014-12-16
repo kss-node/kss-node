@@ -36,6 +36,13 @@ suite('Command Line Interface', function() {
 				done();
 			});
 		});
+		test('Should read multiple source directories from option', function(done) {
+			exec('bin/kss-node --source test/fixtures-styles/with-include --source test/fixtures-styles/empty-source --destination test/output', function(err, stdout, stderr) {
+				assert.ok(/\* KSS Source  : .+test\/fixtures\-styles\/with\-include, .+test\/fixtures\-styles\/empty\-source/g.test(stdout), 'Read multiple --source options');
+				assert.strictEqual(/Generation completed successfully/g.test(stdout), true, 'Styleguide generated from multiple sources');
+				done();
+			});
+		});
 	});
 
 	suite('Option: --destination', function() {

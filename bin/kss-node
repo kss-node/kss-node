@@ -65,10 +65,6 @@ argv = yargs
 		string    : true,
 		describe  : 'Source directory to parse for KSS comments'
 	})
-	.options('markup', {
-		string    : true,
-		describe  : 'The directory containing templates of each section of your style guide (defaults to the source directory)'
-	})
 	.options('destination', {
 		string    : true,
 		describe  : 'Destination directory of generated style guide',
@@ -146,23 +142,26 @@ if (argv.config) {
 }
 // Get the full source path.
 if (argv.xdemo) {
-	argv.source = __dirname + '/../demo';
+	argv.source = [__dirname + '/../demo'];
 }
 else {
-	if (argv.source instanceof Array) {
-		argv.source = argv.source.pop();
+	if (!argv.source) {
+		argv.source = [];
 	}
-	else if (!argv.source && argv._.length > 0) {
-		argv.source = argv._[0];
+	else if (typeof argv.source == "string") {
+		argv.source = [argv.source];
+	}
+	if (argv._.length > 0) {
+		argv.source.push(argv._[0]);
 	}
 }
-if (!argv.source) {
+if (!argv.source.length) {
 	yargs.showHelp();
 	return;
 }
-argv.source = path.resolve(argv.source);
-// Get the full markup path.
-argv.markup = (argv.markup) ? path.resolve(argv.markup) : argv.source;
+for (var key in argv.source) {
+	argv.source[key] = path.resolve(argv.source[key]);
+}
 // Get the full destination path.
 if (argv.destination instanceof Array) {
 	argv.destination = argv.destination.pop();
@@ -184,12 +183,10 @@ else if (!("helpers" in yargs.argv) && !config.helpers) {
 	argv.helpers = argv.template + '/helpers';
 }
 argv.helpers = path.resolve(argv.helpers);
-
 console.log('');
 console.log('Generating your KSS style guide!');
 console.log('');
-console.log(' * KSS Source  : ' + argv.source);
-console.log(' * Markup      : ' + argv.markup);
+console.log(' * KSS Source  : ' + argv.source.join(', '));
 console.log(' * Destination : ' + argv.destination);
 console.log(' * Template    : ' + argv.template);
 console.log(' * Helpers     : ' + argv.helpers);
@@ -243,7 +240,7 @@ process.nextTick(function() {
 			currentRoot,
 			childSections = [],
 			partial,
-			files,
+			files = [],
 			i;
 
 		console.log(styleguide.data.files.map(function(file) {
@@ -270,7 +267,12 @@ process.nextTick(function() {
 				if (partial.markup.match(/^[^\n]+\.(html|hbs)$/)) {
 					partial.file = partial.markup;
 					partial.name = path.basename(partial.file, path.extname(partial.file));
-					files = glob.sync(argv.markup + '/**/' + partial.file);
+					files = [];
+					for (var key in argv.source) {
+						if (!files.length) {
+							files = glob.sync(argv.source[key] + '/**/' + partial.file);
+						}
+					}
 					// If the markup file is not found, note that in the style guide.
 					if (!files.length) {
 						partial.markup += ' NOT FOUND!';
@@ -379,11 +381,16 @@ generatePage = function(styleguide, sections, root, sectionRoots) {
 		filename = 'index.html';
 		console.log(' - homepage');
 		// Ensure homepageText is a non-false value.
-		try {
-			homepageText = ' ' + marked(fs.readFileSync(argv.source + '/styleguide.md', 'utf8'));
-		} catch (e) {
+		for (var key in argv.source) {
+			if (!homepageText) {
+				try {
+					homepageText = ' ' + marked(fs.readFileSync(argv.source[key] + '/styleguide.md', 'utf8'));
+				} catch (e) {}
+			}
+		}
+		if (!homepageText) {
 			homepageText = ' ';
-			console.log('   ...no homepage content found in styleguide.md: ', e.message);
+			console.log('   ...no homepage content found in styleguide.md.');
 		}
 	}
 	else {
