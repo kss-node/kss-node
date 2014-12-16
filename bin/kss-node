@@ -123,9 +123,7 @@ if ("init" in yargs.argv) {
 
 // Determine which options are specified in a config json file.
 if (argv.config) {
-	configFile = path.resolve(argv.config);
-	config = require(configFile);
-	// Make config paths relative to config file.
+	// Helper function to apply path.resolve() to strings or arrays of strings.
 	pathResolveRecursive = function(from, item) {
 		var paths;
 		if (item instanceof Array) {
@@ -136,10 +134,13 @@ if (argv.config) {
 			);
 		}
 		else {
-			paths = path.resolve(path.dirname(configFile), item);
+			paths = path.resolve(from, item);
 		}
 		return paths;
 	};
+	// Make config paths relative to config file.
+	configFile = path.resolve(argv.config);
+	config = require(configFile);
 	for (var key in config) {
 		argv[key] = pathResolveRecursive(path.dirname(configFile), config[key]);
 	}
