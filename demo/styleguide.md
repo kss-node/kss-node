@@ -51,7 +51,7 @@ Styleguide 2.1.3
 
 When using a preprocessor that supports the functionality, use `//` to prefix your comment sections (SCSS example):
 
-```less
+```scss
 // Button
 //
 // A button suitable for giving stars to someone.
@@ -74,7 +74,7 @@ When using a preprocessor that supports the functionality, use `//` to prefix yo
 }
 ```
 
-Each KSS documentation block consists of four parts:
+Each KSS documentation block consists of two required parts and several optional parts:
 1. a name (required)
 2. a description of what the element does or looks like (optional)
 3. a list of modifier classes or pseudo-classes and how they modify the element (optional)
@@ -88,7 +88,7 @@ CSS rules that depend on specific HTML structures should describe those structur
 
 ```less
 // A feed of activity items. Within each <section.feed>, there should be many
-// <article>s which are the  feed items.
+// <article>s which are the feed items.
 ```
 
 To describe the status of a set of rules, you should prefix the description with **Experimental** or **Deprecated**.
@@ -222,4 +222,4 @@ The styleguide should be organized by numbered sections. These sections can go a
       4.1 Number tables
       4.2 Diagram tables
 
-The goal here is to create an organizational structure that is flexible, but  rigid enough to be machine processed and referenced inside of documentation.
+The goal here is to create an organizational structure that is flexible, but rigid enough to be machine processed and referenced inside of documentation.
