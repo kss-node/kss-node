@@ -15,33 +15,33 @@
   <link rel="stylesheet" href="public/kss.css">
   <link rel="stylesheet" href="public/style.css">
 </head>
-<body><div id="kss-wrapper">
+<body id="kss-node">
 
-<div id="kss-nav">
-  <header id="kss-header">
+<div class="kss-sidebar">
+  <header class="kss-header">
     <hgroup><h1>kss-node Styleguide</h1></hgroup>
   </header>
-  <aside>
-    <nav><ul>
-      <li><a href="./">0.0: Overview</a></li>
+  <nav class="kss-nav">
+    <ul class="kss-nav__menu">
+      <li class="kss-nav__menu-item"><a href="./">0: Overview</a></li>
     {{#eachRoot}}
-      <li><a href="section-{{referenceURI}}.html">{{reference}}: {{header}}</a>
+      <li class="kss-nav__menu-item"><a href="section-{{referenceURI}}.html">{{reference}}: {{header}}</a>
         {{!-- Uncomment this to add second-level navigation.
-        <ul>
+        <ul class="kss-nav__menu-child">
         {{#eachSection reference}}
           {{#ifDepth 2}}
-            <li><a href="section-{{../../referenceURI}}.html#kssref-{{referenceURI}}">{{reference}}: {{header}}</a></li>
+            <li class="kss-nav__menu-item"><a href="section-{{../../referenceURI}}.html#kssref-{{referenceURI}}">{{reference}}: {{header}}</a></li>
           {{/ifDepth}}
         {{/eachSection}}
         </ul>
         --}}
       </li>
     {{/eachRoot}}
-    </ul></nav>
-  </aside>
+    </ul>
+  </nav>
 </div>
-<div role="main" id="kss-main">
-  <article id="kss-content">
+<div role="main" class="kss-main">
+  <article class="kss-content">
   {{#if overview}}
     {{{overview}}}
   {{else}}
@@ -56,9 +56,9 @@
     }}
     {{#eachSection rootName}}
       {{#ifDepth 1}}
-      <h1 class="kss-title"><span class="kss-ref">{{reference}}</span> - {{header}}</h1>
+        <h1 class="kss-title kss-title--level-1"><span class="kss-ref">{{reference}}</span> - {{header}}</h1>
       {{else}}
-      <section id="kssref-{{referenceURI}}" class="kss-depth-{{depth}}">
+        <section id="kssref-{{referenceURI}}" class="kss-depth-{{depth}}">
         <h{{depth}} class="kss-title kss-title--level-{{depth}}"><a class="kss-permalink" href="#kssref-{{referenceURI}}"><span class="kss-ref">{{reference}}</span> - {{header}}</a></h{{depth}}>
       {{/ifDepth}}
 
@@ -68,12 +68,12 @@
 
       {{#if markup}}
         <table class="kss-mod-list">
-          {{#if modifiers}}
+        {{#if modifiers}}
           <tr class="kss-mod-desc-group">
             <td class="kss-mod-desc"><p>Default styling</p></td>
             <td class="kss-mod-name"></td>
           </tr>
-          {{/if}}
+        {{/if}}
           <tr class="kss-mod-example">
             <td colspan="2">{{{markup}}}</td>
           </tr>
@@ -94,7 +94,7 @@
       {{/if}}
 
       {{#unlessDepth 1}}
-      </section>
+        </section>
       {{/unlessDepth}}
     {{/eachSection}}
   {{/if}}
@@ -115,12 +115,12 @@
   $(document).ready(function(){
     var sidebarAdjust = function() {
       // Match footer/body height
-      var height = Math.max($(window).height(), $('#kss-main').height());
+      var height = Math.max($(window).height(), $('.kss-main').height());
 
       if ($(window).width() <= 768) {
-        $('#kss-main, #kss-nav').height('auto');
+        $('.kss-main, .kss-sidebar').height('auto');
       } else {
-        $('#kss-main, #kss-nav').height(height);
+        $('.kss-main, .kss-sidebar').height(height);
       }
     };
 
@@ -142,5 +142,5 @@
   </script>
 {{/if}}
 
-</div></body>
+</body>
 </html>
