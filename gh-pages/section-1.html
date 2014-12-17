@@ -15,36 +15,34 @@
   <link rel="stylesheet" href="public/kss.css">
   <link rel="stylesheet" href="public/style.css">
 </head>
-<body><div id="kss-wrapper">
+<body id="kss-node">
 
-<div id="kss-nav">
-  <header id="kss-header">
+<div class="kss-sidebar">
+  <header class="kss-header">
     <hgroup><h1>kss-node Styleguide</h1></hgroup>
   </header>
-  <aside>
-    <nav><ul>
-      <li><a href="./">0.0: Overview</a></li>
-      <li><a href="section-1.html">1.0: Modules</a>
+  <nav class="kss-nav">
+    <ul class="kss-nav__menu">
+      <li class="kss-nav__menu-item"><a href="./">0: Overview</a></li>
+      <li class="kss-nav__menu-item"><a href="section-1.html">1: Modules</a>
       </li>
-      <li><a href="section-2.html">2.0: Forms</a>
+      <li class="kss-nav__menu-item"><a href="section-2.html">2: Forms</a>
       </li>
-    </ul></nav>
-  </aside>
+    </ul>
+  </nav>
 </div>
-<div role="main" id="kss-main">
-  <article id="kss-content">
+<div role="main" class="kss-main">
+  <article class="kss-content">
 
-
-      <h1 class="kss-title"><span class="kss-ref">1.0</span> - Modules</h1>
+        <h1 class="kss-title kss-title--level-1"><span class="kss-ref">1</span> - Modules</h1>
 
         <div class="kss-box"><p>Reusable elements that can be used across the site.
 So far this just includes buttons.</p>
 </div>
 
 
-      <section class="kss-depth-2">
-
-      <h1 class="kss-title"><span class="kss-ref">1.1</span> - Buttons</h1>
+        <section id="kssref-1.1" class="kss-depth-2">
+        <h2 class="kss-title kss-title--level-2"><a class="kss-permalink" href="#kssref-1.1"><span class="kss-ref">1.1</span> - Buttons</a></h2>
 
         <div class="kss-box"><p>A majority of buttons in the site are built from the same base class.</p>
 </div>
@@ -57,7 +55,8 @@ So far this just includes buttons.</p>
           <tr class="kss-mod-example">
             <td colspan="2"><a href="#" class="button ">Link Button</a>
 <button class="button ">Button Element</button>
-<input type="button" class="button " value="input[type='button']"/></td>
+<input type="button" class="button " value="input[type='button']"/>
+</td>
           </tr>
           <tr class="kss-mod-desc-group">
             <td class="kss-mod-desc"><p>Indicate that the button is the primary feature of this form.</p>
@@ -67,7 +66,8 @@ So far this just includes buttons.</p>
           <tr class="kss-mod-example">
             <td colspan="2"><a href="#" class="button primary">Link Button</a>
 <button class="button primary">Button Element</button>
-<input type="button" class="button primary" value="input[type='button']"/></td>
+<input type="button" class="button primary" value="input[type='button']"/>
+</td>
           </tr>
           <tr class="kss-mod-desc-group">
             <td class="kss-mod-desc"><p>Indicate that the button will remove a feature, or other negative connotations.</p>
@@ -77,7 +77,8 @@ So far this just includes buttons.</p>
           <tr class="kss-mod-example">
             <td colspan="2"><a href="#" class="button remove">Link Button</a>
 <button class="button remove">Button Element</button>
-<input type="button" class="button remove" value="input[type='button']"/></td>
+<input type="button" class="button remove" value="input[type='button']"/>
+</td>
           </tr>
           <tr class="kss-mod-desc-group">
             <td class="kss-mod-desc"><p>Highlight the button when hovered.</p>
@@ -87,7 +88,8 @@ So far this just includes buttons.</p>
           <tr class="kss-mod-example">
             <td colspan="2"><a href="#" class="button pseudo-class-hover">Link Button</a>
 <button class="button pseudo-class-hover">Button Element</button>
-<input type="button" class="button pseudo-class-hover" value="input[type='button']"/></td>
+<input type="button" class="button pseudo-class-hover" value="input[type='button']"/>
+</td>
           </tr>
           <tr class="kss-mod-desc-group">
             <td class="kss-mod-desc"><p>Make the button change appearance to reflect it being disabled.</p>
@@ -97,7 +99,8 @@ So far this just includes buttons.</p>
           <tr class="kss-mod-example">
             <td colspan="2"><a href="#" class="button pseudo-class-disabled">Link Button</a>
 <button class="button pseudo-class-disabled">Button Element</button>
-<input type="button" class="button pseudo-class-disabled" value="input[type='button']"/></td>
+<input type="button" class="button pseudo-class-disabled" value="input[type='button']"/>
+</td>
           </tr>
           <tr class="kss-mod-desc-group">
             <td class="kss-mod-desc"><p>&quot;Press&quot; the button down when clicked.</p>
@@ -107,17 +110,19 @@ So far this just includes buttons.</p>
           <tr class="kss-mod-example">
             <td colspan="2"><a href="#" class="button pseudo-class-active">Link Button</a>
 <button class="button pseudo-class-active">Button Element</button>
-<input type="button" class="button pseudo-class-active" value="input[type='button']"/></td>
+<input type="button" class="button pseudo-class-active" value="input[type='button']"/>
+</td>
           </tr>
         </table>
 
         <div class="kss-markup">
           <pre class="prettyprint lang-html">&lt;a href=&quot;#&quot; class=&quot;button &quot;&gt;Link Button&lt;/a&gt;
 &lt;button class=&quot;button &quot;&gt;Button Element&lt;/button&gt;
-&lt;input type=&quot;button&quot; class=&quot;button &quot; value=&quot;input[type=&#x27;button&#x27;]&quot;/&gt;</pre>
+&lt;input type=&quot;button&quot; class=&quot;button &quot; value=&quot;input[type=&#x27;button&#x27;]&quot;/&gt;
+</pre>
         </div>
 
-      </section>
+        </section>
   </article>
 </div>
 
@@ -133,12 +138,12 @@ So far this just includes buttons.</p>
   $(document).ready(function(){
     var sidebarAdjust = function() {
       // Match footer/body height
-      var height = Math.max($(window).height(), $('#kss-main').height());
+      var height = Math.max($(window).height(), $('.kss-main').height());
 
       if ($(window).width() <= 768) {
-        $('#kss-main, #kss-nav').height('auto');
+        $('.kss-main, .kss-sidebar').height('auto');
       } else {
-        $('#kss-main, #kss-nav').height(height);
+        $('.kss-main, .kss-sidebar').height(height);
       }
     };
 
@@ -157,5 +162,5 @@ So far this just includes buttons.</p>
   (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();
   </script>
 
-</div></body>
+</body>
 </html>

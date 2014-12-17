@@ -15,45 +15,71 @@
   <link rel="stylesheet" href="public/kss.css">
   <link rel="stylesheet" href="public/style.css">
 </head>
-<body><div id="kss-wrapper">
+<body id="kss-node">
 
-<div id="kss-nav">
-  <header id="kss-header">
+<div class="kss-sidebar">
+  <header class="kss-header">
     <hgroup><h1>kss-node Styleguide</h1></hgroup>
   </header>
-  <aside>
-    <nav><ul>
-      <li><a href="./">0.0: Overview</a></li>
-      <li><a href="section-1.html">1.0: Modules</a>
+  <nav class="kss-nav">
+    <ul class="kss-nav__menu">
+      <li class="kss-nav__menu-item"><a href="./">0: Overview</a></li>
+      <li class="kss-nav__menu-item"><a href="section-1.html">1: Modules</a>
       </li>
-      <li><a href="section-2.html">2.0: Forms</a>
+      <li class="kss-nav__menu-item"><a href="section-2.html">2: Forms</a>
       </li>
-    </ul></nav>
-  </aside>
+    </ul>
+  </nav>
 </div>
-<div role="main" id="kss-main">
-  <article id="kss-content">
+<div role="main" class="kss-main">
+  <article class="kss-content">
 
-
-      <h1 class="kss-title"><span class="kss-ref">2.0</span> - Forms</h1>
+        <h1 class="kss-title kss-title--level-1"><span class="kss-ref">2</span> - Forms</h1>
 
         <div class="kss-box"><p>Covers styles used for forms, such as the <code>&lt;input&gt;</code> and <code>&lt;select&gt;</code>
 elements.</p>
 </div>
 
+        <table class="kss-mod-list">
+          <tr class="kss-mod-example">
+            <td colspan="2"><form>
+<p><input type="text" class="" value="Text"/></p>
+<div class="mod-input text ">
+    <label>Text Label</label>
+    <input type="text" value="Text Input"/>
+</div><p><a href="#" class="button ">Link Button</a>
+<button class="button ">Button Element</button>
+<input type="button" class="button " value="input[type='button']"/>
+</p>
+</form>
+</td>
+          </tr>
+        </table>
 
-      <section class="kss-depth-2">
+        <div class="kss-markup">
+          <pre class="prettyprint lang-html">&lt;form&gt;
+&lt;p&gt;&lt;input type=&quot;text&quot; class=&quot;&quot; value=&quot;Text&quot;/&gt;&lt;/p&gt;
+&lt;div class=&quot;mod-input text &quot;&gt;
+    &lt;label&gt;Text Label&lt;/label&gt;
+    &lt;input type=&quot;text&quot; value=&quot;Text Input&quot;/&gt;
+&lt;/div&gt;&lt;p&gt;&lt;a href=&quot;#&quot; class=&quot;button &quot;&gt;Link Button&lt;/a&gt;
+&lt;button class=&quot;button &quot;&gt;Button Element&lt;/button&gt;
+&lt;input type=&quot;button&quot; class=&quot;button &quot; value=&quot;input[type=&#x27;button&#x27;]&quot;/&gt;
+&lt;/p&gt;
+&lt;/form&gt;
+</pre>
+        </div>
 
-      <h1 class="kss-title"><span class="kss-ref">2.1</span> - Text Input</h1>
+        <section id="kssref-2.1" class="kss-depth-2">
+        <h2 class="kss-title kss-title--level-2"><a class="kss-permalink" href="#kssref-2.1"><span class="kss-ref">2.1</span> - Text Input</a></h2>
 
         <div class="kss-box"><p>Below are the text-oriented form elements used on the site.</p>
 </div>
 
 
-      </section>
-      <section class="kss-depth-3">
-
-      <h1 class="kss-title"><span class="kss-ref">2.1.1</span> - Single-Line Text Boxes</h1>
+        </section>
+        <section id="kssref-2.1.1" class="kss-depth-3">
+        <h3 class="kss-title kss-title--level-3"><a class="kss-permalink" href="#kssref-2.1.1"><span class="kss-ref">2.1.1</span> - Single-Line Text Boxes</a></h3>
 
         <div class="kss-box"><p>Your standard, everyday text boxes.</p>
 </div>
@@ -96,10 +122,9 @@ elements.</p>
           <pre class="prettyprint lang-html">&lt;input type=&quot;text&quot; class=&quot;&quot; value=&quot;Text&quot;/&gt;</pre>
         </div>
 
-      </section>
-      <section class="kss-depth-3">
-
-      <h1 class="kss-title"><span class="kss-ref">2.1.2</span> - Label/Textbox Pairs</h1>
+        </section>
+        <section id="kssref-2.1.2" class="kss-depth-3">
+        <h3 class="kss-title kss-title--level-3"><a class="kss-permalink" href="#kssref-2.1.2"><span class="kss-ref">2.1.2</span> - Label/Textbox Pairs</a></h3>
 
         <div class="kss-box"><p>All labelled textboxes should be included in a wrapper <code>&lt;div&gt;</code> element for both layout
 convenience and specific styling.</p>
@@ -158,7 +183,7 @@ convenience and specific styling.</p>
 &lt;/div&gt;</pre>
         </div>
 
-      </section>
+        </section>
   </article>
 </div>
 
@@ -174,12 +199,12 @@ convenience and specific styling.</p>
   $(document).ready(function(){
     var sidebarAdjust = function() {
       // Match footer/body height
-      var height = Math.max($(window).height(), $('#kss-main').height());
+      var height = Math.max($(window).height(), $('.kss-main').height());
 
       if ($(window).width() <= 768) {
-        $('#kss-main, #kss-nav').height('auto');
+        $('.kss-main, .kss-sidebar').height('auto');
       } else {
-        $('#kss-main, #kss-nav').height(height);
+        $('.kss-main, .kss-sidebar').height(height);
       }
     };
 
@@ -198,5 +223,5 @@ convenience and specific styling.</p>
   (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();
   </script>
 
-</div></body>
+</body>
 </html>

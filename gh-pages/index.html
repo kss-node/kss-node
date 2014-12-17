@@ -15,24 +15,24 @@
   <link rel="stylesheet" href="public/kss.css">
   <link rel="stylesheet" href="public/style.css">
 </head>
-<body><div id="kss-wrapper">
+<body id="kss-node">
 
-<div id="kss-nav">
-  <header id="kss-header">
+<div class="kss-sidebar">
+  <header class="kss-header">
     <hgroup><h1>kss-node Styleguide</h1></hgroup>
   </header>
-  <aside>
-    <nav><ul>
-      <li><a href="./">0.0: Overview</a></li>
-      <li><a href="section-1.html">1.0: Modules</a>
+  <nav class="kss-nav">
+    <ul class="kss-nav__menu">
+      <li class="kss-nav__menu-item"><a href="./">0: Overview</a></li>
+      <li class="kss-nav__menu-item"><a href="section-1.html">1: Modules</a>
       </li>
-      <li><a href="section-2.html">2.0: Forms</a>
+      <li class="kss-nav__menu-item"><a href="section-2.html">2: Forms</a>
       </li>
-    </ul></nav>
-  </aside>
+    </ul>
+  </nav>
 </div>
-<div role="main" id="kss-main">
-  <article id="kss-content">
+<div role="main" class="kss-main">
+  <article class="kss-content">
      <h1 class="kss-title kss-title-main"> Overview </h1>
 
 <p>This is a demo of <a href="https://github.com/kss-node/kss-node">kss-node</a>&#39;s built-in styleguide generator. The module is essentially a reimplementation of the <a href="https://github.com/kneath/kss">KSS</a> Ruby parser, in Node:</p>
@@ -74,7 +74,7 @@ Styleguide 2.1.3
 }
 </code></pre>
 <p>When using a preprocessor that supports the functionality, use <code>//</code> to prefix your comment sections (SCSS example):</p>
-<pre><code class="lang-less">// Button
+<pre><code class="lang-scss">// Button
 //
 // A button suitable for giving stars to someone.
 //
@@ -95,7 +95,7 @@ Styleguide 2.1.3
   }
 }
 </code></pre>
-<p>Each KSS documentation block consists of four parts:</p>
+<p>Each KSS documentation block consists of two required parts and several optional parts:</p>
 <ol>
 <li>a name (required)</li>
 <li>a description of what the element does or looks like (optional)</li>
@@ -106,7 +106,7 @@ Styleguide 2.1.3
 <p>The description should be plain sentences of what the CSS rule or hierarchy does and looks like. A good description gives guidance toward the application of elements the CSS rules style.</p>
 <p>CSS rules that depend on specific HTML structures should describe those structures using <code>&lt;element#id.class:pseudo&gt;</code> notation. For example:</p>
 <pre><code class="lang-less">// A feed of activity items. Within each &lt;section.feed&gt;, there should be many
-// &lt;article&gt;s which are the  feed items.
+// &lt;article&gt;s which are the feed items.
 </code></pre>
 <p>To describe the status of a set of rules, you should prefix the description with <strong>Experimental</strong> or <strong>Deprecated</strong>.</p>
 <p><strong>Experimental</strong> indicates CSS rules that apply to experimental styling. This can be useful when testing out new designs before they launch (staff only), alternative layouts in A/B tests, or beta features.</p>
@@ -190,7 +190,7 @@ Styleguide 2.1.3
 4. Tables
   4.1 Number tables
   4.2 Diagram tables
-</code></pre><p>The goal here is to create an organizational structure that is flexible, but  rigid enough to be machine processed and referenced inside of documentation.</p>
+</code></pre><p>The goal here is to create an organizational structure that is flexible, but rigid enough to be machine processed and referenced inside of documentation.</p>
 
   </article>
 </div>
@@ -207,12 +207,12 @@ Styleguide 2.1.3
   $(document).ready(function(){
     var sidebarAdjust = function() {
       // Match footer/body height
-      var height = Math.max($(window).height(), $('#kss-main').height());
+      var height = Math.max($(window).height(), $('.kss-main').height());
 
       if ($(window).width() <= 768) {
-        $('#kss-main, #kss-nav').height('auto');
+        $('.kss-main, .kss-sidebar').height('auto');
       } else {
-        $('#kss-main, #kss-nav').height(height);
+        $('.kss-main, .kss-sidebar').height(height);
       }
     };
 
@@ -231,5 +231,5 @@ Styleguide 2.1.3
   (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();
   </script>
 
-</div></body>
+</body>
 </html>
