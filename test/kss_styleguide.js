@@ -257,6 +257,16 @@ suite('KssStyleguide', function() {
 				}
 				assert.equal(sections.length, 9);
 			});
+
+			sectionQuery('Autoincrement values for sections should be returned in order', /gamma - .*/, { mask: 'sections-order.less' }, function(styleguide, sections) {
+				var i,
+					l = sections.length,
+					expectedOrder = ['4.1', '4.1.1', '4.1.2', '4.1.3', '4.1.4', '4.2', '4.3', '4.4', '4.5'];
+				for (i = 0; i < l; i += 1) {
+					assert.equal( sections[i].data.autoincrement, expectedOrder[i] );
+				}
+				assert.equal(sections.length, 9);
+			});
 		});
 	});
 });

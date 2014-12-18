@@ -25,12 +25,12 @@
     <ul class="kss-nav__menu">
       <li class="kss-nav__menu-item"><a href="./">0: Overview</a></li>
     {{#eachRoot}}
-      <li class="kss-nav__menu-item"><a href="section-{{referenceURI}}.html">{{reference}}: {{header}}</a>
+      <li class="kss-nav__menu-item"><a href="section-{{referenceURI}}.html"><!-- {{autoincrement}} -->{{reference}}: {{header}}</a>
         {{!-- Uncomment this to add second-level navigation.
         <ul class="kss-nav__menu-child">
         {{#eachSection reference}}
           {{#ifDepth 2}}
-            <li class="kss-nav__menu-item"><a href="section-{{../../referenceURI}}.html#kssref-{{referenceURI}}">{{reference}}: {{header}}</a></li>
+            <li class="kss-nav__menu-item"><a href="section-{{../../referenceURI}}.html#kssref-{{referenceURI}}"><!-- {{autoincrement}} -->{{reference}}: {{header}}</a></li>
           {{/ifDepth}}
         {{/eachSection}}
         </ul>
@@ -56,10 +56,10 @@
     }}
     {{#eachSection rootName}}
       {{#ifDepth 1}}
-        <h1 class="kss-title kss-title--level-1"><span class="kss-ref">{{reference}}</span> - {{header}}</h1>
+        <h1 class="kss-title kss-title--level-1"><span class="kss-ref"><!-- {{autoincrement}} -->{{reference}}</span> - {{header}}</h1>
       {{else}}
         <section id="kssref-{{referenceURI}}" class="kss-depth-{{depth}}">
-        <h{{depth}} class="kss-title kss-title--level-{{depth}}"><a class="kss-permalink" href="#kssref-{{referenceURI}}"><span class="kss-ref">{{reference}}</span> - {{header}}</a></h{{depth}}>
+        <h{{depth}} class="kss-title kss-title--level-{{depth}}"><a class="kss-permalink" href="#kssref-{{referenceURI}}"><span class="kss-ref"><!-- {{autoincrement}} -->{{reference}}</span> - {{header}}</a></h{{depth}}>
       {{/ifDepth}}
 
       {{#if description}}
