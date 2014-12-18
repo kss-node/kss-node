@@ -473,6 +473,54 @@ suite('.traverse()', function() {
 					assert.equal(section.data.reference, '5.4');
 					assert.equal(section.data.header, 'Misspelt Styleguide 4');
 				}, 'Style guide', { typos: true });
+
+				common.testSection('Misspelt Styleguide 5', 'options-typos.less', function(section) {
+					assert.ok(section);
+					assert.equal(section.data.reference, 'word.keys');
+					assert.equal(section.data.header, 'Misspelt Styleguide 5');
+				}, 'Style guide', { typos: true });
+
+				common.testSection('Misspelt Styleguide 6', 'options-typos.less', function(section) {
+					assert.ok(section);
+					assert.equal(section.data.reference, 'word - phrases');
+					assert.equal(section.data.header, 'Misspelt Styleguide 6');
+				}, 'Style guide', { typos: true });
+
+				common.testSection('Misspelt Styleguide 7', 'options-typos.less', function(section) {
+					assert.ok(section);
+					assert.equal(section.data.reference, '5.7');
+					assert.equal(section.data.header, 'Misspelt Styleguide 7');
+				}, 'Style guide', { typos: true });
+
+				common.testSection('Misspelt Styleguide 8', 'options-typos.less', function(section) {
+					assert.ok(section);
+					assert.equal(section.data.reference, 'word.keys.with.colon');
+					assert.equal(section.data.header, 'Misspelt Styleguide 8');
+				}, 'Style guide', { typos: true });
+
+				common.testSection('Misspelt Styleguide 9', 'options-typos.less', function(section) {
+					assert.ok(section);
+					assert.equal(section.data.reference, 'word - phrases - with - colon');
+					assert.equal(section.data.header, 'Misspelt Styleguide 9');
+				}, 'Style guide', { typos: true });
+
+				common.testSection('Misspelt Styleguide 10', 'options-typos.less', function(section) {
+					assert.ok(section);
+					assert.equal(section.data.reference, '5.8');
+					assert.equal(section.data.header, 'Misspelt Styleguide 10');
+				}, 'Style guide', { typos: true });
+
+				common.testSection('Misspelt Styleguide 11', 'options-typos.less', function(section) {
+					assert.ok(section);
+					assert.equal(section.data.reference, 'word.keys.with.colon.and.space');
+					assert.equal(section.data.header, 'Misspelt Styleguide 11');
+				}, 'Style guide', { typos: true });
+
+				common.testSection('Misspelt Styleguide 12', 'options-typos.less', function(section) {
+					assert.ok(section);
+					assert.equal(section.data.reference, 'word - phrases - with - colon - and - space');
+					assert.equal(section.data.header, 'Misspelt Styleguide 12');
+				}, 'Style guide', { typos: true });
 			});
 
 			suite('Experimental', function() {

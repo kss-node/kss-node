@@ -58,6 +58,13 @@ suite('KssSection', function() {
 		});
 	});
 
+	suite('.weight()', function() {
+		common.testAllSections('returns section.data.weight', '*.less|*.css', function(section) {
+			assert.equal(section.weight(), (section.data.weight ? section.data.weight : 0));
+			assert.ok(typeof section.depth() == 'number');
+		});
+	});
+
 	suite('.encodeReferenceURI()', function() {
 		common.testAllSections('.encodeReferenceURI(section.reference()) equals .referenceURI()', '*.less|*.css', function(section) {
 			assert.equal(section.encodeReferenceURI(section.reference()), section.referenceURI());

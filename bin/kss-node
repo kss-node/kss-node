@@ -300,11 +300,10 @@ process.nextTick(function() {
 			// Accumulate all of the sections' first indexes
 			// in case they don't have a root element.
 			currentRoot = sections[i].reference().split(/(?:\.|\s+\-\s+)/)[0];
-			if (!~sectionRoots.indexOf(currentRoot)) {
+			if (sectionRoots.indexOf(currentRoot) === -1) {
 				sectionRoots.push(currentRoot);
 			}
 		}
-		sectionRoots.sort();
 
 		console.log('...Generating style guide sections:');
 
