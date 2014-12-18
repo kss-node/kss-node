@@ -223,6 +223,11 @@ suite('#traverse', function() {
 					assert.equal(modifiers[2].data.description, 'Color - blue  -  another dash');
 				});
 
+				common.testSection('Skip custom parameter', 'sections-modifiers.less', function(section) {
+					var modifiers = section.data.modifiers;
+					assert.equal(modifiers.length, 3);
+				});
+
 				common.testSection('One line, no modifiers', 'sections-description.less', function(section) {
 					var modifiers = section.data.modifiers;
 					assert.equal(modifiers.length, 0);
