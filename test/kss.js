@@ -225,7 +225,7 @@ suite('#traverse', function() {
 
 				common.testSection('Skip custom parameter', 'sections-modifiers.less', function(section) {
 					var modifiers = section.data.modifiers;
-					assert.equal(modifiers.length, 3);
+					assert.equal(modifiers.length, 1);
 				});
 
 				common.testSection('One line, no modifiers', 'sections-description.less', function(section) {
