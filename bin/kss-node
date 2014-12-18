@@ -233,7 +233,7 @@ process.nextTick(function() {
 
 		styleguide = guide;
 
-		var sections = styleguide.section('*'),
+		var sections = styleguide.section(),
 			sectionCount = sections.length,
 			sectionRoots = [],
 			rootCount,
