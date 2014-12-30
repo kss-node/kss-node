@@ -23,14 +23,28 @@
   </header>
   <nav class="kss-nav">
     <ul class="kss-nav__menu">
-      <li class="kss-nav__menu-item"><a href="./">0: Overview</a></li>
+      <li class="kss-nav__menu-item">
+        <a href="./">
+          <span class="kss-nav__ref">0</span
+          ><span class="kss-nav__name">Overview</span>
+        </a>
+      </li>
     {{#eachRoot}}
-      <li class="kss-nav__menu-item"><a href="section-{{referenceURI}}.html"><!-- {{autoincrement}} -->{{reference}}: {{header}}</a>
+      <li class="kss-nav__menu-item">
+        <a href="section-{{referenceURI}}.html">
+          <span class="kss-nav__ref">{{#ifNumeric reference}}{{reference}}{{else}}{{autoincrement}}{{/ifNumeric}}</span
+          ><span class="kss-nav__name">{{header}}</span>
+        </a>
         {{!-- Uncomment this to add second-level navigation.
         <ul class="kss-nav__menu-child">
         {{#eachSection reference}}
           {{#ifDepth 2}}
-            <li class="kss-nav__menu-item"><a href="section-{{../../referenceURI}}.html#kssref-{{referenceURI}}"><!-- {{autoincrement}} -->{{reference}}: {{header}}</a></li>
+            <li class="kss-nav__menu-item">
+              <a href="section-{{../../referenceURI}}.html#kssref-{{referenceURI}}">
+                <span class="kss-nav__ref">{{#ifNumeric reference}}{{reference}}{{else}}{{autoincrement}}{{/ifNumeric}}</span
+                ><span class="kss-nav__name">{{header}}</span>
+              </a>
+            </li>
           {{/ifDepth}}
         {{/eachSection}}
         </ul>
@@ -40,27 +54,32 @@
     </ul>
   </nav>
 </div>
-<div role="main" class="kss-main">
-  <article class="kss-content">
-  {{#if overview}}
+<article role="main" class="kss-main">
+{{#if overview}}
+  <div id="kssref-0" class="kss-section kss-section--depth-0 kss-overview">
     {{{overview}}}
-  {{else}}
+  </div>
+{{else}}
 
-    {{!
-      Find each section, in order.
-      If there's no markup or modifiers supplied, use a Markdown-only
-      layout instead.
+  {{!
+    Display each section, in order.
 
-      The "root" element comes first in this loop, and can be detected using
-      the "#ifDepth 1" block as seen below.
-    }}
-    {{#eachSection rootName}}
-      {{#ifDepth 1}}
-        <h1 class="kss-title kss-title--level-1"><span class="kss-ref"><!-- {{autoincrement}} -->{{reference}}</span> - {{header}}</h1>
-      {{else}}
-        <section id="kssref-{{referenceURI}}" class="kss-depth-{{depth}}">
-        <h{{depth}} class="kss-title kss-title--level-{{depth}}"><a class="kss-permalink" href="#kssref-{{referenceURI}}"><span class="kss-ref"><!-- {{autoincrement}} -->{{reference}}</span> - {{header}}</a></h{{depth}}>
-      {{/ifDepth}}
+    The "root" element comes first in this loop, and can be detected using
+    the "#ifDepth 1" block as seen below.
+  }}
+  {{#eachSection rootName}}
+    {{#ifDepth 1}}
+      <div     id="kssref-{{referenceURI}}" class="kss-section kss-section--depth-{{depth}}">
+    {{else}}
+      <section id="kssref-{{referenceURI}}" class="kss-section kss-section--depth-{{depth}}">
+    {{/ifDepth}}
+
+      <h{{depth}} class="kss-title kss-title--level-{{depth}}">
+        <a class="kss-title__permalink" href="#kssref-{{referenceURI}}">
+          <span class="kss-title__ref">{{#ifNumeric reference}}{{reference}}{{else}}{{autoincrement}}{{/ifNumeric}}</span
+          >{{header}}
+        </a>
+      </h{{depth}}>
 
       {{#if description}}
         <div class="kss-box">{{{description}}}</div>
@@ -93,13 +112,14 @@
         </div>
       {{/if}}
 
-      {{#unlessDepth 1}}
-        </section>
-      {{/unlessDepth}}
-    {{/eachSection}}
-  {{/if}}
-  </article>
-</div>
+    {{#ifDepth 1}}
+      </div>
+    {{else}}
+      </section>
+    {{/ifDepth}}
+  {{/eachSection}}
+{{/if}}
+</article>
 
 {{#if argv.xdemo}}
 <footer>

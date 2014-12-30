@@ -34,6 +34,12 @@
     list-style-type:none;
   }
 
+  .kss-nav__ref {
+    &:after {
+      content: ': ';
+    }
+  }
+
   .kss-mod-list {
     width:100%;
   }
@@ -67,6 +73,12 @@
     &:focus,
     &:hover {
       text-decoration: underline;
+    }
+  }
+
+  .kss-title__ref {
+    &:after {
+      content: ' - ';
     }
   }
 
