@@ -520,6 +520,32 @@ handlebars.registerHelper('ifNumeric', function(reference, options) {
 });
 
 /**
+ * Equivalent to "if the current reference is X". e.g:
+ *
+ * {{#ifReference 'base.headings'}}
+ * 	 IF CURRENT REFERENCE IS base.headings ONLY
+ * 	{{else}}
+ * 	 ANYTHING ELSE
+ * {{/ifReference}}
+ */
+handlebars.registerHelper('ifReference', function(reference, options) {
+	return (this.reference && reference == this.reference) ? options.fn(this) : options.inverse(this);
+});
+
+/**
+ * Equivalent to "unless the current reference is X". e.g:
+ *
+ * {{#unlessReference 'base.headings'}}
+ * 	 ANYTHING ELSE
+ * 	{{else}}
+ * 	 IF CURRENT REFERENCE IS base.headings ONLY
+ * {{/unlessReference}}
+ */
+handlebars.registerHelper('unlessReference', function(reference, options) {
+	return (!this.reference || reference != this.reference) ? options.fn(this) : options.inverse(this);
+});
+
+/**
  * Equivalent to "if the current section is X levels deep". e.g:
  *
  * {{#ifDepth 1}}
