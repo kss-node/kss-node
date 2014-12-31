@@ -407,7 +407,7 @@ generatePage = function(styleguide, sections, root, sectionRoots) {
 			sections: jsonSections(sections),
 			rootName: root,
 			argv: argv || {},
-			overview: homepageText
+			homepage: homepageText
 		})
 	);
 };
@@ -630,6 +630,13 @@ handlebars.registerHelper('markup', function() {
 	// we want the ability to display it as a code sample with {{ }} and as
 	// rendered HTML with {{{ }}}.
 	return template(data);
+});
+
+/**
+ * Deprecated variable replaced with {{homepage}}.
+ */
+handlebars.registerHelper('overview', function() {
+	throw 'The overview variable is deprecated; if your template has {{overview}}, replace it with {{homepage}}.';
 });
 
 /**
