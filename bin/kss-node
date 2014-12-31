@@ -633,42 +633,42 @@ handlebars.registerHelper('markup', function() {
 });
 
 /**
- * Deprecated helper that output a section or a modifier's markup.
- */
-handlebars.registerHelper('modifierMarkup', function() {
-	throw 'The modifierMarkup Handlebars helper is deprecated; if your template has {{modifierMarkup}}, replace it with {{{markup}}}.';
-});
-
-/**
- * Deprecated variable.
- */
-handlebars.registerHelper('rootNumber', function() {
-	throw 'The rootNumber variable is deprecated; if your template has {{rootNumber}}, replace it with {{rootName}}.';
-});
-
-/**
- * Deprecated variable.
+ * Deprecated variable replaced with {{depth}}.
  */
 handlebars.registerHelper('refDepth', function() {
 	throw 'The refDepth variable is deprecated; if your template has {{refDepth}}, replace it with {{depth}}.';
 });
 
 /**
- * Deprecated helper that quickly avoid escaping strings.
+ * Deprecated variable replaced with {{rootName}}.
+ */
+handlebars.registerHelper('rootNumber', function() {
+	throw 'The rootNumber variable is deprecated; if your template has {{rootNumber}}, replace it with {{rootName}}.';
+});
+
+/**
+ * Deprecated helper replaced with {{{expression}}}.
  */
 handlebars.registerHelper('html', function(arg) {
 	throw '{{html expression}} is deprecated; use HandleBars’ triple-stash instead: {{{expression}}}.';
 });
 
 /**
- * Deprecated helper that is equivalent to the {#if} block helper with multiple arguments.
+ * Deprecated helper replaced with {{#if markup}}...{{/if}}.
  */
 handlebars.registerHelper('ifAny', function() {
 	throw 'IfAny is deprecated; if your template has {{#ifAny markup modifiers}}...{{/ifAny}}, replace it with {{#if markup}}...{{/if}}.';
 });
 
 /**
- * Deprecated helper that is equivalent to "if the current section is X levels deep".
+ * Deprecated helper replaced with {{{markup}}}.
+ */
+handlebars.registerHelper('modifierMarkup', function() {
+	throw 'The modifierMarkup Handlebars helper is deprecated; if your template has {{modifierMarkup}}, replace it with {{{markup}}}.';
+});
+
+/**
+ * Deprecated helper replaced with {{ifDepth expression}}.
  */
 handlebars.registerHelper('whenDepth', function(depth, options) {
 	throw '{{whenDepth expression}} is deprecated; use {{ifDepth expression}} instead.';
