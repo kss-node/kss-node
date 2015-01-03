@@ -2,7 +2,7 @@
 
 # kss-node
 
-This is a Node.js implementation of [Knyle Style Sheets](https://github.com/kneath/kss) (KSS), "a documentation syntax for CSS" that's intended to have syntax readable by humans *and* machines. Hence, the kss-node software can be used to create a "living style guide". The methodology and ideas behind Knyle Style Sheets are contained in [the specification](https://github.com/ksss-node/kss/blob/spec/SPEC.md).
+This is a Node.js implementation of [Knyle Style Sheets](https://github.com/kneath/kss) (KSS), "a documentation syntax for CSS" that's intended to have syntax readable by humans *and* machines. Hence, the kss-node software can be used to create a "living style guide". The methodology and ideas behind Knyle Style Sheets are contained in [the specification](https://github.com/kss-node/kss/blob/spec/SPEC.md).
 
 There's an example project in the [demo directory](https://github.com/kss-node/kss-node/tree/master/demo) of this repo.
 
