@@ -2,7 +2,6 @@
 
 var kss = require(__dirname + '/../lib/kss.js'),
 	handlebars = require('handlebars'),
-	cleanCSS = require('clean-css'),
 	yargs = require('yargs'),
 	marked = require('marked'),
 	wrench = require('wrench'),
@@ -12,7 +11,6 @@ var kss = require(__dirname + '/../lib/kss.js'),
 	template,
 	styleguide,
 	generatePage,
-	aggregateStylesheet,
 	config = {},
 	configFile,
 	KSS_FAILED = false,
@@ -53,11 +51,6 @@ argv = yargs
 		alias     : 'm',
 		describe  : 'Use a mask for detecting files containing KSS comments',
 		default   : '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
-	})
-	.options('css', {
-		string    : true,
-		alias     : 's',
-		describe  : 'Copies CSS stylesheets into the style guide; WARNING: relative paths are not rewritten'
 	})
 
 	.options('source', {
@@ -318,57 +311,8 @@ process.nextTick(function() {
 		// Generate the homepage.
 		childSections = [];
 		generatePage(styleguide, childSections, 'styleguide.homepage', sectionRoots);
-
-		if (argv.css) {
-			aggregateStylesheet(argv);
-		}
 	});
 });
-
-// Aggregate CSS files into a single "style.css" if required
-aggregateStylesheet = function(argv) {
-	var files;
-
-	console.log('...Aggregating additional stylesheets:');
-
-	files = [{
-		files: Array.isArray(argv.css) ? argv.css : [argv.css],
-		type: 'css'
-	}];
-
-	async.reduce(files, [], function (combined, group, next) {
-		if (!group) return next(null, combined);
-
-		async.map(group.files, function (filename, next) {
-			var type = group.type,
-				extension;
-
-			console.log(' - ' + filename);
-
-			return next(null, fs.readFileSync(filename, 'utf8'));
-
-		}, function(err, output) {
-			if (err) return next(err);
-			combined += '\n';
-			combined += output.join('\n');
-			return next(null, combined);
-		});
-	}, function (err, combined) {
-		if (err) throw err;
-		saveStylesheet(combined, 'style.css');
-	});
-};
-
-// Used by aggregateStylesheet to minify and then
-// save its final buffer to a single CSS file.
-saveStylesheet = function(buffer, filename) {
-	buffer = new cleanCSS().minify(buffer.toString());
-	filename = filename || 'style.css';
-	fs.writeFileSync(
-		argv.destination + '/public/' + filename,
-		buffer, 'utf8'
-	);
-};
 
 // Renders the handlebars template for a section and saves it to a file.
 generatePage = function(styleguide, sections, root, sectionRoots) {

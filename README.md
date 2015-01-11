@@ -30,8 +30,6 @@ Options:
                   http://bit.ly/kss-helpers    [default: "lib/template/helpers"]
   --mask, -m      Use a mask for detecting files containing KSS comments
                          [default: "*.css|*.less|*.sass|*.scss|*.styl|*.stylus"]
-  --css, -s       Copies CSS stylesheets into the style guide; WARNING:
-                  relative paths are not rewritten
 
   --source        Source directory to parse for KSS comments
   --destination   Destination directory of generated style guide
