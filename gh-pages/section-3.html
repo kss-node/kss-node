@@ -29,115 +29,82 @@
           ><span class="kss-nav__name">Overview</span>
         </a>
       </li>
-    {{#eachRoot}}
       <li class="kss-nav__menu-item">
-        <a href="section-{{referenceURI}}.html">
-          <span class="kss-nav__ref">{{#ifNumeric reference}}{{reference}}{{else}}{{autoincrement}}{{/ifNumeric}}</span
-          ><span class="kss-nav__name">{{header}}</span>
+        <a href="section-1.html">
+          <span class="kss-nav__ref">1</span
+          ><span class="kss-nav__name">Modules</span>
         </a>
-      {{#ifReference ../rootName}}
+      </li>
+      <li class="kss-nav__menu-item">
+        <a href="section-2.html">
+          <span class="kss-nav__ref">2</span
+          ><span class="kss-nav__name">Forms</span>
+        </a>
+      </li>
+      <li class="kss-nav__menu-item">
+        <a href="section-3.html">
+          <span class="kss-nav__ref">3</span
+          ><span class="kss-nav__name">Mixins</span>
+        </a>
         <ul class="kss-nav__menu-child">
-        {{#eachSection reference}}
-          {{#ifDepth 2}}
             <li class="kss-nav__menu-item">
-              <a href="section-{{../../referenceURI}}.html#kssref-{{referenceURI}}">
-                <span class="kss-nav__ref">{{#ifNumeric reference}}{{reference}}{{else}}{{autoincrement}}{{/ifNumeric}}</span
-                ><span class="kss-nav__name">{{header}}</span>
+              <a href="section-3.html#kssref-3.1">
+                <span class="kss-nav__ref">3.1</span
+                ><span class="kss-nav__name">.colors(@bg, @color)</span>
               </a>
             </li>
-          {{/ifDepth}}
-        {{/eachSection}}
         </ul>
-      {{/ifReference}}
       </li>
-    {{/eachRoot}}
     </ul>
   </nav>
 </div>
 <article role="main" class="kss-main">
-{{#if homepage}}
-  <div id="kssref-0" class="kss-overview kss-section kss-section--depth-0">
-    {{{homepage}}}
-  </div>
-{{else}}
 
-  {{!
-    Display each section, in order.
+      <div     id="kssref-3" class="kss-section kss-section--depth-1">
 
-    The "root" element comes first in this loop, and can be detected using
-    the "#ifDepth 1" block as seen below.
-  }}
-  {{#eachSection rootName}}
-    {{#ifDepth 1}}
-      <div     id="kssref-{{referenceURI}}" class="kss-section kss-section--depth-{{depth}}">
-    {{else}}
-      <section id="kssref-{{referenceURI}}" class="kss-section kss-section--depth-{{depth}}">
-    {{/ifDepth}}
-
-      <h{{depth}} class="kss-title kss-title--level-{{depth}}">
-        <a class="kss-title__permalink" href="#kssref-{{referenceURI}}">
-          <span class="kss-title__ref">{{#ifNumeric reference}}{{reference}}{{else}}{{autoincrement}}{{/ifNumeric}}</span
-          >{{header}}
+      <h1 class="kss-title kss-title--level-1">
+        <a class="kss-title__permalink" href="#kssref-3">
+          <span class="kss-title__ref">3</span
+          >Mixins
         </a>
-      </h{{depth}}>
+      </h1>
 
-      {{#if description}}
-        <div class="kss-box">{{{description}}}</div>
-      {{/if}}
+        <div class="kss-box"><p>LESS mixins used in this demo.</p>
+</div>
 
-    {{#if markup}}
-      <div class="kss-modifier__wrapper">
-      {{#if modifiers}}
-        <div class="kss-modifier__name kss-text">
-          <p>Default styling</p>
-        </div>
-      {{/if}}
-        <div class="kss-modifier__example">
-          {{{markup}}}
-        </div>
-      {{#eachModifier}}
-        <div class="kss-modifier__name kss-text">
-          <p>{{name}}</p>
-        </div>
-        <div class="kss-modifier__description kss-text">
-          {{{description}}}
-        </div>
-        <div class="kss-modifier__example">
-          {{{markup}}}
-        </div>
-      {{/eachModifier}}
+
+
       </div>
+      <section id="kssref-3.1" class="kss-section kss-section--depth-2">
 
-      <div class="kss-markup">
-        <pre class="prettyprint lang-html">{{markup}}</pre>
-      </div>
-    {{/if}}
+      <h2 class="kss-title kss-title--level-2">
+        <a class="kss-title__permalink" href="#kssref-3.1">
+          <span class="kss-title__ref">3.1</span
+          >.colors(@bg, @color)
+        </a>
+      </h2>
 
-    {{#if parameters}}
+        <div class="kss-box"><p>Applies foreground and background colors.</p>
+</div>
+
+
       <ul class="kss-parameters">
-      {{#eachParameter}}
         <li class="kss-parameters__item kss-text">
-          <code class="kss-parameters__name">{{name}}</code>
-          {{{description}}}
+          <code class="kss-parameters__name">@bg</code>
+          Background color; defaults to <code>#f5f5f5</code>.
         </li>
-      {{/eachParameter}}
+        <li class="kss-parameters__item kss-text">
+          <code class="kss-parameters__name">@color</code>
+          Foreground color; defaults to <code>#900</code>.
+        </li>
       </ul>
-    {{/if}}
 
-    {{#ifDepth 1}}
-      </div>
-    {{else}}
       </section>
-    {{/ifDepth}}
-  {{/eachSection}}
-{{/if}}
 </article>
 
-{{#if argv.xdemo}}
 <footer>
   <a href="https://github.com/kss-node/kss-node"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
 </footer>
-{{/if}}
 
 <!-- SCRIPTS -->
 <script src="public/kss.js"></script>
@@ -166,13 +133,10 @@
   });
 </script>
 
-{{! This won't be included in the demo page }}
-{{#if argv.xdemo}}
   <script type="text/javascript">
   var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-12249588-4']); _gaq.push(['_trackPageview']);
   (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();
   </script>
-{{/if}}
 
 </body>
 </html>

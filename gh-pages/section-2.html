@@ -23,26 +23,59 @@
   </header>
   <nav class="kss-nav">
     <ul class="kss-nav__menu">
-      <li class="kss-nav__menu-item"><a href="./">0: Overview</a></li>
-      <li class="kss-nav__menu-item"><a href="section-1.html">1: Modules</a>
+      <li class="kss-nav__menu-item">
+        <a href="./">
+          <span class="kss-nav__ref">0</span
+          ><span class="kss-nav__name">Overview</span>
+        </a>
       </li>
-      <li class="kss-nav__menu-item"><a href="section-2.html">2: Forms</a>
+      <li class="kss-nav__menu-item">
+        <a href="section-1.html">
+          <span class="kss-nav__ref">1</span
+          ><span class="kss-nav__name">Modules</span>
+        </a>
+      </li>
+      <li class="kss-nav__menu-item">
+        <a href="section-2.html">
+          <span class="kss-nav__ref">2</span
+          ><span class="kss-nav__name">Forms</span>
+        </a>
+        <ul class="kss-nav__menu-child">
+            <li class="kss-nav__menu-item">
+              <a href="section-2.html#kssref-2.1">
+                <span class="kss-nav__ref">2.1</span
+                ><span class="kss-nav__name">Text Input</span>
+              </a>
+            </li>
+        </ul>
+      </li>
+      <li class="kss-nav__menu-item">
+        <a href="section-3.html">
+          <span class="kss-nav__ref">3</span
+          ><span class="kss-nav__name">Mixins</span>
+        </a>
       </li>
     </ul>
   </nav>
 </div>
-<div role="main" class="kss-main">
-  <article class="kss-content">
+<article role="main" class="kss-main">
 
-        <h1 class="kss-title kss-title--level-1"><span class="kss-ref">2</span> - Forms</h1>
+      <div     id="kssref-2" class="kss-section kss-section--depth-1">
+
+      <h1 class="kss-title kss-title--level-1">
+        <a class="kss-title__permalink" href="#kssref-2">
+          <span class="kss-title__ref">2</span
+          >Forms
+        </a>
+      </h1>
 
         <div class="kss-box"><p>Covers styles used for forms, such as the <code>&lt;input&gt;</code> and <code>&lt;select&gt;</code>
 elements.</p>
 </div>
 
-        <table class="kss-mod-list">
-          <tr class="kss-mod-example">
-            <td colspan="2"><form>
+      <div class="kss-modifier__wrapper">
+        <div class="kss-modifier__example">
+          <form>
 <p><input type="text" class="" value="Text"/></p>
 <div class="mod-input text ">
     <label>Text Label</label>
@@ -52,12 +85,12 @@ elements.</p>
 <input type="button" class="button " value="input[type='button']"/>
 </p>
 </form>
-</td>
-          </tr>
-        </table>
 
-        <div class="kss-markup">
-          <pre class="prettyprint lang-html">&lt;form&gt;
+        </div>
+      </div>
+
+      <div class="kss-markup">
+        <pre class="prettyprint lang-html">&lt;form&gt;
 &lt;p&gt;&lt;input type=&quot;text&quot; class=&quot;&quot; value=&quot;Text&quot;/&gt;&lt;/p&gt;
 &lt;div class=&quot;mod-input text &quot;&gt;
     &lt;label&gt;Text Label&lt;/label&gt;
@@ -68,124 +101,150 @@ elements.</p>
 &lt;/p&gt;
 &lt;/form&gt;
 </pre>
-        </div>
+      </div>
 
-        <section id="kssref-2.1" class="kss-depth-2">
-        <h2 class="kss-title kss-title--level-2"><a class="kss-permalink" href="#kssref-2.1"><span class="kss-ref">2.1</span> - Text Input</a></h2>
+
+      </div>
+      <section id="kssref-2.1" class="kss-section kss-section--depth-2">
+
+      <h2 class="kss-title kss-title--level-2">
+        <a class="kss-title__permalink" href="#kssref-2.1">
+          <span class="kss-title__ref">2.1</span
+          >Text Input
+        </a>
+      </h2>
 
         <div class="kss-box"><p>Below are the text-oriented form elements used on the site.</p>
 </div>
 
 
-        </section>
-        <section id="kssref-2.1.1" class="kss-depth-3">
-        <h3 class="kss-title kss-title--level-3"><a class="kss-permalink" href="#kssref-2.1.1"><span class="kss-ref">2.1.1</span> - Single-Line Text Boxes</a></h3>
+
+      </section>
+      <section id="kssref-2.1.1" class="kss-section kss-section--depth-3">
+
+      <h3 class="kss-title kss-title--level-3">
+        <a class="kss-title__permalink" href="#kssref-2.1.1">
+          <span class="kss-title__ref">2.1.1</span
+          >Single-Line Text Boxes
+        </a>
+      </h3>
 
         <div class="kss-box"><p>Your standard, everyday text boxes.</p>
 </div>
 
-        <table class="kss-mod-list">
-          <tr class="kss-mod-desc-group">
-            <td class="kss-mod-desc"><p>Default styling</p></td>
-            <td class="kss-mod-name"></td>
-          </tr>
-          <tr class="kss-mod-example">
-            <td colspan="2"><input type="text" class="" value="Text"/></td>
-          </tr>
-          <tr class="kss-mod-desc-group">
-            <td class="kss-mod-desc"><p>Highlight the text box when hovering</p>
-</td>
-            <td class="kss-mod-name"><p>:hover</p></td>
-          </tr>
-          <tr class="kss-mod-example">
-            <td colspan="2"><input type="text" class="pseudo-class-hover" value="Text"/></td>
-          </tr>
-          <tr class="kss-mod-desc-group">
-            <td class="kss-mod-desc"><p>Similar to <code>:hover</code>, however it should demand more attention than when an input is simply hovered.</p>
-</td>
-            <td class="kss-mod-name"><p>:focus</p></td>
-          </tr>
-          <tr class="kss-mod-example">
-            <td colspan="2"><input type="text" class="pseudo-class-focus" value="Text"/></td>
-          </tr>
-          <tr class="kss-mod-desc-group">
-            <td class="kss-mod-desc"><p>When disabled, the input&#39;s appearance should reflect as such.</p>
-</td>
-            <td class="kss-mod-name"><p>:disabled</p></td>
-          </tr>
-          <tr class="kss-mod-example">
-            <td colspan="2"><input type="text" class="pseudo-class-disabled" value="Text"/></td>
-          </tr>
-        </table>
-
-        <div class="kss-markup">
-          <pre class="prettyprint lang-html">&lt;input type=&quot;text&quot; class=&quot;&quot; value=&quot;Text&quot;/&gt;</pre>
+      <div class="kss-modifier__wrapper">
+        <div class="kss-modifier__name kss-text">
+          <p>Default styling</p>
         </div>
+        <div class="kss-modifier__example">
+          <input type="text" class="" value="Text"/>
+        </div>
+        <div class="kss-modifier__name kss-text">
+          <p>:hover</p>
+        </div>
+        <div class="kss-modifier__description kss-text">
+          Highlight the text box when hovering
+        </div>
+        <div class="kss-modifier__example">
+          <input type="text" class="pseudo-class-hover" value="Text"/>
+        </div>
+        <div class="kss-modifier__name kss-text">
+          <p>:focus</p>
+        </div>
+        <div class="kss-modifier__description kss-text">
+          Similar to <code>:hover</code>, however it should demand more attention than when an input is simply hovered.
+        </div>
+        <div class="kss-modifier__example">
+          <input type="text" class="pseudo-class-focus" value="Text"/>
+        </div>
+        <div class="kss-modifier__name kss-text">
+          <p>:disabled</p>
+        </div>
+        <div class="kss-modifier__description kss-text">
+          When disabled, the input&#39;s appearance should reflect as such.
+        </div>
+        <div class="kss-modifier__example">
+          <input type="text" class="pseudo-class-disabled" value="Text"/>
+        </div>
+      </div>
 
-        </section>
-        <section id="kssref-2.1.2" class="kss-depth-3">
-        <h3 class="kss-title kss-title--level-3"><a class="kss-permalink" href="#kssref-2.1.2"><span class="kss-ref">2.1.2</span> - Label/Textbox Pairs</a></h3>
+      <div class="kss-markup">
+        <pre class="prettyprint lang-html">&lt;input type=&quot;text&quot; class=&quot;&quot; value=&quot;Text&quot;/&gt;</pre>
+      </div>
+
+
+      </section>
+      <section id="kssref-2.1.2" class="kss-section kss-section--depth-3">
+
+      <h3 class="kss-title kss-title--level-3">
+        <a class="kss-title__permalink" href="#kssref-2.1.2">
+          <span class="kss-title__ref">2.1.2</span
+          >Label/Textbox Pairs
+        </a>
+      </h3>
 
         <div class="kss-box"><p>All labelled textboxes should be included in a wrapper <code>&lt;div&gt;</code> element for both layout
 convenience and specific styling.</p>
 </div>
 
-        <table class="kss-mod-list">
-          <tr class="kss-mod-desc-group">
-            <td class="kss-mod-desc"><p>Default styling</p></td>
-            <td class="kss-mod-name"></td>
-          </tr>
-          <tr class="kss-mod-example">
-            <td colspan="2"><div class="mod-input text ">
+      <div class="kss-modifier__wrapper">
+        <div class="kss-modifier__name kss-text">
+          <p>Default styling</p>
+        </div>
+        <div class="kss-modifier__example">
+          <div class="mod-input text ">
     <label>Text Label</label>
     <input type="text" value="Text Input"/>
-</div></td>
-          </tr>
-          <tr class="kss-mod-desc-group">
-            <td class="kss-mod-desc"><p>To be used when the text input inside is expected to be disabled.</p>
-</td>
-            <td class="kss-mod-name"><p>.disabled</p></td>
-          </tr>
-          <tr class="kss-mod-example">
-            <td colspan="2"><div class="mod-input text disabled">
+</div>
+        </div>
+        <div class="kss-modifier__name kss-text">
+          <p>.disabled</p>
+        </div>
+        <div class="kss-modifier__description kss-text">
+          To be used when the text input inside is expected to be disabled.
+        </div>
+        <div class="kss-modifier__example">
+          <div class="mod-input text disabled">
     <label>Text Label</label>
     <input type="text" value="Text Input"/>
-</div></td>
-          </tr>
-          <tr class="kss-mod-desc-group">
-            <td class="kss-mod-desc"><p>To be used if the input has failed a validation check.</p>
-</td>
-            <td class="kss-mod-name"><p>.invalid</p></td>
-          </tr>
-          <tr class="kss-mod-example">
-            <td colspan="2"><div class="mod-input text invalid">
+</div>
+        </div>
+        <div class="kss-modifier__name kss-text">
+          <p>.invalid</p>
+        </div>
+        <div class="kss-modifier__description kss-text">
+          To be used if the input has failed a validation check.
+        </div>
+        <div class="kss-modifier__example">
+          <div class="mod-input text invalid">
     <label>Text Label</label>
     <input type="text" value="Text Input"/>
-</div></td>
-          </tr>
-          <tr class="kss-mod-desc-group">
-            <td class="kss-mod-desc"><p>To be used if the input has passed a validation check (intended for live validation in particular).</p>
-</td>
-            <td class="kss-mod-name"><p>.valid</p></td>
-          </tr>
-          <tr class="kss-mod-example">
-            <td colspan="2"><div class="mod-input text valid">
+</div>
+        </div>
+        <div class="kss-modifier__name kss-text">
+          <p>.valid</p>
+        </div>
+        <div class="kss-modifier__description kss-text">
+          To be used if the input has passed a validation check (intended for live validation in particular).
+        </div>
+        <div class="kss-modifier__example">
+          <div class="mod-input text valid">
     <label>Text Label</label>
     <input type="text" value="Text Input"/>
-</div></td>
-          </tr>
-        </table>
+</div>
+        </div>
+      </div>
 
-        <div class="kss-markup">
-          <pre class="prettyprint lang-html">&lt;div class=&quot;mod-input text &quot;&gt;
+      <div class="kss-markup">
+        <pre class="prettyprint lang-html">&lt;div class=&quot;mod-input text &quot;&gt;
     &lt;label&gt;Text Label&lt;/label&gt;
     &lt;input type=&quot;text&quot; value=&quot;Text Input&quot;/&gt;
 &lt;/div&gt;</pre>
-        </div>
+      </div>
 
-        </section>
-  </article>
-</div>
+
+      </section>
+</article>
 
 <footer>
   <a href="https://github.com/kss-node/kss-node"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
