@@ -30,19 +30,19 @@
         </a>
       </li>
       <li class="kss-nav__menu-item">
-        <a href="section-1.html">
+        <a href="section-elements.html">
           <span class="kss-nav__ref">1</span
           ><span class="kss-nav__name">Modules</span>
         </a>
       </li>
       <li class="kss-nav__menu-item">
-        <a href="section-2.html">
+        <a href="section-forms.html">
           <span class="kss-nav__ref">2</span
           ><span class="kss-nav__name">Forms</span>
         </a>
         <ul class="kss-nav__menu-child">
             <li class="kss-nav__menu-item">
-              <a href="section-2.html#kssref-2.1">
+              <a href="section-forms.html#kssref-forms.text">
                 <span class="kss-nav__ref">2.1</span
                 ><span class="kss-nav__name">Text Input</span>
               </a>
@@ -50,7 +50,7 @@
         </ul>
       </li>
       <li class="kss-nav__menu-item">
-        <a href="section-3.html">
+        <a href="section-mixins.html">
           <span class="kss-nav__ref">3</span
           ><span class="kss-nav__name">Mixins</span>
         </a>
@@ -60,10 +60,10 @@
 </div>
 <article role="main" class="kss-main">
 
-      <div     id="kssref-2" class="kss-section kss-section--depth-1">
+      <div     id="kssref-forms" class="kss-section kss-section--depth-1">
 
       <h1 class="kss-title kss-title--level-1">
-        <a class="kss-title__permalink" href="#kssref-2">
+        <a class="kss-title__permalink" href="#kssref-forms">
           <span class="kss-title__ref">2</span
           >Forms
         </a>
@@ -105,10 +105,10 @@ elements.</p>
 
 
       </div>
-      <section id="kssref-2.1" class="kss-section kss-section--depth-2">
+      <section id="kssref-forms.text" class="kss-section kss-section--depth-2">
 
       <h2 class="kss-title kss-title--level-2">
-        <a class="kss-title__permalink" href="#kssref-2.1">
+        <a class="kss-title__permalink" href="#kssref-forms.text">
           <span class="kss-title__ref">2.1</span
           >Text Input
         </a>
@@ -120,65 +120,11 @@ elements.</p>
 
 
       </section>
-      <section id="kssref-2.1.1" class="kss-section kss-section--depth-3">
+      <section id="kssref-forms.text.label-pairs" class="kss-section kss-section--depth-3">
 
       <h3 class="kss-title kss-title--level-3">
-        <a class="kss-title__permalink" href="#kssref-2.1.1">
+        <a class="kss-title__permalink" href="#kssref-forms.text.label-pairs">
           <span class="kss-title__ref">2.1.1</span
-          >Single-Line Text Boxes
-        </a>
-      </h3>
-
-        <div class="kss-box"><p>Your standard, everyday text boxes.</p>
-</div>
-
-      <div class="kss-modifier__wrapper">
-        <div class="kss-modifier__name kss-text">
-          <p>Default styling</p>
-        </div>
-        <div class="kss-modifier__example">
-          <input type="text" class="" value="Text"/>
-        </div>
-        <div class="kss-modifier__name kss-text">
-          <p>:hover</p>
-        </div>
-        <div class="kss-modifier__description kss-text">
-          Highlight the text box when hovering
-        </div>
-        <div class="kss-modifier__example">
-          <input type="text" class="pseudo-class-hover" value="Text"/>
-        </div>
-        <div class="kss-modifier__name kss-text">
-          <p>:focus</p>
-        </div>
-        <div class="kss-modifier__description kss-text">
-          Similar to <code>:hover</code>, however it should demand more attention than when an input is simply hovered.
-        </div>
-        <div class="kss-modifier__example">
-          <input type="text" class="pseudo-class-focus" value="Text"/>
-        </div>
-        <div class="kss-modifier__name kss-text">
-          <p>:disabled</p>
-        </div>
-        <div class="kss-modifier__description kss-text">
-          When disabled, the input&#39;s appearance should reflect as such.
-        </div>
-        <div class="kss-modifier__example">
-          <input type="text" class="pseudo-class-disabled" value="Text"/>
-        </div>
-      </div>
-
-      <div class="kss-markup">
-        <pre class="prettyprint lang-html">&lt;input type=&quot;text&quot; class=&quot;&quot; value=&quot;Text&quot;/&gt;</pre>
-      </div>
-
-
-      </section>
-      <section id="kssref-2.1.2" class="kss-section kss-section--depth-3">
-
-      <h3 class="kss-title kss-title--level-3">
-        <a class="kss-title__permalink" href="#kssref-2.1.2">
-          <span class="kss-title__ref">2.1.2</span
           >Label/Textbox Pairs
         </a>
       </h3>
@@ -240,6 +186,60 @@ convenience and specific styling.</p>
     &lt;label&gt;Text Label&lt;/label&gt;
     &lt;input type=&quot;text&quot; value=&quot;Text Input&quot;/&gt;
 &lt;/div&gt;</pre>
+      </div>
+
+
+      </section>
+      <section id="kssref-forms.text.single-line" class="kss-section kss-section--depth-3">
+
+      <h3 class="kss-title kss-title--level-3">
+        <a class="kss-title__permalink" href="#kssref-forms.text.single-line">
+          <span class="kss-title__ref">2.1.2</span
+          >Single-Line Text Boxes
+        </a>
+      </h3>
+
+        <div class="kss-box"><p>Your standard, everyday text boxes.</p>
+</div>
+
+      <div class="kss-modifier__wrapper">
+        <div class="kss-modifier__name kss-text">
+          <p>Default styling</p>
+        </div>
+        <div class="kss-modifier__example">
+          <input type="text" class="" value="Text"/>
+        </div>
+        <div class="kss-modifier__name kss-text">
+          <p>:hover</p>
+        </div>
+        <div class="kss-modifier__description kss-text">
+          Highlight the text box when hovering
+        </div>
+        <div class="kss-modifier__example">
+          <input type="text" class="pseudo-class-hover" value="Text"/>
+        </div>
+        <div class="kss-modifier__name kss-text">
+          <p>:focus</p>
+        </div>
+        <div class="kss-modifier__description kss-text">
+          Similar to <code>:hover</code>, however it should demand more attention than when an input is simply hovered.
+        </div>
+        <div class="kss-modifier__example">
+          <input type="text" class="pseudo-class-focus" value="Text"/>
+        </div>
+        <div class="kss-modifier__name kss-text">
+          <p>:disabled</p>
+        </div>
+        <div class="kss-modifier__description kss-text">
+          When disabled, the input&#39;s appearance should reflect as such.
+        </div>
+        <div class="kss-modifier__example">
+          <input type="text" class="pseudo-class-disabled" value="Text"/>
+        </div>
+      </div>
+
+      <div class="kss-markup">
+        <pre class="prettyprint lang-html">&lt;input type=&quot;text&quot; class=&quot;&quot; value=&quot;Text&quot;/&gt;</pre>
       </div>
 
 
