@@ -516,7 +516,7 @@ handlebars.registerHelper('unlessDepth', function(depth, options) {
 
 /**
  * Similar to the {#eachSection} helper, however will loop over each modifier
- * @param  {Object} section Supply a section object to loop over it's modifiers. Defaults to the current section.
+ * @param  {Object} section Supply a section object to loop over its modifiers. Defaults to the current section.
  */
 handlebars.registerHelper('eachModifier', function() {
 	var modifiers,
