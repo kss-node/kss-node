@@ -4,7 +4,8 @@ test:
 gh-pages:
 	if [[ ! -e ./lib/template/node_modules/.bin/lessc ]]; then cd lib/template && npm install; fi
 	cd lib/template && npm run-script less
-	./bin/kss-node demo gh-pages --css demo/styles.css --xdemo
+	./bin/kss-node demo gh-pages --xdemo
+	cp demo/styles.css gh-pages/public/style.css
 
 .PHONY: test
 .PHONY: gh-pages
