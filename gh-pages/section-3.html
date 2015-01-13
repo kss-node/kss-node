@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>KSS: Living Styleguide</title>
+
+  <meta name="description" content="">
+  <meta name="generator" content="kss-node">
+  <meta name="viewport" content="width=device-width">
+
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Droid+Serif">
+  <link rel="stylesheet" href="public/kss.css">
+  <link rel="stylesheet" href="public/style.css">
+</head>
+<body id="kss-node">
+
+<div class="kss-sidebar">
+  <header class="kss-header">
+    <hgroup><h1>kss-node Styleguide</h1></hgroup>
+  </header>
+  <nav class="kss-nav">
+    <ul class="kss-nav__menu">
+      <li class="kss-nav__menu-item">
+        <a href="./">
+          <span class="kss-nav__ref">0</span
+          ><span class="kss-nav__name">Overview</span>
+        </a>
+      </li>
+      <li class="kss-nav__menu-item">
+        <a href="section-1.html">
+          <span class="kss-nav__ref">1</span
+          ><span class="kss-nav__name">Modules</span>
+        </a>
+      </li>
+      <li class="kss-nav__menu-item">
+        <a href="section-2.html">
+          <span class="kss-nav__ref">2</span
+          ><span class="kss-nav__name">Forms</span>
+        </a>
+      </li>
+      <li class="kss-nav__menu-item">
+        <a href="section-3.html">
+          <span class="kss-nav__ref">3</span
+          ><span class="kss-nav__name">Mixins</span>
+        </a>
+        <ul class="kss-nav__menu-child">
+            <li class="kss-nav__menu-item">
+              <a href="section-3.html#kssref-3.1">
+                <span class="kss-nav__ref">3.1</span
+                ><span class="kss-nav__name">.colors(@bg, @color)</span>
+              </a>
+            </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+</div>
+<article role="main" class="kss-main">
+
+      <div     id="kssref-3" class="kss-section kss-section--depth-1">
+
+      <h1 class="kss-title kss-title--level-1">
+        <a class="kss-title__permalink" href="#kssref-3">
+          <span class="kss-title__ref">3</span
+          >Mixins
+        </a>
+      </h1>
+
+        <div class="kss-box"><p>LESS mixins used in this demo.</p>
+</div>
+
+
+
+      </div>
+      <section id="kssref-3.1" class="kss-section kss-section--depth-2">
+
+      <h2 class="kss-title kss-title--level-2">
+        <a class="kss-title__permalink" href="#kssref-3.1">
+          <span class="kss-title__ref">3.1</span
+          >.colors(@bg, @color)
+        </a>
+      </h2>
+
+        <div class="kss-box"><p>Applies foreground and background colors.</p>
+</div>
+
+
+      <ul class="kss-parameters">
+        <li class="kss-parameters__item kss-text">
+          <code class="kss-parameters__name">@bg</code>
+          Background color; defaults to <code>#f5f5f5</code>.
+        </li>
+        <li class="kss-parameters__item kss-text">
+          <code class="kss-parameters__name">@color</code>
+          Foreground color; defaults to <code>#900</code>.
+        </li>
+      </ul>
+
+      </section>
+</article>
+
+<footer>
+  <a href="https://github.com/kss-node/kss-node"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="public/kss.js"></script>
+<script src="public/prettify.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script>
+  $(document).ready(function(){
+    var sidebarAdjust = function() {
+      // Match footer/body height
+      var height = Math.max($(window).height(), $('.kss-main').height());
+
+      if ($(window).width() <= 768) {
+        $('.kss-main, .kss-sidebar').height('auto');
+      } else {
+        $('.kss-main, .kss-sidebar').height(height);
+      }
+    };
+
+    $(window).resize(sidebarAdjust);
+    $(window).scroll(sidebarAdjust);
+    sidebarAdjust();
+
+    // Ensure code blocks are highlighted properly...
+    $('pre>code').addClass('prettyprint');
+    prettyPrint();
+  });
+</script>
+
+  <script type="text/javascript">
+  var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-12249588-4']); _gaq.push(['_trackPageview']);
+  (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();
+  </script>
+
+</body>
+</html>

@@ -23,108 +23,153 @@
   </header>
   <nav class="kss-nav">
     <ul class="kss-nav__menu">
-      <li class="kss-nav__menu-item"><a href="./">0: Overview</a></li>
-      <li class="kss-nav__menu-item"><a href="section-1.html">1: Modules</a>
+      <li class="kss-nav__menu-item">
+        <a href="./">
+          <span class="kss-nav__ref">0</span
+          ><span class="kss-nav__name">Overview</span>
+        </a>
       </li>
-      <li class="kss-nav__menu-item"><a href="section-2.html">2: Forms</a>
+      <li class="kss-nav__menu-item">
+        <a href="section-1.html">
+          <span class="kss-nav__ref">1</span
+          ><span class="kss-nav__name">Modules</span>
+        </a>
+        <ul class="kss-nav__menu-child">
+            <li class="kss-nav__menu-item">
+              <a href="section-1.html#kssref-1.1">
+                <span class="kss-nav__ref">1.1</span
+                ><span class="kss-nav__name">Buttons</span>
+              </a>
+            </li>
+        </ul>
+      </li>
+      <li class="kss-nav__menu-item">
+        <a href="section-2.html">
+          <span class="kss-nav__ref">2</span
+          ><span class="kss-nav__name">Forms</span>
+        </a>
+      </li>
+      <li class="kss-nav__menu-item">
+        <a href="section-3.html">
+          <span class="kss-nav__ref">3</span
+          ><span class="kss-nav__name">Mixins</span>
+        </a>
       </li>
     </ul>
   </nav>
 </div>
-<div role="main" class="kss-main">
-  <article class="kss-content">
+<article role="main" class="kss-main">
 
-        <h1 class="kss-title kss-title--level-1"><span class="kss-ref">1</span> - Modules</h1>
+      <div     id="kssref-1" class="kss-section kss-section--depth-1">
+
+      <h1 class="kss-title kss-title--level-1">
+        <a class="kss-title__permalink" href="#kssref-1">
+          <span class="kss-title__ref">1</span
+          >Modules
+        </a>
+      </h1>
 
         <div class="kss-box"><p>Reusable elements that can be used across the site.
 So far this just includes buttons.</p>
 </div>
 
 
-        <section id="kssref-1.1" class="kss-depth-2">
-        <h2 class="kss-title kss-title--level-2"><a class="kss-permalink" href="#kssref-1.1"><span class="kss-ref">1.1</span> - Buttons</a></h2>
+
+      </div>
+      <section id="kssref-1.1" class="kss-section kss-section--depth-2">
+
+      <h2 class="kss-title kss-title--level-2">
+        <a class="kss-title__permalink" href="#kssref-1.1">
+          <span class="kss-title__ref">1.1</span
+          >Buttons
+        </a>
+      </h2>
 
         <div class="kss-box"><p>A majority of buttons in the site are built from the same base class.</p>
 </div>
 
-        <table class="kss-mod-list">
-          <tr class="kss-mod-desc-group">
-            <td class="kss-mod-desc"><p>Default styling</p></td>
-            <td class="kss-mod-name"></td>
-          </tr>
-          <tr class="kss-mod-example">
-            <td colspan="2"><a href="#" class="button ">Link Button</a>
+      <div class="kss-modifier__wrapper">
+        <div class="kss-modifier__name kss-text">
+          <p>Default styling</p>
+        </div>
+        <div class="kss-modifier__example">
+          <a href="#" class="button ">Link Button</a>
 <button class="button ">Button Element</button>
 <input type="button" class="button " value="input[type='button']"/>
-</td>
-          </tr>
-          <tr class="kss-mod-desc-group">
-            <td class="kss-mod-desc"><p>Indicate that the button is the primary feature of this form.</p>
-</td>
-            <td class="kss-mod-name"><p>.primary</p></td>
-          </tr>
-          <tr class="kss-mod-example">
-            <td colspan="2"><a href="#" class="button primary">Link Button</a>
+
+        </div>
+        <div class="kss-modifier__name kss-text">
+          <p>.primary</p>
+        </div>
+        <div class="kss-modifier__description kss-text">
+          Indicate that the button is the primary feature of this form.
+        </div>
+        <div class="kss-modifier__example">
+          <a href="#" class="button primary">Link Button</a>
 <button class="button primary">Button Element</button>
 <input type="button" class="button primary" value="input[type='button']"/>
-</td>
-          </tr>
-          <tr class="kss-mod-desc-group">
-            <td class="kss-mod-desc"><p>Indicate that the button will remove a feature, or other negative connotations.</p>
-</td>
-            <td class="kss-mod-name"><p>.remove</p></td>
-          </tr>
-          <tr class="kss-mod-example">
-            <td colspan="2"><a href="#" class="button remove">Link Button</a>
+
+        </div>
+        <div class="kss-modifier__name kss-text">
+          <p>.remove</p>
+        </div>
+        <div class="kss-modifier__description kss-text">
+          Indicate that the button will remove a feature, or other negative connotations.
+        </div>
+        <div class="kss-modifier__example">
+          <a href="#" class="button remove">Link Button</a>
 <button class="button remove">Button Element</button>
 <input type="button" class="button remove" value="input[type='button']"/>
-</td>
-          </tr>
-          <tr class="kss-mod-desc-group">
-            <td class="kss-mod-desc"><p>Highlight the button when hovered.</p>
-</td>
-            <td class="kss-mod-name"><p>:hover</p></td>
-          </tr>
-          <tr class="kss-mod-example">
-            <td colspan="2"><a href="#" class="button pseudo-class-hover">Link Button</a>
+
+        </div>
+        <div class="kss-modifier__name kss-text">
+          <p>:hover</p>
+        </div>
+        <div class="kss-modifier__description kss-text">
+          Highlight the button when hovered.
+        </div>
+        <div class="kss-modifier__example">
+          <a href="#" class="button pseudo-class-hover">Link Button</a>
 <button class="button pseudo-class-hover">Button Element</button>
 <input type="button" class="button pseudo-class-hover" value="input[type='button']"/>
-</td>
-          </tr>
-          <tr class="kss-mod-desc-group">
-            <td class="kss-mod-desc"><p>Make the button change appearance to reflect it being disabled.</p>
-</td>
-            <td class="kss-mod-name"><p>:disabled</p></td>
-          </tr>
-          <tr class="kss-mod-example">
-            <td colspan="2"><a href="#" class="button pseudo-class-disabled">Link Button</a>
+
+        </div>
+        <div class="kss-modifier__name kss-text">
+          <p>:disabled</p>
+        </div>
+        <div class="kss-modifier__description kss-text">
+          Make the button change appearance to reflect it being disabled.
+        </div>
+        <div class="kss-modifier__example">
+          <a href="#" class="button pseudo-class-disabled">Link Button</a>
 <button class="button pseudo-class-disabled">Button Element</button>
 <input type="button" class="button pseudo-class-disabled" value="input[type='button']"/>
-</td>
-          </tr>
-          <tr class="kss-mod-desc-group">
-            <td class="kss-mod-desc"><p>&quot;Press&quot; the button down when clicked.</p>
-</td>
-            <td class="kss-mod-name"><p>:active</p></td>
-          </tr>
-          <tr class="kss-mod-example">
-            <td colspan="2"><a href="#" class="button pseudo-class-active">Link Button</a>
+
+        </div>
+        <div class="kss-modifier__name kss-text">
+          <p>:active</p>
+        </div>
+        <div class="kss-modifier__description kss-text">
+          &quot;Press&quot; the button down when clicked.
+        </div>
+        <div class="kss-modifier__example">
+          <a href="#" class="button pseudo-class-active">Link Button</a>
 <button class="button pseudo-class-active">Button Element</button>
 <input type="button" class="button pseudo-class-active" value="input[type='button']"/>
-</td>
-          </tr>
-        </table>
 
-        <div class="kss-markup">
-          <pre class="prettyprint lang-html">&lt;a href=&quot;#&quot; class=&quot;button &quot;&gt;Link Button&lt;/a&gt;
+        </div>
+      </div>
+
+      <div class="kss-markup">
+        <pre class="prettyprint lang-html">&lt;a href=&quot;#&quot; class=&quot;button &quot;&gt;Link Button&lt;/a&gt;
 &lt;button class=&quot;button &quot;&gt;Button Element&lt;/button&gt;
 &lt;input type=&quot;button&quot; class=&quot;button &quot; value=&quot;input[type=&#x27;button&#x27;]&quot;/&gt;
 </pre>
-        </div>
+      </div>
 
-        </section>
-  </article>
-</div>
+
+      </section>
+</article>
 
 <footer>
   <a href="https://github.com/kss-node/kss-node"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
