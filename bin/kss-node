@@ -537,6 +537,28 @@ handlebars.registerHelper('eachModifier', function() {
 });
 
 /**
+ * Similar to the {#eachSection} helper, however will loop over each parameter
+ * @param  {Object} section Supply a section object to loop over its parameters. Defaults to the current section.
+ */
+handlebars.registerHelper('eachParameter', function() {
+	var parameters,
+		options = arguments[arguments.length - 1],
+		buffer = '',
+		i, l;
+
+	// Default to current parameters, but allow supplying a custom section.
+	parameters = (arguments.length > 1 && arguments[0].data) ? arguments[0].data.parameters : this.parameters;
+
+	if (!parameters) return '';
+
+	l = parameters.length;
+	for (i = 0; i < l; i++) {
+		buffer += options.fn(parameters[i].data || '');
+	}
+	return buffer;
+});
+
+/**
  * Outputs the current section's or modifier's markup.
  */
 handlebars.registerHelper('markup', function() {

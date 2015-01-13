@@ -113,6 +113,17 @@
       </div>
     {{/if}}
 
+    {{#if parameters}}
+      <ul class="kss-parameters">
+      {{#eachParameter}}
+        <li class="kss-parameters__item kss-text">
+          <code class="kss-parameters__name">{{name}}</code>
+          {{{description}}}
+        </li>
+      {{/eachParameter}}
+      </ul>
+    {{/if}}
+
     {{#ifDepth 1}}
       </div>
     {{else}}
