@@ -81,9 +81,20 @@
         </a>
       </h{{depth}}>
 
-      {{#if description}}
-        <div class="kss-box">{{{description}}}</div>
-      {{/if}}
+    {{#if parameters}}
+      <ul class="kss-parameters kss-text">
+      {{#eachParameter}}
+        <li class="kss-parameters__item">
+          <code class="kss-parameters__name">{{name}}</code>
+          <div class="kss-parameters__description">{{{description}}}</div>
+        </li>
+      {{/eachParameter}}
+      </ul>
+    {{/if}}
+
+    {{#if description}}
+      <div class="kss-box">{{{description}}}</div>
+    {{/if}}
 
     {{#if markup}}
       <div class="kss-modifier__wrapper">
@@ -111,17 +122,6 @@
       <div class="kss-markup">
         <pre class="prettyprint lang-html">{{markup}}</pre>
       </div>
-    {{/if}}
-
-    {{#if parameters}}
-      <ul class="kss-parameters">
-      {{#eachParameter}}
-        <li class="kss-parameters__item kss-text">
-          <code class="kss-parameters__name">{{name}}</code>
-          {{{description}}}
-        </li>
-      {{/eachParameter}}
-      </ul>
     {{/if}}
 
     {{#ifDepth 1}}
