@@ -53,6 +53,11 @@ argv = yargs
 		default   : '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
 	})
 
+	.options('custom', {
+		string    : true,
+		describe  : 'Process a custom property name when parsing KSS comments'
+	})
+
 	.options('source', {
 		string    : true,
 		describe  : 'Source directory to parse for KSS comments'
@@ -175,6 +180,11 @@ else if (!("helpers" in yargs.argv) && !config.helpers) {
 	argv.helpers = argv.template + '/helpers';
 }
 argv.helpers = path.resolve(argv.helpers);
+// Make custom an array.
+if (typeof argv.custom == "string") {
+	argv.custom = [argv.custom];
+}
+
 console.log('');
 console.log('Generating your KSS style guide!');
 console.log('');
