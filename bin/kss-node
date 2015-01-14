@@ -326,7 +326,7 @@ process.nextTick(function() {
 
 // Renders the handlebars template for a section and saves it to a file.
 generatePage = function(styleguide, sections, root, sectionRoots) {
-	var filename = '',
+	var filename = '', files,
 		homepageText = false;
 
 	if (root == 'styleguide.homepage') {
@@ -336,7 +336,10 @@ generatePage = function(styleguide, sections, root, sectionRoots) {
 		for (var key in argv.source) {
 			if (!homepageText) {
 				try {
-					homepageText = ' ' + marked(fs.readFileSync(argv.source[key] + '/styleguide.md', 'utf8'));
+					files = glob.sync(argv.source[key] + '/**/styleguide.md');
+					if (files.length) {
+						homepageText = ' ' + marked(fs.readFileSync(files[0], 'utf8'));
+					}
 				} catch (e) {}
 			}
 		}
