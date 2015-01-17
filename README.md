@@ -50,7 +50,7 @@ In order to parse your stylesheets containing KSS docs, you need to either speci
 
 The generated style guide will be put into the `styleguide` directory unless you specify the second argument or use a `--destination [directory]` flag.
 
-Even though kss-node parses your CSS source, your CSS won't be included in the style guide, however, unless you use the deprecated `--css` option or create a custom template with `--init`.
+Even though kss-node parses your CSS source, your CSS won't be included in the style guide unless you use the `--css` option or create a custom template with `--init`.
 
 You can generate a copy of the demo style guide like so:
 

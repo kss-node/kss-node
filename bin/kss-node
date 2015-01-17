@@ -149,6 +149,7 @@ if (argv.config) {
 // Get the full source path.
 if (argv.xdemo) {
 	argv.source = [__dirname + '/../demo'];
+	argv.css = ['public/styles.css'];
 }
 else {
 	if (!argv.source) {
