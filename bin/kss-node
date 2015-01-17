@@ -53,6 +53,15 @@ argv = yargs
 		default   : '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
 	})
 
+	.options('css', {
+		string    : true,
+		describe  : 'Specify the URL of a CSS file to include in the style guide'
+	})
+	.options('js', {
+		string    : true,
+		describe  : 'Specify the URL of a JavaScript file to include in the style guide'
+	})
+
 	.options('custom', {
 		string    : true,
 		describe  : 'Process a custom property name when parsing KSS comments'
@@ -180,9 +189,15 @@ else if (!("helpers" in yargs.argv) && !config.helpers) {
 	argv.helpers = argv.template + '/helpers';
 }
 argv.helpers = path.resolve(argv.helpers);
-// Make custom an array.
+// Make these options an array.
 if (typeof argv.custom == "string") {
 	argv.custom = [argv.custom];
+}
+if (typeof argv.css == "string") {
+	argv.css = [argv.css];
+}
+if (typeof argv.js == "string") {
+	argv.js = [argv.js];
 }
 
 console.log('');
@@ -327,7 +342,9 @@ process.nextTick(function() {
 // Renders the handlebars template for a section and saves it to a file.
 generatePage = function(styleguide, sections, root, sectionRoots) {
 	var filename = '', files,
-		homepageText = false;
+		homepageText = false,
+		styles = '',
+		scripts = '';
 
 	if (root == 'styleguide.homepage') {
 		filename = 'index.html';
@@ -356,6 +373,13 @@ generatePage = function(styleguide, sections, root, sectionRoots) {
 			']'
 		);
 	}
+	// Create the HTML to load the optional CSS and JS.
+	for (var key in argv.css) {
+		styles = styles + '<link rel="stylesheet" href="' + argv.css[key] + '">\n';
+	}
+	for (var key in argv.js) {
+		scripts = scripts + '<script src="' + argv.js[key] + '"></script>\n';
+	}
 	fs.writeFileSync(argv.destination + '/' + filename,
 		template({
 			styleguide: styleguide,
@@ -363,7 +387,9 @@ generatePage = function(styleguide, sections, root, sectionRoots) {
 			sections: jsonSections(sections),
 			rootName: root,
 			argv: argv || {},
-			homepage: homepageText
+			homepage: homepageText,
+			styles: styles,
+			scripts: scripts
 		})
 	);
 };

@@ -32,6 +32,10 @@ Options:
                          [default: "*.css|*.less|*.sass|*.scss|*.styl|*.stylus"]
   --custom        Process a custom property name when parsing KSS comments
 
+  --css           Specify the URL of a CSS file to include in the style guide
+  --js            Specify the URL of a JavaScript file to include in the style
+                  guide
+
   --source        Source directory to parse for KSS comments
   --destination   Destination directory of generated style guide
                                                          [default: "styleguide"]
