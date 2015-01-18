@@ -2,7 +2,30 @@
 
 # kss-node
 
-This is a Node.js implementation of [Knyle Style Sheets](https://github.com/kneath/kss) (KSS), "a documentation syntax for CSS" that's intended to have syntax readable by humans *and* machines. Hence, the kss-node software can be used to create a "living style guide". The methodology and ideas behind Knyle Style Sheets are contained in [the specification](https://github.com/kss-node/kss/blob/spec/SPEC.md).
+This is a Node.js implementation of [Knyle Style Sheets](https://github.com/kneath/kss) (KSS), "a documentation syntax for CSS" that's intended to have syntax readable by humans *and* machines. Hence, the kss-node software can be used to create a "living style guide".
+
+1. Write human-readable documentation using "KSS syntax" comments.
+2. Have `kss-node` auto-generate a style guide from your stylesheets.
+
+Here's an example KSS comment:
+```scss
+// Button
+//
+// Your standard button suitable for clicking.
+//
+// :hover   - Highlights when hovering.
+// .shiny   - Do not press this big, shiny, red button.
+//
+// Style guide: components.button
+.button {
+  ...
+}
+.button.shiny {
+  ...
+}
+```
+
+The methodology and ideas behind Knyle Style Sheets are contained in [the specification](https://github.com/kss-node/kss/blob/spec/SPEC.md).
 
 There's an example project in the [demo directory](https://github.com/kss-node/kss-node/tree/master/demo) of this repo.
 
@@ -91,10 +114,7 @@ kss.traverse('public/stylesheets/', options, function(err, styleguide) {
     if (err) throw err;
 
     styleguide.section('2.1.1')                                   // <KssSection>
-    styleguide.section('2.1.1').description()                     // A button suitable for giving stars to someone
     styleguide.section('2.1.1').modifiers(0)                      // <KssModifier>
-    styleguide.section('2.1.1').modifiers(0).name                 // ':hover'
-    styleguide.section('2.1.1').modifiers(0).description          // 'Subtle hover highlight'
     styleguide.section('2.1.1').modifiers(':hover').description() // 'Subtle hover highlight'
     styleguide.section('2.1.1').modifiers(0).className()          // 'pseudo-class-hover'
     styleguide.section('2.x.x')                                   // [<KssSection>, ...]
