@@ -126,7 +126,7 @@ if ("init" in yargs.argv || "i" in yargs.argv) {
 if (argv.config) {
 	// Helper function to apply path.resolve() to strings or arrays of strings.
 	pathResolveRecursive = function(from, item) {
-		var paths;
+		var paths = [];
 		if (item instanceof Array) {
 			item.forEach(
 				function(value, index) {
