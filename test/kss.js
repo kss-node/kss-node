@@ -250,9 +250,9 @@ suite('#traverse', function() {
 							currentData;
 
 						for (i = 0; i < l; i += 1) {
-							currentData = modifiers[i].data
+							currentData = modifiers[i].data;
 							assert.equal(
-								currentData.name.replace(/\:/, '.pseudo-class-'),
+								currentData.name.replace(/\:/g, '.pseudo-class-'),
 								currentData.className
 							);
 						}
