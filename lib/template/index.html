@@ -19,7 +19,7 @@
 
 <div class="kss-sidebar">
   <header class="kss-header">
-    <hgroup><h1>kss-node Style Guide</h1></hgroup>
+    <h1 class="kss-doc-title">kss-node Style Guide</h1>
   </header>
   <nav class="kss-nav">
     <ul class="kss-nav__menu">
@@ -145,21 +145,6 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script>
   $(document).ready(function(){
-    var sidebarAdjust = function() {
-      // Match footer/body height
-      var height = Math.max($(window).height(), $('.kss-main').height());
-
-      if ($(window).width() <= 768) {
-        $('.kss-main, .kss-sidebar').height('auto');
-      } else {
-        $('.kss-main, .kss-sidebar').height(height);
-      }
-    };
-
-    $(window).resize(sidebarAdjust);
-    $(window).scroll(sidebarAdjust);
-    sidebarAdjust();
-
     // Ensure code blocks are highlighted properly...
     $('pre>code').addClass('prettyprint');
     prettyPrint();

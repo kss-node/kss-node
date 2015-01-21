@@ -1,34 +1,76 @@
 @import 'markdown';
 
 #kss-node {
-  .kss-main,
-  .kss-sidebar {
-    position:absolute;
-    top:0;
-    left:0;
+  margin: 0;
+  padding: 20px;
+  background: #fff;
+
+  @media screen and (min-width: 769px) {
+    padding: 0;
+
+    /* Old browsers */
+    background: #eee;
+    /* FF3.6+ */
+    background: -webkit-linear-gradient(left, #eee, #e5e5e5 50%, #d7d7d7 100%) 20% 0 ~"/ 10px 1px" repeat-y,
+                -webkit-linear-gradient(left, #eee, #eee 20%, #fff 20%);
+    /* Chrome, Safari4+ */
+    background:        -webkit-gradient(linear, left top, right top, color-stop(0%,#eee), color-stop(50%,#e5e5e5), color-stop(100%,#d7d7d7)) 20% 0 ~"/ 10px 1px" repeat-y,
+                       -webkit-gradient(linear, left top, right top, color-stop(0%,#eee), color-stop(20%,#eee), color-stop(20%,#fff));
+    /* Chrome10+, Safari5.1+ */
+    background: -webkit-linear-gradient(to right, #eee, #e5e5e5 50%, #d7d7d7 100%) 20% 0 ~"/ 10px 1px" repeat-y,
+                -webkit-linear-gradient(to right, #eee, #eee 20%, #fff 20%);
+    /* Opera 11.10+ */
+    background:      -o-linear-gradient(to right, #eee, #e5e5e5 50%, #d7d7d7 100%) 20% 0 ~"/ 10px 1px" repeat-y,
+                     -o-linear-gradient(to right, #eee, #eee 20%, #fff 20%);
+    /* IE10+ */
+    background:     -ms-linear-gradient(to right, #eee, #e5e5e5 50%, #d7d7d7 100%) 20% 0 ~"/ 10px 1px" repeat-y,
+                    -ms-linear-gradient(to right, #eee, #eee 20%, #fff 20%);
+    /* W3C */
+    background:         linear-gradient(to right, #eee, #e5e5e5 50%, #d7d7d7 100%) 20% 0 ~"/ 10px 1px" repeat-y,
+                        linear-gradient(to right, #eee, #eee 20%, #fff 20%);
+
+    .kss-main,
+    .kss-sidebar {
+      float: left;
+      margin-right: -100%;
+      box-sizing: border-box;
+    }
   }
 
   .kss-main {
-    padding-left:2.5%;
-    width:77.5%;
-    max-width:48em;
-    left:20%;
+    width: 100%;
+    margin: 0 auto;
+
+    @media screen and (min-width: 769px) {
+      width: 80%;
+      margin-left: 20%;
+      padding: 0 20px 0 30px;
+    }
   }
 
   .kss-sidebar {
-    width:20%;
-    background-color:#eee;
-    box-shadow: inset -15px 0px 15px -15px rgba(45, 45, 45, 0.25);
+    border-bottom:1px solid #ddd;
+
+    @media screen and (min-width: 769px) {
+      width: 20%;
+      padding: 0 10px 0 20px;
+      border-bottom:0;
+    }
+  }
+
+  .kss-doc-title {
+    font-size:2.5em;
+    margin:0;
+
+    @media screen and (min-width: 769px) {
+      font-size:1.5em;
+    }
   }
 
   .kss-header,
   .kss-nav {
     @media screen and (min-width: 769px) {
       margin-top:2em;
-      padding:0 1em;
-    }
-    @media screen and (min-width: 961px) {
-      padding:0 2em;
     }
   }
 
@@ -64,6 +106,10 @@
     &:after {
       content: ': ';
     }
+  }
+
+  .kss-section {
+    max-width:48em;
   }
 
   .kss-parameters {
@@ -116,6 +162,21 @@
   .kss-title__ref {
     &:after {
       content: ' - ';
+    }
+  }
+
+  .kss-github {
+    display:none;
+
+    @media screen and (min-width: 501px) {
+      display:block;
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+
+    img {
+      border: 0;
     }
   }
 
@@ -174,32 +235,4 @@
   li.L5,
   li.L7,
   li.L9 { background: #eee }
-
-  // ------------------------------------------------------------------------------
-  //   @group Mobile/Tablet Styling
-  // ------------------------------------------------------------------------------
-  @media screen and (max-width: 768px) {
-    .kss-main {
-      position:static;
-      width:90%;
-      margin:0 auto;
-      padding-left:0;
-    }
-
-    .kss-sidebar {
-      position:static;
-      display:block;
-      width:auto;
-      margin:0;
-      background:0;
-      box-shadow:none;
-      border-bottom:1px solid #ddd;
-    }
-  }
-
-  @media screen and (max-width: 640px) {
-    #kss-github {
-      display:none;
-    }
-  }
 }
