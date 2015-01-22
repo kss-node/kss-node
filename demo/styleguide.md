@@ -13,4 +13,4 @@ Check out the [project on Github](https://github.com/kss-node/kss-node) for more
 
 # KSS Specification
 
-Unlike the default Ruby implementation at kneath/kss, kss-node includes a few optional features to allow for completely automated style guide generation. The kss-node specifics are detailed in this version of the [KSS spec](https://github.com/kss-node/kss/blob/spec/SPEC.md).
+Compared to the default Ruby implementation at kneath/kss, kss-node includes a few optional features to allow for completely automated style guide generation out of the box. The kss-node specifics are detailed in this annotated copy of the [KSS spec](https://github.com/kss-node/kss/blob/spec/SPEC.md).
