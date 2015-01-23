@@ -1,23 +1,23 @@
 // ------------------------------------------------------------------------------
 //   @group Variables - Colors, Fonts, etc.
 // ------------------------------------------------------------------------------
-@md-colors-background     : #fefefe;
+@kss-colors-background     : #fefefe;
 
-@md-colors-foreground     : #444;
-@md-colors-headers        : #111;
-@md-colors-quotes         : #666;
+@kss-colors-foreground     : #444;
+@kss-colors-headers        : #111;
+@kss-colors-quotes         : #666;
 
-@md-colors-link           : #0645ad;
-@md-colors-link-visited   : #0b0080;
-@md-colors-link-hover     : #06e;
-@md-colors-link-active    : #faa700;
+@kss-colors-link           : #0645ad;
+@kss-colors-link-visited   : #0b0080;
+@kss-colors-link-hover     : #06e;
+@kss-colors-link-active    : #faa700;
 
-@md-colors-selection      : rgba(255,255,0,0.3);
-@md-colors-selection-text : @md-colors-foreground;
+@kss-colors-selection      : rgba(255,255,0,0.3);
+@kss-colors-selection-text : @kss-colors-foreground;
 
-@md-font-headers          : 'Droid Serif', Georgia, Palatino, 'Palatino Linotype', Times, 'Times New Roman', serif;
-@md-font-body             : 'Droid Serif', Georgia, Palatino, 'Palatino Linotype', Times, 'Times New Roman', serif;
-@md-font-monospace        : 'Monaco', 'Ubuntu Mono', 'Lucida Console', 'Courier New', Courier, monospace;
+@kss-font-headers          : 'Droid Serif', Georgia, Palatino, 'Palatino Linotype', Times, 'Times New Roman', serif;
+@kss-font-body             : 'Droid Serif', Georgia, Palatino, 'Palatino Linotype', Times, 'Times New Roman', serif;
+@kss-font-monospace        : 'Monaco', 'Ubuntu Mono', 'Lucida Console', 'Courier New', Courier, monospace;
 
 // ------------------------------------------------------------------------------
 //   @group Pagewide Styles
@@ -25,10 +25,10 @@
 // These are totally optional of course
 
 body {
-	color:@md-colors-foreground;
-	background:@md-colors-background;
+	color: @kss-colors-foreground;
+	background: @kss-colors-background;
 
-	font-family: @md-font-body;
+	font-family: @kss-font-body;
 	font-size:12px;
 
 	line-height:1.5em;
@@ -38,27 +38,28 @@ body {
 //   @group Hyperlinks
 // ------------------------------------------------------------------------------
 a {
-	color:@md-colors-link;
+	color: @kss-colors-link;
 	text-decoration:none;
 
-	&:visited { color: @md-colors-link-visited; }
-	&:hover   { color: @md-colors-link-hover;   }
-	&:active  { color: @md-colors-link-active;  }
+	&:visited { color: @kss-colors-link-visited; }
+	&:hover   { color: @kss-colors-link-hover;   }
+	&:active  { color: @kss-colors-link-active;  }
 	&:focus   { outline: thin dotted; }
 
 	&:hover, &:active {
 		outline: 0;
 	}
 
-	&::-moz-selection, &::selection {
-		background: @md-colors-selection;
-		color: @md-colors-link;
+	&::-moz-selection,
+	&::selection {
+		background: @kss-colors-selection;
+		color: @kss-colors-link;
 	}
 }
 
 ::-moz-selection, ::selection {
-	background: @md-colors-selection;
-	color: @md-colors-selection-text;
+	background: @kss-colors-selection;
+	color: @kss-colors-selection-text;
 }
 
 // ------------------------------------------------------------------------------
@@ -69,8 +70,8 @@ p {
 }
 
 h1, h2, h3, h4, h5, h6 {
-	font-family: @md-font-headers;
-	color: @md-colors-headers;
+	font-family: @kss-font-headers;
+	color: @kss-colors-headers;
 	font-weight: normal;
 	line-height: 1em;
 }
@@ -90,25 +91,25 @@ h6 { font-size: 0.9em; }
 //   @group General Typography
 // ------------------------------------------------------------------------------
 blockquote {
-	color: @md-colors-quotes;
+	color: @kss-colors-quotes;
 	margin: 0;
 	padding-left: 1.5em;
-	border-left: 0.5em mix(@md-colors-quotes, @md-colors-background, 25%) solid;
+	border-left: 0.5em mix(@kss-colors-quotes, @kss-colors-background, 25%) solid;
 }
 
 hr {
 	display: block;
 	height: 2px;
 	border: 0;
-	border-top: 1px solid lighten(@md-colors-foreground, 60%);
-	border-bottom: 1px solid darken(@md-colors-background, 10%);
+	border-top: 1px solid lighten(@kss-colors-foreground, 60%);
+	border-bottom: 1px solid darken(@kss-colors-background, 10%);
 	margin: 1em 0;
 	padding: 0;
 }
 
 pre, code, kbd, samp {
-	font-family: @md-font-monospace;
-	color: mix(@md-colors-foreground, @md-colors-headers, 50%);
+	font-family: @kss-font-monospace;
+	color: mix(@kss-colors-foreground, @kss-colors-headers, 50%);
 	font-size: 0.98em;
 }
 
@@ -122,11 +123,11 @@ b, strong     { font-weight: bold; }
 dfn, mark, em { font-style: italic; }
 
 ins {
-	background: #ff9; color: @md-colors-headers; text-decoration: none;
+	background: #ff9; color: @kss-colors-headers; text-decoration: none;
 }
 
 mark {
-	background: #ff0; color: @md-colors-headers; font-weight: bold;
+	background: #ff0; color: @kss-colors-headers; font-weight: bold;
 }
 
 sub, sup {
