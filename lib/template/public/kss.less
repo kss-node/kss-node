@@ -12,9 +12,6 @@
 @kss-colors-link-hover     : #06e;
 @kss-colors-link-active    : #faa700;
 
-@kss-colors-selection      : rgba(255,255,0,0.3);
-@kss-colors-selection-text : @kss-colors-foreground;
-
 @kss-font-headers          : 'Droid Serif', Georgia, Palatino, 'Palatino Linotype', Times, 'Times New Roman', serif;
 @kss-font-body             : 'Droid Serif', Georgia, Palatino, 'Palatino Linotype', Times, 'Times New Roman', serif;
 @kss-font-monospace        : 'Monaco', 'Ubuntu Mono', 'Lucida Console', 'Courier New', Courier, monospace;
@@ -46,20 +43,10 @@ a {
 	&:active  { color: @kss-colors-link-active;  }
 	&:focus   { outline: thin dotted; }
 
-	&:hover, &:active {
+	&:hover,
+	&:active {
 		outline: 0;
 	}
-
-	&::-moz-selection,
-	&::selection {
-		background: @kss-colors-selection;
-		color: @kss-colors-link;
-	}
-}
-
-::-moz-selection, ::selection {
-	background: @kss-colors-selection;
-	color: @kss-colors-selection-text;
 }
 
 // ------------------------------------------------------------------------------
