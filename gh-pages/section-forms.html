@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<!--[if lte IE 6]>            <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IEMobile 7]>          <html class="no-js iem7" lang="en"> <![endif]-->
+<!--[if (IE 7)&(!IEMobile)]>  <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>                <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|(gt IEMobile 7)]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   <title>KSS: Living Style Guide</title>
@@ -11,16 +12,15 @@
   <meta name="generator" content="kss-node">
   <meta name="viewport" content="width=device-width">
 
-  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Droid+Serif">
   <link rel="stylesheet" href="public/kss.css">
   <link rel="stylesheet" href="public/styles.css">
 
 </head>
 <body id="kss-node">
 
-<div class="kss-sidebar">
+<div class="kss-sidebar kss-style">
   <header class="kss-header">
-    <h1 class="kss-doc-title">kss-node Style Guide</h1>
+    <h1 class="kss-doc-title">kss-node<br>Style Guide</h1>
   </header>
   <nav class="kss-nav">
     <ul class="kss-nav__menu">
@@ -31,9 +31,9 @@
         </a>
       </li>
       <li class="kss-nav__menu-item">
-        <a href="section-elements.html">
+        <a href="section-components.html">
           <span class="kss-nav__ref">1</span
-          ><span class="kss-nav__name">Modules</span>
+          ><span class="kss-nav__name">Components</span>
         </a>
       </li>
       <li class="kss-nav__menu-item">
@@ -63,19 +63,26 @@
 
       <div     id="kssref-forms" class="kss-section kss-section--depth-1">
 
+    <div class="kss-style">
       <h1 class="kss-title kss-title--level-1">
         <a class="kss-title__permalink" href="#kssref-forms">
           <span class="kss-title__ref">2</span
           >Forms
+          <span class="kss-title__permalink-hash">#permalink</span>
         </a>
       </h1>
 
 
-      <div class="kss-box"><p>Covers styles used for forms, such as the <code>&lt;input&gt;</code> and <code>&lt;select&gt;</code>
-elements.</p>
-</div>
+      <div class="kss-description">
+        <p>Covers styles used for forms, such as the <code>&lt;input&gt;</code> and <code>&lt;select&gt;</code> elements.</p>
+
+      </div>
+    </div>
 
       <div class="kss-modifier__wrapper">
+        <div class="kss-modifier__heading kss-style">
+          Example
+        </div>
         <div class="kss-modifier__example">
           <form>
 <p><input type="text" class="" value="Text input"/></p>
@@ -92,8 +99,8 @@ elements.</p>
         </div>
       </div>
 
-      <div class="kss-markup">
-        <pre class="prettyprint lang-html">&lt;form&gt;
+      <div class="kss-markup kss-style">
+        <pre class="prettyprint linenums lang-html"><code data-language="html">&lt;form&gt;
 &lt;p&gt;&lt;input type=&quot;text&quot; class=&quot;&quot; value=&quot;Text input&quot;/&gt;&lt;/p&gt;
 &lt;div class=&quot;mod-input text &quot;&gt;
   &lt;label&gt;Text Label&lt;/label&gt;
@@ -104,67 +111,80 @@ elements.</p>
 &lt;input type=&quot;button&quot; class=&quot;button &quot; value=&quot;input[type=&#x27;button&#x27;]&quot;/&gt;
 &lt;/p&gt;
 &lt;/form&gt;
-</pre>
+</code></pre>
       </div>
 
       </div>
       <section id="kssref-forms.text" class="kss-section kss-section--depth-2">
 
+    <div class="kss-style">
       <h2 class="kss-title kss-title--level-2">
         <a class="kss-title__permalink" href="#kssref-forms.text">
           <span class="kss-title__ref">2.1</span
           >Text Input
+          <span class="kss-title__permalink-hash">#permalink</span>
         </a>
       </h2>
 
 
-      <div class="kss-box"><p>Below are the text-oriented form elements used on the site.</p>
-</div>
+      <div class="kss-description">
+        <p>Below are the text-oriented form elements used on the site.</p>
+
+      </div>
+    </div>
 
 
       </section>
       <section id="kssref-forms.text.single-line" class="kss-section kss-section--depth-3">
 
+    <div class="kss-style">
       <h3 class="kss-title kss-title--level-3">
         <a class="kss-title__permalink" href="#kssref-forms.text.single-line">
           <span class="kss-title__ref">2.1.1</span
           >Single-Line Text Boxes
+          <span class="kss-title__permalink-hash">#permalink</span>
         </a>
       </h3>
 
 
-      <div class="kss-box"><p>Your standard, everyday text boxes.</p>
-</div>
+      <div class="kss-description">
+        <p>Your standard, everyday text boxes.</p>
+
+      </div>
+    </div>
 
       <div class="kss-modifier__wrapper">
-        <div class="kss-modifier__name kss-text">
+        <div class="kss-modifier__heading kss-style">
+          Examples
+        </div>
+        <div class="kss-modifier__default-name kss-style">
           Default styling
         </div>
         <div class="kss-modifier__example">
           <input type="text" class="" value="Text input"/>
         </div>
-        <div class="kss-modifier__name kss-text">
+        <div class="kss-modifier__name kss-style">
           :hover
         </div>
-        <div class="kss-modifier__description kss-text">
+        <div class="kss-modifier__description kss-style">
           Highlight the text box when hovering
         </div>
         <div class="kss-modifier__example">
           <input type="text" class="pseudo-class-hover" value="Text input"/>
         </div>
-        <div class="kss-modifier__name kss-text">
+        <div class="kss-modifier__name kss-style">
           :focus
         </div>
-        <div class="kss-modifier__description kss-text">
+        <div class="kss-modifier__description kss-style">
           Similar to <code>:hover</code>, however it should demand more attention than when an input is simply hovered.
         </div>
         <div class="kss-modifier__example">
           <input type="text" class="pseudo-class-focus" value="Text input"/>
         </div>
-        <div class="kss-modifier__name kss-text">
+        <div class="kss-modifier__name kss-style">
           :disabled
         </div>
-        <div class="kss-modifier__description kss-text">
+        <div class="kss-modifier__description kss-style">
           When disabled, the input&#39;s appearance should reflect as such.
         </div>
         <div class="kss-modifier__example">
@@ -172,27 +192,35 @@ elements.</p>
         </div>
       </div>
 
-      <div class="kss-markup">
-        <pre class="prettyprint lang-html">&lt;input type=&quot;text&quot; class=&quot;&quot; value=&quot;Text input&quot;/&gt;</pre>
+      <div class="kss-markup kss-style">
+        <pre class="prettyprint linenums lang-html"><code data-language="html">&lt;input type=&quot;text&quot; class=&quot;&quot; value=&quot;Text input&quot;/&gt;</code></pre>
       </div>
 
       </section>
       <section id="kssref-forms.text.label-pairs" class="kss-section kss-section--depth-3">
 
+    <div class="kss-style">
       <h3 class="kss-title kss-title--level-3">
         <a class="kss-title__permalink" href="#kssref-forms.text.label-pairs">
           <span class="kss-title__ref">2.1.2</span
           >Label/Textbox Pairs
+          <span class="kss-title__permalink-hash">#permalink</span>
         </a>
       </h3>
 
 
-      <div class="kss-box"><p>All labelled textboxes should be included in a wrapper <code>&lt;div&gt;</code> element for both layout
-convenience and specific styling.</p>
-</div>
+      <div class="kss-description">
+        <p>All labelled textboxes should be included in a wrapper <code>&lt;div&gt;</code> element for
+both layout convenience and specific styling.</p>
+
+      </div>
+    </div>
 
       <div class="kss-modifier__wrapper">
-        <div class="kss-modifier__name kss-text">
+        <div class="kss-modifier__heading kss-style">
+          Examples
+        </div>
+        <div class="kss-modifier__default-name kss-style">
           Default styling
         </div>
         <div class="kss-modifier__example">
@@ -200,33 +228,33 @@ convenience and specific styling.</p>
   <label>Text Label</label>
   <input type="text" class="" value="Text input"/></div>
         </div>
-        <div class="kss-modifier__name kss-text">
+        <div class="kss-modifier__name kss-style">
           .disabled
         </div>
-        <div class="kss-modifier__description kss-text">
-          To be used when the text input inside is expected to be disabled.
+        <div class="kss-modifier__description kss-style">
+          Use this class when the text input inside is expected to be disabled.
         </div>
         <div class="kss-modifier__example">
           <div class="mod-input text disabled">
   <label>Text Label</label>
   <input type="text" class="" value="Text input"/></div>
         </div>
-        <div class="kss-modifier__name kss-text">
+        <div class="kss-modifier__name kss-style">
           .invalid
         </div>
-        <div class="kss-modifier__description kss-text">
-          To be used if the input has failed a validation check.
+        <div class="kss-modifier__description kss-style">
+          Use this class if the input has failed a validation check.
         </div>
         <div class="kss-modifier__example">
           <div class="mod-input text invalid">
   <label>Text Label</label>
   <input type="text" class="" value="Text input"/></div>
         </div>
-        <div class="kss-modifier__name kss-text">
+        <div class="kss-modifier__name kss-style">
           .valid
         </div>
-        <div class="kss-modifier__description kss-text">
-          To be used if the input has passed a validation check (intended for live validation in particular).
+        <div class="kss-modifier__description kss-style">
+          Use this class if the input has passed a validation check (intended for live validation in particular).
         </div>
         <div class="kss-modifier__example">
           <div class="mod-input text valid">
@@ -235,37 +263,28 @@ convenience and specific styling.</p>
         </div>
       </div>
 
-      <div class="kss-markup">
-        <pre class="prettyprint lang-html">&lt;div class=&quot;mod-input text &quot;&gt;
+      <div class="kss-markup kss-style">
+        <pre class="prettyprint linenums lang-html"><code data-language="html">&lt;div class=&quot;mod-input text &quot;&gt;
   &lt;label&gt;Text Label&lt;/label&gt;
-  &lt;input type=&quot;text&quot; class=&quot;&quot; value=&quot;Text input&quot;/&gt;&lt;/div&gt;</pre>
+  &lt;input type=&quot;text&quot; class=&quot;&quot; value=&quot;Text input&quot;/&gt;&lt;/div&gt;</code></pre>
       </div>
 
       </section>
 </article>
 
-<footer>
-  <a href="https://github.com/kss-node/kss-node"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
-</footer>
-
 <!-- SCRIPTS -->
 <script src="public/kss.js"></script>
 <script src="public/prettify.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script>
-  $(document).ready(function(){
-    // Ensure code blocks are highlighted properly...
-    $('pre>code').addClass('prettyprint');
-    prettyPrint();
-  });
+  prettyPrint();
 </script>
 
-  <script type="text/javascript">
-  var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-12249588-4']); _gaq.push(['_trackPageview']);
-  (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();
-  </script>
 
+  <footer class="kss-github">
+    <!-- https://github.com/blog/273-github-ribbons -->
+    <a href="https://github.com/kss-node/kss-node"><img src="public/github-fork--black.png" alt="Fork me on GitHub"></a>
+  </footer>
 
-
+<!-- Automatically generated using <a href="https://github.com/kss-node/kss-node">kss-node</a>. -->
 </body>
 </html>
