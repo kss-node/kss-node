@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<!--[if lte IE 6]>            <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IEMobile 7]>          <html class="no-js iem7" lang="en"> <![endif]-->
+<!--[if (IE 7)&(!IEMobile)]>  <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>                <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|(gt IEMobile 7)]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   <title>KSS: Living Style Guide</title>
@@ -11,15 +12,14 @@
   <meta name="generator" content="kss-node">
   <meta name="viewport" content="width=device-width">
 
-  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Droid+Serif">
   <link rel="stylesheet" href="public/kss.css">
   {{{styles}}}
 </head>
 <body id="kss-node">
 
-<div class="kss-sidebar">
+<div class="kss-sidebar kss-style">
   <header class="kss-header">
-    <h1 class="kss-doc-title">kss-node Style Guide</h1>
+    <h1 class="kss-doc-title">kss-node<br>Style Guide</h1>
   </header>
   <nav class="kss-nav">
     <ul class="kss-nav__menu">
@@ -56,7 +56,7 @@
 </div>
 <article role="main" class="kss-main">
 {{#if homepage}}
-  <div id="kssref-0" class="kss-overview kss-section kss-section--depth-0">
+  <div id="kssref-0" class="kss-section kss-section--depth-0 kss-overview kss-style">
     {{{homepage}}}
   </div>
 {{else}}
@@ -74,15 +74,17 @@
       <section id="kssref-{{referenceURI}}" class="kss-section kss-section--depth-{{depth}}">
     {{/ifDepth}}
 
+    <div class="kss-style">
       <h{{depth}} class="kss-title kss-title--level-{{depth}}">
         <a class="kss-title__permalink" href="#kssref-{{referenceURI}}">
           <span class="kss-title__ref">{{#ifNumeric reference}}{{reference}}{{else}}{{autoincrement}}{{/ifNumeric}}</span
           >{{header}}
+          <span class="kss-title__permalink-hash">#permalink</span>
         </a>
       </h{{depth}}>
 
     {{#if parameters}}
-      <ul class="kss-parameters kss-text">
+      <ul class="kss-parameters">
       {{#eachParameter}}
         <li class="kss-parameters__item">
           <code class="kss-parameters__name">{{name}}</code>
@@ -97,11 +99,15 @@
         {{{description}}}
       </div>
     {{/if}}
+    </div>
 
     {{#if markup}}
       <div class="kss-modifier__wrapper">
+        <div class="kss-modifier__heading kss-style">
+          Example{{#if modifiers}}s{{/if}}
+        </div>
       {{#if modifiers}}
-        <div class="kss-modifier__name kss-text">
+        <div class="kss-modifier__default-name kss-style">
           Default styling
         </div>
       {{/if}}
@@ -109,10 +115,10 @@
           {{{markup}}}
         </div>
       {{#eachModifier}}
-        <div class="kss-modifier__name kss-text">
+        <div class="kss-modifier__name kss-style">
           {{name}}
         </div>
-        <div class="kss-modifier__description kss-text">
+        <div class="kss-modifier__description kss-style">
           {{{description}}}
         </div>
         <div class="kss-modifier__example">
@@ -121,8 +127,8 @@
       {{/eachModifier}}
       </div>
 
-      <div class="kss-markup">
-        <pre class="prettyprint lang-html">{{markup}}</pre>
+      <div class="kss-markup kss-style">
+        <pre class="prettyprint linenums lang-html"><code data-language="html">{{markup}}</code></pre>
       </div>
     {{/if}}
 
@@ -135,33 +141,22 @@
 {{/if}}
 </article>
 
-{{#if argv.xdemo}}
-<footer class="kss-github">
-  <a href="https://github.com/kss-node/kss-node"><img src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
-</footer>
-{{/if}}
-
 <!-- SCRIPTS -->
 <script src="public/kss.js"></script>
 <script src="public/prettify.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script>
-  $(document).ready(function(){
-    // Ensure code blocks are highlighted properly...
-    $('pre>code').addClass('prettyprint');
-    prettyPrint();
-  });
+  prettyPrint();
 </script>
-
-{{! This won't be included in the demo page }}
-{{#if argv.xdemo}}
-  <script type="text/javascript">
-  var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-12249588-4']); _gaq.push(['_trackPageview']);
-  (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();
-  </script>
-{{/if}}
-
 {{{scripts}}}
 
+{{! This will only be included in the demo page. }}
+{{#if argv.xdemo}}
+  <footer class="kss-github">
+    <!-- https://github.com/blog/273-github-ribbons -->
+    <a href="https://github.com/kss-node/kss-node"><img src="public/github-fork--black.png" alt="Fork me on GitHub"></a>
+  </footer>
+{{/if}}
+
+<!-- Automatically generated using <a href="https://github.com/kss-node/kss-node">kss-node</a>. -->
 </body>
 </html>
