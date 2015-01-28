@@ -10,7 +10,8 @@
 // Your standard, everyday text boxes.
 //
 // :hover    - Highlight the text box when hovering
-// :focus    - Similar to `:hover`, however it should demand more attention than when an input is simply hovered.
+// :focus    - Similar to `:hover`, however it should demand more attention than
+//             when an input is simply hovered.
 // :disabled - When disabled, the input's appearance should reflect as such.
 //
 // Markup: <input type="text" class="{{modifier_class}}" value="Text input"/>
@@ -56,8 +57,8 @@ input[type='text'] {
 
 // Label/Textbox Pairs
 //
-// All labelled textboxes should be included in a wrapper `<div>` element for both layout
-// convenience and specific styling.
+// All labelled textboxes should be included in a wrapper `<div>` element for
+// both layout convenience and specific styling.
 //
 // Markup:
 // <div class="mod-input text {{modifier_class}}">
@@ -65,9 +66,11 @@ input[type='text'] {
 //   {{> "forms.text.single-line" modifier_class=""}}
 // </div>
 //
-// .disabled  - To be used when the text input inside is expected to be disabled.
-// .invalid   - To be used if the input has failed a validation check.
-// .valid     - To be used if the input has passed a validation check (intended for live validation in particular).
+// .disabled  - Use this class when the text input inside is expected to be
+//              disabled.
+// .invalid   - Use this class if the input has failed a validation check.
+// .valid     - Use this class if the input has passed a validation check
+//              (intended for live validation in particular).
 //
 // Styleguide forms.text.label-pairs
 .mod-input {

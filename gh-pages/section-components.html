@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<!--[if lte IE 6]>            <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IEMobile 7]>          <html class="no-js iem7" lang="en"> <![endif]-->
+<!--[if (IE 7)&(!IEMobile)]>  <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>                <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|(gt IEMobile 7)]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   <title>KSS: Living Style Guide</title>
@@ -11,16 +12,15 @@
   <meta name="generator" content="kss-node">
   <meta name="viewport" content="width=device-width">
 
-  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Droid+Serif">
   <link rel="stylesheet" href="public/kss.css">
   <link rel="stylesheet" href="public/styles.css">
 
 </head>
 <body id="kss-node">
 
-<div class="kss-sidebar">
+<div class="kss-sidebar kss-style">
   <header class="kss-header">
-    <h1 class="kss-doc-title">kss-node Style Guide</h1>
+    <h1 class="kss-doc-title">kss-node<br>Style Guide</h1>
   </header>
   <nav class="kss-nav">
     <ul class="kss-nav__menu">
@@ -31,13 +31,13 @@
         </a>
       </li>
       <li class="kss-nav__menu-item">
-        <a href="section-elements.html">
+        <a href="section-components.html">
           <span class="kss-nav__ref">1</span
-          ><span class="kss-nav__name">Modules</span>
+          ><span class="kss-nav__name">Components</span>
         </a>
         <ul class="kss-nav__menu-child">
             <li class="kss-nav__menu-item">
-              <a href="section-elements.html#kssref-elements.buttons">
+              <a href="section-components.html#kssref-components.buttons">
                 <span class="kss-nav__ref">1.1</span
                 ><span class="kss-nav__name">Buttons</span>
               </a>
@@ -61,37 +61,50 @@
 </div>
 <article role="main" class="kss-main">
 
-      <div     id="kssref-elements" class="kss-section kss-section--depth-1">
+      <div     id="kssref-components" class="kss-section kss-section--depth-1">
 
+    <div class="kss-style">
       <h1 class="kss-title kss-title--level-1">
-        <a class="kss-title__permalink" href="#kssref-elements">
+        <a class="kss-title__permalink" href="#kssref-components">
           <span class="kss-title__ref">1</span
-          >Modules
+          >Components
+          <span class="kss-title__permalink-hash">#permalink</span>
         </a>
       </h1>
 
 
-      <div class="kss-box"><p>Reusable elements that can be used across the site.
+      <div class="kss-description">
+        <p>Reusable components that can be used across the site.
 So far this just includes buttons.</p>
-</div>
+
+      </div>
+    </div>
 
 
       </div>
-      <section id="kssref-elements.buttons" class="kss-section kss-section--depth-2">
+      <section id="kssref-components.buttons" class="kss-section kss-section--depth-2">
 
+    <div class="kss-style">
       <h2 class="kss-title kss-title--level-2">
-        <a class="kss-title__permalink" href="#kssref-elements.buttons">
+        <a class="kss-title__permalink" href="#kssref-components.buttons">
           <span class="kss-title__ref">1.1</span
           >Buttons
+          <span class="kss-title__permalink-hash">#permalink</span>
         </a>
       </h2>
 
 
-      <div class="kss-box"><p>A majority of buttons in the site are built from the same base class.</p>
-</div>
+      <div class="kss-description">
+        <p>A majority of buttons in the site are built from the same base class.</p>
+
+      </div>
+    </div>
 
       <div class="kss-modifier__wrapper">
-        <div class="kss-modifier__name kss-text">
+        <div class="kss-modifier__heading kss-style">
+          Examples
+        </div>
+        <div class="kss-modifier__default-name kss-style">
           Default styling
         </div>
         <div class="kss-modifier__example">
@@ -100,11 +113,11 @@ So far this just includes buttons.</p>
 <input type="button" class="button " value="input[type='button']"/>
 
         </div>
-        <div class="kss-modifier__name kss-text">
+        <div class="kss-modifier__name kss-style">
           .primary
         </div>
-        <div class="kss-modifier__description kss-text">
-          Indicate that the button is the primary feature of this form.
+        <div class="kss-modifier__description kss-style">
+          Use this class to indicate that the button is the primary feature of this form.
         </div>
         <div class="kss-modifier__example">
           <a href="#" class="button primary">Link Button</a>
@@ -112,11 +125,11 @@ So far this just includes buttons.</p>
 <input type="button" class="button primary" value="input[type='button']"/>
 
         </div>
-        <div class="kss-modifier__name kss-text">
+        <div class="kss-modifier__name kss-style">
           .remove
         </div>
-        <div class="kss-modifier__description kss-text">
-          Indicate that the button will remove a feature, or other negative connotations.
+        <div class="kss-modifier__description kss-style">
+          Use this class to indicate that the button will remove a feature, or other negative connotations.
         </div>
         <div class="kss-modifier__example">
           <a href="#" class="button remove">Link Button</a>
@@ -124,10 +137,10 @@ So far this just includes buttons.</p>
 <input type="button" class="button remove" value="input[type='button']"/>
 
         </div>
-        <div class="kss-modifier__name kss-text">
+        <div class="kss-modifier__name kss-style">
           :hover
         </div>
-        <div class="kss-modifier__description kss-text">
+        <div class="kss-modifier__description kss-style">
           Highlight the button when hovered.
         </div>
         <div class="kss-modifier__example">
@@ -136,10 +149,10 @@ So far this just includes buttons.</p>
 <input type="button" class="button pseudo-class-hover" value="input[type='button']"/>
 
         </div>
-        <div class="kss-modifier__name kss-text">
+        <div class="kss-modifier__name kss-style">
           :disabled
         </div>
-        <div class="kss-modifier__description kss-text">
+        <div class="kss-modifier__description kss-style">
           Make the button change appearance to reflect it being disabled.
         </div>
         <div class="kss-modifier__example">
@@ -148,10 +161,10 @@ So far this just includes buttons.</p>
 <input type="button" class="button pseudo-class-disabled" value="input[type='button']"/>
 
         </div>
-        <div class="kss-modifier__name kss-text">
+        <div class="kss-modifier__name kss-style">
           :active
         </div>
-        <div class="kss-modifier__description kss-text">
+        <div class="kss-modifier__description kss-style">
           &quot;Press&quot; the button down when clicked.
         </div>
         <div class="kss-modifier__example">
@@ -162,38 +175,29 @@ So far this just includes buttons.</p>
         </div>
       </div>
 
-      <div class="kss-markup">
-        <pre class="prettyprint lang-html">&lt;a href=&quot;#&quot; class=&quot;button &quot;&gt;Link Button&lt;/a&gt;
+      <div class="kss-markup kss-style">
+        <pre class="prettyprint linenums lang-html"><code data-language="html">&lt;a href=&quot;#&quot; class=&quot;button &quot;&gt;Link Button&lt;/a&gt;
 &lt;button class=&quot;button &quot;&gt;Button Element&lt;/button&gt;
 &lt;input type=&quot;button&quot; class=&quot;button &quot; value=&quot;input[type=&#x27;button&#x27;]&quot;/&gt;
-</pre>
+</code></pre>
       </div>
 
       </section>
 </article>
 
-<footer>
-  <a href="https://github.com/kss-node/kss-node"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
-</footer>
-
 <!-- SCRIPTS -->
 <script src="public/kss.js"></script>
 <script src="public/prettify.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script>
-  $(document).ready(function(){
-    // Ensure code blocks are highlighted properly...
-    $('pre>code').addClass('prettyprint');
-    prettyPrint();
-  });
+  prettyPrint();
 </script>
 
-  <script type="text/javascript">
-  var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-12249588-4']); _gaq.push(['_trackPageview']);
-  (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();
-  </script>
 
+  <footer class="kss-github">
+    <!-- https://github.com/blog/273-github-ribbons -->
+    <a href="https://github.com/kss-node/kss-node"><img src="public/github-fork--black.png" alt="Fork me on GitHub"></a>
+  </footer>
 
-
+<!-- Automatically generated using <a href="https://github.com/kss-node/kss-node">kss-node</a>. -->
 </body>
 </html>

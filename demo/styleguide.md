@@ -1,4 +1,4 @@
-<h1 class="kss-title kss-title-main">Overview</h1>
+# Overview
 
 This is a demo of [kss-node](https://github.com/kss-node/kss-node)'s built-in style guide generator.
 
