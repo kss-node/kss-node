@@ -143,7 +143,9 @@ if (argv.config) {
 	configFile = path.resolve(argv.config);
 	config = require(configFile);
 	for (var key in config) {
-		argv[key] = pathResolveRecursive(path.dirname(configFile), config[key]);
+		if (key != "js" && key != "css") {
+			argv[key] = pathResolveRecursive(path.dirname(configFile), config[key]);
+		}
 	}
 }
 // Get the full source path.
