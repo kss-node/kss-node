@@ -9,6 +9,8 @@ var kss = require(__dirname + '/../lib/kss.js'),
 	path = require('path'),
 	fs = require('fs'),
 	template,
+	init,
+	generate,
 	generatePage,
 	config = {},
 	configFile,
@@ -214,31 +216,59 @@ console.log(' * Template    : ' + argv.template);
 console.log(' * Helpers     : ' + argv.helpers);
 console.log('');
 
-// Create a new destination directory.
-try {
-	fs.mkdirSync(argv.destination);
-} catch (e) {}
+function init(source, destination, template, helpers) {
+	var handlebarsTemplate;
 
-// Optionally copy the contents of "public" over.
-try {
-	wrench.copyDirSyncRecursive(
-		argv.template + '/public',
-		argv.destination + '/public',
-		{
-			forceDelete: true,
-			excludeHiddenUnix: true
-		}
-	);
-} catch (e) {}
+	// Create a new destination directory.
+	try {
+		fs.mkdirSync(destination);
+	} catch (e) {}
 
-// Ensure a "public" folder exists.
-try {
-	fs.mkdirSync(argv.destination + '/public');
-} catch (e) {}
+	// Optionally, copy the contents of the template's "public" folder.
+	try {
+		wrench.copyDirSyncRecursive(
+			template + '/public',
+			destination + '/public',
+			{
+				forceDelete: true,
+				excludeHiddenUnix: true
+			}
+		);
+	} catch (e) {}
 
-// Compile the Handlebars template
-template = fs.readFileSync(argv.template + '/index.html', 'utf8');
-template = handlebars.compile(template);
+	// Ensure a "public" folder exists.
+	try {
+		fs.mkdirSync(destination + '/public');
+	} catch (e) {}
+
+	// Load Handlebars helpers.
+	if (fs.existsSync(helpers)) {
+		// Load custom Handlebars helpers.
+		var helperFiles = fs.readdirSync(helpers);
+
+		helperFiles.forEach(function(fileName) {
+			if (path.extname(fileName) !== '.js') {
+				return;
+			}
+			var helper = require(helpers + '/' + fileName);
+			if (typeof helper.register === 'function') {
+				helper.register(handlebars);
+			}
+		});
+	}
+
+	// Load the standard Handlebars helpers.
+	require(__dirname + '/../generators/handlebarsGenerator/helpers.js').register(handlebars);
+
+	// Compile the Handlebars template.
+	handlebarsTemplate = fs.readFileSync(template + '/index.html', 'utf8');
+	handlebarsTemplate = handlebars.compile(handlebarsTemplate);
+
+	return handlebarsTemplate;
+};
+
+template = init(argv.source, argv.destination, argv.template, argv.helpers);
+
 
 // Generate the static HTML pages in the next tick, i.e. after the other functions have
 // been defined and handlebars helpers set up.
@@ -253,7 +283,11 @@ process.nextTick(function() {
 		custom    : argv.custom
 	}, function(err, styleguide) {
 		if (err) throw err;
+		generate(styleguide);
+	});
+});
 
+function generate(styleguide) {
 		var sections = styleguide.section(),
 			sectionCount = sections.length,
 			sectionRoots = [],
@@ -351,8 +385,7 @@ process.nextTick(function() {
 		// Generate the homepage.
 		childSections = [];
 		generatePage(styleguide, childSections, 'styleguide.homepage', sectionRoots, partials);
-	});
-});
+};
 
 // Renders the handlebars template for a section and saves it to a file.
 generatePage = function(styleguide, sections, root, sectionRoots, partials) {
@@ -411,25 +444,6 @@ generatePage = function(styleguide, sections, root, sectionRoots, partials) {
 		})
 	);
 };
-
-// Load Handlebars helpers.
-if (fs.existsSync(argv.helpers)) {
-	// Load custom Handlebars helpers.
-	var helperFiles = fs.readdirSync(argv.helpers);
-
-	helperFiles.forEach(function(fileName) {
-		if (path.extname(fileName) !== '.js') {
-			return;
-		}
-		var helper = require(argv.helpers + '/' + fileName);
-		if (typeof helper.register === 'function') {
-			helper.register(handlebars);
-		}
-	});
-}
-
-// Load the standard Handlebars helpers.
-require(__dirname + '/../generators/handlebarsGenerator/helpers.js').register(handlebars);
 
 process.on('exit', function() {
 	if (!KSS_FAILED) {
