@@ -398,7 +398,9 @@ generatePage = function(styleguide, sections, root, sectionRoots) {
 		template({
 			styleguide: styleguide,
 			sectionRoots: sectionRoots,
-			sections: jsonSections(sections),
+			sections: sections.map(function(section) {
+				return section.JSON();
+			}),
 			rootName: root,
 			argv: argv || {},
 			homepage: homepageText,
@@ -406,32 +408,6 @@ generatePage = function(styleguide, sections, root, sectionRoots) {
 			scripts: scripts
 		})
 	);
-};
-
-// Convert an array of `KssSection` instances to a JSON object.
-jsonSections = function(sections) {
-	return sections.map(function(section) {
-		return {
-			header: section.header(),
-			description: section.description(),
-			reference: section.reference(),
-			depth: section.depth(),
-			deprecated: section.deprecated(),
-			experimental: section.experimental(),
-			modifiers: jsonModifiers(section.modifiers())
-		};
-	});
-};
-
-// Convert an array of `KssModifier` instances to a JSON object.
-jsonModifiers = function(modifiers) {
-	return modifiers.map(function(modifier) {
-		return {
-			name: modifier.name(),
-			description: modifier.description(),
-			className: modifier.className()
-		};
-	});
 };
 
 // Load custom Handlebars helpers.
