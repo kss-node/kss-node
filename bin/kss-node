@@ -206,10 +206,13 @@ if (typeof argv.js == "string") {
 console.log('');
 console.log('Generating your KSS style guide!');
 console.log('');
-console.log(' * KSS Source  : ' + argv.source.join(', '));
-console.log(' * Destination : ' + argv.destination);
-console.log(' * Template    : ' + argv.template);
-console.log(' * Helpers     : ' + argv.helpers);
+console.log(' * KSS Source    : ' + argv.source.join(', '));
+console.log(' * Destination   : ' + argv.destination);
+console.log(' * Template      : ' + argv.template);
+console.log(' * Helpers       : ' + argv.helpers);
+if (argv.custom) {
+	console.log(' * Custom Fields : ' + argv.custom.join(', '));
+}
 console.log('');
 
 // Create a new destination directory.
