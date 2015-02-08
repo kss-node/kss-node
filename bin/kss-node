@@ -93,6 +93,12 @@ argv = yargs
 	.alias('help', '?')
 	.argv;
 
+// Get the full template path.
+if (argv.template instanceof Array) {
+	argv.template = argv.template.pop();
+}
+argv.template = path.resolve(argv.template);
+
 // argv.init contains the default value. Explicitly check if the --init option
 // was called and create a new style guide template.
 if ("init" in yargs.argv || "i" in yargs.argv) {
@@ -101,7 +107,7 @@ if ("init" in yargs.argv || "i" in yargs.argv) {
 	console.log('Creating a new style guide template...');
 	try {
 		error = wrench.copyDirSyncRecursive(
-			__dirname + '/../lib/template',
+			argv.template,
 			argv.init,
 			{
 				forceDelete: false,
@@ -179,11 +185,6 @@ else if (!("destination" in yargs.argv) && argv._.length > 1) {
 	argv.destination = argv._[1];
 }
 argv.destination = path.resolve(argv.destination);
-// Get the full template path.
-if (argv.template instanceof Array) {
-	argv.template = argv.template.pop();
-}
-argv.template = path.resolve(argv.template);
 // Get the full helpers path.
 if (argv.helpers instanceof Array) {
 	argv.helpers = argv.helpers.pop();
