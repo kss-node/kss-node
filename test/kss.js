@@ -353,6 +353,29 @@ suite('.traverse()', function() {
 				assert.equal(section.data.reference, '1.8');
 			}, false, { markup: true });
 		}),
+		suite('.custom', function() {
+			common.testSection('Custom property: inline', 'options-custom-properties.less', function(section) {
+				assert.equal(section.data.reference, '1.1');
+				assert.equal(section.data.custom, 'The value of this property is inline.');
+			}, false, { markup: true, custom: ['custom'] });
+			common.testSection('Custom property: next line', 'options-custom-properties.less', function(section) {
+				assert.equal(section.data.reference, '1.2');
+				assert.equal(section.data.custom, 'The value of this property is on the next line.');
+			}, false, { markup: true, custom: ['custom'] });
+			common.testSection('Custom property: multi-line', 'options-custom-properties.less', function(section) {
+				assert.equal(section.data.reference, '1.3');
+				assert.equal(section.data.custom, 'The value of this property spans multiple\nlines.');
+			}, false, { markup: true, custom: ['custom'] });
+			common.testSection('Custom property: multi-word property', 'options-custom-properties.less', function(section) {
+				assert.equal(section.data.reference, '1.4');
+				assert.equal(section.data['custom property'], 'This is a multi-word property.');
+			}, false, { markup: true, custom: ['custom property'] });
+			common.testSection('Custom property: multiple properties', 'options-custom-properties.less', function(section) {
+				assert.equal(section.data.reference, '1.5');
+				assert.equal(section.data.custom, 'This is the first property.');
+				assert.equal(section.data.custom2, 'This is the second property.');
+			}, false, { markup: true, custom: ['custom', 'custom2'] });
+		}),
 		suite('.markup', function() {
 			common.testSection('Second paragraph', 'options-markup.less', function(section) {
 				assert.equal(
