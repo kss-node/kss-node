@@ -400,7 +400,7 @@ generatePage = function(styleguide, sections, root, sectionRoots) {
 			styleguide: styleguide,
 			sectionRoots: sectionRoots,
 			sections: sections.map(function(section) {
-				return section.JSON();
+				return section.JSON(argv.custom);
 			}),
 			rootName: root,
 			argv: argv || {},
