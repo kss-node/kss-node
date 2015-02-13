@@ -248,7 +248,8 @@ process.nextTick(function() {
 		multiline : true,
 		markdown  : true,
 		markup    : true,
-		mask      : argv.mask
+		mask      : argv.mask,
+		custom    : argv.custom
 	}, function(err, guide) {
 		if (err) throw err;
 
@@ -399,7 +400,7 @@ generatePage = function(styleguide, sections, root, sectionRoots) {
 			styleguide: styleguide,
 			sectionRoots: sectionRoots,
 			sections: sections.map(function(section) {
-				return section.JSON();
+				return section.JSON(argv.custom);
 			}),
 			rootName: root,
 			argv: argv || {},

@@ -54,6 +54,16 @@ suite('Command Line Interface', function() {
 		});
 	});
 
+	suite('Option: --custom', function() {
+		test('Should read custom properties from option', function(done) {
+			exec('rm -r test/output; bin/kss-node test/fixtures-styles/with-include test/output --template test/fixtures-styles/template --custom custom --custom custom2; cat test/output/section-4.html', function(err, stdout, stderr) {
+				assert.ok(/"custom" property: This is the first custom property\./g.test(stdout), 'Read --custom option');
+				assert.ok(/"custom2" property: This is the second custom property\./g.test(stdout), 'Read second --custom option');
+				done();
+			});
+		});
+	});
+
 	suite('Option: --config', function() {
 		test('Should load configuration from json file', function(done) {
 			exec('bin/kss-node --config test/cli-option-config.json', function(err, stdout, stderr) {
