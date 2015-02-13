@@ -149,7 +149,7 @@ if (argv.config) {
 	configFile = path.resolve(argv.config);
 	config = require(configFile);
 	for (var key in config) {
-		if (key != "js" && key != "css") {
+		if (key == "init" || key == "template" || key == "helpers" || key == "source" || key == "destination") {
 			argv[key] = pathResolveRecursive(path.dirname(configFile), config[key]);
 		}
 	}
