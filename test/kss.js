@@ -1,7 +1,6 @@
 /*global suite, test, setup, teardown*/
 var kss = require('../index.js'),
 	path = require('path'),
-	walk = require('../lib/walk.js'),
 	fs = require('fs'),
 	marked = require('marked'),
 	util = require('util'),
@@ -50,19 +49,8 @@ suite('.traverse()', function() {
 				kss.traverse(styleDirectory, { mask: maskAll }, function(err, styleguide) {
 					assert.ok(styleguide.data);
 					assert.ok(Array.isArray(styleguide.data.files));
-					assert.ok(styleguide.data.files.length > 0);
-
-					walk(styleDirectory, { mask: maskAll }, {
-						file: function(file) {
-							var i, l = styleguide.data.files.length, safe = false;
-							file = file.replace(/\\/g, '/');
-							assert.notEqual(styleguide.data.files.indexOf(file), -1);
-						},
-						finished: function(err) {
-							assert.ifError(err);
-							done();
-						}
-					});
+					assert.equal(styleguide.data.files.length, 28);
+					done();
 				});
 			});
 		});
