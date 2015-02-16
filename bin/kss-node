@@ -107,29 +107,8 @@ if ("init" in yargs.argv || "i" in yargs.argv) {
 		argv.init = 'styleguide-template';
 	}
 	argv.init = path.resolve(argv.init);
-
-	console.log('Creating a new style guide template...');
-	try {
-		error = wrench.copyDirSyncRecursive(
-			argv.template,
-			argv.init,
-			{
-				forceDelete: false,
-				excludeHiddenUnix: true
-			}
-		);
-		if (error) {
-			throw error;
-		}
-	} catch (e) {
-		console.log('Error! This folder already exists: ' + argv.init);
-		return;
-	}
-	console.log('You can change it as you like, and use it with your style guide like so:');
-	console.log('');
-	console.log('kss-node [sourcedir] --template "'+argv.init+'"');
-	console.log('');
-	return;
+} else {
+	argv.init = false;
 }
 
 // Determine which options are specified in a config json file.
@@ -174,7 +153,7 @@ else {
 		argv.source.push(argv._[0]);
 	}
 }
-if (!argv.source.length) {
+if (!argv.source.length && !argv.init) {
 	yargs.showHelp();
 	return;
 }
@@ -208,15 +187,6 @@ if (typeof argv.js == "string") {
 	argv.js = [argv.js];
 }
 
-console.log('');
-console.log('Generating your KSS style guide!');
-console.log('');
-console.log(' * KSS Source  : ' + argv.source.join(', '));
-console.log(' * Destination : ' + argv.destination);
-console.log(' * Template    : ' + argv.template);
-console.log(' * Helpers     : ' + argv.helpers);
-console.log('');
-
 // Load the template's generator.
 try {
   // @TODO: The following line will always fail while testing a git clone of
@@ -232,6 +202,31 @@ try {
   // load a generator, we assume it wanted the default generator.
   generator = require('../generators/handlebarsGenerator');
 };
+
+// Clone a template.
+if (argv.init) {
+  console.log('Creating a new style guide template...');
+  try {
+    generator.clone(argv.template, argv.init);
+  } catch (e) {
+    console.log(e);
+    return;
+  }
+  console.log('You can change it as you like, and use it with your style guide like so:');
+  console.log('');
+  console.log('kss-node [sourcedir] --template ' + argv.init);
+  console.log('');
+  return;
+}
+
+console.log('');
+console.log('Generating your KSS style guide!');
+console.log('');
+console.log(' * KSS Source  : ' + argv.source.join(', '));
+console.log(' * Destination : ' + argv.destination);
+console.log(' * Template    : ' + argv.template);
+console.log(' * Helpers     : ' + argv.helpers);
+console.log('');
 
 function init(source, destination, template, helpers) {
 	var handlebarsTemplate;
