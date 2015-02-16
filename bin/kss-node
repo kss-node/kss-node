@@ -102,6 +102,9 @@ argv.template = path.resolve(argv.template);
 // argv.init contains the default value. Explicitly check if the --init option
 // was called and create a new style guide template.
 if ("init" in yargs.argv || "i" in yargs.argv) {
+	if (typeof argv.init === "boolean") {
+		argv.init = 'styleguide-template';
+	}
 	argv.init = path.resolve(argv.init);
 
 	console.log('Creating a new style guide template...');
