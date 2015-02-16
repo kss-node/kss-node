@@ -8,6 +8,7 @@ var kss = require(__dirname + '/../lib/kss.js'),
 	glob = require('glob'),
 	path = require('path'),
 	fs = require('fs'),
+	generator,
 	template,
 	init,
 	generate,
@@ -215,6 +216,22 @@ console.log(' * Destination : ' + argv.destination);
 console.log(' * Template    : ' + argv.template);
 console.log(' * Helpers     : ' + argv.helpers);
 console.log('');
+
+// Load the template's generator.
+try {
+  // @TODO: The following line will always fail while testing a git clone of
+  // this module. In order for a bundled template to be "clone"-able, it must
+  // use the require('kss/generators/path') syntax (instead of the requiring a
+  // relative path). Thus, when requiring its generator, the template will throw
+  // an error since this kss module has been git cloned and not installed via
+  // npm. This limitation will need to be fixed if additional generators are
+  // added to the module.
+  generator = require(argv.template).generator;
+} catch (e) {
+  // Templates don't have to load their own generator. If the template fails to
+  // load a generator, we assume it wanted the default generator.
+  generator = require('../generators/handlebarsGenerator');
+};
 
 function init(source, destination, template, helpers) {
 	var handlebarsTemplate;
