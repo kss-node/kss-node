@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
 var yargs = require('yargs'),
-	path = require('path'),
-	generator,
-	configFile = {},
-	configPath,
-	KSS_FAILED = false,
-	generatorConfig,
-	version = require(__dirname + '/../package.json').version,
-	resolveArray;
+  path = require('path'),
+  generator,
+  configFile = {},
+  configPath,
+  KSS_FAILED = false,
+  generatorConfig,
+  version = require(__dirname + '/../package.json').version,
+  resolveArray;
 
 /**
  * Applies path.resolve() to the given path or array of paths.
@@ -241,23 +241,23 @@ process.nextTick(function() {
 });
 
 process.on('exit', function() {
-	if (!KSS_FAILED) {
-		console.log('');
-		console.log('Generation completed successfully!');
-		console.log('');
-	}
+  if (!KSS_FAILED) {
+    console.log('');
+    console.log('Generation completed successfully!');
+    console.log('');
+  }
 });
 
 process.on('uncaughtException', function(err) {
-	console.log('\nError during generation\n');
+  console.log('\nError during generation\n');
 
-	if (err.message || err.stack) {
-		console.log(err.message);
-		console.log(err.stack);
-	}
-	else
-		console.log(err);
+  if (err.message || err.stack) {
+    console.log(err.message);
+    console.log(err.stack);
+  }
+  else
+    console.log(err);
 
-	KSS_FAILED = true;
-	process.exit(1);
+  KSS_FAILED = true;
+  process.exit(1);
 });
