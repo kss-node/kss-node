@@ -13,178 +13,194 @@ var kss = require(__dirname + '/../lib/kss.js'),
 	init,
 	generate,
 	generatePage,
-	config = {},
-	configFile,
+	configFile = {},
+	configPath,
 	KSS_FAILED = false,
-	argv,
+	generatorConfig,
 	error,
 	version = require(__dirname + '/../package.json').version,
-	pathResolveRecursive;
+	resolveArray;
 
 /**
- * CLI argument parsing.
+ * Applies path.resolve() to the given path or array of paths.
+ *
+ * @param {string}        from  Optional path to resolve the "to" path
+ * @param {string|array}  to    Relative path(s) to resolve.
+ *
+ * @return An absolute path.
+ */
+resolveArray = function(from, to) {
+  var paths = [];
+  // "from" is optional.
+  if (typeof to === "undefined") {
+    to = from;
+    from = '';
+  }
+  if (to instanceof Array) {
+    to.forEach(function(value, index) {
+      paths[index] = path.resolve(from, value);
+    });
+  }
+  else {
+    paths = path.resolve(from, to);
+  }
+  return paths;
+};
+
+/**
+ * Generator configruation.
  * @type {Object}
  */
-argv = yargs
-	.usage('Usage: kss-node <source> [destination] [options]')
-	.wrap(80)
-	.strict()
+generatorConfig = yargs
+  .usage('Usage: kss-node <source> [destination] [options]')
+  .wrap(80)
+  .strict()
 
-	.options('init', {
-		alias     : 'i',
-		describe  : 'Create a new style guide template to customize',
-		default   : 'styleguide-template'
-	})
-	.options('template', {
-		string    : true,
-		alias     : 't',
-		describe  : 'Use a custom template to build your style guide',
-		default   : path.relative(process.cwd(), __dirname + '/../generators/handlebarsGenerator/template')
-	})
-	.options('helpers', {
-		string    : true,
-		describe  : 'Specify the location of custom handlebars helpers; see http://bit.ly/kss-helpers',
-		default   : path.relative(process.cwd(), __dirname + '/../generators/handlebarsGenerator/template/helpers')
-	})
+  .options('init', {
+    alias     : 'i',
+    describe  : 'Create a new style guide template to customize',
+    default   : 'styleguide-template'
+  })
+  .options('template', {
+    string    : true,
+    alias     : 't',
+    describe  : 'Use a custom template to build your style guide',
+    default   : path.relative(process.cwd(), __dirname + '/../generators/handlebarsGenerator/template')
+  })
+  .options('helpers', {
+    string    : true,
+    describe  : 'Specify the location of custom handlebars helpers; see http://bit.ly/kss-helpers',
+    default   : path.relative(process.cwd(), __dirname + '/../generators/handlebarsGenerator/template/helpers')
+  })
 
-	.options('mask', {
-		string    : true,
-		alias     : 'm',
-		describe  : 'Use a mask for detecting files containing KSS comments',
-		default   : '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
-	})
+  .options('mask', {
+    string    : true,
+    alias     : 'm',
+    describe  : 'Use a mask for detecting files containing KSS comments',
+    default   : '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
+  })
 
-	.options('css', {
-		string    : true,
-		describe  : 'Specify the URL of a CSS file to include in the style guide'
-	})
-	.options('js', {
-		string    : true,
-		describe  : 'Specify the URL of a JavaScript file to include in the style guide'
-	})
+  .options('css', {
+    string    : true,
+    describe  : 'Specify the URL of a CSS file to include in the style guide'
+  })
+  .options('js', {
+    string    : true,
+    describe  : 'Specify the URL of a JavaScript file to include in the style guide'
+  })
 
-	.options('custom', {
-		string    : true,
-		describe  : 'Process a custom property name when parsing KSS comments'
-	})
+  .options('custom', {
+    string    : true,
+    describe  : 'Process a custom property name when parsing KSS comments'
+  })
 
-	.options('source', {
-		string    : true,
-		describe  : 'Source directory to parse for KSS comments'
-	})
-	.options('destination', {
-		string    : true,
-		describe  : 'Destination directory of generated style guide',
-		default   : 'styleguide'
-	})
+  .options('source', {
+    string    : true,
+    describe  : 'Source directory to parse for KSS comments'
+  })
+  .options('destination', {
+    string    : true,
+    describe  : 'Destination directory of generated style guide',
+    default   : 'styleguide'
+  })
 
-	.config('config')
-	.alias('config', 'c')
-	.describe('config', 'Load the kss-node configuration from a json file')
+  .config('config')
+  .alias('config', 'c')
+  .describe('config', 'Load the kss-node configuration from a json file')
 
-	.options('xdemo', {
-		boolean   : true,
-		// Alias is redundant, but prevents "Unknown argument: xdemo" error.
-		alias     : 'xdemo'
-	})
+  .options('xdemo', {
+    boolean   : true,
+    // Alias is redundant, but prevents "Unknown argument: xdemo" error.
+    alias     : 'xdemo'
+  })
 
-	.version(version, 'version')
-	.help('help')
-	.alias('help', 'h')
-	.alias('help', '?')
-	.argv;
+  .version(version, 'version')
+  .help('help')
+  .alias('help', 'h')
+  .alias('help', '?')
+  .argv;
 
-// Get the full template path.
-if (argv.template instanceof Array) {
-	argv.template = argv.template.pop();
+// Help determine which options are specified in a config json file by loading
+// the json file.
+if (generatorConfig.config) {
+  // Make config paths relative to config file.
+  configPath = path.resolve(generatorConfig.config);
+  configFile = require(configPath);
+  configPath = path.dirname(configPath);
 }
-argv.template = path.resolve(argv.template);
 
-// argv.init contains the default value. Explicitly check if the --init option
-// was called and create a new style guide template.
+// Ensure these options are not an array.
+["destination", "template", "helpers"].forEach(function(key) {
+  // Only use the first value specified, ignoring the others.
+  if (generatorConfig[key] instanceof Array) {
+    generatorConfig[key] = generatorConfig[key].pop();
+  }
+  if (configFile[key] instanceof Array) {
+    configFile[key] = configFile[key].pop();
+  }
+});
+
+// Explicitly check if the --init option was called since generatorConfig.init
+// will contain a default value.
 if ("init" in yargs.argv || "i" in yargs.argv) {
-	if (typeof argv.init === "boolean") {
-		argv.init = 'styleguide-template';
-	}
-	argv.init = path.resolve(argv.init);
-} else {
-	argv.init = false;
-}
-
-// Determine which options are specified in a config json file.
-if (argv.config) {
-	// Helper function to apply path.resolve() to strings or arrays of strings.
-	pathResolveRecursive = function(from, item) {
-		var paths = [];
-		if (item instanceof Array) {
-			item.forEach(
-				function(value, index) {
-					paths[index] = path.resolve(from, value);
-				}
-			);
-		}
-		else {
-			paths = path.resolve(from, item);
-		}
-		return paths;
-	};
-	// Make config paths relative to config file.
-	configFile = path.resolve(argv.config);
-	config = require(configFile);
-	for (var key in config) {
-		if (key == "init" || key == "template" || key == "helpers" || key == "source" || key == "destination") {
-			argv[key] = pathResolveRecursive(path.dirname(configFile), config[key]);
-		}
-	}
-}
-// Get the full source path.
-if (argv.xdemo) {
-	argv.source = [__dirname + '/../demo'];
-	argv.css = ['public/styles.css'];
+  // Use the default value if --init is not given a path.
+  if (typeof generatorConfig.init === "boolean") {
+    generatorConfig.init = 'styleguide-template';
+  }
 }
 else {
-	if (!argv.source) {
-		argv.source = [];
-	}
-	else if (typeof argv.source == "string") {
-		argv.source = [argv.source];
-	}
-	if (argv._.length > 0) {
-		argv.source.push(argv._[0]);
-	}
+  delete generatorConfig.init;
 }
-if (!argv.source.length && !argv.init) {
-	yargs.showHelp();
-	return;
+
+// Get the full source path.
+if (generatorConfig.xdemo) {
+  generatorConfig.source = [__dirname + '/../demo'];
+  generatorConfig.css = ['public/styles.css'];
 }
-for (var key in argv.source) {
-	argv.source[key] = path.resolve(argv.source[key]);
+else {
+  if (!generatorConfig.source) {
+    generatorConfig.source = [];
+  }
+  if (generatorConfig._.length > 0) {
+    generatorConfig.source.push(generatorConfig._[0]);
+  }
 }
-// Get the full destination path.
-if (argv.destination instanceof Array) {
-	argv.destination = argv.destination.pop();
+
+// Check if the destination is the second unnamed parameter.
+if (!("destination" in yargs.argv) && generatorConfig._.length > 1) {
+  generatorConfig.destination = generatorConfig._[1];
 }
-else if (!("destination" in yargs.argv) && argv._.length > 1) {
-	argv.destination = argv._[1];
+
+// Don't use the default value if the helpers option is not specified.
+if (!("helpers" in yargs.argv) && !configFile.helpers) {
+  generatorConfig.helpers = generatorConfig.template + '/helpers';
 }
-argv.destination = path.resolve(argv.destination);
-// Get the full helpers path.
-if (argv.helpers instanceof Array) {
-	argv.helpers = argv.helpers.pop();
-}
-else if (!("helpers" in yargs.argv) && !config.helpers) {
-	argv.helpers = argv.template + '/helpers';
-}
-argv.helpers = path.resolve(argv.helpers);
-// Make these options an array.
-if (typeof argv.custom == "string") {
-	argv.custom = [argv.custom];
-}
-if (typeof argv.css == "string") {
-	argv.css = [argv.css];
-}
-if (typeof argv.js == "string") {
-	argv.js = [argv.js];
+
+// Ensure these options are an array.
+["source", "custom", "css", "js"].forEach(function(key) {
+  if (typeof generatorConfig[key] === "string") {
+    generatorConfig[key] = [generatorConfig[key]];
+  }
+  if (typeof configFile[key] === "string") {
+    configFile[key] = [configFile[key]];
+  }
+});
+
+// Resolve any paths relative to the config file or to the working directory.
+["init", "template", "helpers", "source", "destination"].forEach(function(key) {
+  if (typeof configFile[key] !== "undefined") {
+    generatorConfig[key] = resolveArray(configPath, configFile[key]);
+  }
+  else if (typeof generatorConfig[key] !== "undefined") {
+    generatorConfig[key] = resolveArray(generatorConfig[key]);
+  }
+});
+
+
+// If no source is specified, display help and exit.
+if (!generatorConfig.source.length && !generatorConfig.init) {
+  yargs.showHelp();
+  return;
 }
 
 // Load the template's generator.
@@ -196,7 +212,7 @@ try {
   // an error since this kss module has been git cloned and not installed via
   // npm. This limitation will need to be fixed if additional generators are
   // added to the module.
-  generator = require(argv.template).generator;
+  generator = require(generatorConfig.template).generator;
 } catch (e) {
   // Templates don't have to load their own generator. If the template fails to
   // load a generator, we assume it wanted the default generator.
@@ -204,17 +220,17 @@ try {
 };
 
 // Clone a template.
-if (argv.init) {
+if (generatorConfig.init) {
   console.log('Creating a new style guide template...');
   try {
-    generator.clone(argv.template, argv.init);
+    generator.clone(generatorConfig.template, generatorConfig.init);
   } catch (e) {
     console.log(e);
     return;
   }
   console.log('You can change it as you like, and use it with your style guide like so:');
   console.log('');
-  console.log('kss-node [sourcedir] --template ' + argv.init);
+  console.log('kss-node [sourcedir] --template ' + generatorConfig.init);
   console.log('');
   return;
 }
@@ -222,10 +238,10 @@ if (argv.init) {
 console.log('');
 console.log('Generating your KSS style guide!');
 console.log('');
-console.log(' * KSS Source  : ' + argv.source.join(', '));
-console.log(' * Destination : ' + argv.destination);
-console.log(' * Template    : ' + argv.template);
-console.log(' * Helpers     : ' + argv.helpers);
+console.log(' * KSS Source  : ' + generatorConfig.source.join(', '));
+console.log(' * Destination : ' + generatorConfig.destination);
+console.log(' * Template    : ' + generatorConfig.template);
+console.log(' * Helpers     : ' + generatorConfig.helpers);
 console.log('');
 
 function init(source, destination, template, helpers) {
@@ -279,7 +295,7 @@ function init(source, destination, template, helpers) {
 	return handlebarsTemplate;
 };
 
-template = init(argv.source, argv.destination, argv.template, argv.helpers);
+template = init(generatorConfig.source, generatorConfig.destination, generatorConfig.template, generatorConfig.helpers);
 
 
 // Generate the static HTML pages in the next tick, i.e. after the other functions have
@@ -287,12 +303,12 @@ template = init(argv.source, argv.destination, argv.template, argv.helpers);
 process.nextTick(function() {
 	console.log('...Parsing your style guide:');
 
-	kss.traverse(argv.source, {
+	kss.traverse(generatorConfig.source, {
 		multiline : true,
 		markdown  : true,
 		markup    : true,
-		mask      : argv.mask,
-		custom    : argv.custom
+		mask      : generatorConfig.mask,
+		custom    : generatorConfig.custom
 	}, function(err, styleguide) {
 		if (err) throw err;
 		generate(styleguide);
@@ -337,9 +353,9 @@ function generate(styleguide) {
 					partial.file = partial.markup;
 					partial.name = path.basename(partial.file, path.extname(partial.file));
 					files = [];
-					for (var key in argv.source) {
+					for (var key in generatorConfig.source) {
 						if (!files.length) {
-							files = glob.sync(argv.source[key] + '/**/' + partial.file);
+							files = glob.sync(generatorConfig.source[key] + '/**/' + partial.file);
 						}
 					}
 					// If the markup file is not found, note that in the style guide.
@@ -410,10 +426,10 @@ generatePage = function(styleguide, sections, root, sectionRoots, partials) {
 		filename = 'index.html';
 		console.log(' - homepage');
 		// Ensure homepageText is a non-false value.
-		for (var key in argv.source) {
+		for (var key in generatorConfig.source) {
 			if (!homepageText) {
 				try {
-					files = glob.sync(argv.source[key] + '/**/styleguide.md');
+					files = glob.sync(generatorConfig.source[key] + '/**/styleguide.md');
 					if (files.length) {
 						homepageText = ' ' + marked(fs.readFileSync(files[0], 'utf8'));
 					}
@@ -434,22 +450,22 @@ generatePage = function(styleguide, sections, root, sectionRoots, partials) {
 		);
 	}
 	// Create the HTML to load the optional CSS and JS.
-	for (var key in argv.css) {
-		styles = styles + '<link rel="stylesheet" href="' + argv.css[key] + '">\n';
+	for (var key in generatorConfig.css) {
+		styles = styles + '<link rel="stylesheet" href="' + generatorConfig.css[key] + '">\n';
 	}
-	for (var key in argv.js) {
-		scripts = scripts + '<script src="' + argv.js[key] + '"></script>\n';
+	for (var key in generatorConfig.js) {
+		scripts = scripts + '<script src="' + generatorConfig.js[key] + '"></script>\n';
 	}
-	fs.writeFileSync(argv.destination + '/' + filename,
+	fs.writeFileSync(generatorConfig.destination + '/' + filename,
 		template({
 			partials:     partials,
 			styleguide:   styleguide,
 			sectionRoots: sectionRoots,
 			sections:     sections.map(function(section) {
-				return section.JSON(argv.custom);
+				return section.JSON(generatorConfig.custom);
 			}),
 			rootName:     root,
-			argv:         argv || {},
+			argv:         generatorConfig || {},
 			homepage:     homepageText,
 			styles:       styles,
 			scripts:      scripts
