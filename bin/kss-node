@@ -1,16 +1,12 @@
 #!/usr/bin/env node
 
 var kss = require(__dirname + '/../lib/kss.js'),
-	handlebars = require('handlebars'),
 	yargs = require('yargs'),
 	marked = require('marked'),
-	wrench = require('wrench'),
 	glob = require('glob'),
 	path = require('path'),
 	fs = require('fs'),
 	generator,
-	template,
-	init,
 	generate,
 	generatePage,
 	configFile = {},
@@ -235,68 +231,8 @@ if (generatorConfig.init) {
   return;
 }
 
-console.log('');
-console.log('Generating your KSS style guide!');
-console.log('');
-console.log(' * KSS Source  : ' + generatorConfig.source.join(', '));
-console.log(' * Destination : ' + generatorConfig.destination);
-console.log(' * Template    : ' + generatorConfig.template);
-console.log(' * Helpers     : ' + generatorConfig.helpers);
-console.log('');
-
-function init(source, destination, template, helpers) {
-	var handlebarsTemplate;
-
-	// Create a new destination directory.
-	try {
-		fs.mkdirSync(destination);
-	} catch (e) {}
-
-	// Optionally, copy the contents of the template's "public" folder.
-	try {
-		wrench.copyDirSyncRecursive(
-			template + '/public',
-			destination + '/public',
-			{
-				forceDelete: true,
-				excludeHiddenUnix: true
-			}
-		);
-	} catch (e) {}
-
-	// Ensure a "public" folder exists.
-	try {
-		fs.mkdirSync(destination + '/public');
-	} catch (e) {}
-
-	// Load Handlebars helpers.
-	if (fs.existsSync(helpers)) {
-		// Load custom Handlebars helpers.
-		var helperFiles = fs.readdirSync(helpers);
-
-		helperFiles.forEach(function(fileName) {
-			if (path.extname(fileName) !== '.js') {
-				return;
-			}
-			var helper = require(helpers + '/' + fileName);
-			if (typeof helper.register === 'function') {
-				helper.register(handlebars);
-			}
-		});
-	}
-
-	// Load the standard Handlebars helpers.
-	require(__dirname + '/../generators/handlebarsGenerator/helpers.js').register(handlebars);
-
-	// Compile the Handlebars template.
-	handlebarsTemplate = fs.readFileSync(template + '/index.html', 'utf8');
-	handlebarsTemplate = handlebars.compile(handlebarsTemplate);
-
-	return handlebarsTemplate;
-};
-
-template = init(generatorConfig.source, generatorConfig.destination, generatorConfig.template, generatorConfig.helpers);
-
+// Initialize the generator.
+generator.init(generatorConfig);
 
 // Generate the static HTML pages in the next tick, i.e. after the other functions have
 // been defined and handlebars helpers set up.
@@ -382,7 +318,7 @@ function generate(styleguide) {
 				}
 				// Register the partial using the filename (without extension) or using
 				// the style guide reference.
-				handlebars.registerPartial(partial.name, partial.markup);
+				generator.Handlebars.registerPartial(partial.name, partial.markup);
 				// Save the name of the partial and its data for retrieval in the markup
 				// helper, where we only know the reference.
 				partials[partial.reference] = {
@@ -457,7 +393,7 @@ generatePage = function(styleguide, sections, root, sectionRoots, partials) {
 		scripts = scripts + '<script src="' + generatorConfig.js[key] + '"></script>\n';
 	}
 	fs.writeFileSync(generatorConfig.destination + '/' + filename,
-		template({
+		generator.template({
 			partials:     partials,
 			styleguide:   styleguide,
 			sectionRoots: sectionRoots,
