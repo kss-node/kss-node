@@ -118,7 +118,8 @@ if (generatorConfig.config) {
   configPath = path.dirname(configPath);
 }
 
-// Ensure these options are not an array.
+// If an option is specified multiple times, yargs will convert it into an
+// array. Ensure these options are not an array.
 ["destination", "template", "helpers"].forEach(function(key) {
   // Only use the first value specified, ignoring the others.
   if (generatorConfig[key] instanceof Array) {
@@ -194,13 +195,7 @@ if (!generatorConfig.source.length && !generatorConfig.init) {
 
 // Load the template's generator.
 try {
-  // @TODO: The following line will always fail while testing a git clone of
-  // this module. In order for a bundled template to be "clone"-able, it must
-  // use the require('kss/generators/path') syntax (instead of the requiring a
-  // relative path). Thus, when requiring its generator, the template will throw
-  // an error since this kss module has been git cloned and not installed via
-  // npm. This limitation will need to be fixed if additional generators are
-  // added to the module.
+  // @TODO: See NOTE 1 below.
   generator = require(generatorConfig.template).generator;
 } catch (e) {
   // Templates don't have to load their own generator. If the template fails to
@@ -261,3 +256,11 @@ process.on('uncaughtException', function(err) {
   KSS_FAILED = true;
   process.exit(1);
 });
+
+// NOTE 1: This require() line will always fail while testing a git clone of
+// this module. In order for a bundled template to be "clone"-able, it must use
+// the require('kss/generators/path') syntax (instead of the requiring a
+// relative path). Thus, when requiring its generator, the template will throw
+// an error since this kss module has been git cloned and not installed via npm.
+// This limitation will need to be fixed if additional generators are added to
+// the module.
