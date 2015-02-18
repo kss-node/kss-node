@@ -234,24 +234,7 @@ if (generatorConfig.init) {
 // Initialize the generator.
 generator.init(generatorConfig);
 
-// Generate the static HTML pages in the next tick, i.e. after the other functions have
-// been defined and handlebars helpers set up.
-process.nextTick(function() {
-	console.log('...Parsing your style guide:');
-
-	kss.traverse(generatorConfig.source, {
-		multiline : true,
-		markdown  : true,
-		markup    : true,
-		mask      : generatorConfig.mask,
-		custom    : generatorConfig.custom
-	}, function(err, styleguide) {
-		if (err) throw err;
-		generate(styleguide);
-	});
-});
-
-function generate(styleguide) {
+generate = function(styleguide) {
 		var sections = styleguide.section(),
 			sectionCount = sections.length,
 			sectionRoots = [],
@@ -408,6 +391,12 @@ generatePage = function(styleguide, sections, root, sectionRoots, partials) {
 		})
 	);
 };
+
+// Generate the static HTML pages in the next tick, i.e. after the other functions have
+// been defined and handlebars helpers set up.
+process.nextTick(function() {
+  generator.parse(generate);
+});
 
 process.on('exit', function() {
 	if (!KSS_FAILED) {

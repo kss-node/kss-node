@@ -3,6 +3,7 @@
    ************************************************************** */
 
 var KssGenerator,
+  Kss = require('../lib/kss.js'),
   wrench = require('wrench');
 
 /**
@@ -54,3 +55,30 @@ KssGenerator.prototype.init = function(config) {
   // At the very least, generators MUST save the configuration parameters.
   this.config = config;
 };
+
+/**
+ * Parse the source files for KSS comments and create a KssStyleguide object.
+ *
+ * When finished, it passes the completed KssStyleguide to the given callback.
+ *
+ * @param {function} callback Function that takes a KssStyleguide and generates
+ *                            the HTML files of the style guide.
+ */
+KssGenerator.prototype.parse = function(callback) {
+  console.log('...Parsing your style guide:');
+
+  // The default parse() method looks at the paths to the source folders and
+  // uses KSS' traverse method to load, read and parse the source files. Other
+  // generators may want to use KSS' parse method if they have already loaded
+  // the source files through some other mechanism.
+  Kss.traverse(this.config.source, {
+    multiline : true,
+    markdown  : true,
+    markup    : true,
+    mask      : this.config.mask,
+    custom    : this.config.custom
+  }, function(err, styleguide) {
+    if (err) throw err;
+    callback(styleguide);
+  });
+}
