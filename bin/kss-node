@@ -1,19 +1,12 @@
 #!/usr/bin/env node
 
-var kss = require(__dirname + '/../lib/kss.js'),
-	yargs = require('yargs'),
-	marked = require('marked'),
-	glob = require('glob'),
+var yargs = require('yargs'),
 	path = require('path'),
-	fs = require('fs'),
 	generator,
-	generate,
-	generatePage,
 	configFile = {},
 	configPath,
 	KSS_FAILED = false,
 	generatorConfig,
-	error,
 	version = require(__dirname + '/../package.json').version,
 	resolveArray;
 
@@ -234,168 +227,17 @@ if (generatorConfig.init) {
 // Initialize the generator.
 generator.init(generatorConfig);
 
-generate = function(styleguide) {
-		var sections = styleguide.section(),
-			sectionCount = sections.length,
-			sectionRoots = [],
-			rootCount,
-			currentRoot,
-			childSections = [],
-			partials = {},
-			partial,
-			files = [],
-			i;
-
-		console.log(styleguide.data.files.map(function(file) {
-			return ' - ' + file;
-		}).join('\n'));
-
-		// Throw an error if no KSS sections are found in the source files.
-		if (sectionCount === 0) {
-			throw 'No KSS documentation discovered in source files.';
-		}
-
-		console.log('...Determining section markup:');
-
-		for (i = 0; i < sectionCount; i += 1) {
-			// Register all the markup blocks as Handlebars partials.
-			if (sections[i].markup()) {
-				partial = {
-					name: sections[i].reference(),
-					reference: sections[i].reference(),
-					file: '',
-					markup: sections[i].markup(),
-					data: {}
-				};
-				// If the markup is a file path, attempt to load the file.
-				if (partial.markup.match(/^[^\n]+\.(html|hbs)$/)) {
-					partial.file = partial.markup;
-					partial.name = path.basename(partial.file, path.extname(partial.file));
-					files = [];
-					for (var key in generatorConfig.source) {
-						if (!files.length) {
-							files = glob.sync(generatorConfig.source[key] + '/**/' + partial.file);
-						}
-					}
-					// If the markup file is not found, note that in the style guide.
-					if (!files.length) {
-						partial.markup += ' NOT FOUND!';
-					}
-					console.log(' - ' + partial.reference + ': ' + partial.markup);
-					if (files.length) {
-						// Load the partial's markup from file.
-						partial.file = files[0];
-						partial.markup = fs.readFileSync(partial.file, 'utf8');
-						// Load sample data for the partial from the sample .json file.
-						if (fs.existsSync(path.dirname(partial.file) + '/' + partial.name + '.json')) {
-							try {
-								partial.data = require(path.dirname(partial.file) + '/' + partial.name + '.json');
-							} catch (e) {
-								partial.data = {};
-							}
-						}
-					}
-				}
-				else {
-					console.log(' - ' + partial.reference + ': inline markup');
-				}
-				// Register the partial using the filename (without extension) or using
-				// the style guide reference.
-				generator.Handlebars.registerPartial(partial.name, partial.markup);
-				// Save the name of the partial and its data for retrieval in the markup
-				// helper, where we only know the reference.
-				partials[partial.reference] = {
-					name: partial.name,
-					data: partial.data
-				};
-			}
-
-			// Accumulate all of the sections' first indexes
-			// in case they don't have a root element.
-			currentRoot = sections[i].reference().split(/(?:\.|\s+\-\s+)/)[0];
-			if (sectionRoots.indexOf(currentRoot) === -1) {
-				sectionRoots.push(currentRoot);
-			}
-		}
-
-		console.log('...Generating style guide sections:');
-
-		// Now, group all of the sections by their root
-		// reference, and make a page for each.
-		rootCount = sectionRoots.length;
-		for (i = 0; i < rootCount; i += 1) {
-			childSections = styleguide.section(sectionRoots[i]+'.*');
-
-			generatePage(styleguide, childSections, sectionRoots[i], sectionRoots, partials);
-		}
-
-		// Generate the homepage.
-		childSections = [];
-		generatePage(styleguide, childSections, 'styleguide.homepage', sectionRoots, partials);
-};
-
-// Renders the handlebars template for a section and saves it to a file.
-generatePage = function(styleguide, sections, root, sectionRoots, partials) {
-	var filename = '', files,
-		homepageText = false,
-		styles = '',
-		scripts = '';
-
-	if (root == 'styleguide.homepage') {
-		filename = 'index.html';
-		console.log(' - homepage');
-		// Ensure homepageText is a non-false value.
-		for (var key in generatorConfig.source) {
-			if (!homepageText) {
-				try {
-					files = glob.sync(generatorConfig.source[key] + '/**/styleguide.md');
-					if (files.length) {
-						homepageText = ' ' + marked(fs.readFileSync(files[0], 'utf8'));
-					}
-				} catch (e) {}
-			}
-		}
-		if (!homepageText) {
-			homepageText = ' ';
-			console.log('   ...no homepage content found in styleguide.md.');
-		}
-	}
-	else {
-		filename = 'section-' + kss.KssSection.prototype.encodeReferenceURI(root) + '.html';
-		console.log(
-			' - section '+root+' [',
-			styleguide.section(root) ? styleguide.section(root).header() : 'Unnamed',
-			']'
-		);
-	}
-	// Create the HTML to load the optional CSS and JS.
-	for (var key in generatorConfig.css) {
-		styles = styles + '<link rel="stylesheet" href="' + generatorConfig.css[key] + '">\n';
-	}
-	for (var key in generatorConfig.js) {
-		scripts = scripts + '<script src="' + generatorConfig.js[key] + '"></script>\n';
-	}
-	fs.writeFileSync(generatorConfig.destination + '/' + filename,
-		generator.template({
-			partials:     partials,
-			styleguide:   styleguide,
-			sectionRoots: sectionRoots,
-			sections:     sections.map(function(section) {
-				return section.JSON(generatorConfig.custom);
-			}),
-			rootName:     root,
-			argv:         generatorConfig || {},
-			homepage:     homepageText,
-			styles:       styles,
-			scripts:      scripts
-		})
-	);
-};
-
-// Generate the static HTML pages in the next tick, i.e. after the other functions have
-// been defined and handlebars helpers set up.
+// Parse and generate the static HTML pages in the next tick.
 process.nextTick(function() {
-  generator.parse(generate);
+  // We use a closure so we can use the generator object's methods and
+  // properties when generator.generate() is used as a callback.
+  generator.parse(
+    (function(object) {
+      return function() {
+        object.generate.apply(object, arguments);
+      };
+    })(generator)
+  );
 });
 
 process.on('exit', function() {

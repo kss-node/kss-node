@@ -82,3 +82,11 @@ KssGenerator.prototype.parse = function(callback) {
     callback(styleguide);
   });
 }
+
+/**
+ * Generate the HTML files of the style guide given a KssStyleguide object.
+ *
+ * @param {KssStyleguide} styleguide The KSS style guide in object format.
+ */
+KssGenerator.prototype.generate = function(styleguide) {
+}
