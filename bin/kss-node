@@ -5,6 +5,7 @@ var yargs = require('yargs'),
   generator,
   configFile = {},
   configPath,
+  KSS_GENERATING = false,
   KSS_FAILED = false,
   generatorConfig,
   version = require(__dirname + '/../package.json').version,
@@ -187,8 +188,30 @@ if (!("helpers" in yargs.argv) && !configFile.helpers) {
 });
 
 
+// Set up error handling.
+process.on('exit', function() {
+  if (KSS_GENERATING && !KSS_FAILED) {
+    console.log('');
+    console.log('Generation completed successfully!');
+    console.log('');
+  }
+});
+
+process.on('uncaughtException', function(err) {
+  if (KSS_GENERATING) {
+    console.log('\nError during generation\n');
+  }
+  console.log(err);
+
+  KSS_FAILED = true;
+  process.exit(1);
+});
+
+
 // If no source is specified, display help and exit.
 if (!generatorConfig.source.length && !generatorConfig.init) {
+  console.log('Error: No --source specified.');
+  console.log('');
   yargs.showHelp();
   return;
 }
@@ -203,15 +226,12 @@ try {
   generator = require('../generators/handlebars');
 }
 
-// Clone a template.
+// If requested, clone a template and exit.
 if (generatorConfig.init) {
   console.log('Creating a new style guide template...');
-  try {
-    generator.clone(generatorConfig.template, generatorConfig.init);
-  } catch (e) {
-    console.log(e);
-    return;
-  }
+
+  generator.clone(generatorConfig.template, generatorConfig.init);
+
   console.log('You can change it as you like, and use it with your style guide like so:');
   console.log('');
   console.log('kss-node [sourcedir] --template ' + generatorConfig.init);
@@ -224,6 +244,8 @@ generator.init(generatorConfig);
 
 // Parse and generate the static HTML pages in the next tick.
 process.nextTick(function() {
+  KSS_GENERATING = true;
+
   // We use a closure so we can use the generator object's methods and
   // properties when generator.generate() is used as a callback.
   generator.parse(
@@ -233,28 +255,6 @@ process.nextTick(function() {
       };
     })(generator)
   );
-});
-
-process.on('exit', function() {
-  if (!KSS_FAILED) {
-    console.log('');
-    console.log('Generation completed successfully!');
-    console.log('');
-  }
-});
-
-process.on('uncaughtException', function(err) {
-  console.log('\nError during generation\n');
-
-  if (err.message || err.stack) {
-    console.log(err.message);
-    console.log(err.stack);
-  }
-  else
-    console.log(err);
-
-  KSS_FAILED = true;
-  process.exit(1);
 });
 
 // NOTE 1: This require() line will always fail while testing a git clone of
