@@ -54,12 +54,12 @@ generatorConfig = yargs
     string    : true,
     alias     : 't',
     describe  : 'Use a custom template to build your style guide',
-    default   : path.relative(process.cwd(), __dirname + '/../generators/handlebarsGenerator/template')
+    default   : path.relative(process.cwd(), __dirname + '/../generators/handlebars/template')
   })
   .options('helpers', {
     string    : true,
     describe  : 'Specify the location of custom handlebars helpers; see http://bit.ly/kss-helpers',
-    default   : path.relative(process.cwd(), __dirname + '/../generators/handlebarsGenerator/template/helpers')
+    default   : path.relative(process.cwd(), __dirname + '/../generators/handlebars/template/helpers')
   })
 
   .options('mask', {
@@ -200,7 +200,7 @@ try {
 } catch (e) {
   // Templates don't have to load their own generator. If the template fails to
   // load a generator, we assume it wanted the default generator.
-  generator = require('../generators/handlebarsGenerator');
+  generator = require('../generators/handlebars');
 };
 
 // Clone a template.
