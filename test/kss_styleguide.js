@@ -146,25 +146,24 @@ suite('KssStyleguide', function() {
 					switch (section.data.reference) {
 						case '4.1':
 							assert.equal(section.data.header, 'DEPTH OF 2');
-						break;
+						  break;
 						case '4.1.1':
 							assert.equal(section.data.header, 'DEPTH OF 3, NO MODIFIERS');
-						break;
+						  break;
 						case '4.1.2':
 							assert.equal(section.data.header, 'DEPTH OF 3, MODIFIERS');
-						break;
+						  break;
 						case '4.1.1.1':
 							assert.equal(section.data.header, 'DEPTH OF 4 (A)');
-						break;
+						  break;
 						case '4.1.1.2':
 							assert.equal(section.data.header, 'DEPTH OF 4 (B)');
-						break;
+						  break;
 						case '4.1.2.2':
 							assert.equal(section.data.header, 'DEPTH OF 4 (C)');
-						break;
+						  break;
 						default:
 							throw new Error('Section ' + section.data.reference + ' was not expected!');
-						break;
 					}
 				});
 				assert.equal(sections.length, 6);

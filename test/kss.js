@@ -340,7 +340,7 @@ suite('.traverse()', function() {
 			common.testSection('Docblock comment syntax', 'options-comment-syntax.less', function(section) {
 				assert.equal(section.data.reference, '1.8');
 			}, false, { markup: true });
-		}),
+		});
 		suite('.custom', function() {
 			common.testSection('Custom property: inline', 'options-custom-properties.less', function(section) {
 				assert.equal(section.data.reference, '1.1');
@@ -363,7 +363,7 @@ suite('.traverse()', function() {
 				assert.equal(section.data.custom, 'This is the first property.');
 				assert.equal(section.data.custom2, 'This is the second property.');
 			}, false, { markup: true, custom: ['custom', 'custom2'] });
-		}),
+		});
 		suite('.markup', function() {
 			common.testSection('Second paragraph', 'options-markup.less', function(section) {
 				assert.equal(
