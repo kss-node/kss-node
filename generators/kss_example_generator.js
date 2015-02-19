@@ -12,7 +12,7 @@ var KssExampleGenerator,
  * Our generator is an instance of the KssGenerator object with
  * additional functionality added by overriding the parent methods.
  */
-module.exports = KssExampleGenerator = new KssGenerator();
+module.exports = KssExampleGenerator = new KssGenerator('2.0');
 
 /**
  * Clone a template's files.
@@ -22,6 +22,7 @@ module.exports = KssExampleGenerator = new KssGenerator();
  * method, but it can if it needs to do something more complicated.
  */
 KssExampleGenerator.prototype.clone = function(templatePath, destinationPath) {
+  // Note that, at this point, KssExampleGenerator.init() has not been called.
   console.log('Example template cloned! (not really.)');
 };
 
@@ -40,11 +41,11 @@ KssExampleGenerator.init = function(config) {
 
   // This example generator hard-codes the demo source.
   this.config.source = path.resolve('../demo');
-  this.warning = ' (not really.)';
 
   // A real generator should initialize the template system being used by this
   // generator. For example, KssHandlebarsGenerator loads and initializes the
   // Handlebars templating system.
+  this.warning = ' (not really.)';
 };
 
 /**

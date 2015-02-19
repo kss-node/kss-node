@@ -9,11 +9,38 @@ var KssGenerator,
 /**
  * Export the KssGenerator object.
  *
- * This is the base object used by all kss-node generators.
+ * This is the base object used by all kss-node generators. Implementations of
+ * KssGenerator MUST pass the version parameter. kss-node will use this to
+ * ensure that only compatible generators are used.
+ *
+ * @param {string} version The generator API version implemented.
  */
-module.exports = KssGenerator = function () {
+module.exports = KssGenerator = function (version) {
   if (!(this instanceof KssGenerator)) {
     return new KssGenerator();
+  }
+
+  // Tell generators which generator API version is currently running.
+  this.API = '2.0';
+
+  // Store the version of the generator API that the generator instance is
+  // expecting; we will verify this in checkGenerator().
+  this.API_of_instance = (typeof version === 'undefined') ? 'undefined' : version;
+};
+
+/**
+ * Checks the generator configuration.
+ *
+ * An instance of KssGenerator MUST NOT override this method. A process
+ * controlling the generator should call this method to verify the
+ * specified generator has been configured correctly.
+ */
+KssGenerator.prototype.checkGenerator = function() {
+  if (!(this instanceof KssGenerator)) {
+    throw 'The loaded generator is not a KssGenerator object.';
+  }
+  if (this.API_of_instance === 'undefined') {
+    throw 'This generator is incompatible with KssGenerator API ' + this.API + ': "' + this.API_of_instance + '"';
   }
 };
 

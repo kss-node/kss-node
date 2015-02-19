@@ -7,7 +7,13 @@ var KssHandlebarsGenerator,
   path = require('path'),
   wrench = require('wrench');
 
-module.exports = KssHandlebarsGenerator = new KssGenerator();
+/**
+ * Export KssHandlebarsGenerator.
+ *
+ * Pass a string to KssGenerator() that tells the generator which API version is
+ * implemented by KssHandlebarsGenerator.
+ */
+module.exports = KssHandlebarsGenerator = new KssGenerator('2.0');
 
 /**
  * Initialize the style guide creation process.
