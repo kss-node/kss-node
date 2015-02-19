@@ -1,708 +1,266 @@
 #!/usr/bin/env node
 
-var kss = require(__dirname + '/../lib/kss.js'),
-	handlebars = require('handlebars'),
-	yargs = require('yargs'),
-	marked = require('marked'),
-	wrench = require('wrench'),
-	glob = require('glob'),
-	path = require('path'),
-	fs = require('fs'),
-	template,
-	styleguide,
-	generatePage,
-	config = {},
-	configFile,
-	KSS_FAILED = false,
-	cache = {partial: {}},
-	argv,
-	error,
-	version = require(__dirname + '/../package.json').version,
-	pathResolveRecursive;
+var yargs = require('yargs'),
+  path = require('path'),
+  generator,
+  configFile = {},
+  configPath,
+  KSS_FAILED = false,
+  generatorConfig,
+  version = require(__dirname + '/../package.json').version,
+  resolveArray;
 
 /**
- * CLI argument parsing.
- * @type {Object}
+ * Applies path.resolve() to the given path or array of paths.
+ *
+ * @param {string}        from  Optional path to resolve the "to" path
+ * @param {string|array}  to    Relative path(s) to resolve.
+ *
+ * @return An absolute path.
  */
-argv = yargs
-	.usage('Usage: kss-node <source> [destination] [options]')
-	.wrap(80)
-	.strict()
-
-	.options('init', {
-		alias     : 'i',
-		describe  : 'Create a new style guide template to customize',
-		default   : 'styleguide-template'
-	})
-	.options('template', {
-		string    : true,
-		alias     : 't',
-		describe  : 'Use a custom template to build your style guide',
-		default   : path.relative(process.cwd(), __dirname + '/../lib/template')
-	})
-	.options('helpers', {
-		string    : true,
-		describe  : 'Specify the location of custom handlebars helpers; see http://bit.ly/kss-helpers',
-		default   : path.relative(process.cwd(), __dirname + '/../lib/template/helpers')
-	})
-
-	.options('mask', {
-		string    : true,
-		alias     : 'm',
-		describe  : 'Use a mask for detecting files containing KSS comments',
-		default   : '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
-	})
-
-	.options('css', {
-		string    : true,
-		describe  : 'Specify the URL of a CSS file to include in the style guide'
-	})
-	.options('js', {
-		string    : true,
-		describe  : 'Specify the URL of a JavaScript file to include in the style guide'
-	})
-
-	.options('custom', {
-		string    : true,
-		describe  : 'Process a custom property name when parsing KSS comments'
-	})
-
-	.options('source', {
-		string    : true,
-		describe  : 'Source directory to parse for KSS comments'
-	})
-	.options('destination', {
-		string    : true,
-		describe  : 'Destination directory of generated style guide',
-		default   : 'styleguide'
-	})
-
-	.config('config')
-	.alias('config', 'c')
-	.describe('config', 'Load the kss-node configuration from a json file')
-
-	.options('xdemo', {
-		boolean   : true,
-		// Alias is redundant, but prevents "Unknown argument: xdemo" error.
-		alias     : 'xdemo'
-	})
-
-	.version(version, 'version')
-	.help('help')
-	.alias('help', 'h')
-	.alias('help', '?')
-	.argv;
-
-// Get the full template path.
-if (argv.template instanceof Array) {
-	argv.template = argv.template.pop();
-}
-argv.template = path.resolve(argv.template);
-
-// argv.init contains the default value. Explicitly check if the --init option
-// was called and create a new style guide template.
-if ("init" in yargs.argv || "i" in yargs.argv) {
-	if (typeof argv.init === "boolean") {
-		argv.init = 'styleguide-template';
-	}
-	argv.init = path.resolve(argv.init);
-
-	console.log('Creating a new style guide template...');
-	try {
-		error = wrench.copyDirSyncRecursive(
-			argv.template,
-			argv.init,
-			{
-				forceDelete: false,
-				excludeHiddenUnix: true
-			}
-		);
-		if (error) {
-			throw error;
-		}
-	} catch (e) {
-		console.log('Error! This folder already exists: ' + argv.init);
-		return;
-	}
-	console.log('You can change it as you like, and use it with your style guide like so:');
-	console.log('');
-	console.log('kss-node [sourcedir] --template "'+argv.init+'"');
-	console.log('');
-	return;
-}
-
-// Determine which options are specified in a config json file.
-if (argv.config) {
-	// Helper function to apply path.resolve() to strings or arrays of strings.
-	pathResolveRecursive = function(from, item) {
-		var paths = [];
-		if (item instanceof Array) {
-			item.forEach(
-				function(value, index) {
-					paths[index] = path.resolve(from, value);
-				}
-			);
-		}
-		else {
-			paths = path.resolve(from, item);
-		}
-		return paths;
-	};
-	// Make config paths relative to config file.
-	configFile = path.resolve(argv.config);
-	config = require(configFile);
-	for (var key in config) {
-		if (key == "init" || key == "template" || key == "helpers" || key == "source" || key == "destination") {
-			argv[key] = pathResolveRecursive(path.dirname(configFile), config[key]);
-		}
-	}
-}
-// Get the full source path.
-if (argv.xdemo) {
-	argv.source = [__dirname + '/../demo'];
-	argv.css = ['public/styles.css'];
-}
-else {
-	if (!argv.source) {
-		argv.source = [];
-	}
-	else if (typeof argv.source == "string") {
-		argv.source = [argv.source];
-	}
-	if (argv._.length > 0) {
-		argv.source.push(argv._[0]);
-	}
-}
-if (!argv.source.length) {
-	yargs.showHelp();
-	return;
-}
-for (var key in argv.source) {
-	argv.source[key] = path.resolve(argv.source[key]);
-}
-// Get the full destination path.
-if (argv.destination instanceof Array) {
-	argv.destination = argv.destination.pop();
-}
-else if (!("destination" in yargs.argv) && argv._.length > 1) {
-	argv.destination = argv._[1];
-}
-argv.destination = path.resolve(argv.destination);
-// Get the full helpers path.
-if (argv.helpers instanceof Array) {
-	argv.helpers = argv.helpers.pop();
-}
-else if (!("helpers" in yargs.argv) && !config.helpers) {
-	argv.helpers = argv.template + '/helpers';
-}
-argv.helpers = path.resolve(argv.helpers);
-// Make these options an array.
-if (typeof argv.custom == "string") {
-	argv.custom = [argv.custom];
-}
-if (typeof argv.css == "string") {
-	argv.css = [argv.css];
-}
-if (typeof argv.js == "string") {
-	argv.js = [argv.js];
-}
-
-console.log('');
-console.log('Generating your KSS style guide!');
-console.log('');
-console.log(' * KSS Source  : ' + argv.source.join(', '));
-console.log(' * Destination : ' + argv.destination);
-console.log(' * Template    : ' + argv.template);
-console.log(' * Helpers     : ' + argv.helpers);
-console.log('');
-
-// Create a new destination directory.
-try {
-	fs.mkdirSync(argv.destination);
-} catch (e) {}
-
-// Optionally copy the contents of "public" over.
-try {
-	wrench.copyDirSyncRecursive(
-		argv.template + '/public',
-		argv.destination + '/public',
-		{
-			forceDelete: true,
-			excludeHiddenUnix: true
-		}
-	);
-} catch (e) {}
-
-// Ensure a "public" folder exists.
-try {
-	fs.mkdirSync(argv.destination + '/public');
-} catch (e) {}
-
-// Compile the Handlebars template
-template = fs.readFileSync(argv.template + '/index.html', 'utf8');
-template = handlebars.compile(template);
-
-// Generate the static HTML pages in the next tick, i.e. after the other functions have
-// been defined and handlebars helpers set up.
-process.nextTick(function() {
-	console.log('...Parsing your style guide:');
-
-	kss.traverse(argv.source, {
-		multiline : true,
-		markdown  : true,
-		markup    : true,
-		mask      : argv.mask,
-		custom    : argv.custom
-	}, function(err, guide) {
-		if (err) throw err;
-
-		styleguide = guide;
-
-		var sections = styleguide.section(),
-			sectionCount = sections.length,
-			sectionRoots = [],
-			rootCount,
-			currentRoot,
-			childSections = [],
-			partial,
-			files = [],
-			i;
-
-		console.log(styleguide.data.files.map(function(file) {
-			return ' - ' + file;
-		}).join('\n'));
-
-		// Throw an error if no KSS sections are found in the source files.
-		if (sectionCount === 0) {
-			throw 'No KSS documentation discovered in source files.';
-		}
-
-		console.log('...Determining section markup:');
-
-		for (i = 0; i < sectionCount; i += 1) {
-			// Register all the markup blocks as Handlebars partials.
-			if (sections[i].markup()) {
-				partial = {
-					name: sections[i].reference(),
-					reference: sections[i].reference(),
-					file: '',
-					markup: sections[i].markup(),
-					data: {}
-				};
-				// If the markup is a file path, attempt to load the file.
-				if (partial.markup.match(/^[^\n]+\.(html|hbs)$/)) {
-					partial.file = partial.markup;
-					partial.name = path.basename(partial.file, path.extname(partial.file));
-					files = [];
-					for (var key in argv.source) {
-						if (!files.length) {
-							files = glob.sync(argv.source[key] + '/**/' + partial.file);
-						}
-					}
-					// If the markup file is not found, note that in the style guide.
-					if (!files.length) {
-						partial.markup += ' NOT FOUND!';
-					}
-					console.log(' - ' + partial.reference + ': ' + partial.markup);
-					if (files.length) {
-						// Load the partial's markup from file.
-						partial.file = files[0];
-						partial.markup = fs.readFileSync(partial.file, 'utf8');
-						// Load sample data for the partial from the sample .json file.
-						if (fs.existsSync(path.dirname(partial.file) + '/' + partial.name + '.json')) {
-							try {
-								partial.data = require(path.dirname(partial.file) + '/' + partial.name + '.json');
-							} catch (e) {
-								partial.data = {};
-							}
-						}
-					}
-				}
-				else {
-					console.log(' - ' + partial.reference + ': inline markup');
-				}
-				// Register the partial using the filename (without extension) or using
-				// the style guide reference.
-				handlebars.registerPartial(partial.name, partial.markup);
-				// Save the name of the partial and its data for retrieval in the markup
-				// helper, where we only know the reference.
-				cache.partial[partial.reference] = {
-					name: partial.name,
-					data: partial.data
-				};
-			}
-
-			// Accumulate all of the sections' first indexes
-			// in case they don't have a root element.
-			currentRoot = sections[i].reference().split(/(?:\.|\s+\-\s+)/)[0];
-			if (sectionRoots.indexOf(currentRoot) === -1) {
-				sectionRoots.push(currentRoot);
-			}
-		}
-
-		console.log('...Generating style guide sections:');
-
-		// Now, group all of the sections by their root
-		// reference, and make a page for each.
-		rootCount = sectionRoots.length;
-		for (i = 0; i < rootCount; i += 1) {
-			childSections = styleguide.section(sectionRoots[i]+'.*');
-
-			generatePage(styleguide, childSections, sectionRoots[i], sectionRoots);
-		}
-
-		// Generate the homepage.
-		childSections = [];
-		generatePage(styleguide, childSections, 'styleguide.homepage', sectionRoots);
-	});
-});
-
-// Renders the handlebars template for a section and saves it to a file.
-generatePage = function(styleguide, sections, root, sectionRoots) {
-	var filename = '', files,
-		homepageText = false,
-		styles = '',
-		scripts = '';
-
-	if (root == 'styleguide.homepage') {
-		filename = 'index.html';
-		console.log(' - homepage');
-		// Ensure homepageText is a non-false value.
-		for (var key in argv.source) {
-			if (!homepageText) {
-				try {
-					files = glob.sync(argv.source[key] + '/**/styleguide.md');
-					if (files.length) {
-						homepageText = ' ' + marked(fs.readFileSync(files[0], 'utf8'));
-					}
-				} catch (e) {}
-			}
-		}
-		if (!homepageText) {
-			homepageText = ' ';
-			console.log('   ...no homepage content found in styleguide.md.');
-		}
-	}
-	else {
-		filename = 'section-' + kss.KssSection.prototype.encodeReferenceURI(root) + '.html';
-		console.log(
-			' - section '+root+' [',
-			styleguide.section(root) ? styleguide.section(root).header() : 'Unnamed',
-			']'
-		);
-	}
-	// Create the HTML to load the optional CSS and JS.
-	for (var key in argv.css) {
-		styles = styles + '<link rel="stylesheet" href="' + argv.css[key] + '">\n';
-	}
-	for (var key in argv.js) {
-		scripts = scripts + '<script src="' + argv.js[key] + '"></script>\n';
-	}
-	fs.writeFileSync(argv.destination + '/' + filename,
-		template({
-			styleguide: styleguide,
-			sectionRoots: sectionRoots,
-			sections: sections.map(function(section) {
-				return section.JSON(argv.custom);
-			}),
-			rootName: root,
-			argv: argv || {},
-			homepage: homepageText,
-			styles: styles,
-			scripts: scripts
-		})
-	);
+resolveArray = function(from, to) {
+  var paths = [];
+  // "from" is optional.
+  if (typeof to === "undefined") {
+    to = from;
+    from = '';
+  }
+  if (to instanceof Array) {
+    to.forEach(function(value, index) {
+      paths[index] = path.resolve(from, value);
+    });
+  }
+  else {
+    paths = path.resolve(from, to);
+  }
+  return paths;
 };
 
-// Load custom Handlebars helpers.
-if (fs.existsSync(argv.helpers)) {
-	var helperFiles = fs.readdirSync(argv.helpers);
+/**
+ * Generator configruation.
+ * @type {Object}
+ */
+generatorConfig = yargs
+  .usage('Usage: kss-node <source> [destination] [options]')
+  .wrap(80)
+  .strict()
 
-	helperFiles.forEach(function(fileName) {
-		if (path.extname(fileName) !== '.js') {
-			return;
-		}
-		var helper = require(argv.helpers + '/' + fileName);
-		if (typeof helper.register === 'function') {
-			helper.register(handlebars);
-		}
-	});
+  .options('init', {
+    alias     : 'i',
+    describe  : 'Create a new style guide template to customize',
+    default   : 'styleguide-template'
+  })
+  .options('template', {
+    string    : true,
+    alias     : 't',
+    describe  : 'Use a custom template to build your style guide',
+    default   : path.relative(process.cwd(), __dirname + '/../generators/handlebars/template')
+  })
+  .options('helpers', {
+    string    : true,
+    describe  : 'Specify the location of custom handlebars helpers; see http://bit.ly/kss-helpers',
+    default   : path.relative(process.cwd(), __dirname + '/../generators/handlebars/template/helpers')
+  })
+
+  .options('mask', {
+    string    : true,
+    alias     : 'm',
+    describe  : 'Use a mask for detecting files containing KSS comments',
+    default   : '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
+  })
+
+  .options('css', {
+    string    : true,
+    describe  : 'Specify the URL of a CSS file to include in the style guide'
+  })
+  .options('js', {
+    string    : true,
+    describe  : 'Specify the URL of a JavaScript file to include in the style guide'
+  })
+
+  .options('custom', {
+    string    : true,
+    describe  : 'Process a custom property name when parsing KSS comments'
+  })
+
+  .options('source', {
+    string    : true,
+    describe  : 'Source directory to parse for KSS comments'
+  })
+  .options('destination', {
+    string    : true,
+    describe  : 'Destination directory of generated style guide',
+    default   : 'styleguide'
+  })
+
+  .config('config')
+  .alias('config', 'c')
+  .describe('config', 'Load the kss-node configuration from a json file')
+
+  .options('xdemo', {
+    boolean   : true,
+    // Alias is redundant, but prevents "Unknown argument: xdemo" error.
+    alias     : 'xdemo'
+  })
+
+  .version(version, 'version')
+  .help('help')
+  .alias('help', 'h')
+  .alias('help', '?')
+  .argv;
+
+// Help determine which options are specified in a config json file by loading
+// the json file.
+if (generatorConfig.config) {
+  // Make config paths relative to config file.
+  configPath = path.resolve(generatorConfig.config);
+  configFile = require(configPath);
+  configPath = path.dirname(configPath);
 }
 
-/**
- * Returns a single section, found by its reference number
- * @param  {String|Number} reference The reference number to search for.
- */
-handlebars.registerHelper('section', function(reference, options) {
-	var section = styleguide.section(reference);
-
-	return section ? options.fn(section.data) : false;
+// If an option is specified multiple times, yargs will convert it into an
+// array. Ensure these options are not an array.
+["destination", "template", "helpers"].forEach(function(key) {
+  // Only use the first value specified, ignoring the others.
+  if (generatorConfig[key] instanceof Array) {
+    generatorConfig[key] = generatorConfig[key].pop();
+  }
+  if (configFile[key] instanceof Array) {
+    configFile[key] = configFile[key].pop();
+  }
 });
 
-/**
- * Loop over a section query. If a number is supplied, will convert into
- * a query for all children and descendants of that reference.
- * @param  {Mixed} query The section query
- */
-handlebars.registerHelper('eachSection', function(query, options) {
-	var buffer = '',
-		sections,
-		i, l;
+// Explicitly check if the --init option was called since generatorConfig.init
+// will contain a default value.
+if ("init" in yargs.argv || "i" in yargs.argv) {
+  // Use the default value if --init is not given a path.
+  if (typeof generatorConfig.init === "boolean") {
+    generatorConfig.init = 'styleguide-template';
+  }
+}
+else {
+  delete generatorConfig.init;
+}
 
-	if (!query.match(/\bx\b|\*/g)) {
-		query = query + '.*';
-	}
-	sections = styleguide.section(query);
-	if (!sections) return '';
+// Get the full source path.
+if (generatorConfig.xdemo) {
+  generatorConfig.source = [__dirname + '/../demo'];
+  generatorConfig.css = ['public/styles.css'];
+}
+else {
+  if (!generatorConfig.source) {
+    generatorConfig.source = [];
+  }
+  if (generatorConfig._.length > 0) {
+    generatorConfig.source.push(generatorConfig._[0]);
+  }
+}
 
-	l = sections.length;
-	for (i = 0; i < l; i += 1) {
-		buffer += options.fn(sections[i].data);
-	}
+// Check if the destination is the second unnamed parameter.
+if (!("destination" in yargs.argv) && generatorConfig._.length > 1) {
+  generatorConfig.destination = generatorConfig._[1];
+}
 
-	return buffer;
+// Don't use the default value if the helpers option is not specified.
+if (!("helpers" in yargs.argv) && !configFile.helpers) {
+  generatorConfig.helpers = generatorConfig.template + '/helpers';
+}
+
+// Ensure these options are an array.
+["source", "custom", "css", "js"].forEach(function(key) {
+  if (typeof generatorConfig[key] === "string") {
+    generatorConfig[key] = [generatorConfig[key]];
+  }
+  if (typeof configFile[key] === "string") {
+    configFile[key] = [configFile[key]];
+  }
 });
 
-/**
- * Loop over each section root, i.e. each section only one level deep.
- */
-handlebars.registerHelper('eachRoot', function(options) {
-	var buffer = '',
-		sections,
-		i, l;
-
-	sections = styleguide.section('x');
-	if (!sections) return '';
-
-	l = sections.length;
-	for (i = 0; i < l; i += 1) {
-		buffer += options.fn(sections[i].data);
-	}
-
-	return buffer;
+// Resolve any paths relative to the config file or to the working directory.
+["init", "template", "helpers", "source", "destination"].forEach(function(key) {
+  if (typeof configFile[key] !== "undefined") {
+    generatorConfig[key] = resolveArray(configPath, configFile[key]);
+  }
+  else if (typeof generatorConfig[key] !== "undefined") {
+    generatorConfig[key] = resolveArray(generatorConfig[key]);
+  }
 });
 
-/**
- * Equivalent to "if the given reference is numeric". e.g:
- *
- * {{#ifNumeric reference}}
- * 	 REFERENCES LIKE 4.0 OR 4.1.14
- * 	{{else}}
- * 	 ANYTHING ELSE
- * {{/ifNumeric}}
- */
-handlebars.registerHelper('ifNumeric', function(reference, options) {
-	return (typeof reference == 'number' || typeof reference == 'string' && reference.match(/^[\.\d]+$/)) ? options.fn(this) : options.inverse(this);
-});
 
-/**
- * Equivalent to "if the current reference is X". e.g:
- *
- * {{#ifReference 'base.headings'}}
- * 	 IF CURRENT REFERENCE IS base.headings ONLY
- * 	{{else}}
- * 	 ANYTHING ELSE
- * {{/ifReference}}
- */
-handlebars.registerHelper('ifReference', function(reference, options) {
-	return (this.reference && reference == this.reference) ? options.fn(this) : options.inverse(this);
-});
+// If no source is specified, display help and exit.
+if (!generatorConfig.source.length && !generatorConfig.init) {
+  yargs.showHelp();
+  return;
+}
 
-/**
- * Equivalent to "unless the current reference is X". e.g:
- *
- * {{#unlessReference 'base.headings'}}
- * 	 ANYTHING ELSE
- * 	{{else}}
- * 	 IF CURRENT REFERENCE IS base.headings ONLY
- * {{/unlessReference}}
- */
-handlebars.registerHelper('unlessReference', function(reference, options) {
-	return (!this.reference || reference != this.reference) ? options.fn(this) : options.inverse(this);
-});
+// Load the template's generator.
+try {
+  // @TODO: See NOTE 1 below.
+  generator = require(generatorConfig.template).generator;
+} catch (e) {
+  // Templates don't have to load their own generator. If the template fails to
+  // load a generator, we assume it wanted the default generator.
+  generator = require('../generators/handlebars');
+};
 
-/**
- * Equivalent to "if the current section is X levels deep". e.g:
- *
- * {{#ifDepth 1}}
- * 	 ROOT ELEMENTS ONLY
- * 	{{else}}
- * 	 ANYTHING ELSE
- * {{/ifDepth}}
- */
-handlebars.registerHelper('ifDepth', function(depth, options) {
-	return (this.depth && depth == this.depth) ? options.fn(this) : options.inverse(this);
-});
+// Clone a template.
+if (generatorConfig.init) {
+  console.log('Creating a new style guide template...');
+  try {
+    generator.clone(generatorConfig.template, generatorConfig.init);
+  } catch (e) {
+    console.log(e);
+    return;
+  }
+  console.log('You can change it as you like, and use it with your style guide like so:');
+  console.log('');
+  console.log('kss-node [sourcedir] --template ' + generatorConfig.init);
+  console.log('');
+  return;
+}
 
-/**
- * Equivalent to "unless the current section is X levels deep". e.g:
- *
- * {{#unlessDepth 1}}
- * 	 ANYTHING ELSE
- * 	{{else}}
- * 	 ROOT ELEMENTS ONLY
- * {{/unlessDepth}}
- */
-handlebars.registerHelper('unlessDepth', function(depth, options) {
-	return (!this.depth || depth != this.depth) ? options.fn(this) : options.inverse(this);
-});
+// Initialize the generator.
+generator.init(generatorConfig);
 
-/**
- * Similar to the {#eachSection} helper, however will loop over each modifier
- * @param  {Object} section Supply a section object to loop over its modifiers. Defaults to the current section.
- */
-handlebars.registerHelper('eachModifier', function() {
-	var modifiers,
-		options = arguments[arguments.length - 1],
-		buffer = '',
-		i, l;
-
-	// Default to current modifiers, but allow supplying a custom section.
-	modifiers = (arguments.length > 1 && arguments[0].data) ? arguments[0].data.modifiers : this.modifiers;
-
-	if (!modifiers) return '';
-
-	l = modifiers.length;
-	for (i = 0; i < l; i++) {
-		buffer += options.fn(modifiers[i].data || '');
-	}
-	return buffer;
-});
-
-/**
- * Similar to the {#eachSection} helper, however will loop over each parameter
- * @param  {Object} section Supply a section object to loop over its parameters. Defaults to the current section.
- */
-handlebars.registerHelper('eachParameter', function() {
-	var parameters,
-		options = arguments[arguments.length - 1],
-		buffer = '',
-		i, l;
-
-	// Default to current parameters, but allow supplying a custom section.
-	parameters = (arguments.length > 1 && arguments[0].data) ? arguments[0].data.parameters : this.parameters;
-
-	if (!parameters) return '';
-
-	l = parameters.length;
-	for (i = 0; i < l; i++) {
-		buffer += options.fn(parameters[i].data || '');
-	}
-	return buffer;
-});
-
-/**
- * Outputs the current section's or modifier's markup.
- */
-handlebars.registerHelper('markup', function() {
-	var section,
-		modifier = false,
-		template,
-		partial,
-		data;
-
-	if (!this) {
-		return '';
-	}
-
-	// Determine if the element is a section object or a modifier object.
-	if (this.modifiers) {
-		// If this is the section object, use the default markup without a modifier class.
-		section = new kss.KssSection(this);
-	}
-	else {
-		// If this is the markup object, find the modifier class and the section object.
-		modifier = new kss.KssModifier(this);
-		section = modifier.section();
-	}
-
-	// Load the information about this section's markup partial.
-	partial = cache.partial[section.reference()];
-
-	// Prepare the sample data for the partial.
-	data = JSON.parse(JSON.stringify(partial.data));
-	if (data.modifier_class) {
-		data.modifier_class += modifier ? ' ' + modifier.className() : '';
-	}
-	else {
-		data.modifier_class = modifier ? modifier.className() : '';
-	}
-
-	// Compile the section's markup partial into a template.
-	template = handlebars.compile('{{> "' + partial.name + '"}}');
-	// We don't wrap the rendered template in "new handlebars.SafeString()" since
-	// we want the ability to display it as a code sample with {{ }} and as
-	// rendered HTML with {{{ }}}.
-	return template(data);
-});
-
-/**
- * Deprecated variable replaced with {{homepage}}.
- */
-handlebars.registerHelper('overview', function() {
-	throw 'The overview variable is deprecated; if your template has {{overview}}, replace it with {{homepage}}.';
-});
-
-/**
- * Deprecated variable replaced with {{depth}}.
- */
-handlebars.registerHelper('refDepth', function() {
-	throw 'The refDepth variable is deprecated; if your template has {{refDepth}}, replace it with {{depth}}.';
-});
-
-/**
- * Deprecated variable replaced with {{rootName}}.
- */
-handlebars.registerHelper('rootNumber', function() {
-	throw 'The rootNumber variable is deprecated; if your template has {{rootNumber}}, replace it with {{rootName}}.';
-});
-
-/**
- * Deprecated helper replaced with {{{expression}}}.
- */
-handlebars.registerHelper('html', function(arg) {
-	throw '{{html expression}} is deprecated; use HandleBars’ triple-stash instead: {{{expression}}}.';
-});
-
-/**
- * Deprecated helper replaced with {{#if markup}}...{{/if}}.
- */
-handlebars.registerHelper('ifAny', function() {
-	throw 'IfAny is deprecated; if your template has {{#ifAny markup modifiers}}...{{/ifAny}}, replace it with {{#if markup}}...{{/if}}.';
-});
-
-/**
- * Deprecated helper replaced with {{{markup}}}.
- */
-handlebars.registerHelper('modifierMarkup', function() {
-	throw 'The modifierMarkup Handlebars helper is deprecated; if your template has {{modifierMarkup}}, replace it with {{{markup}}}.';
-});
-
-/**
- * Deprecated helper replaced with {{ifDepth expression}}.
- */
-handlebars.registerHelper('whenDepth', function(depth, options) {
-	throw '{{whenDepth expression}} is deprecated; use {{ifDepth expression}} instead.';
+// Parse and generate the static HTML pages in the next tick.
+process.nextTick(function() {
+  // We use a closure so we can use the generator object's methods and
+  // properties when generator.generate() is used as a callback.
+  generator.parse(
+    (function(object) {
+      return function() {
+        object.generate.apply(object, arguments);
+      };
+    })(generator)
+  );
 });
 
 process.on('exit', function() {
-	if (!KSS_FAILED) {
-		console.log('');
-		console.log('Generation completed successfully!');
-		console.log('');
-	}
+  if (!KSS_FAILED) {
+    console.log('');
+    console.log('Generation completed successfully!');
+    console.log('');
+  }
 });
 
 process.on('uncaughtException', function(err) {
-	console.log('\nError during generation\n');
+  console.log('\nError during generation\n');
 
-	if (err.message || err.stack) {
-		console.log(err.message);
-		console.log(err.stack);
-	}
-	else
-		console.log(err);
+  if (err.message || err.stack) {
+    console.log(err.message);
+    console.log(err.stack);
+  }
+  else
+    console.log(err);
 
-	KSS_FAILED = true;
-	process.exit(1);
+  KSS_FAILED = true;
+  process.exit(1);
 });
+
+// NOTE 1: This require() line will always fail while testing a git clone of
+// this module. In order for a bundled template to be "clone"-able, it must use
+// the require('kss/generators/path') syntax (instead of the requiring a
+// relative path). Thus, when requiring its generator, the template will throw
+// an error since this kss module has been git cloned and not installed via npm.
+// This limitation will need to be fixed if additional generators are added to
+// the module.
