@@ -201,7 +201,7 @@ try {
   // Templates don't have to load their own generator. If the template fails to
   // load a generator, we assume it wanted the default generator.
   generator = require('../generators/handlebars');
-};
+}
 
 // Clone a template.
 if (generatorConfig.init) {
