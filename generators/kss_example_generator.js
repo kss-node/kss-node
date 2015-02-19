@@ -23,7 +23,7 @@ module.exports = KssExampleGenerator = new KssGenerator();
  */
 KssExampleGenerator.prototype.clone = function(templatePath, destinationPath) {
   console.log('Example template cloned! (not really.)');
-}
+};
 
 /**
  * Initialize the style guide creation process.
@@ -72,7 +72,7 @@ KssExampleGenerator.prototype.parse = function(callback) {
     if (err) throw err;
     callback(styleguide);
   });
-}
+};
 
 /**
  * Generate the HTML files of the style guide given a KssStyleguide object.
@@ -85,4 +85,4 @@ KssExampleGenerator.prototype.parse = function(callback) {
  */
 KssExampleGenerator.prototype.generate = function(styleguide) {
   console.log('...Generating the demo style guide.' + this.warning);
-}
+};

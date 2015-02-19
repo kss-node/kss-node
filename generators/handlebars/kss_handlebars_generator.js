@@ -80,7 +80,7 @@ KssHandlebarsGenerator.init = function(config) {
   // Compile the Handlebars template.
   this.template = fs.readFileSync(this.config.template + '/index.html', 'utf8');
   this.template = this.Handlebars.compile(this.template);
-}
+};
 
 /**
  * Generate the HTML files of the style guide given a KssStyleguide object.
@@ -97,7 +97,8 @@ KssHandlebarsGenerator.generate = function(styleguide) {
     partials = {},
     partial,
     files = [],
-    i;
+    i,
+    key;
 
   console.log(styleguide.data.files.map(function(file) {
     return ' - ' + file;
@@ -125,7 +126,7 @@ KssHandlebarsGenerator.generate = function(styleguide) {
         partial.file = partial.markup;
         partial.name = path.basename(partial.file, path.extname(partial.file));
         files = [];
-        for (var key in this.config.source) {
+        for (key in this.config.source) {
           if (!files.length) {
             files = glob.sync(this.config.source[key] + '/**/' + partial.file);
           }
@@ -197,13 +198,14 @@ KssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
     homepageText = false,
     styles = '',
     scripts = '',
-    customFields = this.config.custom;
+    customFields = this.config.custom,
+    key;
 
   if (root == 'styleguide.homepage') {
     filename = 'index.html';
     console.log(' - homepage');
     // Ensure homepageText is a non-false value.
-    for (var key in this.config.source) {
+    for (key in this.config.source) {
       if (!homepageText) {
         try {
           files = glob.sync(this.config.source[key] + '/**/styleguide.md');
@@ -227,10 +229,10 @@ KssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
     );
   }
   // Create the HTML to load the optional CSS and JS.
-  for (var key in this.config.css) {
+  for (key in this.config.css) {
     styles = styles + '<link rel="stylesheet" href="' + this.config.css[key] + '">\n';
   }
-  for (var key in this.config.js) {
+  for (key in this.config.js) {
     scripts = scripts + '<script src="' + this.config.js[key] + '"></script>\n';
   }
   fs.writeFileSync(this.config.destination + '/' + filename,
