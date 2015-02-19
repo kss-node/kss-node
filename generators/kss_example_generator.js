@@ -1,21 +1,18 @@
-/* **************************************************************
-   See kss_example_generator.js for how to implement a generator.
-   ************************************************************** */
+// Define "KssExampleGenerator" as the name of our example template engine.
+var KssExampleGenerator,
+  // Import the KssGenerator object. We will use its API to scaffold our
+  // generator.
+  KssGenerator = require('kss/generator'),
+  path = require('path');
 
-var KssGenerator,
-  Kss = require('../lib/kss.js'),
-  wrench = require('wrench');
 
 /**
- * Export the KssGenerator object.
+ * Export our "KssExampleGenerator" object.
  *
- * This is the base object used by all kss-node generators.
+ * Our generator is an instance of the KssGenerator object with
+ * additional functionality added by overriding the parent methods.
  */
-module.exports = KssGenerator = function () {
-  if (!(this instanceof KssGenerator)) {
-    return new KssGenerator();
-  }
-};
+module.exports = KssExampleGenerator = new KssGenerator();
 
 /**
  * Clone a template's files.
@@ -24,23 +21,9 @@ module.exports = KssGenerator = function () {
  * location. An instance of KssGenerator does not need to override this
  * method, but it can if it needs to do something more complicated.
  */
-KssGenerator.prototype.clone = function(templatePath, destinationPath) {
-  try {
-    error = wrench.copyDirSyncRecursive(
-      templatePath,
-      destinationPath,
-      {
-        forceDelete: false,
-        excludeHiddenUnix: true
-      }
-    );
-    if (error) {
-      throw error;
-    }
-  } catch (e) {
-    throw 'Error! This folder already exists: ' + destinationPath;
-  }
-};
+KssExampleGenerator.prototype.clone = function(templatePath, destinationPath) {
+  console.log('Example template cloned! (not really.)');
+}
 
 /**
  * Initialize the style guide creation process.
@@ -51,9 +34,17 @@ KssGenerator.prototype.clone = function(templatePath, destinationPath) {
  *
  * @param {array} config Array of configuration for the requested generation.
  */
-KssGenerator.prototype.init = function(config) {
+KssExampleGenerator.init = function(config) {
   // At the very least, generators MUST save the configuration parameters.
   this.config = config;
+
+  // This example generator hard-codes the demo source.
+  this.config.source = path.resolve('../demo');
+  this.warning = ' (not really.)';
+
+  // A real generator should initialize the template system being used by this
+  // generator. For example, KssHandlebarsGenerator loads and initializes the
+  // Handlebars templating system.
 };
 
 /**
@@ -64,8 +55,8 @@ KssGenerator.prototype.init = function(config) {
  * @param {function} callback Function that takes a KssStyleguide and generates
  *                            the HTML files of the style guide.
  */
-KssGenerator.prototype.parse = function(callback) {
-  console.log('...Parsing your style guide:');
+KssExampleGenerator.prototype.parse = function(callback) {
+  console.log('...Parsing the demo style guide:');
 
   // The default parse() method looks at the paths to the source folders and
   // uses KSS' traverse method to load, read and parse the source files. Other
@@ -92,5 +83,6 @@ KssGenerator.prototype.parse = function(callback) {
  *
  * @param {KssStyleguide} styleguide The KSS style guide in object format.
  */
-KssGenerator.prototype.generate = function(styleguide) {
+KssExampleGenerator.prototype.generate = function(styleguide) {
+  console.log('...Generating the demo style guide.' + this.warning);
 }
