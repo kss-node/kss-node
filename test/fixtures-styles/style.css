@@ -9,13 +9,13 @@ A button suitable for giving stars to someone.
 Styleguide 2.1.3.
 */
 a.button.star {
-	background:#ddd;
+  background:#ddd;
 }
 a.button.star.stars-given {
-	background:#ff8;
+  background:#ff8;
 }
 a.button.star.disabled {
-	background:#888;
+  background:#888;
 }
 
 /*
