@@ -33,7 +33,7 @@ There's an example project in the [demo directory](https://github.com/kss-node/k
 
 Just one line: `npm install kss`. Or, if you have a package.json for your project, with: `npm install kss --save-dev`.
 
-After that, the command line tool can be found at `./node_modules/.bin/kss-node`.
+After that, the command line tool can be found at `./node_modules/bin/kss-node`.
 
 If you know what you are doing, you can install it globally with: `npm install -g kss`
 
