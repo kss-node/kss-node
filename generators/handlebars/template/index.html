@@ -77,9 +77,21 @@
     <div class="kss-style">
       <h{{depth}} class="kss-title kss-title--level-{{depth}}">
         <a class="kss-title__permalink" href="#kssref-{{referenceURI}}">
-          <span class="kss-title__ref">{{#ifNumeric reference}}{{reference}}{{else}}{{autoincrement}}{{/ifNumeric}}</span
-          >{{header}}
-          <span class="kss-title__permalink-hash">#permalink</span>
+          <span class="kss-title__ref">
+            {{#ifNumeric reference}}
+              {{reference}}
+            {{else}}
+              {{autoincrement}}
+            {{/ifNumeric}}
+            <span class="kss-title__permalink-hash">
+              {{#ifNumeric reference}}
+                #permalink
+              {{else}}
+                #{{referenceURI}}
+              {{/ifNumeric}}
+            </span>
+          </span>
+          {{header}}
         </a>
       </h{{depth}}>
 
