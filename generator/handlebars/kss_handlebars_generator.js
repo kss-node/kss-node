@@ -224,6 +224,7 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
     homepageText = false,
     styles = '',
     scripts = '',
+    title = '',
     customFields = this.config.custom,
     key;
 
@@ -263,6 +264,10 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
     scripts = scripts + '<script src="' + this.config.js[key] + '"></script>\n';
   }
 
+  if (this.config.title) {
+    title = this.config.title;
+  }
+
   /*eslint-disable key-spacing*/
   fs.writeFileSync(this.config.destination + '/' + filename,
     this.template({
@@ -276,7 +281,8 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
       argv:         this.config || {},
       homepage:     homepageText,
       styles:       styles,
-      scripts:      scripts
+      scripts:      scripts,
+      title:        title
     })
   );
   /*eslint-enable key-spacing*/
