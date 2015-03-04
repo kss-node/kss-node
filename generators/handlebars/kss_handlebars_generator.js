@@ -204,6 +204,7 @@ KssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
     homepageText = false,
     styles = '',
     scripts = '',
+    sitename = '',
     customFields = this.config.custom,
     key;
 
@@ -241,6 +242,12 @@ KssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
   for (key in this.config.js) {
     scripts = scripts + '<script src="' + this.config.js[key] + '"></script>\n';
   }
+
+  // Load sitename from configuration options
+  if (this.config.sitename) {
+    sitename = this.config.sitename
+  }
+
   fs.writeFileSync(this.config.destination + '/' + filename,
     this.template({
       partials:     partials,
@@ -253,7 +260,8 @@ KssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
       argv:         this.config || {},
       homepage:     homepageText,
       styles:       styles,
-      scripts:      scripts
+      scripts:      scripts,
+      sitename:     sitename
     })
   );
 };
