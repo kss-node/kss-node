@@ -244,7 +244,7 @@ KssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
   }
 
   if (this.config.title) {
-    title = this.config.title
+    title = this.config.title;
   }
 
   fs.writeFileSync(this.config.destination + '/' + filename,
