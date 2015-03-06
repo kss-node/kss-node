@@ -1,4 +1,33 @@
-/node_modules
-.DS_Store
+# Exclude stuff specific to this project.
+node_modules
 /test/output
-/lib/template/node_modules/
+
+# Exclude IDE management files.
+  # Eclipse
+.project
+.settings
+.buildpath
+  # Netbeans
+netbeans
+nbproject
+  # Komodo
+*.kpf
+  # PHPStorm
+.idea
+
+# Exclude hidden OS files.
+.DS_Store
+._*
+Thumbs.db
+
+# Exclude Sass temp files.
+.sass-cache
+
+# Exclude files used by FTP, Dreamweaver, Frontpage, vi, etc.
+WS_FTP.LOG
+_notes
+_vti_*
+*.LCK
+*.TMP
+*~
+*.bbprojectd
