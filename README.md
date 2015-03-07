@@ -6,6 +6,12 @@ There's an example project in the [demo directory](https://github.com/kss-node/k
 
 ## Installation
 
+You should first install the dependencies you need to get KSS running:
+
+Install nodejs from https://nodejs.org/
+
+`npm install kss`
+
 Just one line: `npm install kss`. If you want to use the command line interface, make sure the installation is global: `npm install -g kss`
 
 ## Using the CLI
