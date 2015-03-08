@@ -169,6 +169,10 @@ suite('KssStyleguide', function() {
         assert.equal(sections.length, 6);
       });
 
+      sectionQuery('alp.* does not match alpha.*', 'alp.*', { mask: 'sections-order.less' }, function(styleguide, sections) {
+        assert.equal(sections.length, 0);
+      });
+
       sectionQuery('Numeric sections should be returned in order', '9.x', { mask: 'sections-order.less' }, function(styleguide, sections) {
         var i,
           l = sections.length,
