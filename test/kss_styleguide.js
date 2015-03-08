@@ -206,6 +206,11 @@ suite('KssStyleguide', function() {
         assert.equal(sections.length, 5);
       });
 
+      sectionQuery('"Word key" sections with dashes in the name should be returned', 'alpha-bet.*', { mask: 'sections-order.less' }, function(styleguide, sections) {
+        assert.equal(sections.length, 1);
+        assert.equal( sections[0].data.reference, 'alpha-bet' );
+      });
+
       sectionQuery('"Word phrase" sections should be returned in order', 'beta.x', { mask: 'sections-order.less' }, function(styleguide, sections) {
         var i,
           l = sections.length,
@@ -244,14 +249,14 @@ suite('KssStyleguide', function() {
         assert.equal(sections.length, 10);
       });
 
-      sectionQuery('"Word key" sections should be returned in order', /alpha.*/, { mask: 'sections-order.less' }, function(styleguide, sections) {
+      sectionQuery('"Word key" sections should be returned in order', /alpha\..*/, { mask: 'sections-order.less' }, function(styleguide, sections) {
         var i,
           l = sections.length,
-          expectedOrder = ['alpha', 'alpha.alpha', 'alpha.alpha.alpha', 'alpha.beta', 'alpha.delta', 'alpha.epsilon', 'alpha.gamma'];
+          expectedOrder = ['alpha.alpha', 'alpha.alpha.alpha', 'alpha.beta', 'alpha.delta', 'alpha.epsilon', 'alpha.gamma'];
         for (i = 0; i < l; i += 1) {
           assert.equal( sections[i].data.reference, expectedOrder[i] );
         }
-        assert.equal(sections.length, 7);
+        assert.equal(sections.length, 6);
       });
 
       sectionQuery('"Word phrase" sections should be returned in order', /beta - .*/, { mask: 'sections-order.less' }, function(styleguide, sections) {
@@ -277,7 +282,7 @@ suite('KssStyleguide', function() {
       sectionQuery('Autoincrement values for sections should be returned in order', /gamma - .*/, { mask: 'sections-order.less' }, function(styleguide, sections) {
         var i,
           l = sections.length,
-          expectedOrder = ['4.1', '4.1.1', '4.1.2', '4.1.3', '4.1.4', '4.2', '4.3', '4.4', '4.5'];
+          expectedOrder = ['5.1', '5.1.1', '5.1.2', '5.1.3', '5.1.4', '5.2', '5.3', '5.4', '5.5'];
         for (i = 0; i < l; i += 1) {
           assert.equal( sections[i].data.autoincrement, expectedOrder[i] );
         }
