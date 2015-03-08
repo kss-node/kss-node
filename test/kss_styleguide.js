@@ -122,7 +122,16 @@ suite('KssStyleguide', function() {
       });
     });
     suite('String Queries', function() {
-      sectionQuery('4.1.x returns 4.1.1 and 4.1.2', '4.1.x', options, function(styleguide, sections) {
+      sectionQuery('4.x returns children of section 4', '4.x', options, function(styleguide, sections) {
+        assert.ok(sections);
+        sections.map(function(section) {
+          assert.ok(section.data.reference === '4.1');
+          assert.ok(section.data.header === 'DEPTH OF 2');
+        });
+        assert.equal(sections.length, 1);
+      });
+
+      sectionQuery('4.1.x returns children of section 4.1', '4.1.x', options, function(styleguide, sections) {
         assert.ok(sections);
         sections.map(function(section) {
           assert.ok(section.data.reference === '4.1.1' || section.data.reference === '4.1.2');
@@ -131,7 +140,7 @@ suite('KssStyleguide', function() {
         assert.equal(sections.length, 2);
       });
 
-      sectionQuery('4.x.x returns 4.1, 4.1.1 and 4.1.2', '4.x.x', options, function(styleguide, sections) {
+      sectionQuery('4.x.x returns children and grandchildren of section 4', '4.x.x', options, function(styleguide, sections) {
         assert.ok(sections);
         sections.map(function(section) {
           assert.ok(section.data.reference === '4.1' || section.data.reference === '4.1.1' || section.data.reference === '4.1.2');
@@ -169,7 +178,11 @@ suite('KssStyleguide', function() {
         assert.equal(sections.length, 6);
       });
 
-      sectionQuery('alp.* does not match alpha.*', 'alp.*', { mask: 'sections-order.less' }, function(styleguide, sections) {
+      sectionQuery('alp.* does not match alpha', 'alp.*', { mask: 'sections-order.less' }, function(styleguide, sections) {
+        assert.equal(sections.length, 0);
+      });
+
+      sectionQuery('alp.x does not match alpha', 'alp.x', { mask: 'sections-order.less' }, function(styleguide, sections) {
         assert.equal(sections.length, 0);
       });
 
