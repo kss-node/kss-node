@@ -49,7 +49,7 @@ suite('.traverse()', function() {
         kss.traverse(styleDirectory, { mask: maskAll }, function(err, styleguide) {
           assert.ok(styleguide.data);
           assert.ok(Array.isArray(styleguide.data.files));
-          assert.equal(styleguide.data.files.length, 28);
+          assert.equal(styleguide.data.files.length, 29);
           done();
         });
       });
