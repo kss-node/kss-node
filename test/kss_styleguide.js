@@ -211,7 +211,7 @@ suite('KssStyleguide', function() {
         assert.equal( sections[0].data.reference, 'alpha-bet' );
       });
 
-      sectionQuery('"Word phrase" sections should be returned in order', 'beta.x', { mask: 'sections-order.less' }, function(styleguide, sections) {
+      sectionQuery('"Word phrase" sections should be returned in order', 'beta.x', { mask: 'sections-order-word-phrases.less' }, function(styleguide, sections) {
         var i,
           l = sections.length,
           expectedOrder = ['beta - alpha', 'beta - beta', 'beta - delta', 'beta - epsilon', 'beta - gamma'];
@@ -259,7 +259,7 @@ suite('KssStyleguide', function() {
         assert.equal(sections.length, 6);
       });
 
-      sectionQuery('"Word phrase" sections should be returned in order', /beta - .*/, { mask: 'sections-order.less' }, function(styleguide, sections) {
+      sectionQuery('"Word phrase" sections should be returned in order', /beta - .*/, { mask: 'sections-order-word-phrases.less' }, function(styleguide, sections) {
         var i,
           l = sections.length,
           expectedOrder = ['beta - alpha', 'beta - alpha - alpha', 'beta - beta', 'beta - delta', 'beta - epsilon', 'beta - gamma'];
@@ -269,7 +269,7 @@ suite('KssStyleguide', function() {
         assert.equal(sections.length, 6);
       });
 
-      sectionQuery('Weighted "word phrase" sections should be returned in order', /gamma - .*/, { mask: 'sections-order.less' }, function(styleguide, sections) {
+      sectionQuery('Weighted "word phrase" sections should be returned in order', /gamma - .*/, { mask: 'sections-order-word-phrases.less' }, function(styleguide, sections) {
         var i,
           l = sections.length,
           expectedOrder = ['gamma - alpha', 'gamma - alpha - delta', 'gamma - alpha - gamma', 'gamma - alpha - beta', 'gamma - alpha - alpha', 'gamma - beta', 'gamma - gamma', 'gamma - delta', 'gamma - epsilon'];
@@ -279,10 +279,10 @@ suite('KssStyleguide', function() {
         assert.equal(sections.length, 9);
       });
 
-      sectionQuery('Autoincrement values for sections should be returned in order', /gamma - .*/, { mask: 'sections-order.less' }, function(styleguide, sections) {
+      sectionQuery('Autoincrement values for sections should be returned in order', /gamma - .*/, { mask: 'sections-order-word-phrases.less' }, function(styleguide, sections) {
         var i,
           l = sections.length,
-          expectedOrder = ['5.1', '5.1.1', '5.1.2', '5.1.3', '5.1.4', '5.2', '5.3', '5.4', '5.5'];
+          expectedOrder = ['2.1', '2.1.1', '2.1.2', '2.1.3', '2.1.4', '2.2', '2.3', '2.4', '2.5'];
         for (i = 0; i < l; i += 1) {
           assert.equal( sections[i].data.autoincrement, expectedOrder[i] );
         }
