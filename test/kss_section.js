@@ -54,7 +54,7 @@ suite('KssSection', function() {
   suite('.depth()', function() {
     common.testAllSections('returns section.data.depth', '*.less|*.css', function(section) {
       assert.equal(section.depth(), section.data.depth);
-      assert.equal(section.depth(), section.reference().split(/(?:\.|\ \-\ )/).length);
+      assert.equal(section.depth(), section.reference().split(section.styleguide.referenceDelimiter).length);
     });
   });
 
