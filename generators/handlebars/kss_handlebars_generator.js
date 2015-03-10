@@ -172,7 +172,7 @@ KssHandlebarsGenerator.generate = function(styleguide) {
 
     // Accumulate all of the sections' first indexes
     // in case they don't have a root element.
-    currentRoot = sections[i].reference().split(/(?:\.|\s+\-\s+)/)[0];
+    currentRoot = sections[i].reference().split(/(?:\.|\ \-\ )/)[0];
     if (sectionRoots.indexOf(currentRoot) === -1) {
       sectionRoots.push(currentRoot);
     }
