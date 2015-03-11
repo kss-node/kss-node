@@ -4,5 +4,6 @@
   "css": [
     "public/styles.css"
   ],
-  "xdemo":        1
+  "xdemo":        1,
+  "homepage":  "homepage.md"
 }

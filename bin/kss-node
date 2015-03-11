@@ -44,7 +44,6 @@ resolveArray = function(from, to) {
 generatorConfig = yargs
   .usage('Usage: kss-node <source> [destination] [options]')
   .wrap(80)
-  .strict()
 
   .options('init', {
     alias     : 'i',
@@ -92,6 +91,12 @@ generatorConfig = yargs
     string    : true,
     describe  : 'Destination directory of generated style guide',
     default   : 'styleguide'
+  })
+
+  .options('homepage', {
+    string    : true,
+    describe  : 'Destination of homepage markdown file',
+    default   : 'styleguide.md'
   })
 
   .config('config')

@@ -211,10 +211,11 @@ KssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
     filename = 'index.html';
     console.log(' - homepage');
     // Ensure homepageText is a non-false value.
+
     for (key in this.config.source) {
       if (!homepageText) {
         try {
-          files = glob.sync(this.config.source[key] + '/**/styleguide.md');
+          files = glob.sync(this.config.source[key] + '/**/' + this.config.homepage);
           if (files.length) {
             homepageText = ' ' + marked(fs.readFileSync(files[0], 'utf8'));
           }
