@@ -13,14 +13,15 @@
   <meta name="viewport" content="width=device-width">
 
   <link rel="stylesheet" href="public/kss.css">
-  {{{styles}}}
+  {{ styles }}
 </head>
-<body id="kss-node">
+<body class="{{ body_classes }}" id="kss-node">
 
 <div class="kss-sidebar kss-style">
   <header class="kss-header">
     <h1 class="kss-doc-title">kss-node<br>Style Guide</h1>
   </header>
+
   <nav class="kss-nav">
     <ul class="kss-nav__menu">
       <li class="kss-nav__menu-item">
@@ -29,12 +30,15 @@
           ><span class="kss-nav__name">Overview</span>
         </a>
       </li>
-    {{#eachRoot}}
+
+    {% for section in sectionRoots %}
       <li class="kss-nav__menu-item">
         <a href="section-{{referenceURI}}.html">
-          <span class="kss-nav__ref">{{#ifNumeric reference}}{{reference}}{{else}}{{autoincrement}}{{/ifNumeric}}</span
-          ><span class="kss-nav__name">{{header}}</span>
+          <span class="kss-nav__ref">{{ section.reference }}</span
+          ><span class="kss-nav__name">{{ section.header }}</span>
         </a>
+      {# the children of the sectionRoots #}
+      {#
       {{#ifReference ../rootName}}
         <ul class="kss-nav__menu-child">
         {{#eachSection reference}}
@@ -49,108 +53,100 @@
         {{/eachSection}}
         </ul>
       {{/ifReference}}
+      #}
       </li>
-    {{/eachRoot}}
+      {% endfor %}
+
     </ul>
   </nav>
 </div>
-<article role="main" class="kss-main">
-{{#if homepage}}
-  <div id="kssref-0" class="kss-section kss-section--depth-0 kss-overview kss-style">
-    {{{homepage}}}
-  </div>
-{{else}}
 
-  {{!
+<article role="main" class="kss-main">
+{% if homepage %}
+  <div id="kssref-0" class="kss-section kss-section--depth-0 kss-overview kss-style">
+    {{ homepage }}
+  </div>
+{% else %}
+
+  {#
     Display each section, in order.
 
     The "root" element comes first in this loop, and can be detected using
     the "#ifDepth 1" block as seen below.
-  }}
-  {{#eachSection rootName}}
-    {{#ifDepth 1}}
-      <div     id="kssref-{{referenceURI}}" class="kss-section kss-section--depth-{{depth}}">
-    {{else}}
-      <section id="kssref-{{referenceURI}}" class="kss-section kss-section--depth-{{depth}}">
-    {{/ifDepth}}
+  #}
+
+  {% for section in sections %}
+    {% if section.depth == 1 %}
+      <div     id="kssref-{{ section.referenceURI }}" class="kss-section kss-section--depth-{{ section.depth }}">
+    {% else %}
+      <section id="kssref-{{ section.referenceURI }}" class="kss-section kss-section--depth-{{ section.depth }}">
+    {% endif  %}
 
     <div class="kss-style">
-      <h{{depth}} class="kss-title kss-title--level-{{depth}}">
-        <a class="kss-title__permalink" href="#kssref-{{referenceURI}}">
-          <span class="kss-title__ref">
-            {{#ifNumeric reference}}
-              {{reference}}
-            {{else}}
-              {{autoincrement}}
-            {{/ifNumeric}}
-            <span class="kss-title__permalink-hash">
-              {{#ifNumeric reference}}
-                #permalink
-              {{else}}
-                #{{referenceURI}}
-              {{/ifNumeric}}
-            </span>
-          </span>
-          {{header}}
+      <h{{ section.depth }} class="kss-title kss-title--level-{{ section.depth }}">
+        <a class="kss-title__permalink" href="#kssref-{{ section.referenceURI }}">
+          <span class="kss-title__ref">{{ section.reference }}{# {% if Numeric reference}}{{reference}}{{else}}{{autoincrement}}{{/ifNumeric}} #}</span
+          >{{ section.header }}
+          <span class="kss-title__permalink-hash">#permalink</span>
         </a>
-      </h{{depth}}>
+      </h{{ section.depth }}>
 
-    {{#if parameters}}
+    {% if section.parameters %}
       <ul class="kss-parameters">
-      {{#eachParameter}}
+      {% for parameter in section.parameters %}
         <li class="kss-parameters__item">
-          <code class="kss-parameters__name">{{name}}</code>
-          <div class="kss-parameters__description">{{{description}}}</div>
+          <code class="kss-parameters__name">{{ parameter.name }}</code>
+          <div class="kss-parameters__description">{{ parameter.description }}</div>
         </li>
-      {{/eachParameter}}
+      {% endfor %}
       </ul>
-    {{/if}}
+    {% endif %}
 
-    {{#if description}}
+    {% if section.description %}
       <div class="kss-description">
-        {{{description}}}
+        {{ section.description }}
       </div>
-    {{/if}}
+    {% endif %}
     </div>
 
-    {{#if markup}}
+    {% if section.markup %}
       <div class="kss-modifier__wrapper">
         <div class="kss-modifier__heading kss-style">
-          Example{{#if modifiers}}s{{/if}}
+          Example{% if section.modifiers %}s{% endif %}
         </div>
-      {{#if modifiers}}
+      {% if section.modifiers %}
         <div class="kss-modifier__default-name kss-style">
           Default styling
         </div>
-      {{/if}}
+      {% endif %}
         <div class="kss-modifier__example">
-          {{{markup}}}
+          {{ section.markup }}
         </div>
-      {{#eachModifier}}
+      {% for modifier in section.modifiers %}
         <div class="kss-modifier__name kss-style">
-          {{name}}
+          {{ modifier.name }}
         </div>
         <div class="kss-modifier__description kss-style">
-          {{{description}}}
+          {{ modifier.description }}
         </div>
         <div class="kss-modifier__example">
-          {{{markup}}}
+          {{ section.markup }}
         </div>
-      {{/eachModifier}}
+      {% endfor %}
       </div>
 
       <div class="kss-markup kss-style">
-        <pre class="prettyprint linenums lang-html"><code data-language="html">{{markup}}</code></pre>
+        <pre class="prettyprint linenums lang-html"><code data-language="html">{{ section.markup|escape }}</code></pre>
       </div>
-    {{/if}}
+    {% endif %}
 
-    {{#ifDepth 1}}
+    {% if section.depth == 1 %}
       </div>
-    {{else}}
+    {% else %}
       </section>
-    {{/ifDepth}}
-  {{/eachSection}}
-{{/if}}
+    {% endif %}
+  {% endfor %}
+{% endif %}
 </article>
 
 <!-- SCRIPTS -->
@@ -159,15 +155,15 @@
 <script>
   prettyPrint();
 </script>
-{{{scripts}}}
+{{ scripts }}
 
-{{! This will only be included in the demo page. }}
-{{#if argv.xdemo}}
+{# This will only be included in the demo page. #}
+{% if argv.xdemo %}
   <footer class="kss-github">
     <!-- https://github.com/blog/273-github-ribbons -->
     <a href="https://github.com/kss-node/kss-node"><img src="public/github-fork--black.png" alt="Fork me on GitHub"></a>
   </footer>
-{{/if}}
+{% endif %}
 
 <!-- Automatically generated using <a href="https://github.com/kss-node/kss-node">kss-node</a>. -->
 </body>

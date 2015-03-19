@@ -62,7 +62,8 @@ KssTwigJSGenerator.init = function(config) {
   } catch (e) {}
 
   // Store the global TwigJS object.
-  this.TwigJS = require('twigjs');
+  var TwigJS = require('twig/twig.js');
+  this.Twig = TwigJS.twig;
 
   // Load TwigJS helpers.
   if (fs.existsSync(this.config.helpers)) {
@@ -71,21 +72,22 @@ KssTwigJSGenerator.init = function(config) {
 
     for (i = 0; i < helperFiles.length; i++) {
       if (path.extname(helperFiles[i]) !== '.js') {
-        return;
+        // this fails on the template directory
+        // return;
       }
       helper = require(this.config.helpers + '/' + helperFiles[i]);
       if (typeof helper.register === 'function') {
-        helper.register(this.TwigJS);
+        helper.register(this.Twig);
       }
     }
   }
 
   // Load the standard TwigJS helpers.
-  require('./helpers.js').register(this.TwigJS);
+  require('./helpers.js').register(this.Twig);
 
   // Compile the TwigJS template.
   this.template = fs.readFileSync(this.config.template + '/index.html', 'utf8');
-  this.template = this.TwigJS.compile(this.template);
+  this.template = this.Twig({data: this.template});
 };
 
 /**
@@ -128,7 +130,7 @@ KssTwigJSGenerator.generate = function(styleguide) {
         data: {}
       };
       // If the markup is a file path, attempt to load the file.
-      if (partial.markup.match(/^[^\n]+\.(html|hbs)$/)) {
+      if (partial.markup.match(/^[^\n]+\.(html|twig)$/)) {
         partial.file = partial.markup;
         partial.name = path.basename(partial.file, path.extname(partial.file));
         files = [];
@@ -161,7 +163,8 @@ KssTwigJSGenerator.generate = function(styleguide) {
       }
       // Register the partial using the filename (without extension) or using
       // the style guide reference.
-      this.TwigJS.registerPartial(partial.name, partial.markup);
+      // @TODO Doesn't exist in twig. What is an equivalent?
+      // this.Twig.registerPartial(partial.name, partial.markup);
       // Save the name of the partial and its data for retrieval in the markup
       // helper, where we only know the reference.
       partials[partial.reference] = {
@@ -185,7 +188,6 @@ KssTwigJSGenerator.generate = function(styleguide) {
   rootCount = sectionRoots.length;
   for (i = 0; i < rootCount; i += 1) {
     childSections = styleguide.section(sectionRoots[i]+'.*');
-
     this.generatePage(styleguide, childSections, sectionRoots[i], sectionRoots, partials);
   }
 
@@ -236,19 +238,26 @@ KssTwigJSGenerator.generatePage = function(styleguide, sections, root, sectionRo
   }
   // Create the HTML to load the optional CSS and JS.
   for (key in this.config.css) {
+    console.log(this.config.css[key])
     styles = styles + '<link rel="stylesheet" href="' + this.config.css[key] + '">\n';
   }
   for (key in this.config.js) {
     scripts = scripts + '<script src="' + this.config.js[key] + '"></script>\n';
   }
+
+  // here come the variables
+  var sectionsMap = sections.map(function(section) {
+    section.markup = section.markup(); // flatten markup into a string
+    return section.JSON(customFields);
+  });
+  console.log(sectionsMap)
+
   fs.writeFileSync(this.config.destination + '/' + filename,
-    this.template({
+    this.template.render({
       partials:     partials,
       styleguide:   styleguide,
       sectionRoots: sectionRoots,
-      sections:     sections.map(function(section) {
-        return section.JSON(customFields);
-      }),
+      sections:     sectionsMap,
       rootName:     root,
       argv:         this.config || {},
       homepage:     homepageText,
