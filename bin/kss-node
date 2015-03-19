@@ -187,6 +187,12 @@ if (!("helpers" in yargs.argv) && !configFile.helpers) {
   }
 });
 
+// Copy config that we need in the generator
+["css", "js"].forEach(function(key) {
+  if (typeof configFile[key] !== "undefined") {
+    generatorConfig[key] = configFile[key];
+  }
+});
 
 // Set up error handling.
 process.on('exit', function() {
