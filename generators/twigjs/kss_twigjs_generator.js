@@ -72,18 +72,17 @@ KssTwigJSGenerator.init = function(config) {
 
     for (i = 0; i < helperFiles.length; i++) {
       if (path.extname(helperFiles[i]) !== '.js') {
-        // this fails on the template directory
-        // return;
+        return;
       }
       helper = require(this.config.helpers + '/' + helperFiles[i]);
       if (typeof helper.register === 'function') {
-        helper.register(this.Twig);
+        helper.register(TwigJS);
       }
     }
   }
 
   // Load the standard TwigJS helpers.
-  require('./helpers.js').register(this.Twig);
+  require('./helpers.js').register(TwigJS);
 
   // Compile the TwigJS template.
   this.template = fs.readFileSync(this.config.template + '/index.html', 'utf8');
@@ -163,14 +162,13 @@ KssTwigJSGenerator.generate = function(styleguide) {
       }
       // Register the partial using the filename (without extension) or using
       // the style guide reference.
-      // @TODO Doesn't exist in twig. What is an equivalent?
-      // this.Twig.registerPartial(partial.name, partial.markup);
       // Save the name of the partial and its data for retrieval in the markup
       // helper, where we only know the reference.
-      partials[partial.reference] = {
-        name: partial.name,
-        data: partial.data
-      };
+      partials[partial.reference] = this.Twig({
+        id: partial.name,
+        data: partial.markup,
+        variables: partial.data
+      });
     }
 
     // Accumulate all of the sections' first indexes
@@ -250,7 +248,6 @@ KssTwigJSGenerator.generatePage = function(styleguide, sections, root, sectionRo
     section.markup = section.markup(); // flatten markup into a string
     return section.JSON(customFields);
   });
-  console.log(sectionsMap)
 
   fs.writeFileSync(this.config.destination + '/' + filename,
     this.template.render({
