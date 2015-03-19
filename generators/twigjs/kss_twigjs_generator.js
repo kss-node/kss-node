@@ -76,13 +76,13 @@ KssTwigJSGenerator.init = function(config) {
       }
       helper = require(this.config.helpers + '/' + helperFiles[i]);
       if (typeof helper.register === 'function') {
-        helper.register(TwigJS);
+        helper.register(TwigJS, this.config);
       }
     }
   }
 
   // Load the standard TwigJS helpers.
-  require('./helpers.js').register(TwigJS);
+  require('./helpers.js').register(TwigJS, this.config);
 
   // Compile the TwigJS template.
   this.template = fs.readFileSync(this.config.template + '/index.html', 'utf8');

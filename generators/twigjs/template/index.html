@@ -13,7 +13,7 @@
   <meta name="viewport" content="width=device-width">
 
   <link rel="stylesheet" href="public/kss.css">
-  {{ styles }}
+  {{ styles|raw }}
 </head>
 <body class="{{ body_classes }}" id="kss-node">
 
@@ -37,9 +37,7 @@
           <span class="kss-nav__ref">{{ section.reference }}</span
           ><span class="kss-nav__name">{{ section.header }}</span>
         </a>
-      {# the children of the sectionRoots #}
-      {#
-      {{#ifReference ../rootName}}
+      {# {{#ifReference ../rootName}}
         <ul class="kss-nav__menu-child">
         {{#eachSection reference}}
           {{#ifDepth 2}}
@@ -52,11 +50,9 @@
           {{/ifDepth}}
         {{/eachSection}}
         </ul>
-      {{/ifReference}}
-      #}
+      {{/ifReference}} #}
       </li>
-      {% endfor %}
-
+    {% endfor %}
     </ul>
   </nav>
 </div>
@@ -64,7 +60,7 @@
 <article role="main" class="kss-main">
 {% if homepage %}
   <div id="kssref-0" class="kss-section kss-section--depth-0 kss-overview kss-style">
-    {{ homepage }}
+    {{ homepage|raw }}
   </div>
 {% else %}
 
@@ -85,7 +81,7 @@
     <div class="kss-style">
       <h{{ section.depth }} class="kss-title kss-title--level-{{ section.depth }}">
         <a class="kss-title__permalink" href="#kssref-{{ section.referenceURI }}">
-          <span class="kss-title__ref">{{ section.reference }}{# {% if Numeric reference}}{{reference}}{{else}}{{autoincrement}}{{/ifNumeric}} #}</span
+          <span class="kss-title__ref">{{ section.reference }}</span
           >{{ section.header }}
           <span class="kss-title__permalink-hash">#permalink</span>
         </a>
@@ -104,7 +100,7 @@
 
     {% if section.description %}
       <div class="kss-description">
-        {{ section.description }}
+        {{ section.description|raw }}
       </div>
     {% endif %}
     </div>
@@ -120,17 +116,17 @@
         </div>
       {% endif %}
         <div class="kss-modifier__example">
-          {{ section.markup }}
+          {% markup %}
         </div>
       {% for modifier in section.modifiers %}
         <div class="kss-modifier__name kss-style">
           {{ modifier.name }}
         </div>
         <div class="kss-modifier__description kss-style">
-          {{ modifier.description }}
+          {{ modifier.description|raw }}
         </div>
         <div class="kss-modifier__example">
-          {{ section.markup }}
+          {% markup %}
         </div>
       {% endfor %}
       </div>
@@ -155,7 +151,7 @@
 <script>
   prettyPrint();
 </script>
-{{ scripts }}
+{{ scripts|raw }}
 
 {# This will only be included in the demo page. #}
 {% if argv.xdemo %}
