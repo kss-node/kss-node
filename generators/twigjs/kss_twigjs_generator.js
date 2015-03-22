@@ -236,25 +236,21 @@ KssTwigJSGenerator.generatePage = function(styleguide, sections, root, sectionRo
   }
   // Create the HTML to load the optional CSS and JS.
   for (key in this.config.css) {
-    console.log(this.config.css[key])
     styles = styles + '<link rel="stylesheet" href="' + this.config.css[key] + '">\n';
   }
   for (key in this.config.js) {
     scripts = scripts + '<script src="' + this.config.js[key] + '"></script>\n';
   }
 
-  // here come the variables
-  var sectionsMap = sections.map(function(section) {
-    section.markup = section.markup(); // flatten markup into a string
-    return section.JSON(customFields);
-  });
-
   fs.writeFileSync(this.config.destination + '/' + filename,
     this.template.render({
       partials:     partials,
       styleguide:   styleguide,
       sectionRoots: sectionRoots,
-      sections:     sectionsMap,
+      sections:     sections.map(function(section) {
+        section.markup = section.markup(); // flatten markup into a string
+        return section.JSON(customFields);
+      }),
       rootName:     root,
       argv:         this.config || {},
       homepage:     homepageText,
