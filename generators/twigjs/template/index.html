@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="public/kss.css">
   {{ styles|raw }}
 </head>
-<body class="{{ body_classes }}" id="kss-node">
+<body id="kss-node">
 
 <div class="kss-sidebar kss-style">
   <header class="kss-header">
@@ -30,28 +30,27 @@
           ><span class="kss-nav__name">Overview</span>
         </a>
       </li>
-
-    {% for section in sectionRoots %}
+    {% for sectionReference in sectionRoots %}
+      {% for section in sections if section.reference == sectionReference %}
       <li class="kss-nav__menu-item">
-        <a href="section-{{referenceURI}}.html">
+        <a href="section-{{ section.referenceURI }}.html">
           <span class="kss-nav__ref">{{ section.reference }}</span
           ><span class="kss-nav__name">{{ section.header }}</span>
         </a>
-      {# {{#ifReference ../rootName}}
+      {% if section.reference == rootName %}
         <ul class="kss-nav__menu-child">
-        {{#eachSection reference}}
-          {{#ifDepth 2}}
+        {% for subsection in sections if subsection.reference != rootName and subsection.depth == 2 %}
             <li class="kss-nav__menu-item">
-              <a href="section-{{../../referenceURI}}.html#kssref-{{referenceURI}}">
-                <span class="kss-nav__ref">{{#ifNumeric reference}}{{reference}}{{else}}{{autoincrement}}{{/ifNumeric}}</span
-                ><span class="kss-nav__name">{{header}}</span>
+              <a href="section-{{ section.referenceURI }}.html#kssref-{{ subsection.referenceURI }}">
+                <span class="kss-nav__ref">{{ subsection.reference }}</span
+                ><span class="kss-nav__name">{{ subsection.header }}</span>
               </a>
             </li>
-          {{/ifDepth}}
-        {{/eachSection}}
+        {% endfor %}
         </ul>
-      {{/ifReference}} #}
+      {% endif %}
       </li>
+      {% endfor %}
     {% endfor %}
     </ul>
   </nav>
@@ -81,9 +80,13 @@
     <div class="kss-style">
       <h{{ section.depth }} class="kss-title kss-title--level-{{ section.depth }}">
         <a class="kss-title__permalink" href="#kssref-{{ section.referenceURI }}">
-          <span class="kss-title__ref">{{ section.reference }}</span
-          >{{ section.header }}
-          <span class="kss-title__permalink-hash">#permalink</span>
+          <span class="kss-title__ref">
+            {{ section.reference }}
+            <span class="kss-title__permalink-hash">
+              #permalink
+            </span>
+          </span>
+          {{ section.header }}
         </a>
       </h{{ section.depth }}>
 
