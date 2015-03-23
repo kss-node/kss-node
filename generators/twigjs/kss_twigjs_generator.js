@@ -173,10 +173,17 @@ KssTwigJSGenerator.generate = function(styleguide) {
 
     // Accumulate all of the sections' first indexes
     // in case they don't have a root element.
-    currentRoot = sections[i].reference().split(/(?:\.|\s+\-\s+)/)[0];
-    if (sectionRoots.indexOf(currentRoot) === -1) {
-      sectionRoots.push(currentRoot);
+    var currentRoot = sections[i].reference().split(/(?:\.|\s+\-\s+)/)[0],
+    found = false;
+    for ( var j in sectionRoots ) {
+      if ( sectionRoots[j].reference == currentRoot ) {
+        found = true;
+        break;
+      }
     }
+    if ( ! found && sections[i] ) {
+      sectionRoots.push({"reference": sections[i].reference(), "header": sections[i].header(), "referenceURI": sections[i].referenceURI() });
+    } 
   }
 
   console.log('...Generating style guide sections:');
@@ -185,8 +192,9 @@ KssTwigJSGenerator.generate = function(styleguide) {
   // reference, and make a page for each.
   rootCount = sectionRoots.length;
   for (i = 0; i < rootCount; i += 1) {
-    childSections = styleguide.section(sectionRoots[i]+'.*');
-    this.generatePage(styleguide, childSections, sectionRoots[i], sectionRoots, partials);
+    childSections = styleguide.section(sectionRoots[i].reference + '.*');
+
+    this.generatePage(styleguide, childSections, sectionRoots[i].reference, sectionRoots, partials);
   }
 
   // Generate the homepage.
