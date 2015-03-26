@@ -3,6 +3,5 @@
   "destination":  "../gh-pages",
   "css": [
     "public/styles.css"
-  ],
-  "xdemo":        1
+  ]
 }
