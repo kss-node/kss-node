@@ -44,19 +44,20 @@ resolveArray = function(from, to) {
 generatorConfig = yargs
   .usage('Usage: kss-node <source> [destination] [options]')
   .wrap(80)
-  .strict()
-
+    
   .options('init', {
     alias     : 'i',
     describe  : 'Create a new style guide template to customize',
     default   : 'styleguide-template'
   })
+
   .options('template', {
     string    : true,
     alias     : 't',
     describe  : 'Use a custom template to build your style guide',
     default   : path.relative(process.cwd(), __dirname + '/../generators/handlebars/template')
   })
+
   .options('helpers', {
     string    : true,
     describe  : 'Specify the location of custom handlebars helpers; see http://bit.ly/kss-helpers',
@@ -88,6 +89,7 @@ generatorConfig = yargs
     string    : true,
     describe  : 'Source directory to parse for KSS comments'
   })
+
   .options('destination', {
     string    : true,
     describe  : 'Destination directory of generated style guide',
