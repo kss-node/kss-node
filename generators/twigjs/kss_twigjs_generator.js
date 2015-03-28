@@ -62,8 +62,8 @@ KssTwigJSGenerator.init = function(config) {
   } catch (e) {}
 
   // Store the global TwigJS object.
-  var TwigJS = require('twig/twig.js');
-  this.Twig = TwigJS.twig;
+  this.TwigJS = require('twig/twig.js');
+  this.Twig = this.TwigJS.twig;
 
   // Load TwigJS helpers.
   if (fs.existsSync(this.config.helpers)) {
@@ -76,13 +76,13 @@ KssTwigJSGenerator.init = function(config) {
       }
       helper = require(this.config.helpers + '/' + helperFiles[i]);
       if (typeof helper.register === 'function') {
-        helper.register(TwigJS, this.config);
+        helper.register(this.TwigJS, this.config);
       }
     }
   }
 
   // Load the standard TwigJS helpers.
-  require('./helpers.js').register(TwigJS, this.config);
+  require('./helpers.js').register(this.TwigJS, this.config);
 
   // Compile the TwigJS template.
   this.template = fs.readFileSync(this.config.template + '/index.html', 'utf8');
@@ -165,7 +165,7 @@ KssTwigJSGenerator.generate = function(styleguide) {
       // Save the name of the partial and its data for retrieval in the markup
       // helper, where we only know the reference.
       partials[partial.reference] = this.Twig({
-        id: partial.name,
+        id: "template-" + partial.name,
         data: partial.markup,
         variables: partial.data
       });
@@ -250,12 +250,28 @@ KssTwigJSGenerator.generatePage = function(styleguide, sections, root, sectionRo
     scripts = scripts + '<script src="' + this.config.js[key] + '"></script>\n';
   }
 
+  var twig = this.TwigJS;
+  var config = this.config;
+
   fs.writeFileSync(this.config.destination + '/' + filename,
     this.template.render({
       partials:     partials,
       styleguide:   styleguide,
       sectionRoots: sectionRoots,
       sections:     sections.map(function(section) {
+        // Run our markup through our preprocessor so we can include twig files inline.
+        // section.markup = Twig.
+        if ( section.markup() ) {
+          // return Twig.twig({ data: template, async: false }).render(options);
+          // base needs to be set on params not options how do we do that?
+          var template = twig.twig({
+            data: section.markup(),
+            allowInlineIncludes: true,
+            base: config.base
+          });
+          // var template = twig.twig({data: section.markup()});
+          template.render({});
+        }
         section.markup = section.markup(); // flatten markup into a string
         return section.JSON(customFields);
       }),

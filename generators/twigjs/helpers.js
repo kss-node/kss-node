@@ -18,7 +18,7 @@ module.exports.register = function(Twig, config) {
       // {% include "../../twig/components/_button.twig" %}
       var regex = /{%\s*include\s+"(.+?.[html|twig])"(.+)%}/g;
       markup = markup.replace(regex, function(match, partial_file, args) {
-        var template = fs.readFileSync(config.source + "/" + partial_file, 'utf8');
+        var template = fs.readFileSync(config.base + "/" + partial_file, 'utf8');
         var options = {};
         if ( args && args.indexOf('with') > -1 ) {
           // get the contents of {} which must be valid JSON
