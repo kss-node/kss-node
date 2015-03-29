@@ -4,6 +4,17 @@ var path = require('path');
 
 module.exports.register = function(Twig, config) {
 
+  /*
+    Compile the template on the fly for the examples section. This supports inline
+    twig so we can do things like
+
+    ```
+    // Markup:
+    // <form>
+    // {% include "twig/components/_button.twig" %}
+    // </form>
+    ```
+  */
   Twig.extendTag({
     type: "markup",
     regex: /^markup$/,
@@ -14,28 +25,37 @@ module.exports.register = function(Twig, config) {
       var markup = section.markup;
       var className = context.modifier ? context.modifier.className : "";
 
-      // Are there any extended templates?
-      // {% include "../../twig/components/_button.twig" %}
-      var regex = /{%\s*include\s+"(.+?.[html|twig])"(.+)%}/g;
-      markup = markup.replace(regex, function(match, partial_file, args) {
-        var template = fs.readFileSync(config.base + "/" + partial_file, 'utf8');
-        var options = {};
-        if ( args && args.indexOf('with') > -1 ) {
-          // get the contents of {} which must be valid JSON
-          var match = /({.+})/.exec(args);
-          options = JSON.parse(match[1]) || {};
-        }
-        options.classes = [className];
-        return Twig.twig({ data: template, async: false }).render(options);
-      });
-
       // Compile the template
-      var output  = Twig.twig({ data: markup }).render({ modifier_class: className });
+      var template = Twig.twig({
+        data: markup,
+        allowInlineIncludes: true,
+        async: false,
+        base: config.base
+      });
+      // Our templates use classes[] and kss-node uses modifier_class, so set both.
+      var params = { modifier_class: className };
+      var output = template.render(params);
+
       return {
         chain: false,
         output: output
       };
     }
+  });
+
+  /*
+    {{ section.markup|render|raw }}
+    Compile the template on the fly for the raw markup HTML.
+  */
+  Twig.extendFilter("render", function(markup) {
+    var template = Twig.twig({
+      data: markup,
+      allowInlineIncludes: true,
+      async: false,
+      base: config.base
+    });
+    var params = { modifier_class: 'modifier_class' };
+    return template.render(params);
   });
 
 };

@@ -259,19 +259,6 @@ KssTwigJSGenerator.generatePage = function(styleguide, sections, root, sectionRo
       styleguide:   styleguide,
       sectionRoots: sectionRoots,
       sections:     sections.map(function(section) {
-        // Run our markup through our preprocessor so we can include twig files inline.
-        // section.markup = Twig.
-        if ( section.markup() ) {
-          // return Twig.twig({ data: template, async: false }).render(options);
-          // base needs to be set on params not options how do we do that?
-          var template = twig.twig({
-            data: section.markup(),
-            allowInlineIncludes: true,
-            base: config.base
-          });
-          // var template = twig.twig({data: section.markup()});
-          template.render({});
-        }
         section.markup = section.markup(); // flatten markup into a string
         return section.JSON(customFields);
       }),
