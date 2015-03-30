@@ -173,8 +173,8 @@ KssTwigJSGenerator.generate = function(styleguide) {
 
     // Accumulate all of the sections' first indexes
     // in case they don't have a root element.
-    currentRoot = sections[i].reference().split(/(?:\.|\s+\-\s+)/)[0],
-    found = false;
+    currentRoot = sections[i].reference().split(/(?:\.|\s+\-\s+)/)[0];
+    var found = false;
     for ( var j in sectionRoots ) {
       if ( sectionRoots[j].reference == currentRoot ) {
         found = true;
