@@ -84,6 +84,10 @@ generatorConfig = yargs
     describe  : 'Process a custom property name when parsing KSS comments'
   })
 
+  .options('base', {
+    string    : true,
+    describe  : 'Base working directory for inline templates'
+  })
   .options('source', {
     string    : true,
     describe  : 'Source directory to parse for KSS comments'
@@ -178,7 +182,7 @@ if (!("helpers" in yargs.argv) && !configFile.helpers) {
 });
 
 // Resolve any paths relative to the config file or to the working directory.
-["init", "template", "helpers", "source", "destination"].forEach(function(key) {
+["init", "template", "helpers", "base", "source", "destination"].forEach(function(key) {
   if (typeof configFile[key] !== "undefined") {
     generatorConfig[key] = resolveArray(configPath, configFile[key]);
   }
@@ -187,6 +191,12 @@ if (!("helpers" in yargs.argv) && !configFile.helpers) {
   }
 });
 
+// Copy config that we need in the generator
+["css", "js"].forEach(function(key) {
+  if (typeof configFile[key] !== "undefined") {
+    generatorConfig[key] = configFile[key];
+  }
+});
 
 // Set up error handling.
 process.on('exit', function() {
