@@ -224,7 +224,7 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
     homepageText = false,
     styles = '',
     scripts = '',
-    title = '',
+    title = this.config.title || 'KSS Style Guide',
     customFields = this.config.custom,
     key;
 
@@ -262,10 +262,6 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
   }
   for (key in this.config.js) {
     scripts = scripts + '<script src="' + this.config.js[key] + '"></script>\n';
-  }
-
-  if (this.config.title) {
-    title = this.config.title;
   }
 
   /*eslint-disable key-spacing*/
