@@ -1,11 +1,14 @@
-var KssHandlebarsGenerator,
-  KssGenerator = require('../kss_generator.js'),
+'use strict';
+
+var KssGenerator = require('../kss_generator.js'),
   KssSection = require('../../lib/kss_section.js'),
   fs = require('fs'),
   glob = require('glob'),
   marked = require('marked'),
   path = require('path'),
   wrench = require('wrench');
+
+var KssHandlebarsGenerator;
 
 /**
  * Export KssHandlebarsGenerator.
@@ -42,7 +45,9 @@ KssHandlebarsGenerator.init = function(config) {
   // Create a new destination directory.
   try {
     fs.mkdirSync(this.config.destination);
-  } catch (e) {}
+  } catch (e) {
+    // empty
+  }
 
   // Optionally, copy the contents of the template's "public" folder.
   try {
@@ -54,12 +59,16 @@ KssHandlebarsGenerator.init = function(config) {
         excludeHiddenUnix: true
       }
     );
-  } catch (e) {}
+  } catch (e) {
+    // empty
+  }
 
   // Ensure a "public" folder exists.
   try {
     fs.mkdirSync(this.config.destination + '/public');
-  } catch (e) {}
+  } catch (e) {
+    // empty
+  }
 
   // Store the global Handlebars object.
   this.Handlebars = require('handlebars');
@@ -155,8 +164,7 @@ KssHandlebarsGenerator.generate = function(styleguide) {
             }
           }
         }
-      }
-      else {
+      } else {
         console.log(' - ' + partial.reference + ': inline markup');
       }
       // Register the partial using the filename (without extension) or using
@@ -184,7 +192,7 @@ KssHandlebarsGenerator.generate = function(styleguide) {
   // reference, and make a page for each.
   rootCount = sectionRoots.length;
   for (i = 0; i < rootCount; i += 1) {
-    childSections = styleguide.section(sectionRoots[i]+'.*');
+    childSections = styleguide.section(sectionRoots[i] + '.*');
 
     this.generatePage(styleguide, childSections, sectionRoots[i], sectionRoots, partials);
   }
@@ -207,7 +215,7 @@ KssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
     customFields = this.config.custom,
     key;
 
-  if (root == 'styleguide.homepage') {
+  if (root === 'styleguide.homepage') {
     filename = 'index.html';
     console.log(' - homepage');
     // Ensure homepageText is a non-false value.
@@ -218,18 +226,19 @@ KssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
           if (files.length) {
             homepageText = ' ' + marked(fs.readFileSync(files[0], 'utf8'));
           }
-        } catch (e) {}
+        } catch (e) {
+          // empty
+        }
       }
     }
     if (!homepageText) {
       homepageText = ' ';
       console.log('   ...no homepage content found in styleguide.md.');
     }
-  }
-  else {
+  } else {
     filename = 'section-' + KssSection.prototype.encodeReferenceURI(root) + '.html';
     console.log(
-      ' - section '+root+' [',
+      ' - section ' + root + ' [',
       styleguide.section(root) ? styleguide.section(root).header() : 'Unnamed',
       ']'
     );
@@ -241,13 +250,15 @@ KssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
   for (key in this.config.js) {
     scripts = scripts + '<script src="' + this.config.js[key] + '"></script>\n';
   }
+
+  /*eslint-disable key-spacing*/
   fs.writeFileSync(this.config.destination + '/' + filename,
     this.template({
       partials:     partials,
       styleguide:   styleguide,
       sectionRoots: sectionRoots,
       sections:     sections.map(function(section) {
-        return section.JSON(customFields);
+        return section.toJSON(customFields);
       }),
       rootName:     root,
       argv:         this.config || {},
@@ -256,4 +267,5 @@ KssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
       scripts:      scripts
     })
   );
+  /*eslint-enable key-spacing*/
 };

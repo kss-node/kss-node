@@ -1,10 +1,13 @@
+'use strict';
+
 /* **************************************************************
    See kss_example_generator.js for how to implement a generator.
    ************************************************************** */
 
-var KssGenerator,
-  Kss = require('../lib/kss.js'),
+var Kss = require('../lib/kss.js'),
   wrench = require('wrench');
+
+var KssGenerator;
 
 /**
  * Export the KssGenerator object.
@@ -25,7 +28,7 @@ module.exports = KssGenerator = function (version) {
 
   // Store the version of the generator API that the generator instance is
   // expecting; we will verify this in checkGenerator().
-  this.API_of_instance = (typeof version === 'undefined') ? 'undefined' : version;
+  this.instanceAPI = (typeof version === 'undefined') ? 'undefined' : version;
 };
 
 /**
@@ -39,8 +42,8 @@ KssGenerator.prototype.checkGenerator = function() {
   if (!(this instanceof KssGenerator)) {
     throw 'The loaded generator is not a KssGenerator object.';
   }
-  if (this.API_of_instance === 'undefined') {
-    throw 'This generator is incompatible with KssGenerator API ' + this.API + ': "' + this.API_of_instance + '"';
+  if (this.instanceAPI === 'undefined') {
+    throw 'This generator is incompatible with KssGenerator API ' + this.API + ': "' + this.instanceAPI + '"';
   }
 };
 
@@ -53,7 +56,7 @@ KssGenerator.prototype.checkGenerator = function() {
  */
 KssGenerator.prototype.clone = function(templatePath, destinationPath) {
   try {
-    error = wrench.copyDirSyncRecursive(
+    var error = wrench.copyDirSyncRecursive(
       templatePath,
       destinationPath,
       {
@@ -94,21 +97,29 @@ KssGenerator.prototype.init = function(config) {
 KssGenerator.prototype.parse = function(callback) {
   console.log('...Parsing your style guide:');
 
+  /*eslint-disable key-spacing*/
+
   // The default parse() method looks at the paths to the source folders and
   // uses KSS' traverse method to load, read and parse the source files. Other
   // generators may want to use KSS' parse method if they have already loaded
   // the source files through some other mechanism.
   Kss.traverse(this.config.source, {
-    multiline : true,
-    markdown  : true,
-    markup    : true,
-    mask      : this.config.mask,
-    custom    : this.config.custom
+    multiline: true,
+    markdown:  true,
+    markup:    true,
+    mask:      this.config.mask,
+    custom:    this.config.custom
   }, function(err, styleguide) {
-    if (err) throw err;
+    if (err) {
+      throw err;
+    }
     callback(styleguide);
   });
+
+  /*eslint-enable key-spacing*/
 };
+
+/*eslint-disable no-unused-vars*/
 
 /**
  * Generate the HTML files of the style guide given a KssStyleguide object.
@@ -121,3 +132,5 @@ KssGenerator.prototype.parse = function(callback) {
  */
 KssGenerator.prototype.generate = function(styleguide) {
 };
+
+/*eslint-enable no-unused-vars*/

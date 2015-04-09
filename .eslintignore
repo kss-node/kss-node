@@ -1,0 +1,12 @@
+# Ignore any installed node modules.
+**/node_modules/**
+
+# Ignore any generator templates.
+generators/*/*/*/*.js
+
+# Ignore the demo pages.
+demo/**
+gh-pages/**
+
+# Ignore old test runs.
+test/output/**
