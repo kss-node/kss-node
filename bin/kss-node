@@ -1,14 +1,19 @@
 #!/usr/bin/env node
 
+/*eslint-disable no-process-exit*/
+
+'use strict';
+
 var yargs = require('yargs'),
   path = require('path'),
-  generator,
+  version = require('../package.json').version;
+
+var generator,
   configFile = {},
   configPath,
   KSS_GENERATING = false,
   KSS_FAILED = false,
   generatorConfig,
-  version = require(__dirname + '/../package.json').version,
   resolveArray;
 
 /**
@@ -22,7 +27,7 @@ var yargs = require('yargs'),
 resolveArray = function(from, to) {
   var paths = [];
   // "from" is optional.
-  if (typeof to === "undefined") {
+  if (typeof to === 'undefined') {
     to = from;
     from = '';
   }
@@ -30,8 +35,7 @@ resolveArray = function(from, to) {
     to.forEach(function(value, index) {
       paths[index] = path.resolve(from, value);
     });
-  }
-  else {
+  } else {
     paths = path.resolve(from, to);
   }
   return paths;
@@ -46,6 +50,7 @@ generatorConfig = yargs
   .wrap(80)
   .strict()
 
+  /*eslint-disable key-spacing*/
   .options('init', {
     alias     : 'i',
     describe  : 'Create a new style guide template to customize',
@@ -55,12 +60,12 @@ generatorConfig = yargs
     string    : true,
     alias     : 't',
     describe  : 'Use a custom template to build your style guide',
-    default   : path.relative(process.cwd(), __dirname + '/../generators/handlebars/template')
+    default   : path.relative(process.cwd(), path.join(__dirname, '../generators/handlebars/template'))
   })
   .options('helpers', {
     string    : true,
     describe  : 'Specify the location of custom handlebars helpers; see http://bit.ly/kss-helpers',
-    default   : path.relative(process.cwd(), __dirname + '/../generators/handlebars/template/helpers')
+    default   : path.relative(process.cwd(), path.join(__dirname, '../generators/handlebars/template/helpers'))
   })
 
   .options('mask', {
@@ -103,6 +108,7 @@ generatorConfig = yargs
     // Alias is redundant, but prevents "Unknown argument: xdemo" error.
     alias     : 'xdemo'
   })
+  /*eslint-enable key-spacing*/
 
   .version(version, 'version')
   .help('help')
@@ -121,7 +127,7 @@ if (generatorConfig.config) {
 
 // If an option is specified multiple times, yargs will convert it into an
 // array. Ensure these options are not an array.
-["destination", "template", "helpers"].forEach(function(key) {
+['destination', 'template', 'helpers'].forEach(function(key) {
   // Only use the first value specified, ignoring the others.
   if (generatorConfig[key] instanceof Array) {
     generatorConfig[key] = generatorConfig[key].pop();
@@ -133,22 +139,20 @@ if (generatorConfig.config) {
 
 // Explicitly check if the --init option was called since generatorConfig.init
 // will contain a default value.
-if ("init" in yargs.argv || "i" in yargs.argv) {
+if ('init' in yargs.argv || 'i' in yargs.argv) {
   // Use the default value if --init is not given a path.
-  if (typeof generatorConfig.init === "boolean") {
+  if (typeof generatorConfig.init === 'boolean') {
     generatorConfig.init = 'styleguide-template';
   }
-}
-else {
+} else {
   delete generatorConfig.init;
 }
 
 // Get the full source path.
 if (generatorConfig.xdemo) {
-  generatorConfig.source = [__dirname + '/../demo'];
+  generatorConfig.source = [path.join(__dirname, '../demo')];
   generatorConfig.css = ['public/styles.css'];
-}
-else {
+} else {
   if (!generatorConfig.source) {
     generatorConfig.source = [];
   }
@@ -158,31 +162,30 @@ else {
 }
 
 // Check if the destination is the second unnamed parameter.
-if (!("destination" in yargs.argv) && generatorConfig._.length > 1) {
+if (!('destination' in yargs.argv) && generatorConfig._.length > 1) {
   generatorConfig.destination = generatorConfig._[1];
 }
 
 // Don't use the default value if the helpers option is not specified.
-if (!("helpers" in yargs.argv) && !configFile.helpers) {
+if (!('helpers' in yargs.argv) && !configFile.helpers) {
   generatorConfig.helpers = generatorConfig.template + '/helpers';
 }
 
 // Ensure these options are an array.
-["source", "custom", "css", "js"].forEach(function(key) {
-  if (typeof generatorConfig[key] === "string") {
+['source', 'custom', 'css', 'js'].forEach(function(key) {
+  if (typeof generatorConfig[key] === 'string') {
     generatorConfig[key] = [generatorConfig[key]];
   }
-  if (typeof configFile[key] === "string") {
+  if (typeof configFile[key] === 'string') {
     configFile[key] = [configFile[key]];
   }
 });
 
 // Resolve any paths relative to the config file or to the working directory.
-["init", "template", "helpers", "source", "destination"].forEach(function(key) {
-  if (typeof configFile[key] !== "undefined") {
+['init', 'template', 'helpers', 'source', 'destination'].forEach(function(key) {
+  if (typeof configFile[key] !== 'undefined') {
     generatorConfig[key] = resolveArray(configPath, configFile[key]);
-  }
-  else if (typeof generatorConfig[key] !== "undefined") {
+  } else if (typeof generatorConfig[key] !== 'undefined') {
     generatorConfig[key] = resolveArray(generatorConfig[key]);
   }
 });

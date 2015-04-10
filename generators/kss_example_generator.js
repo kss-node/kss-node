@@ -1,10 +1,13 @@
-// Define "KssExampleGenerator" as the name of our example template engine.
-var KssExampleGenerator,
-  // Import the KssGenerator object. We will use its API to scaffold our
-  // generator.
-  KssGenerator = require('kss/generator'),
+'use strict';
+
+// Import the KssGenerator object. We will use its API to scaffold our
+// generator.
+var KssGenerator = require('kss/generator'),
+  Kss = require('kss'),
   path = require('path');
 
+// Define "KssExampleGenerator" as the name of our example template engine.
+var KssExampleGenerator;
 
 /**
  * Export our "KssExampleGenerator" object.
@@ -23,7 +26,7 @@ module.exports = KssExampleGenerator = new KssGenerator('2.0');
  */
 KssExampleGenerator.prototype.clone = function(templatePath, destinationPath) {
   // Note that, at this point, KssExampleGenerator.init() has not been called.
-  console.log('Example template cloned! (not really.)');
+  console.log('Example template cloned to ' + destinationPath + '! (not really.)');
 };
 
 /**
@@ -64,13 +67,15 @@ KssExampleGenerator.prototype.parse = function(callback) {
   // generators may want to use KSS' parse method if they have already loaded
   // the source files through some other mechanism.
   Kss.traverse(this.config.source, {
-    multiline : true,
-    markdown  : true,
-    markup    : true,
-    mask      : this.config.mask,
-    custom    : this.config.custom
+    multiline: true,
+    markdown: true,
+    markup: true,
+    mask: this.config.mask,
+    custom: this.config.custom
   }, function(err, styleguide) {
-    if (err) throw err;
+    if (err) {
+      throw err;
+    }
     callback(styleguide);
   });
 };
@@ -78,12 +83,13 @@ KssExampleGenerator.prototype.parse = function(callback) {
 /**
  * Generate the HTML files of the style guide given a KssStyleguide object.
  *
- * This the callback function passed to the parse() method. The callback is
+ * This is the callback function passed to the parse() method. The callback is
  * wrapped in a closure so that it has access to "this" object (the methods and
  * properties of KssExampleGenerator.)
  *
  * @param {KssStyleguide} styleguide The KSS style guide in object format.
  */
 KssExampleGenerator.prototype.generate = function(styleguide) {
+  styleguide.section();
   console.log('...Generating the demo style guide.' + this.warning);
 };

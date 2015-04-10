@@ -121,7 +121,7 @@ KssHandlebarsGenerator.generate = function(styleguide) {
 
   // Throw an error if no KSS sections are found in the source files.
   if (sectionCount === 0) {
-    throw 'No KSS documentation discovered in source files.';
+    throw new Error('No KSS documentation discovered in source files.');
   }
 
   console.log('...Determining section markup:');

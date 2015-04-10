@@ -1,4 +1,6 @@
-var Kss = require(__dirname + '/../../lib/kss.js');
+'use strict';
+
+var Kss = require('../../lib/kss.js');
 
 module.exports.register = function(handlebars) {
 
@@ -27,7 +29,9 @@ module.exports.register = function(handlebars) {
       query = query + '.*';
     }
     sections = styleguide.section(query);
-    if (!sections) return '';
+    if (!sections) {
+      return '';
+    }
 
     l = sections.length;
     for (i = 0; i < l; i += 1) {
@@ -45,7 +49,9 @@ module.exports.register = function(handlebars) {
       sections = options.data.root.styleguide.section('x'),
       i, l;
 
-    if (!sections) return '';
+    if (!sections) {
+      return '';
+    }
 
     l = sections.length;
     for (i = 0; i < l; i += 1) {
@@ -65,7 +71,7 @@ module.exports.register = function(handlebars) {
    * {{/ifNumeric}}
    */
   handlebars.registerHelper('ifNumeric', function(reference, options) {
-    return (typeof reference == 'number' || typeof reference == 'string' && reference.match(/^[\.\d]+$/)) ? options.fn(this) : options.inverse(this);
+    return (typeof reference === 'number' || typeof reference === 'string' && reference.match(/^[\.\d]+$/)) ? options.fn(this) : options.inverse(this);
   });
 
   /**
@@ -78,7 +84,7 @@ module.exports.register = function(handlebars) {
    * {{/ifReference}}
    */
   handlebars.registerHelper('ifReference', function(reference, options) {
-    return (this.reference && reference == this.reference) ? options.fn(this) : options.inverse(this);
+    return (this.reference && reference === this.reference) ? options.fn(this) : options.inverse(this);
   });
 
   /**
@@ -91,7 +97,7 @@ module.exports.register = function(handlebars) {
    * {{/unlessReference}}
    */
   handlebars.registerHelper('unlessReference', function(reference, options) {
-    return (!this.reference || reference != this.reference) ? options.fn(this) : options.inverse(this);
+    return (!this.reference || reference !== this.reference) ? options.fn(this) : options.inverse(this);
   });
 
   /**
@@ -104,7 +110,7 @@ module.exports.register = function(handlebars) {
    * {{/ifDepth}}
    */
   handlebars.registerHelper('ifDepth', function(depth, options) {
-    return (this.depth && depth == this.depth) ? options.fn(this) : options.inverse(this);
+    return (this.depth && depth === this.depth) ? options.fn(this) : options.inverse(this);
   });
 
   /**
@@ -117,7 +123,7 @@ module.exports.register = function(handlebars) {
    * {{/unlessDepth}}
    */
   handlebars.registerHelper('unlessDepth', function(depth, options) {
-    return (!this.depth || depth != this.depth) ? options.fn(this) : options.inverse(this);
+    return (!this.depth || depth !== this.depth) ? options.fn(this) : options.inverse(this);
   });
 
   /**
@@ -133,7 +139,9 @@ module.exports.register = function(handlebars) {
     // Default to current modifiers, but allow supplying a custom section.
     modifiers = (arguments.length > 1 && arguments[0].data) ? arguments[0].data.modifiers : this.modifiers;
 
-    if (!modifiers) return '';
+    if (!modifiers) {
+      return '';
+    }
 
     l = modifiers.length;
     for (i = 0; i < l; i++) {
@@ -155,7 +163,9 @@ module.exports.register = function(handlebars) {
     // Default to current parameters, but allow supplying a custom section.
     parameters = (arguments.length > 1 && arguments[0].data) ? arguments[0].data.parameters : this.parameters;
 
-    if (!parameters) return '';
+    if (!parameters) {
+      return '';
+    }
 
     l = parameters.length;
     for (i = 0; i < l; i++) {
@@ -183,8 +193,7 @@ module.exports.register = function(handlebars) {
     if (this.modifiers) {
       // If this is the section object, use the default markup without a modifier class.
       section = new Kss.KssSection(this);
-    }
-    else {
+    } else {
       // If this is the markup object, find the modifier class and the section object.
       modifier = new Kss.KssModifier(this);
       section = modifier.section();
@@ -195,12 +204,13 @@ module.exports.register = function(handlebars) {
 
     // Prepare the sample data for the partial.
     data = JSON.parse(JSON.stringify(partial.data));
+    /*eslint-disable camelcase*/
     if (data.modifier_class) {
       data.modifier_class += modifier ? ' ' + modifier.className() : '';
-    }
-    else {
+    } else {
       data.modifier_class = modifier ? modifier.className() : '';
     }
+    /*eslint-enable camelcase*/
 
     // Compile the section's markup partial into a template.
     template = handlebars.compile('{{> "' + partial.name + '"}}');
@@ -214,49 +224,49 @@ module.exports.register = function(handlebars) {
    * Deprecated variable replaced with {{homepage}}.
    */
   handlebars.registerHelper('overview', function() {
-    throw 'The overview variable is deprecated; if your template has {{overview}}, replace it with {{homepage}}.';
+    throw new Error('The overview variable is deprecated; if your template has {{overview}}, replace it with {{homepage}}.');
   });
 
   /**
    * Deprecated variable replaced with {{depth}}.
    */
   handlebars.registerHelper('refDepth', function() {
-    throw 'The refDepth variable is deprecated; if your template has {{refDepth}}, replace it with {{depth}}.';
+    throw new Error('The refDepth variable is deprecated; if your template has {{refDepth}}, replace it with {{depth}}.');
   });
 
   /**
    * Deprecated variable replaced with {{rootName}}.
    */
   handlebars.registerHelper('rootNumber', function() {
-    throw 'The rootNumber variable is deprecated; if your template has {{rootNumber}}, replace it with {{rootName}}.';
+    throw new Error('The rootNumber variable is deprecated; if your template has {{rootNumber}}, replace it with {{rootName}}.');
   });
 
   /**
    * Deprecated helper replaced with {{{expression}}}.
    */
-  handlebars.registerHelper('html', function(arg) {
-    throw '{{html expression}} is deprecated; use HandleBars’ triple-stash instead: {{{expression}}}.';
+  handlebars.registerHelper('html', function() {
+    throw new Error('{{html expression}} is deprecated; use HandleBars’ triple-stash instead: {{{expression}}}.');
   });
 
   /**
    * Deprecated helper replaced with {{#if markup}}...{{/if}}.
    */
   handlebars.registerHelper('ifAny', function() {
-    throw 'IfAny is deprecated; if your template has {{#ifAny markup modifiers}}...{{/ifAny}}, replace it with {{#if markup}}...{{/if}}.';
+    throw new Error('IfAny is deprecated; if your template has {{#ifAny markup modifiers}}...{{/ifAny}}, replace it with {{#if markup}}...{{/if}}.');
   });
 
   /**
    * Deprecated helper replaced with {{{markup}}}.
    */
   handlebars.registerHelper('modifierMarkup', function() {
-    throw 'The modifierMarkup Handlebars helper is deprecated; if your template has {{modifierMarkup}}, replace it with {{{markup}}}.';
+    throw new Error('The modifierMarkup Handlebars helper is deprecated; if your template has {{modifierMarkup}}, replace it with {{{markup}}}.');
   });
 
   /**
    * Deprecated helper replaced with {{ifDepth expression}}.
    */
-  handlebars.registerHelper('whenDepth', function(depth, options) {
-    throw '{{whenDepth expression}} is deprecated; use {{ifDepth expression}} instead.';
+  handlebars.registerHelper('whenDepth', function() {
+    throw new Error('{{whenDepth expression}} is deprecated; use {{ifDepth expression}} instead.');
   });
 
 };

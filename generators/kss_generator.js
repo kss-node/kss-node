@@ -18,7 +18,7 @@ var KssGenerator;
  *
  * @param {string} version The generator API version implemented.
  */
-module.exports = KssGenerator = function (version) {
+module.exports = KssGenerator = function(version) {
   if (!(this instanceof KssGenerator)) {
     return new KssGenerator();
   }
@@ -40,10 +40,10 @@ module.exports = KssGenerator = function (version) {
  */
 KssGenerator.prototype.checkGenerator = function() {
   if (!(this instanceof KssGenerator)) {
-    throw 'The loaded generator is not a KssGenerator object.';
+    throw new Error('The loaded generator is not a KssGenerator object.');
   }
   if (this.instanceAPI === 'undefined') {
-    throw 'This generator is incompatible with KssGenerator API ' + this.API + ': "' + this.instanceAPI + '"';
+    throw new Error('This generator is incompatible with KssGenerator API ' + this.API + ': "' + this.instanceAPI + '"');
   }
 };
 
