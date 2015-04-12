@@ -2,7 +2,7 @@
 **/node_modules/**
 
 # Ignore any generator templates.
-generators/*/*/*/*.js
+generator/*/*/*/*.js
 
 # Ignore the demo pages.
 demo/**

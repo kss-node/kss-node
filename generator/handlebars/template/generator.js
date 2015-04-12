@@ -5,7 +5,7 @@
 // either be named index.js or have its name set in the "main" property of the
 // template's package.json.
 
-var KssHandlebarsGenerator = require('kss/generators/handlebars');
+var KssHandlebarsGenerator = require('kss/generator/handlebars');
 
 // Tell kss-node which generator this template uses.
 module.exports.generator = KssHandlebarsGenerator;
