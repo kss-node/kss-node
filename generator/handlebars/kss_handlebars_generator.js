@@ -1,5 +1,14 @@
 'use strict';
 
+/**
+ * The `kss/generator/handlebars` module loads the kssHandlebarsGenerator
+ * object, a `{@link KssGenerator}` object using Handlebars templating.
+ * ```
+ * var kssHandlebarsGenerator = require('kss/generator/handlebars');
+ * ```
+ * @module kss/generator/handlebars
+ */
+
 var KssGenerator = require('../kss_generator.js'),
   KssSection = require('../../lib/kss_section.js'),
   fs = require('fs'),
@@ -8,26 +17,21 @@ var KssGenerator = require('../kss_generator.js'),
   path = require('path'),
   wrench = require('wrench');
 
-var KssHandlebarsGenerator;
-
-/**
- * Export KssHandlebarsGenerator.
- *
- * Pass a string to KssGenerator() that tells the generator which API version is
- * implemented by KssHandlebarsGenerator.
- */
-module.exports = KssHandlebarsGenerator = new KssGenerator('2.0');
+// Pass a string to KssGenerator() to tell the system which API version is
+// implemented by kssHandlebarsGenerator.
+var kssHandlebarsGenerator = new KssGenerator('2.0');
 
 /**
  * Initialize the style guide creation process.
  *
- * This method is given a KssGeneratorConfig object with the details of the
+ * This method is given a KssGenerator config object with the details of the
  * requested style guide generation. The generator can use this information for
  * any necessary tasks before the KSS parsing of the source files.
  *
- * @param {KssGeneratorConfig} config Configuration object for the style guide generation.
+ * @alias module:kss/generator/handlebars.init
+ * @param {Object} config Configuration object for the style guide generation.
  */
-KssHandlebarsGenerator.init = function(config) {
+kssHandlebarsGenerator.init = function(config) {
   var i, helper;
 
   // Save the configuration parameters.
@@ -100,9 +104,10 @@ KssHandlebarsGenerator.init = function(config) {
 /**
  * Generate the HTML files of the style guide given a KssStyleguide object.
  *
+ * @alias module:kss/generator/handlebars.generate
  * @param {KssStyleguide} styleguide The KSS style guide in object format.
  */
-KssHandlebarsGenerator.generate = function(styleguide) {
+kssHandlebarsGenerator.generate = function(styleguide) {
   var sections = styleguide.section(),
     sectionCount = sections.length,
     sectionRoots = [],
@@ -205,9 +210,14 @@ KssHandlebarsGenerator.generate = function(styleguide) {
 /**
  * Renders the handlebars template for a section and saves it to a file.
  *
+ * @alias module:kss/generator/handlebars.generatePage
  * @param {KssStyleguide} styleguide The KSS style guide in object format.
+ * @param {Array} sections An array of KssSection objects.
+ * @param {string} root The current section's reference.
+ * @param {Array} sectionRoots An array of section references for all sections at the root of the style guide.
+ * @param {Object} partials A hash of the names and data of the registered Handlebars partials.
  */
-KssHandlebarsGenerator.generatePage = function(styleguide, sections, root, sectionRoots, partials) {
+kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, sectionRoots, partials) {
   var filename = '', files,
     homepageText = false,
     styles = '',
@@ -269,3 +279,5 @@ KssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
   );
   /*eslint-enable key-spacing*/
 };
+
+module.exports = kssHandlebarsGenerator;

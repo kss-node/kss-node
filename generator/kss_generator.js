@@ -1,5 +1,13 @@
 'use strict';
 
+/**
+ * The `kss/generator` module loads the {@link KssGenerator} class constructor.
+ * ```
+ * var KssGenerator = require('kss/generator');
+ * ```
+ * @module kss/generator
+ */
+
 /* **************************************************************
    See kss_example_generator.js for how to implement a generator.
    ************************************************************** */
@@ -10,12 +18,19 @@ var Kss = require('../lib/kss.js'),
 var KssGenerator;
 
 /**
- * Export the KssGenerator object.
+ * Create a KssGenerator object.
  *
  * This is the base object used by all kss-node generators. Implementations of
  * KssGenerator MUST pass the version parameter. kss-node will use this to
  * ensure that only compatible generators are used.
  *
+ * ```
+ * var KssGenerator = require('kss/generator');
+ * var customGenerator = new KssGenerator('2.0');
+ * ```
+ *
+ * @constructor
+ * @alias KssGenerator
  * @param {string} version The generator API version implemented.
  */
 module.exports = KssGenerator = function(version) {
@@ -37,6 +52,8 @@ module.exports = KssGenerator = function(version) {
  * An instance of KssGenerator MUST NOT override this method. A process
  * controlling the generator should call this method to verify the
  * specified generator has been configured correctly.
+ *
+ * @alias KssGenerator.prototype.checkGenerator
  */
 KssGenerator.prototype.checkGenerator = function() {
   if (!(this instanceof KssGenerator)) {
@@ -51,8 +68,12 @@ KssGenerator.prototype.checkGenerator = function() {
  * Clone a template's files.
  *
  * This method is fairly simple; it copies one directory to the specified
- * location. An instance of KssGenerator does not need to override this
- * method, but it can if it needs to do something more complicated.
+ * location. An instance of KssGenerator does not need to override this method,
+ * but it can if it needs to do something more complicated.
+ *
+ * @alias KssGenerator.prototype.clone
+ * @param {string} templatePath    Path to the template to clone.
+ * @param {string} destinationPath Path to the destination of the new cloned template.
  */
 KssGenerator.prototype.clone = function(templatePath, destinationPath) {
   try {
@@ -79,7 +100,8 @@ KssGenerator.prototype.clone = function(templatePath, destinationPath) {
  * requested style guide generation. The generator can use this information for
  * any necessary tasks before the KSS parsing of the source files.
  *
- * @param {array} config Array of configuration for the requested generation.
+ * @alias KssGenerator.prototype.init
+ * @param {Array} config Array of configuration for the requested generation.
  */
 KssGenerator.prototype.init = function(config) {
   // At the very least, generators MUST save the configuration parameters.
@@ -91,6 +113,7 @@ KssGenerator.prototype.init = function(config) {
  *
  * When finished, it passes the completed KssStyleguide to the given callback.
  *
+ * @alias KssGenerator.prototype.parse
  * @param {function} callback Function that takes a KssStyleguide and generates
  *                            the HTML files of the style guide.
  */
@@ -128,6 +151,7 @@ KssGenerator.prototype.parse = function(callback) {
  * wrapped in a closure so that it has access to "this" object (the methods and
  * properties of KssExampleGenerator.)
  *
+ * @alias KssGenerator.prototype.generate
  * @param {KssStyleguide} styleguide The KSS style guide in object format.
  */
 KssGenerator.prototype.generate = function(styleguide) {

@@ -46,7 +46,7 @@ KssExampleGenerator.init = function(config) {
   this.config.source = path.resolve('../demo');
 
   // A real generator should initialize the template system being used by this
-  // generator. For example, KssHandlebarsGenerator loads and initializes the
+  // generator. For example, kssHandlebarsGenerator loads and initializes the
   // Handlebars templating system.
   this.warning = ' (not really.)';
 };
