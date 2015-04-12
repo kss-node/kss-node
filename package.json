@@ -10,7 +10,8 @@
   "licence": "MIT",
   "main": "index.js",
   "scripts": {
-    "test": "echo 'Testing with mocha…' && ./node_modules/.bin/mocha -u tdd --reporter spec && echo 'Linting with eslint…' && ./node_modules/.bin/eslint . && echo '…tests done.'"
+    "test": "echo 'Testing with mocha…' && ./node_modules/.bin/mocha -u tdd --reporter spec && echo 'Linting with eslint…' && ./node_modules/.bin/eslint . && echo '…tests done.'",
+    "docs": "make docs"
   },
   "bin": {
     "kss-node": "./bin/kss-node"
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "eslint": "^0.18.0",
+    "jsdoc": "^3.3.0-beta3",
     "mocha": "^1.21.4"
   },
   "homepage": "http://kss-node.github.io/kss-node"
