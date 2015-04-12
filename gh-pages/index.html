@@ -54,16 +54,49 @@
 <article role="main" class="kss-main">
   <div id="kssref-0" class="kss-section kss-section--depth-0 kss-overview kss-style">
      <h1 id="overview">Overview</h1>
-<p>This is a demo of <a href="https://github.com/kss-node/kss-node">kss-node</a>&#39;s built-in style guide generator.</p>
 <p>This software is a Node.js implementation of <a href="https://github.com/kneath/kss">Knyle Style Sheets</a> (KSS), &quot;a documentation syntax for CSS&quot; that&#39;s intended to have syntax readable by humans <em>and</em> machines. Hence, the kss-node software can be used to create a &quot;living style guide&quot;.</p>
 <ol>
-<li>Write human-readable documentation using &quot;KSS syntax&quot; comments.</li>
+<li>Write human-readable documentation using &quot;KSS syntax&quot; comments. Can be added to CSS, Sass, LESS, or any other CSS Preprocessor files.</li>
 <li>Have <code>kss-node</code> auto-generate a style guide from your stylesheets.</li>
 </ol>
-<p>This site is generated with the <code>kss-node</code> command-line tool used on this <a href="https://github.com/kss-node/kss-node/tree/master/demo">demo project</a>.</p>
-<p>Check out the <a href="https://github.com/kss-node/kss-node">project on Github</a> for more information about the code, or read the spec for details on how to document your stylesheets for KSS.</p>
+<p>Here&#39;s an example KSS comment:</p>
+<pre><code class="lang-css">/*
+Button
+
+Your standard button suitable for clicking.
+
+:hover   - Highlights when hovering.
+.shiny   - Do not press this big, shiny, red button.
+
+Style guide: components.button
+*/
+.button {
+  ...
+}
+.button.shiny {
+  ...
+}
+</code></pre>
+<h1 id="kss-node-demo">kss-node demo</h1>
+<p>This site is generated with the <code>kss-node</code> command-line tool and parses the KSS documentation found in this <a href="https://github.com/kss-node/kss-node/tree/master/demo">demo project</a>.</p>
+<p>The styling of this site is a demo of <a href="https://github.com/kss-node/kss-node">kss-node</a>&#39;s default style guide generator. By using the site navigation to the left (or above), you can see how your documentation would look with the default generator. Note that alternate generators are available.</p>
 <h1 id="kss-specification">KSS Specification</h1>
+<p>Read the KSS spec for details on how to document your stylesheets.</p>
 <p>Compared to the default Ruby implementation at kneath/kss, kss-node includes a few optional features to allow for completely automated style guide generation out of the box. The kss-node specifics are detailed in this annotated copy of the <a href="https://github.com/kss-node/kss/blob/spec/SPEC.md">KSS spec</a>.</p>
+<h1 id="javascript-api">JavaScript API</h1>
+<p>If you don&#39;t wish to use the default style guide template, you can either:</p>
+<ul>
+<li>write your own template that uses the default kssHandlebarsGenerator style guide generator, or</li>
+<li>write your own style guide generator, or</li>
+<li>use the JavaScript object representation of the style guide, KssStyleguide</li>
+</ul>
+<p>The JavaScript API documentation is available for many versions of kss-node:</p>
+<ul>
+<li><a href="./api/master/">kss-node master branch</a> (future 2.1.x version)</li>
+<li><del><a href="./api/2.0.x/">kss-node v2.0.x</a></del> Available soon.</li>
+</ul>
+<h1 id="project-homepage">Project homepage</h1>
+<p>Check out the <a href="https://github.com/kss-node/kss-node">project on Github</a> for more information about the code.</p>
 
   </div>
 </article>
