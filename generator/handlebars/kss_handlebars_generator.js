@@ -73,6 +73,9 @@ KssHandlebarsGenerator.init = function(config) {
   // Store the global Handlebars object.
   this.Handlebars = require('handlebars');
 
+  // Load the standard Handlebars helpers.
+  require('./helpers.js').register(this.Handlebars);
+
   // Load Handlebars helpers.
   if (fs.existsSync(this.config.helpers)) {
     // Load custom Handlebars helpers.
@@ -88,9 +91,6 @@ KssHandlebarsGenerator.init = function(config) {
       }
     }
   }
-
-  // Load the standard Handlebars helpers.
-  require('./helpers.js').register(this.Handlebars);
 
   // Compile the Handlebars template.
   this.template = fs.readFileSync(this.config.template + '/index.html', 'utf8');
