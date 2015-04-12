@@ -26,6 +26,6 @@
     // Warnings.
     "guard-for-in": 1,
     "max-nested-callbacks": [1, 3],
-    "valid-jsdoc": 1
+    "valid-jsdoc": [1, {"requireReturn": false}]
   }
 }
