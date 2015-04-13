@@ -46,7 +46,7 @@ If you don't wish to use the default style guide template, you can either:
 
 The JavaScript API documentation is available for many versions of kss-node:
 * [kss-node master branch](./api/master/) (future 2.1.x version)
-* ~~[kss-node v2.0.x](./api/2.0.x/)~~ Available soon.
+* [kss-node v2.0.2](./api/2.0.x/)
 
 # Project homepage
 
