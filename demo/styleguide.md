@@ -1,4 +1,4 @@
-# Overview
+# Building style guides with kss-node
 
 This software is a Node.js implementation of [Knyle Style Sheets](https://github.com/kneath/kss) (KSS), "a documentation syntax for CSS" that's intended to have syntax readable by humans *and* machines. Hence, the kss-node software can be used to create a "living style guide".
 
@@ -25,28 +25,22 @@ Style guide: components.button
 }
 ```
 
+**For more information on how to write KSS comments, see the [KSS spec](https://github.com/kss-node/kss/blob/spec/SPEC.md).**
+
 # kss-node demo
 
 This site is generated with the `kss-node` command-line tool and parses the KSS documentation found in this [demo project](https://github.com/kss-node/kss-node/tree/master/demo).
 
 The styling of this site is a demo of [kss-node](https://github.com/kss-node/kss-node)'s default style guide generator. By using the site navigation to the left (or above), you can see how your documentation would look with the default generator. Note that alternate generators are available.
 
-# KSS Specification
-
-Read the KSS spec for details on how to document your stylesheets.
-
-Compared to the default Ruby implementation at kneath/kss, kss-node includes a few optional features to allow for completely automated style guide generation out of the box. The kss-node specifics are detailed in this annotated copy of the [KSS spec](https://github.com/kss-node/kss/blob/spec/SPEC.md).
-
 # JavaScript API
 
 If you don't wish to use the default style guide template, you can either:
 * write your own template that uses the default kssHandlebarsGenerator style guide generator, or
 * write your own style guide generator, or
-* use the JavaScript object representation of the style guide, KssStyleguide
+* use the JavaScript object representation of the style guide, KssStyleguide.
 
-The JavaScript API documentation is available for many versions of kss-node:
-* [kss-node master branch](./api/master/) (future 2.1.x version)
-* [kss-node v2.0.2](./api/2.0.x/)
+**For more information on how to integrate kss-node with your own JavaScript, see the [JavaScript API documentation](./section-javascript-api.html).**
 
 # Project homepage
 
