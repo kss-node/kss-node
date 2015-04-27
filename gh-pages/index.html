@@ -31,21 +31,21 @@
         </a>
       </li>
       <li class="kss-nav__menu-item">
-        <a href="section-components.html">
+        <a href="section-spec.html">
           <span class="kss-nav__ref">1</span
-          ><span class="kss-nav__name">Components</span>
+          ><span class="kss-nav__name">KSS Spec</span>
         </a>
       </li>
       <li class="kss-nav__menu-item">
-        <a href="section-forms.html">
+        <a href="section-javascript-api.html">
           <span class="kss-nav__ref">2</span
-          ><span class="kss-nav__name">Forms</span>
+          ><span class="kss-nav__name">JavaScript API</span>
         </a>
       </li>
       <li class="kss-nav__menu-item">
-        <a href="section-mixins.html">
+        <a href="section-demo.html">
           <span class="kss-nav__ref">3</span
-          ><span class="kss-nav__name">Mixins</span>
+          ><span class="kss-nav__name">Demo</span>
         </a>
       </li>
     </ul>
@@ -53,7 +53,7 @@
 </div>
 <article role="main" class="kss-main">
   <div id="kssref-0" class="kss-section kss-section--depth-0 kss-overview kss-style">
-     <h1 id="overview">Overview</h1>
+     <h1 id="building-style-guides-with-kss-node">Building style guides with kss-node</h1>
 <p>This software is a Node.js implementation of <a href="https://github.com/kneath/kss">Knyle Style Sheets</a> (KSS), &quot;a documentation syntax for CSS&quot; that&#39;s intended to have syntax readable by humans <em>and</em> machines. Hence, the kss-node software can be used to create a &quot;living style guide&quot;.</p>
 <ol>
 <li>Write human-readable documentation using &quot;KSS syntax&quot; comments. Can be added to CSS, Sass, LESS, or any other CSS Preprocessor files.</li>
@@ -77,24 +77,18 @@ Style guide: components.button
   ...
 }
 </code></pre>
+<p><strong>For more information on how to write KSS comments, see the <a href="https://github.com/kss-node/kss/blob/spec/SPEC.md">KSS spec</a>.</strong></p>
 <h1 id="kss-node-demo">kss-node demo</h1>
 <p>This site is generated with the <code>kss-node</code> command-line tool and parses the KSS documentation found in this <a href="https://github.com/kss-node/kss-node/tree/master/demo">demo project</a>.</p>
 <p>The styling of this site is a demo of <a href="https://github.com/kss-node/kss-node">kss-node</a>&#39;s default style guide generator. By using the site navigation to the left (or above), you can see how your documentation would look with the default generator. Note that alternate generators are available.</p>
-<h1 id="kss-specification">KSS Specification</h1>
-<p>Read the KSS spec for details on how to document your stylesheets.</p>
-<p>Compared to the default Ruby implementation at kneath/kss, kss-node includes a few optional features to allow for completely automated style guide generation out of the box. The kss-node specifics are detailed in this annotated copy of the <a href="https://github.com/kss-node/kss/blob/spec/SPEC.md">KSS spec</a>.</p>
 <h1 id="javascript-api">JavaScript API</h1>
 <p>If you don&#39;t wish to use the default style guide template, you can either:</p>
 <ul>
 <li>write your own template that uses the default kssHandlebarsGenerator style guide generator, or</li>
 <li>write your own style guide generator, or</li>
-<li>use the JavaScript object representation of the style guide, KssStyleguide</li>
+<li>use the JavaScript object representation of the style guide, KssStyleguide.</li>
 </ul>
-<p>The JavaScript API documentation is available for many versions of kss-node:</p>
-<ul>
-<li><a href="./api/master/">kss-node master branch</a> (future 2.1.x version)</li>
-<li><a href="./api/2.0.x/">kss-node v2.0.2</a></li>
-</ul>
+<p><strong>For more information on how to integrate kss-node with your own JavaScript, see the <a href="./section-javascript-api.html">JavaScript API documentation</a>.</strong></p>
 <h1 id="project-homepage">Project homepage</h1>
 <p>Check out the <a href="https://github.com/kss-node/kss-node">project on Github</a> for more information about the code.</p>
 
