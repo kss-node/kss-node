@@ -108,6 +108,11 @@ generatorConfig = yargs
     // Alias is redundant, but prevents "Unknown argument: xdemo" error.
     alias     : 'xdemo'
   })
+  .options('//', {
+    // This option allows JSON comments in the config file.
+    string    : true,
+    alias     : '//'
+  })
   /*eslint-enable key-spacing*/
 
   .version(version, 'version')
