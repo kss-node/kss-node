@@ -1,0 +1,11 @@
+{
+  "//": "The source and destination paths are relative to this file.",
+  "source":       ".",
+  "destination":  "../gh-pages",
+
+  "//": "The css and js paths are URLs relative to the generated style guide.",
+  "css": [
+    "public/styles.css"
+  ],
+  "js": []
+}
