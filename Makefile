@@ -8,5 +8,6 @@ docs:
 	./node_modules/.bin/jsdoc --configure ./gh-pages/api-jsdoc-conf.json
 	echo
 	./node_modules/.bin/jsdoc --configure ./gh-pages/api-jsdoc-conf.json --destination ./gh-pages/api/master/internals/ --readme ./gh-pages/api-internals.md --access all
+	for HTMLDOC in ./gh-pages/api/*/**.html; do cat $$HTMLDOC | sed 's/<title>JSDoc: /<title>kss-node JavaScript API: /' > $$HTMLDOC.tmp; mv $$HTMLDOC.tmp $$HTMLDOC; done
 
 .PHONY: docs
