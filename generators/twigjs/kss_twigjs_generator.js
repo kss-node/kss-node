@@ -259,7 +259,9 @@ KssTwigJSGenerator.generatePage = function(styleguide, sections, root, sectionRo
       styleguide:   styleguide,
       sectionRoots: sectionRoots,
       sections:     sections.map(function(section) {
-        section.markup = section.markup(); // flatten markup into a string
+        if ( typeof section.markup != 'string' ) {
+          section.markup = section.markup(); // flatten markup into a string
+        }
         return section.JSON(customFields);
       }),
       rootName:     root,
