@@ -164,11 +164,16 @@ KssTwigJSGenerator.generate = function(styleguide) {
       // the style guide reference.
       // Save the name of the partial and its data for retrieval in the markup
       // helper, where we only know the reference.
-      partials[partial.reference] = this.Twig({
-        id: "template-" + partial.name,
-        data: partial.markup,
-        variables: partial.data
-      });
+      // @TODO Fix this properly. Don't just skip ahead.
+      try {
+        partials[partial.reference] = this.Twig({
+          id: "template-" + partial.name,
+          data: partial.markup,
+          variables: partial.data
+        });
+      } catch (err) {
+        console.log("Couldn't create template. Duplicate template ID " + partial.name + ". What to do?");
+      }
     }
 
     // Accumulate all of the sections' first indexes
