@@ -31,7 +31,7 @@ There's an example project in the [demo directory](https://github.com/kss-node/k
 
 ## Installation
 
-kss-node is installed just like any other Node.js software. Read the [kss-node Quick Start Guide](https://github.com/kss-node/kss-node/wiki/Quick-Start-Guide) to learn more. Also include an npm Quick Start Guide, if you don't know much aobut Node.js's npm command.
+kss-node is installed just like any other Node.js software. Read the [kss-node Quick Start Guide](https://github.com/kss-node/kss-node/wiki/Quick-Start-Guide) to learn more. It also includes an npm Quick Start Guide, if you don't know much about Node.js's npm command.
 
 ## Using the command line tool
 
