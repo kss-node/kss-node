@@ -98,7 +98,7 @@ Take a look at the [demo project](https://github.com/kss-node/kss-node/tree/mast
 
 ## Using kss-node from Node.js
 
-Check out the [Module API](https://github.com/kss-node/kss-node/wiki/Module-API) for a full explanation. Here's an example:
+Check out the [JavaScript API](http://kss-node.github.io/kss-node/section-javascript-api.html) for a full explanation. Here's an example:
 
 ``` javascript
 var kss = require('kss'),
