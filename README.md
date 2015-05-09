@@ -31,13 +31,9 @@ There's an example project in the [demo directory](https://github.com/kss-node/k
 
 ## Installation
 
-Just one line: `npm install kss`. Or, if you have a package.json for your project, with: `npm install kss --save-dev`.
+kss-node is installed just like any other Node.js software. Read the [kss-node Quick Start Guide](https://github.com/kss-node/kss-node/wiki/Quick-Start-Guide) to learn more. Also include an npm Quick Start Guide, if you don't know much aobut Node.js's npm command.
 
-After that, the command line tool can be found at `./node_modules/.bin/kss-node`.
-
-If you know what you are doing, you can install it globally with: `npm install -g kss`
-
-## Using the CLI
+## Using the command line tool
 
 To get you up and running quickly, a style guide generator is included that can be used from the command line. It parses stylesheets and spits out a set of static HTML files.
 
