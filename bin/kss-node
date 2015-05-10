@@ -19,10 +19,10 @@ var generator,
   /*eslint-disable key-spacing*/
   cliOptions = {
     'init': {
+      string    : true,
       alias     : 'i',
-      describe  : 'Create a new style guide template to customize'
+      describe  : 'Clone a style guide template to customize'
     },
-
     'template': {
       string    : true,
       alias     : 't',
