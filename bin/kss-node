@@ -20,8 +20,7 @@ var generator,
   cliOptions = {
     'init': {
       alias     : 'i',
-      describe  : 'Create a new style guide template to customize',
-      default   : 'styleguide-template'
+      describe  : 'Create a new style guide template to customize'
     },
 
     'template': {
@@ -106,7 +105,7 @@ resolveArray = function(from, to) {
 };
 
 /**
- * Generator configruation.
+ * Generator configuration.
  * @type {Object}
  */
 generatorConfig = yargs
@@ -143,17 +142,6 @@ if (generatorConfig.config) {
     configFile[key] = configFile[key].pop();
   }
 });
-
-// Explicitly check if the --init option was called since generatorConfig.init
-// will contain a default value.
-if ('init' in yargs.argv || 'i' in yargs.argv) {
-  // Use the default value if --init is not given a path.
-  if (typeof generatorConfig.init === 'boolean') {
-    generatorConfig.init = 'styleguide-template';
-  }
-} else {
-  delete generatorConfig.init;
-}
 
 // Get the full source path.
 if (generatorConfig.xdemo) {
