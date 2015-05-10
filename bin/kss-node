@@ -156,7 +156,7 @@ if (generatorConfig.xdemo) {
 }
 
 // Check if the destination is the second unnamed parameter.
-if (!('destination' in yargs.argv) && generatorConfig._.length > 1) {
+if (generatorConfig._.length > 1) {
   generatorConfig.destination = generatorConfig._[1];
 }
 
