@@ -1,4 +1,5 @@
 {
+  "//"          : "A JSON comment",
   "source"      : "fixtures-styles/with-include",
   "destination" : "output",
   "template"    : "fixtures-styles/template"

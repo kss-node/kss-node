@@ -66,14 +66,15 @@ var generator,
     },
 
     'xdemo': {
-      boolean   : true,
       // Alias is redundant, but prevents "Unknown argument: xdemo" error.
-      alias     : 'xdemo'
+      alias     : 'xdemo',
+      boolean   : true
     },
+    // This option allows JSON comments in the config file.
     '//': {
-      // This option allows JSON comments in the config file.
-      string    : true,
-      alias     : '//'
+      // Alias is redundant, but prevents "Unknown argument: //" error.
+      alias     : '//',
+      string    : true
     }
   };
   /*eslint-enable key-spacing*/
