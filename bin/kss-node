@@ -31,8 +31,7 @@ var generator,
     },
     'helpers': {
       string    : true,
-      describe  : 'Specify the location of custom handlebars helpers; see http://bit.ly/kss-helpers',
-      default   : path.relative(process.cwd(), path.join(__dirname, '../generator/handlebars/template/helpers'))
+      describe  : 'Specify the location of custom handlebars helpers; see http://bit.ly/kss-helpers'
     },
 
     'mask': {
@@ -159,11 +158,6 @@ if (generatorConfig.xdemo) {
 // Check if the destination is the second unnamed parameter.
 if (!('destination' in yargs.argv) && generatorConfig._.length > 1) {
   generatorConfig.destination = generatorConfig._[1];
-}
-
-// Don't use the default value if the helpers option is not specified.
-if (!('helpers' in yargs.argv) && !configFile.helpers) {
-  generatorConfig.helpers = generatorConfig.template + '/helpers';
 }
 
 // Ensure these options are an array.

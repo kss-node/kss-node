@@ -43,7 +43,9 @@ kssHandlebarsGenerator.init = function(config) {
   console.log(' * KSS Source  : ' + this.config.source.join(', '));
   console.log(' * Destination : ' + this.config.destination);
   console.log(' * Template    : ' + this.config.template);
-  console.log(' * Helpers     : ' + this.config.helpers);
+  if (this.config.helpers) {
+    console.log(' * Helpers     : ' + this.config.helpers);
+  }
   console.log('');
 
   // Create a new destination directory.
@@ -81,7 +83,7 @@ kssHandlebarsGenerator.init = function(config) {
   require('./helpers.js').register(this.Handlebars);
 
   // Load Handlebars helpers.
-  if (fs.existsSync(this.config.helpers)) {
+  if (this.config.helpers && fs.existsSync(this.config.helpers)) {
     // Load custom Handlebars helpers.
     var helperFiles = fs.readdirSync(this.config.helpers);
 
