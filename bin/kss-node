@@ -14,7 +14,70 @@ var generator,
   KSS_GENERATING = false,
   KSS_FAILED = false,
   generatorConfig,
-  resolveArray;
+  resolveArray,
+
+  /*eslint-disable key-spacing*/
+  cliOptions = {
+    'init': {
+      alias     : 'i',
+      describe  : 'Create a new style guide template to customize'
+    },
+
+    'template': {
+      string    : true,
+      alias     : 't',
+      describe  : 'Use a custom template to build your style guide',
+      default   : path.relative(process.cwd(), path.join(__dirname, '../generator/handlebars/template'))
+    },
+    'helpers': {
+      string    : true,
+      describe  : 'Specify the location of custom handlebars helpers; see http://bit.ly/kss-helpers'
+    },
+
+    'mask': {
+      string    : true,
+      alias     : 'm',
+      describe  : 'Use a mask for detecting files containing KSS comments',
+      default   : '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
+    },
+
+    'css': {
+      string    : true,
+      describe  : 'Specify the URL of a CSS file to include in the style guide'
+    },
+    'js': {
+      string    : true,
+      describe  : 'Specify the URL of a JavaScript file to include in the style guide'
+    },
+
+    'custom': {
+      string    : true,
+      describe  : 'Process a custom property name when parsing KSS comments'
+    },
+
+    'source': {
+      string    : true,
+      describe  : 'Source directory to parse for KSS comments'
+    },
+    'destination': {
+      string    : true,
+      describe  : 'Destination directory of generated style guide',
+      default   : 'styleguide'
+    },
+
+    'xdemo': {
+      // Alias is redundant, but prevents "Unknown argument: xdemo" error.
+      alias     : 'xdemo',
+      boolean   : true
+    },
+    // This option allows JSON comments in the config file.
+    '//': {
+      // Alias is redundant, but prevents "Unknown argument: //" error.
+      alias     : '//',
+      string    : true
+    }
+  };
+  /*eslint-enable key-spacing*/
 
 /**
  * Applies path.resolve() to the given path or array of paths.
@@ -42,83 +105,21 @@ resolveArray = function(from, to) {
 };
 
 /**
- * Generator configruation.
+ * Generator configuration.
  * @type {Object}
  */
 generatorConfig = yargs
   .usage('Usage: kss-node <source> [destination] [options]')
   .wrap(80)
   .strict()
-
-  /*eslint-disable key-spacing*/
-  .options('init', {
-    alias     : 'i',
-    describe  : 'Create a new style guide template to customize',
-    default   : 'styleguide-template'
-  })
-  .options('template', {
-    string    : true,
-    alias     : 't',
-    describe  : 'Use a custom template to build your style guide',
-    default   : path.relative(process.cwd(), path.join(__dirname, '../generator/handlebars/template'))
-  })
-  .options('helpers', {
-    string    : true,
-    describe  : 'Specify the location of custom handlebars helpers; see http://bit.ly/kss-helpers',
-    default   : path.relative(process.cwd(), path.join(__dirname, '../generator/handlebars/template/helpers'))
-  })
-
-  .options('mask', {
-    string    : true,
-    alias     : 'm',
-    describe  : 'Use a mask for detecting files containing KSS comments',
-    default   : '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
-  })
-
-  .options('css', {
-    string    : true,
-    describe  : 'Specify the URL of a CSS file to include in the style guide'
-  })
-  .options('js', {
-    string    : true,
-    describe  : 'Specify the URL of a JavaScript file to include in the style guide'
-  })
-
-  .options('custom', {
-    string    : true,
-    describe  : 'Process a custom property name when parsing KSS comments'
-  })
-
-  .options('source', {
-    string    : true,
-    describe  : 'Source directory to parse for KSS comments'
-  })
-  .options('destination', {
-    string    : true,
-    describe  : 'Destination directory of generated style guide',
-    default   : 'styleguide'
-  })
-
+  .options(cliOptions)
   .config('config')
-  .alias('config', 'c')
-  .describe('config', 'Load the kss-node configuration from a json file')
-
-  .options('xdemo', {
-    boolean   : true,
-    // Alias is redundant, but prevents "Unknown argument: xdemo" error.
-    alias     : 'xdemo'
-  })
-  .options('//', {
-    // This option allows JSON comments in the config file.
-    string    : true,
-    alias     : '//'
-  })
-  /*eslint-enable key-spacing*/
-
-  .version(version, 'version')
+    .alias('config', 'c')
+    .describe('config', 'Load the kss-node configuration from a json file')
   .help('help')
-  .alias('help', 'h')
-  .alias('help', '?')
+    .alias('help', 'h')
+    .alias('help', '?')
+  .version(version, 'version')
   .argv;
 
 // Help determine which options are specified in a config json file by loading
@@ -142,17 +143,6 @@ if (generatorConfig.config) {
   }
 });
 
-// Explicitly check if the --init option was called since generatorConfig.init
-// will contain a default value.
-if ('init' in yargs.argv || 'i' in yargs.argv) {
-  // Use the default value if --init is not given a path.
-  if (typeof generatorConfig.init === 'boolean') {
-    generatorConfig.init = 'styleguide-template';
-  }
-} else {
-  delete generatorConfig.init;
-}
-
 // Get the full source path.
 if (generatorConfig.xdemo) {
   generatorConfig.source = [path.join(__dirname, '../demo')];
@@ -167,13 +157,8 @@ if (generatorConfig.xdemo) {
 }
 
 // Check if the destination is the second unnamed parameter.
-if (!('destination' in yargs.argv) && generatorConfig._.length > 1) {
+if (generatorConfig._.length > 1) {
   generatorConfig.destination = generatorConfig._[1];
-}
-
-// Don't use the default value if the helpers option is not specified.
-if (!('helpers' in yargs.argv) && !configFile.helpers) {
-  generatorConfig.helpers = generatorConfig.template + '/helpers';
 }
 
 // Ensure these options are an array.
