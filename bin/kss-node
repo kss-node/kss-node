@@ -12,30 +12,36 @@ var generator,
   KSS_GENERATING = false,
   KSS_FAILED = false,
   generatorConfig,
-  configCleanup,
+  normalizeConfig,
   resolveArray,
 
   /*eslint-disable key-spacing*/
   cliOptions = {
     'init': {
-      string    : true,
       alias     : 'i',
+      string    : true,
+      path      : true,
+      multiple  : false,
       describe  : 'Clone a style guide template to customize'
     },
     'template': {
-      string    : true,
       alias     : 't',
+      string    : true,
+      path      : true,
+      multiple  : false,
       describe  : 'Use a custom template to build your style guide',
       default   : path.relative(process.cwd(), path.join(__dirname, '../generator/handlebars/template'))
     },
     'helpers': {
       string    : true,
+      path      : true,
       describe  : 'Specify the location of custom handlebars helpers; see http://bit.ly/kss-helpers'
     },
 
     'mask': {
-      string    : true,
       alias     : 'm',
+      string    : true,
+      multiple  : false,
       describe  : 'Use a mask for detecting files containing KSS comments',
       default   : '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
     },
@@ -56,10 +62,13 @@ var generator,
 
     'source': {
       string    : true,
+      path      : true,
       describe  : 'Source directory to parse for KSS comments'
     },
     'destination': {
       string    : true,
+      path      : true,
+      multiple  : false,
       describe  : 'Destination directory of generated style guide',
       default   : 'styleguide'
     },
@@ -67,6 +76,7 @@ var generator,
     'xdemo': {
       // Alias is redundant, but prevents "Unknown argument: xdemo" error.
       alias     : 'xdemo',
+      multiple  : false,
       boolean   : true
     },
     // This option allows JSON comments in the config file.
@@ -108,7 +118,7 @@ resolveArray = function(from, to) {
  * @param {object} config Configuration object.
  * @return {object} The corrected configuration object
  */
-configCleanup = function(config) {
+normalizeConfig = function(config) {
   // If some of the options were specified in a JSON config file, determine
   // which ones by loading the keys from the config file.
   if (config.config) {
@@ -119,15 +129,6 @@ configCleanup = function(config) {
   } else {
     config.configFileOptions = [];
   }
-
-  // If an option is specified multiple times, yargs will convert it into an
-  // array. Ensure these options are not an array.
-  ['destination', 'template'].forEach(function(key) {
-    // Only use the first value specified, ignoring the others.
-    if (config[key] instanceof Array) {
-      config[key] = config[key].pop();
-    }
-  });
 
   // Get the full source path.
   if (config.xdemo) {
@@ -147,21 +148,43 @@ configCleanup = function(config) {
     config.destination = config._[1];
   }
 
-  // Ensure these options are an array.
-  ['source', 'custom', 'css', 'js', 'helpers'].forEach(function(key) {
-    if (typeof config[key] === 'string') {
-      config[key] = [config[key]];
+  // Normalize all the configuration options.
+  for (var key in config) {
+    if (typeof cliOptions[key] !== 'undefined') {
+      // "multiple" defaults to true.
+      if (typeof cliOptions[key].multiple === 'undefined') {
+        cliOptions[key].multiple = true;
+      }
+      // "path" defaults to false.
+      if (typeof cliOptions[key].path === 'undefined') {
+        cliOptions[key].path = false;
+      }
+      // If an option is specified multiple times, yargs will convert it into an
+      // array, but leave it as a string otherwise. This makes accessing the
+      // values of options inconsistent, so make all other options an array.
+      if (cliOptions[key].multiple) {
+        if (typeof config[key] === 'undefined') {
+          config[key] = [];
+        } else if (!(config[key] instanceof Array)) {
+          config[key] = [config[key]];
+        }
+      // For options marked as "multiple: false", use the first value specified,
+      // ignoring the others.
+      } else {
+        if (config[key] instanceof Array) {
+          config[key] = config[key].pop();
+        }
+      }
+      // Resolve any paths relative to the config file or to the working directory.
+      if (cliOptions[key].path) {
+        if (config.configFileOptions.indexOf(key) > -1) {
+          config[key] = resolveArray(path.dirname(config.config), config[key]);
+        } else if (typeof config[key] !== 'undefined') {
+          config[key] = resolveArray(config[key]);
+        }
+      }
     }
-  });
-
-  // Resolve any paths relative to the config file or to the working directory.
-  ['init', 'template', 'helpers', 'source', 'destination'].forEach(function(key) {
-    if (config.configFileOptions.indexOf(key) > -1) {
-      config[key] = resolveArray(path.dirname(config.config), config[key]);
-    } else if (typeof config[key] !== 'undefined') {
-      config[key] = resolveArray(config[key]);
-    }
-  });
+  }
 
   return config;
 };
@@ -185,7 +208,7 @@ generatorConfig = yargs
   .argv;
 
 // Clean up paths and massage options to expected types.
-generatorConfig = configCleanup(generatorConfig);
+generatorConfig = normalizeConfig(generatorConfig);
 
 // Set up error handling.
 process.on('exit', function() {
