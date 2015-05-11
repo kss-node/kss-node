@@ -84,8 +84,7 @@ var generator,
  *
  * @param {string}        from  Optional path to resolve the "to" path
  * @param {string|array}  to    Relative path(s) to resolve.
- *
- * @return An absolute path.
+ * @return {string} An absolute path.
  */
 resolveArray = function(from, to) {
   var paths = [];

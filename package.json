@@ -10,7 +10,7 @@
   "licence": "MIT",
   "main": "index.js",
   "scripts": {
-    "test": "echo 'Testing with mocha…' && ./node_modules/.bin/mocha -u tdd --reporter spec && echo 'Linting with eslint…' && ./node_modules/.bin/eslint . && echo '…tests done.'",
+    "test": "echo 'Testing with mocha…' && ./node_modules/.bin/mocha -u tdd --reporter spec && echo 'Linting with eslint…' && ./node_modules/.bin/eslint bin/kss-node . && echo '…tests done.'",
     "docs": "make docs"
   },
   "bin": {
