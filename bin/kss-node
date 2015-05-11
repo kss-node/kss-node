@@ -9,11 +9,10 @@ var yargs = require('yargs'),
   version = require('../package.json').version;
 
 var generator,
-  configFile = {},
-  configPath,
   KSS_GENERATING = false,
   KSS_FAILED = false,
   generatorConfig,
+  configCleanup,
   resolveArray,
 
   /*eslint-disable key-spacing*/
@@ -104,6 +103,77 @@ resolveArray = function(from, to) {
 };
 
 /**
+ * Cleans up a configuration object.
+ *
+ * @param {object} config Configuration object.
+ * @return {object} The corrected configuration object
+ */
+configCleanup = function(config) {
+  var configFile = {},
+    configPath;
+
+  // Help determine which options are specified in a config json file by loading
+  // the json file.
+  if (config.config) {
+    // Make config paths relative to config file.
+    configPath = path.resolve(config.config);
+    configFile = require(configPath);
+    configPath = path.dirname(configPath);
+  }
+
+  // If an option is specified multiple times, yargs will convert it into an
+  // array. Ensure these options are not an array.
+  ['destination', 'template', 'helpers'].forEach(function(key) {
+    // Only use the first value specified, ignoring the others.
+    if (config[key] instanceof Array) {
+      config[key] = config[key].pop();
+    }
+    if (configFile[key] instanceof Array) {
+      configFile[key] = configFile[key].pop();
+    }
+  });
+
+  // Get the full source path.
+  if (config.xdemo) {
+    config.source = [path.join(__dirname, '../demo')];
+    config.css = ['public/styles.css'];
+  } else {
+    if (!config.source) {
+      config.source = [];
+    }
+    if (config._.length > 0) {
+      config.source.push(config._[0]);
+    }
+  }
+
+  // Check if the destination is the second unnamed parameter.
+  if (config._.length > 1) {
+    config.destination = config._[1];
+  }
+
+  // Ensure these options are an array.
+  ['source', 'custom', 'css', 'js'].forEach(function(key) {
+    if (typeof config[key] === 'string') {
+      config[key] = [config[key]];
+    }
+    if (typeof configFile[key] === 'string') {
+      configFile[key] = [configFile[key]];
+    }
+  });
+
+  // Resolve any paths relative to the config file or to the working directory.
+  ['init', 'template', 'helpers', 'source', 'destination'].forEach(function(key) {
+    if (typeof configFile[key] !== 'undefined') {
+      config[key] = resolveArray(configPath, configFile[key]);
+    } else if (typeof config[key] !== 'undefined') {
+      config[key] = resolveArray(config[key]);
+    }
+  });
+
+  return config;
+};
+
+/**
  * Generator configuration.
  * @type {Object}
  */
@@ -121,64 +191,8 @@ generatorConfig = yargs
   .version(version, 'version')
   .argv;
 
-// Help determine which options are specified in a config json file by loading
-// the json file.
-if (generatorConfig.config) {
-  // Make config paths relative to config file.
-  configPath = path.resolve(generatorConfig.config);
-  configFile = require(configPath);
-  configPath = path.dirname(configPath);
-}
-
-// If an option is specified multiple times, yargs will convert it into an
-// array. Ensure these options are not an array.
-['destination', 'template', 'helpers'].forEach(function(key) {
-  // Only use the first value specified, ignoring the others.
-  if (generatorConfig[key] instanceof Array) {
-    generatorConfig[key] = generatorConfig[key].pop();
-  }
-  if (configFile[key] instanceof Array) {
-    configFile[key] = configFile[key].pop();
-  }
-});
-
-// Get the full source path.
-if (generatorConfig.xdemo) {
-  generatorConfig.source = [path.join(__dirname, '../demo')];
-  generatorConfig.css = ['public/styles.css'];
-} else {
-  if (!generatorConfig.source) {
-    generatorConfig.source = [];
-  }
-  if (generatorConfig._.length > 0) {
-    generatorConfig.source.push(generatorConfig._[0]);
-  }
-}
-
-// Check if the destination is the second unnamed parameter.
-if (generatorConfig._.length > 1) {
-  generatorConfig.destination = generatorConfig._[1];
-}
-
-// Ensure these options are an array.
-['source', 'custom', 'css', 'js'].forEach(function(key) {
-  if (typeof generatorConfig[key] === 'string') {
-    generatorConfig[key] = [generatorConfig[key]];
-  }
-  if (typeof configFile[key] === 'string') {
-    configFile[key] = [configFile[key]];
-  }
-});
-
-// Resolve any paths relative to the config file or to the working directory.
-['init', 'template', 'helpers', 'source', 'destination'].forEach(function(key) {
-  if (typeof configFile[key] !== 'undefined') {
-    generatorConfig[key] = resolveArray(configPath, configFile[key]);
-  } else if (typeof generatorConfig[key] !== 'undefined') {
-    generatorConfig[key] = resolveArray(generatorConfig[key]);
-  }
-});
-
+// Clean up paths and massage options to expected types.
+generatorConfig = configCleanup(generatorConfig);
 
 // Set up error handling.
 process.on('exit', function() {
