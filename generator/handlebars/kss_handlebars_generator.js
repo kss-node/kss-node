@@ -1,3 +1,6 @@
+// Remove after https://github.com/Constellation/doctrine/issues/100 is fixed.
+/*eslint-disable valid-jsdoc*/
+
 'use strict';
 
 /**
@@ -8,7 +11,6 @@
  * ```
  * @module kss/generator/handlebars
  */
-
 var KssGenerator = require('../kss_generator.js'),
   KssSection = require('../../lib/kss_section.js'),
   fs = require('fs'),
@@ -19,12 +21,18 @@ var KssGenerator = require('../kss_generator.js'),
 
 // Pass a string to KssGenerator() to tell the system which API version is
 // implemented by kssHandlebarsGenerator.
-var kssHandlebarsGenerator = new KssGenerator('2.0');
+var kssHandlebarsGenerator = new KssGenerator('2.0', {
+  'helpers': {
+    string: true,
+    path: true,
+    describe: 'Specify the location of custom handlebars helpers; see http://bit.ly/kss-wiki'
+  }
+});
 
 /**
  * Initialize the style guide creation process.
  *
- * This method is given a KssGenerator config object with the details of the
+ * This method is given a configuration JSON object with the details of the
  * requested style guide generation. The generator can use this information for
  * any necessary tasks before the KSS parsing of the source files.
  *
@@ -32,7 +40,7 @@ var kssHandlebarsGenerator = new KssGenerator('2.0');
  * @param {Object} config Configuration object for the style guide generation.
  */
 kssHandlebarsGenerator.init = function(config) {
-  var i, helper;
+  var i, j, helper;
 
   // Save the configuration parameters.
   this.config = config;
@@ -44,7 +52,7 @@ kssHandlebarsGenerator.init = function(config) {
   console.log(' * Destination : ' + this.config.destination);
   console.log(' * Template    : ' + this.config.template);
   if (this.config.helpers) {
-    console.log(' * Helpers     : ' + this.config.helpers);
+    console.log(' * Helpers     : ' + this.config.helpers.join(', '));
   }
   console.log('');
 
@@ -83,17 +91,20 @@ kssHandlebarsGenerator.init = function(config) {
   require('./helpers.js').register(this.Handlebars);
 
   // Load Handlebars helpers.
-  if (this.config.helpers && fs.existsSync(this.config.helpers)) {
-    // Load custom Handlebars helpers.
-    var helperFiles = fs.readdirSync(this.config.helpers);
+  if (this.config.helpers.length > 0) {
+    for (i = 0; i < this.config.helpers.length; i++) {
+      if (fs.existsSync(this.config.helpers[i])) {
+        // Load custom Handlebars helpers.
+        var helperFiles = fs.readdirSync(this.config.helpers[i]);
 
-    for (i = 0; i < helperFiles.length; i++) {
-      if (path.extname(helperFiles[i]) !== '.js') {
-        return;
-      }
-      helper = require(this.config.helpers + '/' + helperFiles[i]);
-      if (typeof helper.register === 'function') {
-        helper.register(this.Handlebars);
+        for (j = 0; j < helperFiles.length; j++) {
+          if (path.extname(helperFiles[j]) === '.js') {
+            helper = require(this.config.helpers[i] + '/' + helperFiles[j]);
+            if (typeof helper.register === 'function') {
+              helper.register(this.Handlebars);
+            }
+          }
+        }
       }
     }
   }
@@ -256,12 +267,14 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
     );
   }
   // Create the HTML to load the optional CSS and JS.
+  /*eslint-disable guard-for-in*/
   for (key in this.config.css) {
     styles = styles + '<link rel="stylesheet" href="' + this.config.css[key] + '">\n';
   }
   for (key in this.config.js) {
     scripts = scripts + '<script src="' + this.config.js[key] + '"></script>\n';
   }
+  /*eslint-enable guard-for-in*/
 
   /*eslint-disable key-spacing*/
   fs.writeFileSync(this.config.destination + '/' + filename,

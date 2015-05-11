@@ -1,3 +1,6 @@
+// @TODO Re-enable this eslint rule.
+/*eslint-disable valid-jsdoc*/
+
 'use strict';
 
 var Kss = require('../../lib/kss.js');
