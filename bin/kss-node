@@ -122,7 +122,7 @@ configCleanup = function(config) {
 
   // If an option is specified multiple times, yargs will convert it into an
   // array. Ensure these options are not an array.
-  ['destination', 'template', 'helpers'].forEach(function(key) {
+  ['destination', 'template'].forEach(function(key) {
     // Only use the first value specified, ignoring the others.
     if (config[key] instanceof Array) {
       config[key] = config[key].pop();
@@ -148,7 +148,7 @@ configCleanup = function(config) {
   }
 
   // Ensure these options are an array.
-  ['source', 'custom', 'css', 'js'].forEach(function(key) {
+  ['source', 'custom', 'css', 'js', 'helpers'].forEach(function(key) {
     if (typeof config[key] === 'string') {
       config[key] = [config[key]];
     }
