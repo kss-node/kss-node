@@ -19,7 +19,13 @@ var KssGenerator = require('../kss_generator.js'),
 
 // Pass a string to KssGenerator() to tell the system which API version is
 // implemented by kssHandlebarsGenerator.
-var kssHandlebarsGenerator = new KssGenerator('2.0');
+var kssHandlebarsGenerator = new KssGenerator('2.0', {
+  'helpers': {
+    string: true,
+    path: true,
+    describe: 'Specify the location of custom handlebars helpers; see http://bit.ly/kss-wiki'
+  }
+});
 
 /**
  * Initialize the style guide creation process.
@@ -227,7 +233,6 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
     homepageText = false,
     styles = '',
     scripts = '',
-    title = this.config.title || 'KSS Style Guide',
     customFields = this.config.custom,
     key;
 
@@ -280,8 +285,7 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
       argv:         this.config || {},
       homepage:     homepageText,
       styles:       styles,
-      scripts:      scripts,
-      title:        title
+      scripts:      scripts
     })
   );
   /*eslint-enable key-spacing*/

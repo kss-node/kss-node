@@ -1,4 +1,5 @@
-// This optional file is used to load the KSS generator needed by this template.
+// This optional file is used to load the CLI options and KSS generator needed
+// by this template.
 //
 // The filename should follow standard node.js require() conventions. See
 // http://nodejs.org/api/modules.html#modules_folders_as_modules It should
@@ -20,3 +21,14 @@ try {
 
 // Tell kss-node which generator this template uses.
 module.exports.generator = KssHandlebarsGenerator;
+
+// Tell kss-node which Yargs options this template has.
+// See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
+module.exports.options = {
+  'title': {
+    string: true,
+    multiple: false,
+    describe: 'Specify the title of the style guide',
+    default: 'KSS Style Guide'
+  }
+};

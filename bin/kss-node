@@ -14,6 +14,8 @@ var generator,
   generatorConfig,
   normalizeConfig,
   resolveArray,
+  template,
+  key,
 
   /*eslint-disable key-spacing*/
   cliOptions = {
@@ -31,11 +33,6 @@ var generator,
       multiple  : false,
       describe  : 'Use a custom template to build your style guide',
       default   : path.relative(process.cwd(), path.join(__dirname, '../generator/handlebars/template'))
-    },
-    'helpers': {
-      string    : true,
-      path      : true,
-      describe  : 'Specify the location of custom handlebars helpers; see http://bit.ly/kss-helpers'
     },
 
     'mask': {
@@ -119,9 +116,11 @@ resolveArray = function(from, to) {
  * @return {object} The corrected configuration object
  */
 normalizeConfig = function(config) {
+  var option;
+
   // If some of the options were specified in a JSON config file, determine
   // which ones by loading the keys from the config file.
-  if (config.config) {
+  if (config.config && typeof config.configFileOptions === 'undefined') {
     // Save the full path to the config file.
     config.config = path.resolve(config.config);
     // Store the list of config file options for later.
@@ -149,38 +148,38 @@ normalizeConfig = function(config) {
   }
 
   // Normalize all the configuration options.
-  for (var key in config) {
-    if (typeof cliOptions[key] !== 'undefined') {
+  for (option in config) {
+    if (typeof cliOptions[option] !== 'undefined') {
       // "multiple" defaults to true.
-      if (typeof cliOptions[key].multiple === 'undefined') {
-        cliOptions[key].multiple = true;
+      if (typeof cliOptions[option].multiple === 'undefined') {
+        cliOptions[option].multiple = true;
       }
       // "path" defaults to false.
-      if (typeof cliOptions[key].path === 'undefined') {
-        cliOptions[key].path = false;
+      if (typeof cliOptions[option].path === 'undefined') {
+        cliOptions[option].path = false;
       }
       // If an option is specified multiple times, yargs will convert it into an
       // array, but leave it as a string otherwise. This makes accessing the
       // values of options inconsistent, so make all other options an array.
-      if (cliOptions[key].multiple) {
-        if (typeof config[key] === 'undefined') {
-          config[key] = [];
-        } else if (!(config[key] instanceof Array)) {
-          config[key] = [config[key]];
+      if (cliOptions[option].multiple) {
+        if (typeof config[option] === 'undefined') {
+          config[option] = [];
+        } else if (!(config[option] instanceof Array)) {
+          config[option] = [config[option]];
         }
       // For options marked as "multiple: false", use the first value specified,
       // ignoring the others.
       } else {
-        if (config[key] instanceof Array) {
-          config[key] = config[key].pop();
+        if (config[option] instanceof Array) {
+          config[option] = config[option].pop();
         }
       }
       // Resolve any paths relative to the config file or to the working directory.
-      if (cliOptions[key].path) {
-        if (config.configFileOptions.indexOf(key) > -1) {
-          config[key] = resolveArray(path.dirname(config.config), config[key]);
-        } else if (typeof config[key] !== 'undefined') {
-          config[key] = resolveArray(config[key]);
+      if (cliOptions[option].path) {
+        if (config.configFileOptions.indexOf(option) > -1) {
+          config[option] = resolveArray(path.dirname(config.config), config[option]);
+        } else if (typeof config[option] !== 'undefined') {
+          config[option] = resolveArray(config[option]);
         }
       }
     }
@@ -194,17 +193,10 @@ normalizeConfig = function(config) {
  * @type {Object}
  */
 generatorConfig = yargs
-  .usage('Usage: kss-node <source> [destination] [options]')
-  .wrap(80)
-  .strict()
   .options(cliOptions)
   .config('config')
     .alias('config', 'c')
     .describe('config', 'Load the kss-node configuration from a json file')
-  .help('help')
-    .alias('help', 'h')
-    .alias('help', '?')
-  .version(version, 'version')
   .argv;
 
 // Clean up paths and massage options to expected types.
@@ -230,17 +222,10 @@ process.on('uncaughtException', function(err) {
 });
 
 
-// If no source is specified, display help and exit.
-if (!generatorConfig.source.length && !generatorConfig.init) {
-  console.log('Error: No --source specified.');
-  console.log('');
-  yargs.showHelp();
-  return;
-}
-
 // Load the template's generator.
 try {
-  generator = require(generatorConfig.template).generator;
+  template = require(generatorConfig.template);
+  generator = template.generator;
 } catch (e) {
   // Templates don't have to load their own generator. If the template fails to
   // load a generator, we assume it wanted the default generator.
@@ -249,6 +234,42 @@ try {
 
 // Confirm this is a compatible generator.
 generator.checkGenerator();
+
+// Load the generator's and the template's CLI options.
+if (Object.keys(generator.options).length) {
+  for (key in generator.options) {
+    cliOptions[key] = generator.options[key];
+  }
+  yargs.options(generator.options);
+}
+if (template && template.options && Object.keys(template.options).length) {
+  for (key in template.options) {
+    cliOptions[key] = template.options[key];
+  }
+  yargs.options(template.options);
+}
+
+// Re-parse the options.
+generatorConfig = yargs
+  // Now that we know all the options, ensure strictness.
+  .strict()
+  .wrap(80)
+  // And make a help option available.
+  .usage('Usage: kss-node [options]')
+  .help('help')
+    .alias('help', 'h')
+    .alias('help', '?')
+  .version(version, 'version')
+  .argv;
+generatorConfig = normalizeConfig(generatorConfig);
+
+// If no source is specified, display help and exit.
+if (!generatorConfig.source.length && !generatorConfig.init) {
+  console.log('Error: No --source specified.');
+  console.log('');
+  yargs.showHelp();
+  return;
+}
 
 // If requested, clone a template and exit.
 if (generatorConfig.init) {

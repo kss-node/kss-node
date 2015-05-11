@@ -32,8 +32,10 @@ var KssGenerator;
  * @constructor
  * @alias KssGenerator
  * @param {string} version The generator API version implemented.
+ * @param {object} options The Yargs options this generator has.
+ *   See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
  */
-module.exports = KssGenerator = function(version) {
+module.exports = KssGenerator = function(version, options) {
   if (!(this instanceof KssGenerator)) {
     return new KssGenerator();
   }
@@ -44,6 +46,9 @@ module.exports = KssGenerator = function(version) {
   // Store the version of the generator API that the generator instance is
   // expecting; we will verify this in checkGenerator().
   this.instanceAPI = (typeof version === 'undefined') ? 'undefined' : version;
+
+  // Tell kss-node which Yargs options this generator has.
+  this.options = options || {};
 };
 
 /**
