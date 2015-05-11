@@ -286,7 +286,7 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
         return section.toJSON(customFields);
       }),
       rootName:     root,
-      argv:         this.config || {},
+      options:      this.config || {},
       homepage:     homepageText,
       styles:       styles,
       scripts:      scripts

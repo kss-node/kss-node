@@ -6,7 +6,7 @@
 <!--[if (gte IE 9)|(gt IEMobile 7)]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>{{config.title}}</title>
+  <title>{{options.title}}</title>
 
   <meta name="description" content="">
   <meta name="generator" content="kss-node">
@@ -19,7 +19,7 @@
 
 <div class="kss-sidebar kss-style">
   <header class="kss-header">
-    <h1 class="kss-doc-title">{{config.title}}</h1>
+    <h1 class="kss-doc-title">{{options.title}}</h1>
   </header>
   <nav class="kss-nav">
     <ul class="kss-nav__menu">
@@ -162,7 +162,7 @@
 {{{scripts}}}
 
 {{! This will only be included in the demo page. }}
-{{#if argv.xdemo}}
+{{#if options.xdemo}}
   <footer class="kss-github">
     <!-- https://github.com/blog/273-github-ribbons -->
     <a href="https://github.com/kss-node/kss-node"><img src="public/github-fork--black.png" alt="Fork me on GitHub"></a>
