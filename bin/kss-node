@@ -109,16 +109,15 @@ resolveArray = function(from, to) {
  * @return {object} The corrected configuration object
  */
 configCleanup = function(config) {
-  var configFile = {},
-    configPath;
-
-  // Help determine which options are specified in a config json file by loading
-  // the json file.
+  // If some of the options were specified in a JSON config file, determine
+  // which ones by loading the keys from the config file.
   if (config.config) {
-    // Make config paths relative to config file.
-    configPath = path.resolve(config.config);
-    configFile = require(configPath);
-    configPath = path.dirname(configPath);
+    // Save the full path to the config file.
+    config.config = path.resolve(config.config);
+    // Store the list of config file options for later.
+    config.configFileOptions = Object.keys(require(config.config));
+  } else {
+    config.configFileOptions = [];
   }
 
   // If an option is specified multiple times, yargs will convert it into an
@@ -127,9 +126,6 @@ configCleanup = function(config) {
     // Only use the first value specified, ignoring the others.
     if (config[key] instanceof Array) {
       config[key] = config[key].pop();
-    }
-    if (configFile[key] instanceof Array) {
-      configFile[key] = configFile[key].pop();
     }
   });
 
@@ -156,15 +152,12 @@ configCleanup = function(config) {
     if (typeof config[key] === 'string') {
       config[key] = [config[key]];
     }
-    if (typeof configFile[key] === 'string') {
-      configFile[key] = [configFile[key]];
-    }
   });
 
   // Resolve any paths relative to the config file or to the working directory.
   ['init', 'template', 'helpers', 'source', 'destination'].forEach(function(key) {
-    if (typeof configFile[key] !== 'undefined') {
-      config[key] = resolveArray(configPath, configFile[key]);
+    if (config.configFileOptions.indexOf(key) > -1) {
+      config[key] = resolveArray(path.dirname(config.config), config[key]);
     } else if (typeof config[key] !== 'undefined') {
       config[key] = resolveArray(config[key]);
     }
