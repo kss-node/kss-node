@@ -28,7 +28,7 @@
     "yargs": "^3.8.0"
   },
   "devDependencies": {
-    "eslint": "^0.18.0",
+    "eslint": "^0.21.0",
     "jsdoc": "^3.3.0-beta3",
     "mocha": "^1.21.4"
   },

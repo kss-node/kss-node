@@ -78,7 +78,8 @@ KssGenerator.prototype.checkGenerator = function() {
  *
  * @alias KssGenerator.prototype.clone
  * @param {string} templatePath    Path to the template to clone.
- * @param {string} destinationPath Path to the destination of the new cloned template.
+ * @param {string} destinationPath Path to the destination of the newly cloned
+ *                                 template.
  */
 KssGenerator.prototype.clone = function(templatePath, destinationPath) {
   try {

@@ -1,3 +1,6 @@
+// Remove after https://github.com/Constellation/doctrine/issues/100 is fixed.
+/*eslint-disable valid-jsdoc*/
+
 'use strict';
 
 /**
@@ -8,7 +11,6 @@
  * ```
  * @module kss/generator/handlebars
  */
-
 var KssGenerator = require('../kss_generator.js'),
   KssSection = require('../../lib/kss_section.js'),
   fs = require('fs'),
@@ -30,7 +32,7 @@ var kssHandlebarsGenerator = new KssGenerator('2.0', {
 /**
  * Initialize the style guide creation process.
  *
- * This method is given a KssGenerator config object with the details of the
+ * This method is given a configuration JSON object with the details of the
  * requested style guide generation. The generator can use this information for
  * any necessary tasks before the KSS parsing of the source files.
  *
@@ -265,12 +267,14 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
     );
   }
   // Create the HTML to load the optional CSS and JS.
+  /*eslint-disable guard-for-in*/
   for (key in this.config.css) {
     styles = styles + '<link rel="stylesheet" href="' + this.config.css[key] + '">\n';
   }
   for (key in this.config.js) {
     scripts = scripts + '<script src="' + this.config.js[key] + '"></script>\n';
   }
+  /*eslint-enable guard-for-in*/
 
   /*eslint-disable key-spacing*/
   fs.writeFileSync(this.config.destination + '/' + filename,

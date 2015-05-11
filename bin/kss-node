@@ -236,6 +236,7 @@ try {
 generator.checkGenerator();
 
 // Load the generator's and the template's CLI options.
+/*eslint-disable guard-for-in*/
 if (Object.keys(generator.options).length) {
   for (key in generator.options) {
     cliOptions[key] = generator.options[key];
@@ -248,6 +249,7 @@ if (template && template.options && Object.keys(template.options).length) {
   }
   yargs.options(template.options);
 }
+/*eslint-enable guard-for-in*/
 
 // Re-parse the options.
 generatorConfig = yargs
