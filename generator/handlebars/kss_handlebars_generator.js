@@ -25,18 +25,18 @@ var kssHandlebarsGenerator = new KssGenerator('2.0', {
   'helpers': {
     string: true,
     path: true,
-    describe: 'The location of custom handlebars helpers; see http://bit.ly/kss-wiki'
+    describe: 'Location of custom handlebars helpers; see http://bit.ly/kss-wiki'
   },
   'homepage': {
     string: true,
     multiple: false,
-    describe: 'The file name of the homepage\'s Markdown file',
+    describe: 'File name of the homepage\'s Markdown file',
     default: 'styleguide.md'
   },
   'placeholder': {
     string: true,
     multiple: false,
-    describe: 'The placeholder text to use for modifier classes',
+    describe: 'Placeholder text to use for modifier classes',
     default: '[modifier class]'
   }
 });

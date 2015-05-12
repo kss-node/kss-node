@@ -45,11 +45,11 @@ var generator,
 
     'css': {
       string    : true,
-      describe  : 'Specify the URL of a CSS file to include in the style guide'
+      describe  : 'URL of a CSS file to include in the style guide'
     },
     'js': {
       string    : true,
-      describe  : 'Specify the URL of a JavaScript file to include in the style guide'
+      describe  : 'URL of a JavaScript file to include in the style guide'
     },
 
     'custom': {

@@ -46,10 +46,9 @@ Options:
                              [string] [default: "generator/handlebars/template"]
   --mask, -m      Use a mask for detecting files containing KSS comments
                 [string] [default: "*.css|*.less|*.sass|*.scss|*.styl|*.stylus"]
-  --css           Specify the URL of a CSS file to include in the style guide
+  --css           URL of a CSS file to include in the style guide       [string]
+  --js            URL of a JavaScript file to include in the style guide
                                                                         [string]
-  --js            Specify the URL of a JavaScript file to include in the style
-                  guide                                                 [string]
   --custom        Process a custom property name when parsing KSS comments
                                                                         [string]
   --source        Source directory to parse for KSS comments            [string]
@@ -60,11 +59,13 @@ Options:
   --version       Show version number
 
 Options for the default template:
-  --helpers       Specify the location of custom handlebars helpers; see
+  --helpers       Location of custom handlebars helpers; see
                   http://bit.ly/kss-wiki                                [string]
-  --homepage      Specify the file name of the homepage's Markdown file
+  --homepage      File name of the homepage's Markdown file
                                              [string] [default: "styleguide.md"]
-  --title         Specify the title of the style guide
+  --placeholder   Placeholder text to use for modifier classes
+                                          [string] [default: "[modifier class]"]
+  --title         Title of the style guide
                                            [string] [default: "KSS Style Guide"]
 ```
 
