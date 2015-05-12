@@ -150,6 +150,9 @@ normalizeConfig = function(config) {
   // Normalize all the configuration options.
   for (option in config) {
     if (typeof cliOptions[option] !== 'undefined') {
+      if (option === 'config') {
+        cliOptions[option].multiple = false;
+      }
       // "multiple" defaults to true.
       if (typeof cliOptions[option].multiple === 'undefined') {
         cliOptions[option].multiple = true;
@@ -198,6 +201,20 @@ generatorConfig = yargs
     .alias('config', 'c')
     .describe('config', 'Load the kss-node configuration from a json file')
   .argv;
+
+// If the demo is requested, load the options from its config file.
+if (generatorConfig.xdemo) {
+  // Add the configuration file to the arguments list.
+  process.argv.push('--config', path.join(__dirname, '../demo/kss-config.json'));
+  generatorConfig = yargs
+    .reset()
+    .options(cliOptions)
+    .config('config')
+      .alias('config', 'c')
+      .describe('config', 'Load the kss-node configuration from a json file')
+    // Yargs doesn't re-read process.argv, so pass it explicitly.
+    .parse(process.argv.slice(2));
+}
 
 // Clean up paths and massage options to expected types.
 generatorConfig = normalizeConfig(generatorConfig);
@@ -251,9 +268,8 @@ if (template && template.options && Object.keys(template.options).length) {
 }
 /*eslint-enable guard-for-in*/
 
-// Re-parse the options.
-generatorConfig = yargs
-  // Now that we know all the options, ensure strictness.
+// Now that we know all the options, ensure strictness.
+yargs
   .strict()
   .wrap(80)
   // And make a help option available.
@@ -261,8 +277,14 @@ generatorConfig = yargs
   .help('help')
     .alias('help', 'h')
     .alias('help', '?')
-  .version(version, 'version')
-  .argv;
+  .version(version, 'version');
+
+// And re-parse the options.
+if (generatorConfig.xdemo) {
+  generatorConfig = yargs.parse(process.argv.slice(2));
+} else {
+  generatorConfig = yargs.argv;
+}
 generatorConfig = normalizeConfig(generatorConfig);
 
 // If no source is specified, display help and exit.
