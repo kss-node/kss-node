@@ -6,8 +6,7 @@ This software is a Node.js implementation of [Knyle Style Sheets](https://github
 2. Have `kss-node` auto-generate a style guide from your stylesheets.
 
 Here's an example KSS comment:
-<pre class="prettyprint linenums lang-css"><code data-language="css">
-/*
+<pre class="prettyprint linenums lang-css"><code data-language="css">/*
 Button
 
 Your standard button suitable for clicking.
