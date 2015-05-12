@@ -28,7 +28,7 @@ module.exports.options = {
   'title': {
     string: true,
     multiple: false,
-    describe: 'Specify the title of the style guide',
+    describe: 'Title of the style guide',
     default: 'KSS Style Guide'
   }
 };

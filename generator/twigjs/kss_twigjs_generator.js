@@ -25,7 +25,7 @@ var kssTwigJSGenerator = new KssGenerator('2.0', {
   'helpers': {
     string: true,
     path: true,
-    describe: 'Specify the location of custom handlebars helpers; see http://bit.ly/kss-wiki'
+    describe: 'Location of custom handlebars helpers; see http://bit.ly/kss-wiki'
   },
   'base': {
     string: true,
@@ -36,7 +36,7 @@ var kssTwigJSGenerator = new KssGenerator('2.0', {
   'homepage': {
     string: true,
     multiple: false,
-    describe: 'Specify the file name of the homepage\'s Markdown file',
+    describe: 'File name of the homepage\'s Markdown file',
     default: 'styleguide.md'
   }
 });
