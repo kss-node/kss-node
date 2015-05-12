@@ -26,6 +26,12 @@ var kssHandlebarsGenerator = new KssGenerator('2.0', {
     string: true,
     path: true,
     describe: 'Specify the location of custom handlebars helpers; see http://bit.ly/kss-wiki'
+  },
+  'homepage': {
+    string: true,
+    multiple: false,
+    describe: 'Specify the file name of the homepage\'s Markdown file',
+    default: 'styleguide.md'
   }
 });
 
@@ -245,7 +251,7 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
     for (key in this.config.source) {
       if (!homepageText) {
         try {
-          files = glob.sync(this.config.source[key] + '/**/styleguide.md');
+          files = glob.sync(this.config.source[key] + '/**/' + this.config.homepage);
           if (files.length) {
             homepageText = ' ' + marked(fs.readFileSync(files[0], 'utf8'));
           }
@@ -256,7 +262,7 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
     }
     if (!homepageText) {
       homepageText = ' ';
-      console.log('   ...no homepage content found in styleguide.md.');
+      console.log('   ...no homepage content found in ' + this.config.homepage + '.');
     }
   } else {
     filename = 'section-' + KssSection.prototype.encodeReferenceURI(root) + '.html';
