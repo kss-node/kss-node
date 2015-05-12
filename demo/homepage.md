@@ -6,7 +6,7 @@ This software is a Node.js implementation of [Knyle Style Sheets](https://github
 2. Have `kss-node` auto-generate a style guide from your stylesheets.
 
 Here's an example KSS comment:
-```css
+<pre class="prettyprint linenums lang-css"><code data-language="css">
 /*
 Button
 
@@ -23,17 +23,17 @@ Style guide: components.button
 .button.shiny {
   ...
 }
-```
+</code></pre>
 
 **For more information on how to write KSS comments, see the [KSS spec](https://github.com/kss-node/kss/blob/spec/SPEC.md).**
 
-# kss-node demo
+## kss-node demo
 
 This site is generated with the `kss-node` command-line tool and parses the KSS documentation found in this [demo project](https://github.com/kss-node/kss-node/tree/master/demo).
 
 The styling of this site is a demo of [kss-node](https://github.com/kss-node/kss-node)'s default style guide generator. By using the site navigation to the left (or above), you can see how your documentation would look with the default generator. Note that alternate generators are available.
 
-# JavaScript API
+## JavaScript API
 
 If you don't wish to use the default style guide template, you can either:
 * write your own template that uses the default kssHandlebarsGenerator style guide generator, or
@@ -42,6 +42,6 @@ If you don't wish to use the default style guide template, you can either:
 
 **For more information on how to integrate kss-node with your own JavaScript, see the [JavaScript API documentation](./section-javascript-api.html).**
 
-# Project homepage
+## Project homepage
 
 Check out the [project on Github](https://github.com/kss-node/kss-node) for more information about the code.
