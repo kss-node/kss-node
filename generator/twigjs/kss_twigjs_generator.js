@@ -97,8 +97,9 @@ kssTwigJSGenerator.init = function(config) {
   }
 
   // Store the global TwigJS object.
+  // @TODO: Switch to require('twig')
   this.TwigJS = require('twig/twig.js');
-  this.Twig = this.TwigJS.twig;
+  this.twig = this.TwigJS.twig;
 
   // Load the standard TwigJS helpers.
   require('./helpers.js').register(this.TwigJS, this.config);
@@ -124,7 +125,7 @@ kssTwigJSGenerator.init = function(config) {
 
   // Compile the TwigJS template.
   this.template = fs.readFileSync(this.config.template + '/index.html', 'utf8');
-  this.template = this.Twig({data: this.template});
+  this.template = this.twig({data: this.template});
 };
 
 /**
@@ -204,7 +205,7 @@ kssTwigJSGenerator.generate = function(styleguide) {
       // helper, where we only know the reference.
       // @TODO Fix this properly. Don't just skip ahead.
       try {
-        partials[partial.reference] = this.Twig({
+        partials[partial.reference] = this.twig({
           id: 'template-' + partial.name,
           data: partial.markup,
           variables: partial.data
