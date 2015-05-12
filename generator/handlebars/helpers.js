@@ -5,7 +5,8 @@
 
 var Kss = require('../../lib/kss.js');
 
-module.exports.register = function(handlebars) {
+module.exports.register = function(handlebars, config) {
+  config = config || {};
 
   /**
    * Returns a single section, found by its reference number
@@ -209,10 +210,11 @@ module.exports.register = function(handlebars) {
     data = JSON.parse(JSON.stringify(partial.data));
     /*eslint-disable camelcase*/
     if (data.modifier_class) {
-      data.modifier_class += modifier ? ' ' + modifier.className() : '';
+      data.modifier_class += ' ';
     } else {
-      data.modifier_class = modifier ? modifier.className() : '';
+      data.modifier_class = '';
     }
+    data.modifier_class += modifier ? modifier.className() : config.placeholder;
     /*eslint-enable camelcase*/
 
     // Compile the section's markup partial into a template.

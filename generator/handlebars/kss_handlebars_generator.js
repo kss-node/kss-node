@@ -25,13 +25,19 @@ var kssHandlebarsGenerator = new KssGenerator('2.0', {
   'helpers': {
     string: true,
     path: true,
-    describe: 'Specify the location of custom handlebars helpers; see http://bit.ly/kss-wiki'
+    describe: 'The location of custom handlebars helpers; see http://bit.ly/kss-wiki'
   },
   'homepage': {
     string: true,
     multiple: false,
-    describe: 'Specify the file name of the homepage\'s Markdown file',
+    describe: 'The file name of the homepage\'s Markdown file',
     default: 'styleguide.md'
+  },
+  'placeholder': {
+    string: true,
+    multiple: false,
+    describe: 'The placeholder text to use for modifier classes',
+    default: '[modifier class]'
   }
 });
 
@@ -94,7 +100,7 @@ kssHandlebarsGenerator.init = function(config) {
   this.Handlebars = require('handlebars');
 
   // Load the standard Handlebars helpers.
-  require('./helpers.js').register(this.Handlebars);
+  require('./helpers.js').register(this.Handlebars, this.config);
 
   // Load Handlebars helpers.
   if (this.config.helpers.length > 0) {
@@ -107,7 +113,7 @@ kssHandlebarsGenerator.init = function(config) {
           if (path.extname(helperFiles[j]) === '.js') {
             helper = require(this.config.helpers[i] + '/' + helperFiles[j]);
             if (typeof helper.register === 'function') {
-              helper.register(this.Handlebars);
+              helper.register(this.Handlebars, this.config);
             }
           }
         }
