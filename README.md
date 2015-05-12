@@ -126,9 +126,9 @@ kss.traverse('public/stylesheets/', options, function(err, styleguide) {
 
 Forking, hacking, and tearing apart of this software is welcome! It still needs some cleaning up.
 
-If you've got [mocha](https://github.com/visionmedia/mocha) installed, you can run the module's tests with `npm test` or `make test`.
+After you've cloned this repository, run `npm install` and then you'll be able to run the module's mocha and eslint tests with `npm test`.
 
-To generate a new version of the demo style guide, use `make gh-pages`. After committing your changes to master you can use the `gh-pages.sh` script to move this over to the `gh-pages` branch real quick.
+To generate a new version of the demo style guide, use `make docs`. After committing your changes to master you can use the `gh-pages.sh` script to move this over to the `gh-pages` branch real quick.
 
 ## Contributors
 
