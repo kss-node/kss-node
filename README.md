@@ -31,42 +31,41 @@ There's an example project in the [demo directory](https://github.com/kss-node/k
 
 ## Installation
 
-Just one line: `npm install kss`. Or, if you have a package.json for your project, with: `npm install kss --save-dev`.
+kss-node is installed just like any other Node.js software. Read the [kss-node Quick Start Guide](https://github.com/kss-node/kss-node/wiki/Quick-Start-Guide) to learn more. It also includes an npm Quick Start Guide, if you don't know much about Node.js's npm command.
 
-After that, the command line tool can be found at `./node_modules/.bin/kss-node`.
-
-If you know what you are doing, you can install it globally with: `npm install -g kss`
-
-## Using the CLI
+## Using the command line tool
 
 To get you up and running quickly, a style guide generator is included that can be used from the command line. It parses stylesheets and spits out a set of static HTML files.
 
 ```
-Usage: kss-node <source> [destination] [options]
+Usage: kss-node [options]
 
 Options:
-  --init, -i      Create a new style guide template to customize
-                                                [default: "styleguide-template"]
+  --init, -i      Clone a style guide template to customize             [string]
   --template, -t  Use a custom template to build your style guide
-                                                       [default: "lib/template"]
-  --helpers       Specify the location of custom handlebars helpers; see
-                  http://bit.ly/kss-helpers    [default: "lib/template/helpers"]
+                             [string] [default: "generator/handlebars/template"]
   --mask, -m      Use a mask for detecting files containing KSS comments
-                         [default: "*.css|*.less|*.sass|*.scss|*.styl|*.stylus"]
-  --custom        Process a custom property name when parsing KSS comments
-
+                [string] [default: "*.css|*.less|*.sass|*.scss|*.styl|*.stylus"]
   --css           Specify the URL of a CSS file to include in the style guide
+                                                                        [string]
   --js            Specify the URL of a JavaScript file to include in the style
-                  guide
-
-  --source        Source directory to parse for KSS comments
+                  guide                                                 [string]
+  --custom        Process a custom property name when parsing KSS comments
+                                                                        [string]
+  --source        Source directory to parse for KSS comments            [string]
   --destination   Destination directory of generated style guide
-                                                         [default: "styleguide"]
-
+                                                [string] [default: "styleguide"]
   --config, -c    Load the kss-node configuration from a json file
-
-  --version       Show version number
   --help, -h, -?  Show help
+  --version       Show version number
+
+Options for the default template:
+  --helpers       Specify the location of custom handlebars helpers; see
+                  http://bit.ly/kss-wiki                                [string]
+  --homepage      Specify the file name of the homepage's Markdown file
+                                             [string] [default: "styleguide.md"]
+  --title         Specify the title of the style guide
+                                           [string] [default: "KSS Style Guide"]
 ```
 
 In order to parse your stylesheets containing KSS docs, you need to either specify a single directory as the first argument or you can specify one or more source directories with one or more `--source [directory]` flags.
@@ -102,7 +101,7 @@ Take a look at the [demo project](https://github.com/kss-node/kss-node/tree/mast
 
 ## Using kss-node from Node.js
 
-Check out the [Module API](https://github.com/kss-node/kss-node/wiki/Module-API) for a full explanation. Here's an example:
+Check out the [JavaScript API](http://kss-node.github.io/kss-node/section-javascript-api.html) for a full explanation. Here's an example:
 
 ``` javascript
 var kss = require('kss'),

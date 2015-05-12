@@ -2,7 +2,7 @@
 //
 // Below are the text-oriented form elements used on the site.
 //
-// Styleguide forms.text
+// Style guide: demo.forms.text
 
 
 // Single-Line Text Boxes
@@ -18,7 +18,7 @@
 //
 // Weight: -1
 //
-// Styleguide forms.text.single-line
+// Style guide: demo.forms.text.single-line
 input[type='text'] {
   -webkit-appearance: none;
      -moz-appearance: none;
@@ -55,15 +55,15 @@ input[type='text'] {
   }
 }
 
-// Label/Textbox Pairs
+// Label/Text box Pairs
 //
-// All labelled textboxes should be included in a wrapper `<div>` element for
+// All labelled text boxes should be included in a wrapper `<div>` element for
 // both layout convenience and specific styling.
 //
 // Markup:
 // <div class="mod-input text {{modifier_class}}">
 //   <label>Text Label</label>
-//   {{> "forms.text.single-line" modifier_class=""}}
+//   {{> "demo.forms.text.single-line" modifier_class=""}}
 // </div>
 //
 // .disabled  - Use this class when the text input inside is expected to be
@@ -72,7 +72,7 @@ input[type='text'] {
 // .valid     - Use this class if the input has passed a validation check
 //              (intended for live validation in particular).
 //
-// Styleguide forms.text.label-pairs
+// Style guide: demo.forms.text.label-pairs
 .mod-input {
   position:relative;
   display:block;

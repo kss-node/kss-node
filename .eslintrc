@@ -1,0 +1,31 @@
+{
+  // http://eslint.org/docs/user-guide/configuring.html
+  "env": {
+    "node": true
+  },
+  "rules": {
+    // Errors.
+    "block-scoped-var": 2,
+    "brace-style": [2, "1tbs", {"allowSingleLine": true}],
+    "comma-style": [2, "last"],
+    "consistent-this": [2, "self"],
+    "indent": [2, 2, {"indentSwitchCase": true}],
+    "guard-for-in": 2,
+    "max-nested-callbacks": [2, 3],
+    "no-catch-shadow": 2,
+    "no-mixed-requires": [2, false],
+    "no-nested-ternary": 2,
+    "no-throw-literal": 2,
+    "no-undefined": 2,
+    "quotes": [2, "single", "avoid-escape"],
+    "space-after-keywords": [2, "always"],
+    "space-before-blocks": [2, "always"],
+    "space-before-function-paren": [2, "never"],
+    "space-in-brackets": [2, "never"],
+    "space-in-parens": [2, "never"],
+    "spaced-line-comment": [2, "always"],
+    "valid-jsdoc": [2, {"requireReturn": false}],
+    "wrap-iife": 2
+    // Warnings.
+  }
+}

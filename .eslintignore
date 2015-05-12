@@ -1,0 +1,16 @@
+# Ignore any installed node modules.
+**/node_modules/**
+
+# Ignore any generator templates.
+generator/*/*/*/*.js
+
+# Ignore the demo pages.
+demo/**
+gh-pages/**
+styleguide/**
+
+# Ignore old test runs.
+test/output/**
+
+# Ignore all tests until we can fix the linting errors.
+test/**

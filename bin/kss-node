@@ -1,28 +1,101 @@
 #!/usr/bin/env node
 
+/*eslint-disable no-process-exit*/
+
+'use strict';
+
 var yargs = require('yargs'),
   path = require('path'),
-  generator,
-  configFile = {},
-  configPath,
+  version = require('../package.json').version;
+
+var generator,
   KSS_GENERATING = false,
   KSS_FAILED = false,
   generatorConfig,
-  version = require(__dirname + '/../package.json').version,
-  resolveArray;
+  normalizeConfig,
+  resolveArray,
+  template,
+  key,
+
+  /*eslint-disable key-spacing*/
+  cliOptions = {
+    'init': {
+      alias     : 'i',
+      string    : true,
+      path      : true,
+      multiple  : false,
+      describe  : 'Clone a style guide template to customize'
+    },
+    'template': {
+      alias     : 't',
+      string    : true,
+      path      : true,
+      multiple  : false,
+      describe  : 'Use a custom template to build your style guide',
+      default   : path.relative(process.cwd(), path.join(__dirname, '../generator/handlebars/template'))
+    },
+
+    'mask': {
+      alias     : 'm',
+      string    : true,
+      multiple  : false,
+      describe  : 'Use a mask for detecting files containing KSS comments',
+      default   : '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
+    },
+
+    'css': {
+      string    : true,
+      describe  : 'Specify the URL of a CSS file to include in the style guide'
+    },
+    'js': {
+      string    : true,
+      describe  : 'Specify the URL of a JavaScript file to include in the style guide'
+    },
+
+    'custom': {
+      string    : true,
+      describe  : 'Process a custom property name when parsing KSS comments'
+    },
+
+    'source': {
+      string    : true,
+      path      : true,
+      describe  : 'Source directory to parse for KSS comments'
+    },
+    'destination': {
+      string    : true,
+      path      : true,
+      multiple  : false,
+      describe  : 'Destination directory of generated style guide',
+      default   : 'styleguide'
+    },
+
+    'xdemo': {
+      // Alias is redundant, but prevents "Unknown argument: xdemo" error.
+      alias     : 'xdemo',
+      multiple  : false,
+      boolean   : true
+    },
+    // This option allows JSON comments in the config file.
+    '//': {
+      // Alias is redundant, but prevents "Unknown argument: //" error.
+      alias     : '//',
+      string    : true
+    }
+  };
+  /*eslint-enable key-spacing*/
 
 /**
  * Applies path.resolve() to the given path or array of paths.
  *
  * @param {string}        from  Optional path to resolve the "to" path
  * @param {string|array}  to    Relative path(s) to resolve.
- *
- * @return An absolute path.
+ * @return {string} An absolute path.
  */
 resolveArray = function(from, to) {
   var paths = [];
   // "from" is optional.
-  if (typeof to === "undefined") {
+  if (typeof to === 'undefined') {
     to = from;
     from = '';
   }
@@ -30,173 +103,121 @@ resolveArray = function(from, to) {
     to.forEach(function(value, index) {
       paths[index] = path.resolve(from, value);
     });
-  }
-  else {
+  } else {
     paths = path.resolve(from, to);
   }
   return paths;
 };
 
 /**
- * Generator configruation.
+ * Cleans up a configuration object.
+ *
+ * @param {object} config Configuration object.
+ * @return {object} The corrected configuration object
+ */
+normalizeConfig = function(config) {
+  var option;
+
+  // If some of the options were specified in a JSON config file, determine
+  // which ones by loading the keys from the config file.
+  if (config.config && typeof config.configFileOptions === 'undefined') {
+    // Save the full path to the config file.
+    config.config = path.resolve(config.config);
+    // Store the list of config file options for later.
+    config.configFileOptions = Object.keys(require(config.config));
+  } else {
+    config.configFileOptions = [];
+  }
+
+  // Get the full source path.
+  if (config.xdemo) {
+    config.source = [path.join(__dirname, '../demo')];
+    config.css = ['public/styles.css'];
+  } else {
+    if (!config.source) {
+      config.source = [];
+    }
+    if (config._.length > 0) {
+      config.source.push(config._[0]);
+    }
+  }
+
+  // Check if the destination is the second unnamed parameter.
+  if (config._.length > 1) {
+    config.destination = config._[1];
+  }
+
+  // Normalize all the configuration options.
+  for (option in config) {
+    if (typeof cliOptions[option] !== 'undefined') {
+      if (option === 'config') {
+        cliOptions[option].multiple = false;
+      }
+      // "multiple" defaults to true.
+      if (typeof cliOptions[option].multiple === 'undefined') {
+        cliOptions[option].multiple = true;
+      }
+      // "path" defaults to false.
+      if (typeof cliOptions[option].path === 'undefined') {
+        cliOptions[option].path = false;
+      }
+      // If an option is specified multiple times, yargs will convert it into an
+      // array, but leave it as a string otherwise. This makes accessing the
+      // values of options inconsistent, so make all other options an array.
+      if (cliOptions[option].multiple) {
+        if (typeof config[option] === 'undefined') {
+          config[option] = [];
+        } else if (!(config[option] instanceof Array)) {
+          config[option] = [config[option]];
+        }
+      // For options marked as "multiple: false", use the first value specified,
+      // ignoring the others.
+      } else {
+        if (config[option] instanceof Array) {
+          config[option] = config[option].pop();
+        }
+      }
+      // Resolve any paths relative to the config file or to the working directory.
+      if (cliOptions[option].path) {
+        if (config.configFileOptions.indexOf(option) > -1) {
+          config[option] = resolveArray(path.dirname(config.config), config[option]);
+        } else if (typeof config[option] !== 'undefined') {
+          config[option] = resolveArray(config[option]);
+        }
+      }
+    }
+  }
+
+  return config;
+};
+
+/**
+ * Generator configuration.
  * @type {Object}
  */
 generatorConfig = yargs
-  .usage('Usage: kss-node <source> [destination] [options]')
-  .wrap(80)
-  .strict()
-
-  .options('init', {
-    alias     : 'i',
-    describe  : 'Create a new style guide template to customize',
-    default   : 'styleguide-template'
-  })
-  .options('template', {
-    string    : true,
-    alias     : 't',
-    describe  : 'Use a custom template to build your style guide',
-    default   : path.relative(process.cwd(), __dirname + '/../generators/handlebars/template')
-  })
-  .options('helpers', {
-    string    : true,
-    describe  : 'Specify the location of custom handlebars helpers; see http://bit.ly/kss-helpers',
-    default   : path.relative(process.cwd(), __dirname + '/../generators/handlebars/template/helpers')
-  })
-
-  .options('mask', {
-    string    : true,
-    alias     : 'm',
-    describe  : 'Use a mask for detecting files containing KSS comments',
-    default   : '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
-  })
-
-  .options('css', {
-    string    : true,
-    describe  : 'Specify the URL of a CSS file to include in the style guide'
-  })
-  .options('js', {
-    string    : true,
-    describe  : 'Specify the URL of a JavaScript file to include in the style guide'
-  })
-
-  .options('custom', {
-    string    : true,
-    describe  : 'Process a custom property name when parsing KSS comments'
-  })
-
-  .options('base', {
-    string    : true,
-    describe  : 'Base working directory for inline templates'
-  })
-  .options('source', {
-    string    : true,
-    describe  : 'Source directory to parse for KSS comments'
-  })
-  .options('destination', {
-    string    : true,
-    describe  : 'Destination directory of generated style guide',
-    default   : 'styleguide'
-  })
-
+  .options(cliOptions)
   .config('config')
-  .alias('config', 'c')
-  .describe('config', 'Load the kss-node configuration from a json file')
-
-  .options('xdemo', {
-    boolean   : true,
-    // Alias is redundant, but prevents "Unknown argument: xdemo" error.
-    alias     : 'xdemo'
-  })
-
-  .version(version, 'version')
-  .help('help')
-  .alias('help', 'h')
-  .alias('help', '?')
+    .alias('config', 'c')
+    .describe('config', 'Load the kss-node configuration from a json file')
   .argv;
 
-// Help determine which options are specified in a config json file by loading
-// the json file.
-if (generatorConfig.config) {
-  // Make config paths relative to config file.
-  configPath = path.resolve(generatorConfig.config);
-  configFile = require(configPath);
-  configPath = path.dirname(configPath);
-}
-
-// If an option is specified multiple times, yargs will convert it into an
-// array. Ensure these options are not an array.
-["destination", "template", "helpers"].forEach(function(key) {
-  // Only use the first value specified, ignoring the others.
-  if (generatorConfig[key] instanceof Array) {
-    generatorConfig[key] = generatorConfig[key].pop();
-  }
-  if (configFile[key] instanceof Array) {
-    configFile[key] = configFile[key].pop();
-  }
-});
-
-// Explicitly check if the --init option was called since generatorConfig.init
-// will contain a default value.
-if ("init" in yargs.argv || "i" in yargs.argv) {
-  // Use the default value if --init is not given a path.
-  if (typeof generatorConfig.init === "boolean") {
-    generatorConfig.init = 'styleguide-template';
-  }
-}
-else {
-  delete generatorConfig.init;
-}
-
-// Get the full source path.
+// If the demo is requested, load the options from its config file.
 if (generatorConfig.xdemo) {
-  generatorConfig.source = [__dirname + '/../demo'];
-  generatorConfig.css = ['public/styles.css'];
-}
-else {
-  if (!generatorConfig.source) {
-    generatorConfig.source = [];
-  }
-  if (generatorConfig._.length > 0) {
-    generatorConfig.source.push(generatorConfig._[0]);
-  }
-}
-
-// Check if the destination is the second unnamed parameter.
-if (!("destination" in yargs.argv) && generatorConfig._.length > 1) {
-  generatorConfig.destination = generatorConfig._[1];
+  // Add the configuration file to the arguments list.
+  process.argv.push('--config', path.join(__dirname, '../demo/kss-config.json'));
+  generatorConfig = yargs
+    .reset()
+    .options(cliOptions)
+    .config('config')
+      .alias('config', 'c')
+      .describe('config', 'Load the kss-node configuration from a json file')
+    // Yargs doesn't re-read process.argv, so pass it explicitly.
+    .parse(process.argv.slice(2));
 }
 
-// Don't use the default value if the helpers option is not specified.
-if (!("helpers" in yargs.argv) && !configFile.helpers) {
-  generatorConfig.helpers = generatorConfig.template + '/helpers';
-}
-
-// Ensure these options are an array.
-["source", "custom", "css", "js"].forEach(function(key) {
-  if (typeof generatorConfig[key] === "string") {
-    generatorConfig[key] = [generatorConfig[key]];
-  }
-  if (typeof configFile[key] === "string") {
-    configFile[key] = [configFile[key]];
-  }
-});
-
-// Resolve any paths relative to the config file or to the working directory.
-["init", "template", "helpers", "base", "source", "destination"].forEach(function(key) {
-  if (typeof configFile[key] !== "undefined") {
-    generatorConfig[key] = resolveArray(configPath, configFile[key]);
-  }
-  else if (typeof generatorConfig[key] !== "undefined") {
-    generatorConfig[key] = resolveArray(generatorConfig[key]);
-  }
-});
-
-// Copy config that we need in the generator
-["css", "js"].forEach(function(key) {
-  if (typeof configFile[key] !== "undefined") {
-    generatorConfig[key] = configFile[key];
-  }
-});
+// Clean up paths and massage options to expected types.
+generatorConfig = normalizeConfig(generatorConfig);
 
 // Set up error handling.
 process.on('exit', function() {
@@ -218,6 +239,54 @@ process.on('uncaughtException', function(err) {
 });
 
 
+// Load the template's generator.
+try {
+  template = require(generatorConfig.template);
+  generator = template.generator;
+} catch (e) {
+  // Templates don't have to load their own generator. If the template fails to
+  // load a generator, we assume it wanted the default generator.
+  generator = require('../generator/handlebars');
+}
+
+// Confirm this is a compatible generator.
+generator.checkGenerator();
+
+// Load the generator's and the template's CLI options.
+/*eslint-disable guard-for-in*/
+if (Object.keys(generator.options).length) {
+  for (key in generator.options) {
+    cliOptions[key] = generator.options[key];
+  }
+  yargs.options(generator.options);
+}
+if (template && template.options && Object.keys(template.options).length) {
+  for (key in template.options) {
+    cliOptions[key] = template.options[key];
+  }
+  yargs.options(template.options);
+}
+/*eslint-enable guard-for-in*/
+
+// Now that we know all the options, ensure strictness.
+yargs
+  .strict()
+  .wrap(80)
+  // And make a help option available.
+  .usage('Usage: kss-node [options]')
+  .help('help')
+    .alias('help', 'h')
+    .alias('help', '?')
+  .version(version, 'version');
+
+// And re-parse the options.
+if (generatorConfig.xdemo) {
+  generatorConfig = yargs.parse(process.argv.slice(2));
+} else {
+  generatorConfig = yargs.argv;
+}
+generatorConfig = normalizeConfig(generatorConfig);
+
 // If no source is specified, display help and exit.
 if (!generatorConfig.source.length && !generatorConfig.init) {
   console.log('Error: No --source specified.');
@@ -225,19 +294,6 @@ if (!generatorConfig.source.length && !generatorConfig.init) {
   yargs.showHelp();
   return;
 }
-
-// Load the template's generator.
-try {
-  // @TODO: See NOTE 1 below.
-  generator = require(generatorConfig.template).generator;
-} catch (e) {
-  // Templates don't have to load their own generator. If the template fails to
-  // load a generator, we assume it wanted the default generator.
-  generator = require('../generators/handlebars');
-}
-
-// Confirm this is a compatible generator.
-generator.checkGenerator();
 
 // If requested, clone a template and exit.
 if (generatorConfig.init) {
@@ -269,11 +325,3 @@ process.nextTick(function() {
     })(generator)
   );
 });
-
-// NOTE 1: This require() line will always fail while testing a git clone of
-// this module. In order for a bundled template to be "clone"-able, it must use
-// the require('kss/generators/path') syntax (instead of the requiring a
-// relative path). Thus, when requiring its generator, the template will throw
-// an error since this kss module has been git cloned and not installed via npm.
-// This limitation will need to be fixed if additional generators are added to
-// the module.

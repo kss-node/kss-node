@@ -1,0 +1,25 @@
+{
+  "source": {
+    "include": [
+      "lib",
+      "generator"
+    ],
+    "exclude": [
+      "generator/kss_example_generator.js",
+      "generator/handlebars/template"
+    ]
+  },
+  "opts": {
+    "destination": "./gh-pages/api/master/",
+    "readme": "./gh-pages/api-homepage.md",
+    "recurse": true,
+    "verbose": true
+  },
+  "plugins": [
+    "plugins/markdown"
+  ],
+  "templates": {},
+  "tags": {
+    "allowUnknownTags": false
+  }
+}
