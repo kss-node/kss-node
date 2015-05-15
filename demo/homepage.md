@@ -14,6 +14,8 @@ Your standard button suitable for clicking.
 :hover   - Highlights when hovering.
 .shiny   - Do not press this big, shiny, red button.
 
+Markup: button.html
+
 Style guide: components.button
 */
 .button {
@@ -31,6 +33,10 @@ Style guide: components.button
 This site is generated with the `kss-node` command-line tool and parses the KSS documentation found in this [demo project](https://github.com/kss-node/kss-node/tree/master/demo).
 
 The styling of this site is a demo of [kss-node](https://github.com/kss-node/kss-node)'s default style guide generator. By using the site navigation to the left (or above), you can see how your documentation would look with the default generator. Note that alternate generators are available.
+
+## Quick start guide
+
+Documentation on how to get started with kss-node (and with Node.js' npm) is available on the [kss-node wiki](https://github.com/kss-node/kss-node/wiki).
 
 ## JavaScript API
 

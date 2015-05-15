@@ -16,6 +16,8 @@ Here's an example KSS comment:
 // :hover   - Highlights when hovering.
 // .shiny   - Do not press this big, shiny, red button.
 //
+// Markup: button.html
+//
 // Style guide: components.button
 .button {
   ...
