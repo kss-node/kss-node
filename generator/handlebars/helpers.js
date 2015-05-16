@@ -214,7 +214,13 @@ module.exports.register = function(handlebars, config) {
     } else {
       data.modifier_class = '';
     }
-    data.modifier_class += modifier ? modifier.className() : config.placeholder;
+    // Display the modifier's classname or, if a section, the placeholder text
+    // if this section has modifiers.
+    if (modifier) {
+      data.modifier_class += modifier.className();
+    } else if (section.firstModifier() !== false) {
+      data.modifier_class += config.placeholder;
+    }
     /*eslint-enable camelcase*/
 
     // Compile the section's markup partial into a template.
