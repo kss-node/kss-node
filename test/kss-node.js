@@ -15,16 +15,16 @@ suite('Command Line Interface', function() {
 
   suite('Option: --source', function() {
     test('Should read source directory from option', function(done) {
-      exec('bin/kss-node --source test/fixtures-styles/with-include --destination test/output', function(err, stdout, stderr) {
+      exec('bin/kss-node --verbose --source test/fixtures-styles/with-include --destination test/output', function(err, stdout, stderr) {
         assert.ok(/\* KSS Source  : .+test\/fixtures\-styles\/with\-include/g.test(stdout), 'Read --source option');
         assert.strictEqual(/no styleguide overview generated/g.test(stdout), false, 'Styleguide homepage not generated from empty file');
         done();
       });
     });
     test('Should not declare success if source directory is empty', function(done) {
-      exec('bin/kss-node --source test/fixtures-styles/empty-source --destination test/output', function(err, stdout, stderr) {
+      exec('bin/kss-node --verbose --source test/fixtures-styles/empty-source --destination test/output', function(err, stdout, stderr) {
         assert.ok(/\* KSS Source  : .+test\/fixtures\-styles\/empty\-source/g.test(stdout), 'Read --source option');
-        assert.strictEqual(/Generation completed successfully/g.test(stdout), false, 'Success incorrectly declared');
+        assert.strictEqual(/Style guide generation completed successfully/g.test(stdout), false, 'Success incorrectly declared');
         assert.ok(/No KSS documentation discovered in source files./g.test(stdout), 'Warning about no KSS docs given');
         done();
       });
@@ -37,9 +37,9 @@ suite('Command Line Interface', function() {
       });
     });
     test('Should read multiple source directories from option', function(done) {
-      exec('bin/kss-node --source test/fixtures-styles/with-include --source test/fixtures-styles/empty-source --destination test/output', function(err, stdout, stderr) {
+      exec('bin/kss-node --verbose --source test/fixtures-styles/with-include --source test/fixtures-styles/empty-source --destination test/output', function(err, stdout, stderr) {
         assert.ok(/\* KSS Source  : .+test\/fixtures\-styles\/with\-include, .+test\/fixtures\-styles\/empty\-source/g.test(stdout), 'Read multiple --source options');
-        assert.strictEqual(/Generation completed successfully/g.test(stdout), true, 'Styleguide generated from multiple sources');
+        assert.strictEqual(/Style guide generation completed successfully/g.test(stdout), true, 'Styleguide generated from multiple sources');
         done();
       });
     });
@@ -47,7 +47,7 @@ suite('Command Line Interface', function() {
 
   suite('Option: --destination', function() {
     test('Should read destination directory from option', function(done) {
-      exec('bin/kss-node test/fixtures-styles/with-include --destination test/output', function(err, stdout, stderr) {
+      exec('bin/kss-node --verbose test/fixtures-styles/with-include --destination test/output', function(err, stdout, stderr) {
         assert.ok(/\* Destination : .+test\/output/g.test(stdout), 'Read --destination option');
         done();
       });
@@ -67,7 +67,7 @@ suite('Command Line Interface', function() {
   suite('Option: --config', function() {
     test('Should load configuration from json file', function(done) {
       exec('bin/kss-node --config test/cli-option-config.json', function(err, stdout, stderr) {
-        assert.ok(/Generation completed successfully/g.test(stdout), 'Read --config option');
+        assert.ok(/Style guide generation completed successfully/g.test(stdout), 'Read --config option');
         done();
       });
     });
