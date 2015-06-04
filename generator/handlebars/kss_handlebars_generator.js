@@ -57,16 +57,18 @@ kssHandlebarsGenerator.init = function(config) {
   // Save the configuration parameters.
   this.config = config;
 
-  console.log('');
-  console.log('Generating your KSS style guide!');
-  console.log('');
-  console.log(' * KSS Source  : ' + this.config.source.join(', '));
-  console.log(' * Destination : ' + this.config.destination);
-  console.log(' * Template    : ' + this.config.template);
-  if (this.config.helpers) {
-    console.log(' * Helpers     : ' + this.config.helpers.join(', '));
+  if (this.config.verbose) {
+    console.log('');
+    console.log('Generating your KSS style guide!');
+    console.log('');
+    console.log(' * KSS Source  : ' + this.config.source.join(', '));
+    console.log(' * Destination : ' + this.config.destination);
+    console.log(' * Template    : ' + this.config.template);
+    if (this.config.helpers.length) {
+      console.log(' * Helpers     : ' + this.config.helpers.join(', '));
+    }
+    console.log('');
   }
-  console.log('');
 
   // Create a new destination directory.
   try {
@@ -145,16 +147,20 @@ kssHandlebarsGenerator.generate = function(styleguide) {
     i,
     key;
 
-  console.log(styleguide.data.files.map(function(file) {
-    return ' - ' + file;
-  }).join('\n'));
+  if (this.config.verbose) {
+    console.log(styleguide.data.files.map(function(file) {
+      return ' - ' + file;
+    }).join('\n'));
+  }
 
   // Throw an error if no KSS sections are found in the source files.
   if (sectionCount === 0) {
     throw new Error('No KSS documentation discovered in source files.');
   }
 
-  console.log('...Determining section markup:');
+  if (this.config.verbose) {
+    console.log('...Determining section markup:');
+  }
 
   for (i = 0; i < sectionCount; i += 1) {
     // Register all the markup blocks as Handlebars partials.
@@ -179,8 +185,13 @@ kssHandlebarsGenerator.generate = function(styleguide) {
         // If the markup file is not found, note that in the style guide.
         if (!files.length) {
           partial.markup += ' NOT FOUND!';
+          if (!this.config.verbose) {
+            console.log('WARNING: In section ' + partial.reference + ', ' + partial.markup);
+          }
         }
-        console.log(' - ' + partial.reference + ': ' + partial.markup);
+        if (this.config.verbose) {
+          console.log(' - ' + partial.reference + ': ' + partial.markup);
+        }
         if (files.length) {
           // Load the partial's markup from file.
           partial.file = files[0];
@@ -194,7 +205,7 @@ kssHandlebarsGenerator.generate = function(styleguide) {
             }
           }
         }
-      } else {
+      } else if (this.config.verbose) {
         console.log(' - ' + partial.reference + ': inline markup');
       }
       // Register the partial using the filename (without extension) or using
@@ -216,7 +227,9 @@ kssHandlebarsGenerator.generate = function(styleguide) {
     }
   }
 
-  console.log('...Generating style guide sections:');
+  if (this.config.verbose) {
+    console.log('...Generating style guide sections:');
+  }
 
   // Now, group all of the sections by their root
   // reference, and make a page for each.
@@ -252,7 +265,9 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
 
   if (root === 'styleguide.homepage') {
     filename = 'index.html';
-    console.log(' - homepage');
+    if (this.config.verbose) {
+      console.log(' - homepage');
+    }
     // Ensure homepageText is a non-false value.
     for (key in this.config.source) {
       if (!homepageText) {
@@ -268,15 +283,21 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
     }
     if (!homepageText) {
       homepageText = ' ';
-      console.log('   ...no homepage content found in ' + this.config.homepage + '.');
+      if (this.config.verbose) {
+        console.log('   ...no homepage content found in ' + this.config.homepage + '.');
+      } else {
+        console.log('WARNING: no homepage content found in ' + this.config.homepage + '.');
+      }
     }
   } else {
     filename = 'section-' + KssSection.prototype.encodeReferenceURI(root) + '.html';
-    console.log(
-      ' - section ' + root + ' [',
-      styleguide.section(root) ? styleguide.section(root).header() : 'Unnamed',
-      ']'
-    );
+    if (this.config.verbose) {
+      console.log(
+        ' - section ' + root + ' [',
+        styleguide.section(root) ? styleguide.section(root).header() : 'Unnamed',
+        ']'
+      );
+    }
   }
   // Create the HTML to load the optional CSS and JS.
   /*eslint-disable guard-for-in*/

@@ -124,7 +124,9 @@ KssGenerator.prototype.init = function(config) {
  *                            the HTML files of the style guide.
  */
 KssGenerator.prototype.parse = function(callback) {
-  console.log('...Parsing your style guide:');
+  if (this.config.verbose) {
+    console.log('...Parsing your style guide:');
+  }
 
   /*eslint-disable key-spacing*/
 
