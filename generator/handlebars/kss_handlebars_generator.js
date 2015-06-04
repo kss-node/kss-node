@@ -63,7 +63,7 @@ kssHandlebarsGenerator.init = function(config) {
   console.log(' * KSS Source  : ' + this.config.source.join(', '));
   console.log(' * Destination : ' + this.config.destination);
   console.log(' * Template    : ' + this.config.template);
-  if (this.config.helpers) {
+  if (this.config.helpers.length) {
     console.log(' * Helpers     : ' + this.config.helpers.join(', '));
   }
   console.log('');
