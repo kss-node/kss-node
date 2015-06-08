@@ -280,4 +280,23 @@ module.exports.register = function(handlebars, config) {
     throw new Error('{{whenDepth expression}} is deprecated; use {{ifDepth expression}} instead.');
   });
 
+  /**
+   * Outputs console.log() debugging information for each parameter given.
+   *
+   * If no parameters are given, the entire context is output with
+   * `console.log(this)`.
+   */
+  handlebars.registerHelper('consoleLog', function() {
+    if (arguments.length > 1) {
+      // 'options' is automatically passed as the last argument, so skip it.
+      for (var i = 0; i < arguments.length - 1; i++) {
+        console.log(arguments[i]);
+      }
+    } else {
+      console.log('==================== Current Handlebars context:');
+      console.log(this);
+      console.log('====================');
+    }
+    return '';
+  });
 };
