@@ -1,10 +1,13 @@
+/*global test*/
 module.exports = function(styleDirectory) {
 
-  var testSection, shouldFindFile, testAllSections, hasMethod,
-    kss = require('../index.js'),
+  'use strict';
+
+  var kss = require('../index.js'),
     assert = require('assert'),
-    path = require('path'),
-    fs = require('fs');
+    path = require('path');
+
+  var testSection, testAllSections, shouldFindFile, hasMethod;
 
   testSection = function(header, mask, testFunction, nameOverride, additionalOptions) {
     var key, options = {
@@ -13,7 +16,9 @@ module.exports = function(styleDirectory) {
     };
     if (additionalOptions) {
       for (key in additionalOptions) {
-        options[key] = additionalOptions[key];
+        if (additionalOptions.hasOwnProperty(key)) {
+          options[key] = additionalOptions[key];
+        }
       }
     }
     test(nameOverride || header, function(done) {
@@ -23,7 +28,7 @@ module.exports = function(styleDirectory) {
         assert.ifError(err);
 
         if (header !== 'all' && header !== '*') {
-          for (i = 0; i < l; i+= 1) {
+          for (i = 0; i < l; i += 1) {
             if (styleguide.data.sections[i].data.header.toUpperCase() === header.toUpperCase()) {
               assert.ok(styleguide.data.sections[i]);
               testFunction(styleguide.data.sections[i]);
@@ -31,7 +36,7 @@ module.exports = function(styleDirectory) {
             }
           }
           if (!found) {
-            throw new Error("Couldn't find header: '"+header+"'!");
+            throw new Error("Couldn't find header: '" + header + "'!");
           }
         } else {
           testFunction(styleguide.data.sections);
@@ -52,7 +57,7 @@ module.exports = function(styleDirectory) {
   };
 
   shouldFindFile = function(file, options, shouldFind) {
-    test(shouldFind? '"'+file+'"' : 'But not "'+ file+'"', function(done) {
+    test(shouldFind ? '"' + file + '"' : 'But not "' + file + '"', function(done) {
       file = path.resolve(styleDirectory, file).replace(/\\/g, '/');
       kss.traverse(styleDirectory, options || {}, function(err, styleguide) {
         assert.ifError(err);
@@ -67,7 +72,7 @@ module.exports = function(styleDirectory) {
   };
 
   hasMethod = function(owner, method) {
-    test('has method: '+method, function() {
+    test('has method: ' + method, function() {
       assert.ok(owner);
       assert.equal(typeof method, 'string');
       assert.equal(typeof owner[method], 'function');
