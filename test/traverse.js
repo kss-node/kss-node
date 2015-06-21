@@ -1,4 +1,6 @@
 /*global suite, test, setup*/
+/*eslint-disable max-nested-callbacks*/
+
 var kss = require('../index.js'),
   common = require('./common.js'),
   assert = require('assert'),
@@ -11,17 +13,21 @@ var styleDirectory = path.join(__dirname, '/fixtures-styles/');
 common = common(styleDirectory);
 
 suite('.traverse()', function() {
-  suite('API/Validation Checks', function(done) {
-    test('Should function with and without options', function(done) {
-      kss.traverse(styleDirectory, function(err, sga) {
+  'use strict';
+
+  suite('API/Validation Checks', function() {
+    test('Should function without options', function(done) {
+      kss.traverse(styleDirectory, function(err, styleguide) {
         assert.ifError(err);
-        kss.traverse(styleDirectory, {}, function(err, sgb) {
-          assert.ifError(err);
-          // @TODO: Need to find an alternative for this test.
-          // At the moment it gets stuck asserting recursively.
-          // assert.deepEqual(sga, sgb);
-          done();
-        });
+        assert.equal(styleguide.data.files.length, 22);
+        done();
+      });
+    });
+    test('Should function with options', function(done) {
+      kss.traverse(styleDirectory, {}, function(err, styleguide) {
+        assert.ifError(err);
+        assert.equal(styleguide.data.files.length, 22);
+        done();
       });
     });
     test('Should throw an error without a callback (for now)', function() {
@@ -35,7 +41,8 @@ suite('.traverse()', function() {
       test('should reflect files found', function(done) {
         var maskAll = /.*/g;
 
-        kss.traverse(styleDirectory, { mask: maskAll }, function(err, styleguide) {
+        kss.traverse(styleDirectory, {mask: maskAll}, function(err, styleguide) {
+          assert.ifError(err);
           assert.ok(styleguide.data);
           assert.ok(Array.isArray(styleguide.data.files));
           assert.equal(styleguide.data.files.length, 29);
@@ -53,7 +60,7 @@ suite('.traverse()', function() {
         });
       });
       test('contains contents of all found files', function(done) {
-        var maskAll = /.*/g, fileReader, fileCounter, sg;
+        var fileReader, fileCounter, sg;
 
         kss.traverse(styleDirectory, function(err, styleguide) {
           var i, l;
@@ -72,6 +79,7 @@ suite('.traverse()', function() {
         fileReader = function(err, data) {
           fileCounter -= 1;
 
+          assert.ifError(err);
           assert.notEqual(sg.data.body.indexOf(data), -1);
 
           if (!fileCounter) {
@@ -101,8 +109,10 @@ suite('.traverse()', function() {
             filteredBody = data.body.replace(/\/\/|\/\*+|\*\/|\s|\*/g, '');
 
           for (id in data.sections) {
-            section = data.sections[id];
-            assert.notEqual(filteredBody.indexOf(section.data.raw.replace(/\s|\*/g, '')), -1);
+            if (data.sections.hasOwnProperty(id)) {
+              section = data.sections[id];
+              assert.notEqual(filteredBody.indexOf(section.data.raw.replace(/\s|\*/g, '')), -1);
+            }
           }
         });
       });
@@ -241,58 +251,58 @@ suite('.traverse()', function() {
       suite('.deprecated', function() {
         common.testSection('Deprecated: Spacing above and below', 'sections-status.less', function(section) {
           assert.ok(section.data.deprecated);
-        }, 'Still works with vertical line space', { multiline: true});
+        }, 'Still works with vertical line space', {multiline: true});
 
         common.testSection('Deprecated: Indented', 'sections-status.less', function(section) {
           assert.ok(section.data.deprecated);
-        }, 'Still works with indentation', { multiline: true});
+        }, 'Still works with indentation', {multiline: true});
 
         common.testSection('Deprecated: In Header', 'sections-status.less', function(section) {
           assert.ok(section.data.deprecated);
-        }, 'Works when included in header', { multiline: true});
+        }, 'Works when included in header', {multiline: true});
 
         common.testSection('In Paragraph (deprecated)', 'sections-status.less', function(section) {
           assert.ok(section.data.deprecated);
-        }, 'Works when included at the beginning of a paragraph', { multiline: true});
+        }, 'Works when included at the beginning of a paragraph', {multiline: true});
 
         common.testSection('In Modifiers (deprecated)', 'sections-status.less', function(section) {
           assert.ok(!section.data.deprecated);
-        }, 'Won\'t work when included in a modifier description', { multiline: true});
+        }, 'Won\'t work when included in a modifier description', {multiline: true});
 
         common.testSection('Not at the beginning, deprecated: nope', 'sections-status.less', function(section) {
           assert.ok(!section.data.deprecated);
-        }, 'Only works when included at the beginning of a paragraph/header', { multiline: true});
+        }, 'Only works when included at the beginning of a paragraph/header', {multiline: true});
       });
       suite('.experimental', function() {
 
         common.testSection('Experimental: Spacing above and below', 'sections-status.less', function(section) {
           assert.ok(section.data.experimental);
-        }, 'Still works with vertical line space', { multiline: true});
+        }, 'Still works with vertical line space', {multiline: true});
 
         common.testSection('Experimental: Indented', 'sections-status.less', function(section) {
           assert.ok(section.data.experimental);
-        }, 'Still works with indentation', { multiline: true});
+        }, 'Still works with indentation', {multiline: true});
 
         common.testSection('Experimental: In Header', 'sections-status.less', function(section) {
           assert.ok(section.data.experimental);
-        }, 'Works when included in header', { multiline: true});
+        }, 'Works when included in header', {multiline: true});
 
         common.testSection('In Paragraph (experimental)', 'sections-status.less', function(section) {
           assert.ok(section.data.experimental);
-        }, 'Works when included at the beginning of a paragraph', { multiline: true});
+        }, 'Works when included at the beginning of a paragraph', {multiline: true});
 
         common.testSection('In Modifiers (experimental)', 'sections-status.less', function(section) {
           assert.ok(!section.data.experimental);
-        }, 'Won\'t work when included in a modifier description', { multiline: true});
+        }, 'Won\'t work when included in a modifier description', {multiline: true});
 
         common.testSection('Not at the beginning, experimental: nope', 'sections-status.less', function(section) {
           assert.ok(!section.data.experimental);
-        }, 'Only works when included at the beginning of a paragraph/header', { multiline: true});
+        }, 'Only works when included at the beginning of a paragraph/header', {multiline: true});
       });
       suite('.reference', function() {
         common.testSection('Reference with trailing zero...', 'section-queries.less', function(section) {
           assert.equal(section.data.reference, '8');
-        }, 'Sections labelled "X.0" should be equivalent to "X"', { multiline: true });
+        }, 'Sections labelled "X.0" should be equivalent to "X"', {multiline: true});
       });
     });
   });
@@ -300,58 +310,58 @@ suite('.traverse()', function() {
     suite('.comment-syntax', function() {
       common.testSection('Comment syntax: multi-line', 'options-comment-syntax.less', function(section) {
         assert.equal(section.data.reference, '1.1');
-      }, false, { markup: true });
+      }, false, {markup: true});
 
       common.testSection('Comment syntax: inline', 'options-comment-syntax.less', function(section) {
         assert.equal(section.data.reference, '1.2');
-      }, false, { markup: true });
+      }, false, {markup: true});
 
       common.testSection('Comment syntax: multi-line, indented', 'options-comment-syntax.less', function(section) {
         assert.equal(section.data.reference, '1.3');
-      }, false, { markup: true });
+      }, false, {markup: true});
 
       common.testSection('False-positive of multi-line comment block #1', 'options-comment-syntax.less', function(section) {
         assert.equal(section.data.reference, '1.4');
-      }, false, { markup: true });
+      }, false, {markup: true});
 
       common.testSection('False-positive of multi-line comment block #2', 'options-comment-syntax.less', function(section) {
         assert.equal(section.data.reference, '1.5');
-      }, false, { markup: true });
+      }, false, {markup: true});
 
       common.testSection('Comment syntax: inline, directly before multi-line', 'options-comment-syntax.less', function(section) {
         assert.equal(section.data.reference, '1.6');
-      }, false, { markup: true });
+      }, false, {markup: true});
 
       common.testSection('Comment syntax: multi-line, directly after inline', 'options-comment-syntax.less', function(section) {
         assert.equal(section.data.reference, '1.7');
-      }, false, { markup: true });
+      }, false, {markup: true});
 
       common.testSection('Docblock comment syntax', 'options-comment-syntax.less', function(section) {
         assert.equal(section.data.reference, '1.8');
-      }, false, { markup: true });
+      }, false, {markup: true});
     });
     suite('.custom', function() {
       common.testSection('Custom property: inline', 'options-custom-properties.less', function(section) {
         assert.equal(section.data.reference, '1.1');
         assert.equal(section.data.custom, 'The value of this property is inline.');
-      }, false, { markup: true, custom: ['custom'] });
+      }, false, {markup: true, custom: ['custom']});
       common.testSection('Custom property: next line', 'options-custom-properties.less', function(section) {
         assert.equal(section.data.reference, '1.2');
         assert.equal(section.data.custom, 'The value of this property is on the next line.');
-      }, false, { markup: true, custom: ['custom'] });
+      }, false, {markup: true, custom: ['custom']});
       common.testSection('Custom property: multi-line', 'options-custom-properties.less', function(section) {
         assert.equal(section.data.reference, '1.3');
         assert.equal(section.data.custom, 'The value of this property spans multiple\nlines.');
-      }, false, { markup: true, custom: ['custom'] });
+      }, false, {markup: true, custom: ['custom']});
       common.testSection('Custom property: multi-word property', 'options-custom-properties.less', function(section) {
         assert.equal(section.data.reference, '1.4');
         assert.equal(section.data['custom property'], 'This is a multi-word property.');
-      }, false, { markup: true, custom: ['custom property'] });
+      }, false, {markup: true, custom: ['custom property']});
       common.testSection('Custom property: multiple properties', 'options-custom-properties.less', function(section) {
         assert.equal(section.data.reference, '1.5');
         assert.equal(section.data.custom, 'This is the first property.');
         assert.equal(section.data.custom2, 'This is the second property.');
-      }, false, { markup: true, custom: ['custom', 'custom2'] });
+      }, false, {markup: true, custom: ['custom', 'custom2']});
     });
     suite('.markup', function() {
       common.testSection('Second paragraph', 'options-markup.less', function(section) {
@@ -363,7 +373,7 @@ suite('.traverse()', function() {
         assert.equal(section.data.reference, '7.1');
         assert.equal(section.data.modifiers.length, 3);
         assert.equal(section.data.description, '');
-      }, false, { markup: true });
+      }, false, {markup: true});
 
       common.testSection('Below modifiers', 'options-markup.less', function(section) {
         assert.equal(
@@ -373,9 +383,10 @@ suite('.traverse()', function() {
       });
 
       test('Don\'t inerfere with content when at the top', function(done) {
-        kss.traverse(styleDirectory, { markup: true }, function(err, styleguide) {
+        kss.traverse(styleDirectory, {markup: true}, function(err, styleguide) {
           var section = styleguide.section('7.3');
 
+          assert.ifError(err);
           assert.equal(section.data.reference, '7.3');
           assert.equal(section.data.header, 'Don\'t be the header');
           assert.equal(section.data.markup, '<h1 class="{{modifier_class}}">Header</h1>');
@@ -395,33 +406,33 @@ suite('.traverse()', function() {
         common.shouldFindFile('includes/buttons.js', {}, false);
       });
       suite('.js (regex)', function() {
-        common.shouldFindFile('includes/buttons.js', { mask: /\.js/ }, true);
-        common.shouldFindFile('includes/buttons.less', { mask: /\.js/ }, false);
-        common.shouldFindFile('style.css', { mask: /\.js/ }, false);
+        common.shouldFindFile('includes/buttons.js', {mask: /\.js/}, true);
+        common.shouldFindFile('includes/buttons.less', {mask: /\.js/}, false);
+        common.shouldFindFile('style.css', {mask: /\.js/}, false);
       });
       suite('*.js (string)', function() {
-        common.shouldFindFile('includes/buttons.js', { mask: '*.js' }, true);
-        common.shouldFindFile('includes/buttons.less', { mask: '*.js' }, false);
-        common.shouldFindFile('style.css', { mask: '*.js' }, false);
+        common.shouldFindFile('includes/buttons.js', {mask: '*.js'}, true);
+        common.shouldFindFile('includes/buttons.less', {mask: '*.js'}, false);
+        common.shouldFindFile('style.css', {mask: '*.js'}, false);
       });
       suite('.js|.less|.css (regex)', function() {
-        common.shouldFindFile('includes/buttons.js', { mask: /\.js|\.less|\.css/ }, true);
-        common.shouldFindFile('includes/buttons.less', { mask: /\.js|\.less|\.css/ }, true);
-        common.shouldFindFile('style.css', { mask: /\.js|\.less|\.css/ }, true);
+        common.shouldFindFile('includes/buttons.js', {mask: /\.js|\.less|\.css/}, true);
+        common.shouldFindFile('includes/buttons.less', {mask: /\.js|\.less|\.css/}, true);
+        common.shouldFindFile('style.css', {mask: /\.js|\.less|\.css/}, true);
       });
       suite('*.js|*.less|*.css (string)', function() {
-        common.shouldFindFile('includes/buttons.js', { mask: '*.js|*.less|*.css' }, true);
-        common.shouldFindFile('includes/buttons.less', { mask: '*.js|*.less|*.css' }, true);
-        common.shouldFindFile('style.css', { mask: '*.js|*.less|*.css' }, true);
+        common.shouldFindFile('includes/buttons.js', {mask: '*.js|*.less|*.css'}, true);
+        common.shouldFindFile('includes/buttons.less', {mask: '*.js|*.less|*.css'}, true);
+        common.shouldFindFile('style.css', {mask: '*.js|*.less|*.css'}, true);
       });
     });
     suite('.markdown', function() {
       common.testSection('Three paragraphs, no modifiers', 'sections-description.less', function(section) {
         assert.equal(section.data.description, marked('ANOTHER PARAGRAPH\n\nAND ANOTHER'));
-      }, 'Formats when enabled', { markdown : true });
+      }, 'Formats when enabled', {markdown: true});
       common.testSection('Three paragraphs, no modifiers', 'sections-description.less', function(section) {
         assert.equal(section.data.description, 'ANOTHER PARAGRAPH\n\nAND ANOTHER');
-      }, 'Doesn\'t format when disabled', { markdown : false });
+      }, 'Doesn\'t format when disabled', {markdown: false});
       common.testSection('Three paragraphs, no modifiers', 'sections-description.less', function(section) {
         assert.equal(section.data.description, 'ANOTHER PARAGRAPH\n\nAND ANOTHER');
       }, 'Disabled by default');
@@ -429,26 +440,26 @@ suite('.traverse()', function() {
     suite('.multiline (disabled)', function() {
       common.testSection('One line, no modifiers', 'sections-description.less', function(section) {
         assert.ok(section.data.description.toUpperCase(), 'ONE LINE, NO MODIFIERS');
-      }, false, { multiline: false });
+      }, false, {multiline: false});
 
       common.testSection('One line, multiple modifiers', 'sections-description.less', function(section) {
         assert.equal(section.data.description.toUpperCase(), 'ONE LINE, MULTIPLE MODIFIERS');
-      }, false, { multiline: false });
+      }, false, {multiline: false});
 
       common.testSection('Header Detection', 'sections-description.less', function(section) {
         assert.equal(section.data.description.toUpperCase(), 'HEADER DETECTION\n\nSEPARATE PARAGRAPH');
-      }, false, { multiline: false });
+      }, false, {multiline: false});
 
       common.testSection('Two paragraphs, multiple modifiers', 'sections-description.less', function(section) {
         assert.equal(section.data.description.toUpperCase(), 'TWO PARAGRAPHS, MULTIPLE MODIFIERS\n\nLIKE SO');
-      }, false, { multiline: false });
+      }, false, {multiline: false});
 
       common.testSection('Two lines, multiple modifiers like so', 'sections-description.less', function(section) {
         assert.equal(section.data.description.toUpperCase(), 'TWO LINES, MULTIPLE MODIFIERS\nLIKE SO');
-      }, false, { multiline: false });
+      }, false, {multiline: false});
       common.testSection('Three paragraphs, no modifiers', 'sections-description.less', function(section) {
         assert.equal(section.data.description.toUpperCase(), 'THREE PARAGRAPHS, NO MODIFIERS\n\nANOTHER PARAGRAPH\n\nAND ANOTHER');
-      }, false, { multiline: false });
+      }, false, {multiline: false});
     });
     suite('.typos', function() {
       suite('Styleguide', function() {
@@ -456,101 +467,101 @@ suite('.traverse()', function() {
           assert.ok(section);
           assert.equal(section.data.header, 'Misspelt Styleguide 1');
           assert.equal(section.data.reference, '5.1');
-        }, 'Stileguide', { typos: true });
+        }, 'Stileguide', {typos: true});
 
         common.testSection('Misspelt Styleguide 2', 'options-typos.less', function(section) {
           assert.ok(section);
           assert.equal(section.data.header, 'Misspelt Styleguide 2');
           assert.equal(section.data.reference, '5.2');
-        }, 'Style-guide', { typos: true });
+        }, 'Style-guide', {typos: true});
 
         common.testSection('Misspelt Styleguide 3', 'options-typos.less', function(section) {
           assert.ok(section);
           assert.equal(section.data.header, 'Misspelt Styleguide 3');
           assert.equal(section.data.reference, '5.3');
-        }, 'Stylleguide', { typos: true });
+        }, 'Stylleguide', {typos: true});
 
         common.testSection('Misspelt Styleguide 4', 'options-typos.less', function(section) {
           assert.ok(section);
           assert.equal(section.data.reference, '5.4');
           assert.equal(section.data.header, 'Misspelt Styleguide 4');
-        }, 'Style guide', { typos: true });
+        }, 'Style guide', {typos: true});
 
         common.testSection('Misspelt Styleguide 5', 'options-typos.less', function(section) {
           assert.ok(section);
           assert.equal(section.data.reference, 'word.keys');
           assert.equal(section.data.header, 'Misspelt Styleguide 5');
-        }, 'Style guide', { typos: true });
+        }, 'Style guide', {typos: true});
 
         common.testSection('Misspelt Styleguide 6', 'options-typos.less', function(section) {
           assert.ok(section);
           assert.equal(section.data.reference, 'word - phrases');
           assert.equal(section.data.header, 'Misspelt Styleguide 6');
-        }, 'Style guide', { typos: true });
+        }, 'Style guide', {typos: true});
 
         common.testSection('Misspelt Styleguide 7', 'options-typos.less', function(section) {
           assert.ok(section);
           assert.equal(section.data.reference, '5.7');
           assert.equal(section.data.header, 'Misspelt Styleguide 7');
-        }, 'Style guide', { typos: true });
+        }, 'Style guide', {typos: true});
 
         common.testSection('Misspelt Styleguide 8', 'options-typos.less', function(section) {
           assert.ok(section);
           assert.equal(section.data.reference, 'word.keys.with.colon');
           assert.equal(section.data.header, 'Misspelt Styleguide 8');
-        }, 'Style guide', { typos: true });
+        }, 'Style guide', {typos: true});
 
         common.testSection('Misspelt Styleguide 9', 'options-typos.less', function(section) {
           assert.ok(section);
           assert.equal(section.data.reference, 'word - phrases - with - colon');
           assert.equal(section.data.header, 'Misspelt Styleguide 9');
-        }, 'Style guide', { typos: true });
+        }, 'Style guide', {typos: true});
 
         common.testSection('Misspelt Styleguide 10', 'options-typos.less', function(section) {
           assert.ok(section);
           assert.equal(section.data.reference, '5.8');
           assert.equal(section.data.header, 'Misspelt Styleguide 10');
-        }, 'Style guide', { typos: true });
+        }, 'Style guide', {typos: true});
 
         common.testSection('Misspelt Styleguide 11', 'options-typos.less', function(section) {
           assert.ok(section);
           assert.equal(section.data.reference, 'word.keys.with.colon.and.space');
           assert.equal(section.data.header, 'Misspelt Styleguide 11');
-        }, 'Style guide', { typos: true });
+        }, 'Style guide', {typos: true});
 
         common.testSection('Misspelt Styleguide 12', 'options-typos.less', function(section) {
           assert.ok(section);
           assert.equal(section.data.reference, 'word - phrases - with - colon - and - space');
           assert.equal(section.data.header, 'Misspelt Styleguide 12');
-        }, 'Style guide', { typos: true });
+        }, 'Style guide', {typos: true});
       });
 
       suite('Experimental', function() {
         common.testSection('Experimental: In Header', 'sections-status.less', function(section) {
           assert.ok(section.data.experimental);
-        }, 'Correct spelling', { typos: true});
+        }, 'Correct spelling', {typos: true});
 
         common.testSection('Not at the beginning, experimental: nope', 'sections-status.less', function(section) {
           assert.ok(!section.data.experimental);
-        }, 'Still don\'t detect mid-line', { typos: true });
+        }, 'Still don\'t detect mid-line', {typos: true});
 
         common.testSection('Experimentel: Misspelling 1', 'options-typos.less', function(section) {
           assert.ok(section.data.experimental);
-        }, 'Experimentel', { typos: true});
+        }, 'Experimentel', {typos: true});
       });
 
       suite('Deprecated', function() {
         common.testSection('Deprecated: In Header', 'sections-status.less', function(section) {
           assert.ok(section.data.deprecated);
-        }, 'Correct spelling', { typos: true});
+        }, 'Correct spelling', {typos: true});
 
         common.testSection('Not at the beginning, deprecated: nope', 'sections-status.less', function(section) {
           assert.ok(!section.data.deprecated);
-        }, 'Still don\'t detect mid-line', { typos: true });
+        }, 'Still don\'t detect mid-line', {typos: true});
 
         common.testSection('Depricated: Misspelling 1', 'options-typos.less', function(section) {
           assert.ok(section.data.deprecated);
-        }, 'Depricated', { typos: true});
+        }, 'Depricated', {typos: true});
       });
     });
   });
