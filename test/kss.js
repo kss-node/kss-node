@@ -1,18 +1,15 @@
-/*global suite, test, setup, teardown*/
+/*global suite*/
 var kss = require('../index.js'),
-  path = require('path'),
-  fs = require('fs'),
-  marked = require('marked'),
-  util = require('util'),
-  KssStyleguide = kss.KssStyleguide,
-  KssSection = kss.KssSection,
-  KssModifier = kss.KssModifier,
-  KssParameter = kss.KssParameter,
-  styleDirectory = path.normalize(__dirname + '/fixtures-styles/'),
-  assert = require('assert'),
-  common = require('./common.js')(styleDirectory);
+  common = require('./common.js'),
+  path = require('path');
+
+var styleDirectory = path.join(__dirname, '/fixtures-styles/');
+
+common = common(styleDirectory);
 
 suite('Public Method/Class Check', function() {
+  'use strict';
+
   common.hasMethod(kss, 'parse');
   common.hasMethod(kss, 'traverse');
   common.hasMethod(kss, 'KssSection');
