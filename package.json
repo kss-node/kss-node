@@ -30,9 +30,9 @@
     "yargs": "^3.8.0"
   },
   "devDependencies": {
-    "eslint": "^0.21.0",
+    "eslint": "^0.23.0",
     "jsdoc": "^3.3.0-beta3",
-    "mocha": "^1.21.4"
+    "mocha": "^2.2.5"
   },
   "homepage": "http://kss-node.github.io/kss-node"
 }
