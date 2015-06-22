@@ -1,15 +1,18 @@
+/*global suite*/
+
 var kss = require('../index.js'),
-  KssStyleguide = kss.KssStyleguide,
-  KssSection = kss.KssSection,
-  KssModifier = kss.KssModifier,
-
-  path = require('path'),
   assert = require('assert'),
+  common = require('./common.js'),
+  path = require('path');
 
-  styleDirectory = path.normalize(__dirname + '/fixtures-styles/'),
-  common = require('./common.js')(styleDirectory);
+var KssModifier = kss.KssModifier,
+  styleDirectory = path.join(__dirname, '/fixtures-styles/');
+
+common = common(styleDirectory);
 
 suite('KssModifier', function() {
+  'use strict';
+
   common.hasMethod(new KssModifier({}), 'name');
   common.hasMethod(new KssModifier({}), 'description');
   common.hasMethod(new KssModifier({}), 'className');
@@ -19,7 +22,7 @@ suite('KssModifier', function() {
     common.testAllSections('should return data.name', '*.less|*.css', function(section) {
       var modifiers = section.modifiers(),
         i, l = modifiers.length;
-      
+
       for (i = 0; i < l; i += 1) {
         assert.equal(modifiers[i].data.name, modifiers[i].name());
       }
@@ -29,7 +32,7 @@ suite('KssModifier', function() {
     common.testAllSections('should return data.description', '*.less|*.css', function(section) {
       var modifiers = section.modifiers(),
         i, l = modifiers.length;
-      
+
       for (i = 0; i < l; i += 1) {
         assert.equal(modifiers[i].data.description, modifiers[i].description());
       }
@@ -40,7 +43,7 @@ suite('KssModifier', function() {
       var modifiers = section.modifiers(),
         i, l = modifiers.length;
 
-      for (i = 0; i < l; i+= 1) {
+      for (i = 0; i < l; i += 1) {
         assert.ok(modifiers[i].className().match(/[a-z \-_]/gi));
       }
     });
@@ -52,7 +55,9 @@ suite('KssModifier', function() {
         i, l = modifiers.length;
 
       for (i = 0; i < l; i += 1) {
-        if (!modifiers[i].markup()) continue;
+        if (!modifiers[i].markup()) {
+          continue;
+        }
 
         assert.equal(section.data.markup, modifiers[i].data.section.data.markup);
         assert.equal(section.data.markup, modifiers[i].markup());
