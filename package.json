@@ -1,13 +1,13 @@
 {
   "author": "Hugh Kennedy <hughskennedy@gmail.com> (http://hughskennedy.com)",
   "name": "kss",
-  "description": "NodeJS port of kss: A methodology for documenting CSS and generating styleguides",
+  "description": "The Node.js port of KSS: A methodology for documenting CSS and generating style guides",
   "version": "2.1.0",
   "repository": {
     "type": "git",
     "url": "git://github.com/kss-node/kss-node.git"
   },
-  "licence": "MIT",
+  "license": "(MIT OR GPL-2.0)",
   "main": "index.js",
   "scripts": {
     "test": "mocha -u tdd --reporter spec",
