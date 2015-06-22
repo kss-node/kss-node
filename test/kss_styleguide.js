@@ -1,15 +1,19 @@
+/*global suite, test*/
+/*eslint-disable max-nested-callbacks*/
+
 var kss = require('../index.js'),
-  KssStyleguide = kss.KssStyleguide,
-  KssSection = kss.KssSection,
-  KssModifier = kss.KssModifier,
-
-  path = require('path'),
   assert = require('assert'),
+  common = require('./common.js'),
+  path = require('path');
 
-  styleDirectory = path.normalize(__dirname + '/fixtures-styles/'),
-  common = require('./common.js')(styleDirectory);
+var KssStyleguide = kss.KssStyleguide,
+  styleDirectory = path.join(__dirname, '/fixtures-styles/');
+
+common = common(styleDirectory);
 
 suite('KssStyleguide', function() {
+  'use strict';
+
   var sectionQuery = function(name, query, options, callback) {
     test(name, function(done) {
       kss.traverse(styleDirectory, options || {}, function(err, styleguide) {
@@ -23,18 +27,20 @@ suite('KssStyleguide', function() {
   common.hasMethod(new KssStyleguide({}), 'section');
 
   suite('.section()', function() {
-    var options = { mask: 'section-queries.less' };
+    var options = {mask: 'section-queries.less'};
     suite('No Arguments', function() {
       sectionQuery('Should return only referenced sections', '', options, function(styleguide, sections) {
-        var key, section;
+        var i,
+          l = sections.length;
         assert.ok(sections);
-        for (key in sections) {
-          section = sections[key];
-          assert.ok(section.data.reference);
+        for (i = 0; i < l; i += 1) {
+          assert.ok(sections[i].data.reference);
         }
       });
       sectionQuery('Should return all referenced sections', '', options, function(styleguide, sections) {
-        var key, section, results = [],
+        var i,
+          l = sections.length,
+          results = [],
           expected = [
             '4', '4.1',
             '4.1.1', '4.1.1.1', '4.1.1.2',
@@ -42,34 +48,38 @@ suite('KssStyleguide', function() {
             '8'
           ];
         assert.ok(sections);
-        for (key in sections) {
-          results.push(sections[key].data.reference);
+        for (i = 0; i < l; i += 1) {
+          results.push(sections[i].data.reference);
         }
         assert.deepEqual(results, expected);
       });
-      sectionQuery('Should return all "word key" sections', '', { mask: 'sections-word-keys.less' }, function(styleguide, sections) {
-        var key, section, results = [],
+      sectionQuery('Should return all "word key" sections', '', {mask: 'sections-word-keys.less'}, function(styleguide, sections) {
+        var i,
+          l = sections.length,
+          results = [],
           expected = [
             'Base.Link',
             'Components', 'Components.Message', 'Components.Tabs',
             'Forms.Button', 'Forms.Input'
           ];
         assert.ok(sections);
-        for (key in sections) {
-          results.push(sections[key].data.reference);
+        for (i = 0; i < l; i += 1) {
+          results.push(sections[i].data.reference);
         }
         assert.deepEqual(results, expected);
       });
-      sectionQuery('Should return all "word phrases" sections', '', { mask: 'sections-word-phrases.less' }, function(styleguide, sections) {
-        var key, section, results = [],
+      sectionQuery('Should return all "word phrases" sections', '', {mask: 'sections-word-phrases.less'}, function(styleguide, sections) {
+        var i,
+          l = sections.length,
+          results = [],
           expected = [
             'Base - Link',
             'Components', 'Components - Message box', 'Components - Tabs',
             'Forms - Button', 'Forms - Input field'
           ];
         assert.ok(sections);
-        for (key in sections) {
-          results.push(sections[key].data.reference);
+        for (i = 0; i < l; i += 1) {
+          results.push(sections[i].data.reference);
         }
         assert.deepEqual(results, expected);
       });
@@ -151,7 +161,7 @@ suite('KssStyleguide', function() {
 
       sectionQuery('4.1.* returns 4.1 and all descendants', '4.1.*', options, function(styleguide, sections) {
         assert.ok(sections);
-        sections.map(function(section){
+        sections.map(function(section) {
           switch (section.data.reference) {
             case '4.1':
               assert.equal(section.data.header, 'DEPTH OF 2');
@@ -178,45 +188,45 @@ suite('KssStyleguide', function() {
         assert.equal(sections.length, 6);
       });
 
-      sectionQuery('alp.* does not match alpha', 'alp.*', { mask: 'sections-order.less' }, function(styleguide, sections) {
+      sectionQuery('alp.* does not match alpha', 'alp.*', {mask: 'sections-order.less'}, function(styleguide, sections) {
         assert.equal(sections.length, 0);
       });
 
-      sectionQuery('alp.x does not match alpha', 'alp.x', { mask: 'sections-order.less' }, function(styleguide, sections) {
+      sectionQuery('alp.x does not match alpha', 'alp.x', {mask: 'sections-order.less'}, function(styleguide, sections) {
         assert.equal(sections.length, 0);
       });
 
-      sectionQuery('Numeric sections should be returned in order', '9.x', { mask: 'sections-order.less' }, function(styleguide, sections) {
+      sectionQuery('Numeric sections should be returned in order', '9.x', {mask: 'sections-order.less'}, function(styleguide, sections) {
         var i,
           l = sections.length,
           expectedOrder = ['9.1', '9.2', '9.3', '9.4', '9.5', '9.10', '9.11', '9.100'];
         for (i = 0; i < l; i += 1) {
-          assert.equal( sections[i].data.reference, expectedOrder[i] );
+          assert.equal(sections[i].data.reference, expectedOrder[i]);
         }
         assert.equal(sections.length, 8);
       });
 
-      sectionQuery('"Word key" sections should be returned in order', 'alpha.x', { mask: 'sections-order.less' }, function(styleguide, sections) {
+      sectionQuery('"Word key" sections should be returned in order', 'alpha.x', {mask: 'sections-order.less'}, function(styleguide, sections) {
         var i,
           l = sections.length,
           expectedOrder = ['alpha.alpha', 'alpha.beta', 'alpha.delta', 'alpha.epsilon', 'alpha.gamma'];
         for (i = 0; i < l; i += 1) {
-          assert.equal( sections[i].data.reference, expectedOrder[i] );
+          assert.equal(sections[i].data.reference, expectedOrder[i]);
         }
         assert.equal(sections.length, 5);
       });
 
-      sectionQuery('"Word key" sections with dashes in the name should be returned', 'alpha-bet.*', { mask: 'sections-order.less' }, function(styleguide, sections) {
+      sectionQuery('"Word key" sections with dashes in the name should be returned', 'alpha-bet.*', {mask: 'sections-order.less'}, function(styleguide, sections) {
         assert.equal(sections.length, 1);
-        assert.equal( sections[0].data.reference, 'alpha-bet' );
+        assert.equal(sections[0].data.reference, 'alpha-bet');
       });
 
-      sectionQuery('"Word phrase" sections should be returned in order', 'beta.x', { mask: 'sections-order-word-phrases.less' }, function(styleguide, sections) {
+      sectionQuery('"Word phrase" sections should be returned in order', 'beta.x', {mask: 'sections-order-word-phrases.less'}, function(styleguide, sections) {
         var i,
           l = sections.length,
           expectedOrder = ['beta - alpha', 'beta - beta', 'beta - delta', 'beta - epsilon', 'beta - gamma'];
         for (i = 0; i < l; i += 1) {
-          assert.equal( sections[i].data.reference, expectedOrder[i] );
+          assert.equal(sections[i].data.reference, expectedOrder[i]);
         }
         assert.equal(sections.length, 5);
       });
@@ -239,52 +249,52 @@ suite('KssStyleguide', function() {
         assert.equal(sections[0].data.header, 'DEPTH OF 1');
       });
 
-      sectionQuery('Numeric sections should be returned in order', /9.*/, { mask: 'sections-order.less' }, function(styleguide, sections) {
+      sectionQuery('Numeric sections should be returned in order', /9.*/, {mask: 'sections-order.less'}, function(styleguide, sections) {
         var i,
           l = sections.length,
           expectedOrder = ['9', '9.1', '9.1.1', '9.2', '9.3', '9.4', '9.5', '9.10', '9.11', '9.100'];
         for (i = 0; i < l; i += 1) {
-          assert.equal( sections[i].data.reference, expectedOrder[i] );
+          assert.equal(sections[i].data.reference, expectedOrder[i]);
         }
         assert.equal(sections.length, 10);
       });
 
-      sectionQuery('"Word key" sections should be returned in order', /alpha\..*/, { mask: 'sections-order.less' }, function(styleguide, sections) {
+      sectionQuery('"Word key" sections should be returned in order', /alpha\..*/, {mask: 'sections-order.less'}, function(styleguide, sections) {
         var i,
           l = sections.length,
           expectedOrder = ['alpha.alpha', 'alpha.alpha.alpha', 'alpha.beta', 'alpha.delta', 'alpha.epsilon', 'alpha.gamma'];
         for (i = 0; i < l; i += 1) {
-          assert.equal( sections[i].data.reference, expectedOrder[i] );
+          assert.equal(sections[i].data.reference, expectedOrder[i]);
         }
         assert.equal(sections.length, 6);
       });
 
-      sectionQuery('"Word phrase" sections should be returned in order', /beta - .*/, { mask: 'sections-order-word-phrases.less' }, function(styleguide, sections) {
+      sectionQuery('"Word phrase" sections should be returned in order', /beta - .*/, {mask: 'sections-order-word-phrases.less'}, function(styleguide, sections) {
         var i,
           l = sections.length,
           expectedOrder = ['beta - alpha', 'beta - alpha - alpha', 'beta - beta', 'beta - delta', 'beta - epsilon', 'beta - gamma'];
         for (i = 0; i < l; i += 1) {
-          assert.equal( sections[i].data.reference, expectedOrder[i] );
+          assert.equal(sections[i].data.reference, expectedOrder[i]);
         }
         assert.equal(sections.length, 6);
       });
 
-      sectionQuery('Weighted "word phrase" sections should be returned in order', /gamma - .*/, { mask: 'sections-order-word-phrases.less' }, function(styleguide, sections) {
+      sectionQuery('Weighted "word phrase" sections should be returned in order', /gamma - .*/, {mask: 'sections-order-word-phrases.less'}, function(styleguide, sections) {
         var i,
           l = sections.length,
           expectedOrder = ['gamma - alpha', 'gamma - alpha - delta', 'gamma - alpha - gamma', 'gamma - alpha - beta', 'gamma - alpha - alpha', 'gamma - beta', 'gamma - gamma', 'gamma - delta', 'gamma - epsilon'];
         for (i = 0; i < l; i += 1) {
-          assert.equal( sections[i].data.reference, expectedOrder[i] );
+          assert.equal(sections[i].data.reference, expectedOrder[i]);
         }
         assert.equal(sections.length, 9);
       });
 
-      sectionQuery('Autoincrement values for sections should be returned in order', /gamma - .*/, { mask: 'sections-order-word-phrases.less' }, function(styleguide, sections) {
+      sectionQuery('Autoincrement values for sections should be returned in order', /gamma - .*/, {mask: 'sections-order-word-phrases.less'}, function(styleguide, sections) {
         var i,
           l = sections.length,
           expectedOrder = ['2.1', '2.1.1', '2.1.2', '2.1.3', '2.1.4', '2.2', '2.3', '2.4', '2.5'];
         for (i = 0; i < l; i += 1) {
-          assert.equal( sections[i].data.autoincrement, expectedOrder[i] );
+          assert.equal(sections[i].data.autoincrement, expectedOrder[i]);
         }
         assert.equal(sections.length, 9);
       });
