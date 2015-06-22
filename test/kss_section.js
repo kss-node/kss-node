@@ -1,15 +1,19 @@
+/*global suite*/
+
 var kss = require('../index.js'),
-  KssStyleguide = kss.KssStyleguide,
-  KssSection = kss.KssSection,
-  KssModifier = kss.KssModifier,
-
-  path = require('path'),
   assert = require('assert'),
+  common = require('./common.js'),
+  path = require('path');
 
-  styleDirectory = path.normalize(__dirname + '/fixtures-styles/'),
-  common = require('./common.js')(styleDirectory);
+var KssSection = kss.KssSection,
+  KssModifier = kss.KssModifier,
+  styleDirectory = path.join(__dirname, '/fixtures-styles/');
+
+common = common(styleDirectory);
 
 suite('KssSection', function() {
+  'use strict';
+
   common.hasMethod(new KssSection({}), 'header');
   common.hasMethod(new KssSection({}), 'description');
   common.hasMethod(new KssSection({}), 'deprecated');
@@ -61,7 +65,7 @@ suite('KssSection', function() {
   suite('.weight()', function() {
     common.testAllSections('returns section.data.weight', '*.less|*.css', function(section) {
       assert.equal(section.weight(), (section.data.weight ? section.data.weight : 0));
-      assert.ok(typeof section.depth() == 'number');
+      assert.ok(typeof section.depth() === 'number');
     });
   });
 
@@ -117,7 +121,7 @@ suite('KssSection', function() {
     });
 
     common.testAllSections('("modifier") should search by name', '*.less|*.css', function(section) {
-      var i, j, queries = [ '.red', '.yellow', ':hover', ':disabled' ],
+      var i, j, queries = ['.red', '.yellow', ':hover', ':disabled'],
         q = queries.length,
         l = section.data.modifiers.length;
 
@@ -135,9 +139,10 @@ suite('KssSection', function() {
     });
 
     common.testAllSections('("modifier") should only return false if not found', '*.less|*.css', function(section) {
-      var i, l = section.data.modifiers.length;
       assert.equal(false, section.modifiers('__should_not_find___'));
-      if (l) { assert.ok(section.modifiers(section.modifiers(0).data.name)); }
+      if (section.data.modifiers.length) {
+        assert.ok(section.modifiers(section.modifiers(0).data.name));
+      }
     });
   });
 
