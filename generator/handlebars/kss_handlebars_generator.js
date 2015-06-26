@@ -301,14 +301,16 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
     }
   }
   // Create the HTML to load the optional CSS and JS.
-  /*eslint-disable guard-for-in*/
   for (key in this.config.css) {
-    styles = styles + '<link rel="stylesheet" href="' + this.config.css[key] + '">\n';
+    if (this.config.css.hasOwnProperty(key)) {
+      styles = styles + '<link rel="stylesheet" href="' + this.config.css[key] + '">\n';
+    }
   }
   for (key in this.config.js) {
-    scripts = scripts + '<script src="' + this.config.js[key] + '"></script>\n';
+    if (this.config.js.hasOwnProperty(key)) {
+      scripts = scripts + '<script src="' + this.config.js[key] + '"></script>\n';
+    }
   }
-  /*eslint-enable guard-for-in*/
 
   /*eslint-disable key-spacing*/
   fs.writeFileSync(this.config.destination + '/' + filename,

@@ -263,20 +263,22 @@ try {
 generator.checkGenerator();
 
 // Load the generator's and the template's CLI options.
-/*eslint-disable guard-for-in*/
 if (Object.keys(generator.options).length) {
   for (key in generator.options) {
-    cliOptions[key] = generator.options[key];
+    if (generator.options.hasOwnProperty(key)) {
+      cliOptions[key] = generator.options[key];
+    }
   }
   yargs.options(generator.options);
 }
 if (template && template.options && Object.keys(template.options).length) {
   for (key in template.options) {
-    cliOptions[key] = template.options[key];
+    if (template.options.hasOwnProperty(key)) {
+      cliOptions[key] = template.options[key];
+    }
   }
   yargs.options(template.options);
 }
-/*eslint-enable guard-for-in*/
 
 // Now that we know all the options, ensure strictness.
 yargs
