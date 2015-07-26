@@ -10,7 +10,7 @@
   "license": "(MIT OR GPL-2.0)",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -u tdd --reporter spec",
+    "test": "mocha",
     "posttest": "eslint bin/kss-node .",
     "docs": "make docs"
   },
@@ -32,7 +32,8 @@
   "devDependencies": {
     "eslint": "^0.23.0",
     "jsdoc": "^3.3.2",
-    "mocha": "^2.2.5"
+    "mocha": "^2.2.5",
+    "should": "^7.0.1"
   },
   "homepage": "http://kss-node.github.io/kss-node"
 }

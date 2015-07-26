@@ -1,6 +1,0 @@
-{
-  "//"          : "A JSON comment",
-  "source"      : "fixtures-styles/with-include",
-  "destination" : "output/nested",
-  "template"    : "fixtures-styles/template"
-}

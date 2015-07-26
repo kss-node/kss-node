@@ -1,89 +1,25 @@
-/*global test*/
-module.exports = function(styleDirectory) {
+/*global before*/
 
-  'use strict';
+'use strict';
 
-  var kss = require('../index.js'),
-    assert = require('assert'),
-    path = require('path');
+// Run this setup before any tests.
+before(function() {
+  var should = require('should'),
+    path = require('path'),
+    testUtils = require('./testUtils');
 
-  var testSection, testAllSections, shouldFindFile, hasMethod;
+  // Add custom assertions.
 
-  testSection = function(header, mask, testFunction, nameOverride, additionalOptions) {
-    var key, options = {
-      mask: mask,
-      markdown: false
-    };
-    if (additionalOptions) {
-      for (key in additionalOptions) {
-        if (additionalOptions.hasOwnProperty(key)) {
-          options[key] = additionalOptions[key];
-        }
-      }
-    }
-    test(nameOverride || header, function(done) {
-      kss.traverse(styleDirectory, options, function(err, styleguide) {
-        var i, l = styleguide.data.sections.length,
-          found = false;
-        assert.ifError(err);
+  // .should.have.method(string) asserts that a method exists.
+  should.Assertion.add('method', function(method) {
+    this.params = {operator: 'to have the ' + method + '() method'};
+    this.obj.should.have.property(method).which.is.a.Function();
+  });
 
-        if (header !== 'all' && header !== '*') {
-          for (i = 0; i < l; i += 1) {
-            if (styleguide.data.sections[i].data.header.toUpperCase() === header.toUpperCase()) {
-              assert.ok(styleguide.data.sections[i]);
-              testFunction(styleguide.data.sections[i]);
-              found = true;
-            }
-          }
-          if (!found) {
-            throw new Error("Couldn't find header: '" + header + "'!");
-          }
-        } else {
-          testFunction(styleguide.data.sections);
-        }
-        done();
-      });
-    });
-  };
-
-  testAllSections = function(name, mask, testFunction) {
-    testSection('*', mask, function(sections) {
-      var i, l = sections.length;
-
-      for (i = 0; i < l; i += 1) {
-        testFunction(sections[i]);
-      }
-    }, name);
-  };
-
-  shouldFindFile = function(file, options, shouldFind) {
-    test(shouldFind ? '"' + file + '"' : 'But not "' + file + '"', function(done) {
-      file = path.resolve(styleDirectory, file).replace(/\\/g, '/');
-      kss.traverse(styleDirectory, options || {}, function(err, styleguide) {
-        assert.ifError(err);
-        if (shouldFind) {
-          assert.notEqual(styleguide.data.files.indexOf(file), -1);
-        } else {
-          assert.equal(styleguide.data.files.indexOf(file), -1);
-        }
-        done();
-      });
-    });
-  };
-
-  hasMethod = function(owner, method) {
-    test('has method: ' + method, function() {
-      assert.ok(owner);
-      assert.equal(typeof method, 'string');
-      assert.equal(typeof owner[method], 'function');
-    });
-  };
-
-  return {
-    testSection: testSection,
-    shouldFindFile: shouldFindFile,
-    testAllSections: testAllSections,
-    hasMethod: hasMethod
-  };
-
-};
+  // .should.containFile(string) asserts that a given file should be in an array.
+  should.Assertion.add('containFile', function(file) {
+    this.params = {operator: 'to contain the file'};
+    file = path.resolve(testUtils.fixtures(), file);
+    this.obj.data.files.should.containEql(file);
+  });
+});
