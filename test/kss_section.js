@@ -59,13 +59,14 @@ suite('KssSection', function() {
     common.testAllSections('returns section.data.depth', '*.less|*.css', function(section) {
       assert.equal(section.depth(), section.data.depth);
       assert.equal(section.depth(), section.reference().split(section.styleguide.referenceDelimiter).length);
+      assert.ok(typeof section.depth() === 'number');
     });
   });
 
   suite('.weight()', function() {
     common.testAllSections('returns section.data.weight', '*.less|*.css', function(section) {
       assert.equal(section.weight(), (section.data.weight ? section.data.weight : 0));
-      assert.ok(typeof section.depth() === 'number');
+      assert.ok(typeof section.weight() === 'number');
     });
   });
 
