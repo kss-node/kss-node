@@ -10,7 +10,7 @@ Markup:
 :disabled - Dims when unavailable
 .primary  - Indicates this is a key element
 
-Styleguide 1.1
+Style guide: comment.multi-line
 */
 
 
@@ -18,7 +18,7 @@ Styleguide 1.1
 //
 // Using inline comment syntax.
 //
-// Styleguide 1.2
+// Style guide: comment.inline
 
 
 /*
@@ -33,22 +33,25 @@ Styleguide 1.1
   :disabled - Dims when unavailable
   .primary  - Indicates this is a key element
 
-  Styleguide 1.3
+  Style guide: comment.multi-line.indented
 */
 
 
 .example-1-4 {
   content: 'This string includes the start of a multi-line comment: /*';
 }
+// This is not a header
 
 // False-positive of multi-line comment block #1
 //
-// Styleguide 1.4
+// Style guide: comment.multi-line.false-positive.test-1
 
 // This single-line comment includes the end of a multi-line comment: */
 
 
 /* A multi-line comment on a single line. */
+
+// This is also not a header
 
 // False-positive of multi-line comment block #2
 //
@@ -59,21 +62,21 @@ Styleguide 1.1
 // :disabled - Dims when unavailable
 // .primary  - Indicates this is a key element
 //
-// Styleguide 1.5
+// Style guide: comment.multi-line.false-positive.test-2
 
 // This single-line comment includes the end of a multi-line comment: */
 
 // Comment syntax: inline, directly before multi-line
 //
-// Styleguide 1.6
+// Style guide: comment.inline.no-bottom-space
 /*
 Comment syntax: multi-line, directly after inline
 
-Styleguide 1.7
+Style guide: comment.multi-line.no-top-space
 */
 
 /**
  * Docblock comment syntax
  *
- * Styleguide 1.8
+ * Style guide: comment.docblock
  */
