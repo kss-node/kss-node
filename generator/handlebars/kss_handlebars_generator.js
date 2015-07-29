@@ -270,15 +270,17 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
       console.log(' - homepage');
     }
     // Ensure homepageText is a non-false value.
-    for (key in this.config.source) {
+    if (fs.existsSync(this.config.homepage) && typeof this.config.homepage !== "undefined") {
       if (!homepageText) {
         try {
-          files = glob.sync(this.config.source[key] + '/**/' + this.config.homepage);
+          files = glob.sync(this.config.homepage);
           if (files.length) {
             homepageText = ' ' + marked(fs.readFileSync(files[0], 'utf8'));
+            console.log("... parsing content from " + this.config.homepage);
           }
         } catch (e) {
           // empty
+          console.log("There was an error reading the content in" + this.config.homepage);
         }
       }
     }
