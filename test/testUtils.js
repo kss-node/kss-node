@@ -5,13 +5,15 @@ var path = require('path'),
 
 module.exports = {
 
-  fixtures: function(subpath) {
-    if (!subpath) {
-      subpath = '';
+  // Returns the full path to the test fixtures in test/fixtures or sub-directory.
+  fixtures: function(subdirectory) {
+    if (!subdirectory) {
+      subdirectory = '';
     }
-    return path.join(__dirname, 'fixtures', subpath);
+    return path.join(__dirname, 'fixtures', subdirectory);
   },
 
+  // Simplifies usage of kss.traverse() in various tests.
   traverseFixtures: function(options, cb) {
     kss.traverse(this.fixtures(), options, function(err, styleguide) {
       err.should.not.be.Error();
