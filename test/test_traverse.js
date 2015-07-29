@@ -17,7 +17,7 @@ describe('kss.traverse()', function() {
     it('should function without options', function(done) {
       kss.traverse(testUtils.fixtures(), function(err, styleguide) {
         err.should.not.be.Error();
-        styleguide.data.files.length.should.equal(22);
+        styleguide.data.files.length.should.equal(23);
         done();
       });
     });
@@ -25,7 +25,7 @@ describe('kss.traverse()', function() {
     it('should function with options', function(done) {
       kss.traverse(testUtils.fixtures(), {}, function(err, styleguide) {
         err.should.not.be.Error();
-        styleguide.data.files.length.should.equal(22);
+        styleguide.data.files.length.should.equal(23);
         done();
       });
     });
@@ -92,7 +92,7 @@ describe('kss.traverse()', function() {
         testUtils.traverseFixtures({mask: /.*/g}, function(styleguide) {
           styleguide.data.should.be.an.Object();
           styleguide.data.files.should.be.an.Array();
-          styleguide.data.files.length.should.equal(30);
+          styleguide.data.files.length.should.equal(31);
           done();
         });
       });
@@ -452,24 +452,28 @@ describe('kss.traverse()', function() {
           });
         });
 
-        it('should find file style.css', function(done) {
+        it('should find file file-type.css', function(done) {
           this.styleguide.should.containFile('file-type.css');
           done();
         });
-        it('should find file style.less', function(done) {
+        it('should find file file-type.less', function(done) {
           this.styleguide.should.containFile('file-type.less');
           done();
         });
-        it('should find file style.stylus', function(done) {
+        it('should find file file-type.stylus', function(done) {
           this.styleguide.should.containFile('file-type.stylus');
           done();
         });
-        it('should find file style.styl', function(done) {
+        it('should find file file-type.styl', function(done) {
           this.styleguide.should.containFile('file-type.styl');
           done();
         });
-        it('should find file style.sass', function(done) {
+        it('should find file file-type.sass', function(done) {
           this.styleguide.should.containFile('file-type.sass');
+          done();
+        });
+        it('should find file file-type.scss', function(done) {
+          this.styleguide.should.containFile('file-type.scss');
           done();
         });
         it('should find file includes/buttons.less', function(done) {
