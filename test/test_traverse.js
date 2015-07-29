@@ -299,10 +299,13 @@ describe('kss.traverse()', function() {
 
         describe('.data.className', function() {
           it('should convert pseudo-class to KSS-style .pseudo-class-[name]', function(done) {
-            testUtils.eachSection(done, {mask: '*.less|*.css'}, function(section) {
-              section.data.modifiers.map(function(modifier) {
-                modifier.data.name.replace(/\:/g, '.pseudo-class-').should.equal(modifier.data.className);
+            testUtils.traverseFixtures({mask: '*.less|*.css'}, function(styleguide) {
+              styleguide.data.sections.map(function(section) {
+                section.data.modifiers.map(function(modifier) {
+                  modifier.data.name.replace(/\:/g, '.pseudo-class-').should.equal(modifier.data.className);
+                });
               });
+              done();
             });
           });
         });

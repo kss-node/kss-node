@@ -12,17 +12,6 @@ module.exports = {
     return path.join(__dirname, 'fixtures', subpath);
   },
 
-  eachSection: function(done, options, testFunction) {
-    kss.traverse(this.fixtures(), options || {}, function(err, styleguide) {
-      err.should.not.be.Error();
-
-      styleguide.data.sections.map(function(section) {
-        testFunction(section);
-      });
-      done();
-    });
-  },
-
   sectionQueryArray: function(done, query, options, testFunction) {
     kss.traverse(this.fixtures(), options || {}, function(err, styleguide) {
       err.should.not.be.Error();
