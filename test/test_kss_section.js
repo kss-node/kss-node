@@ -26,7 +26,8 @@ describe('KssSection object API', function() {
     'encodeReferenceURI',
     'referenceURI',
     'modifiers',
-    'firstModifier'
+    'firstModifier',
+    'parameters'
   ].forEach(function(method) {
     it('has ' + method + '() method', function() {
       (new kss.KssSection({})).should.have.method(method);
@@ -190,6 +191,24 @@ describe('KssSection object API', function() {
         } else {
           section.firstModifier().should.be.false();
         }
+      });
+      done();
+    });
+  });
+
+  describe('.parameters()', function() {
+    it('should return data.parameters', function(done) {
+      this.styleguide.data.sections.map(function(section) {
+        section.parameters().should.be.equal(section.data.parameters);
+      });
+      done();
+    });
+
+    it('should return array of KssParameter', function(done) {
+      this.styleguide.data.sections.map(function(section) {
+        section.parameters().map(function(parameter) {
+          parameter.should.be.instanceof(kss.KssParameter);
+        });
       });
       done();
     });
