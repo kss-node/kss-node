@@ -302,14 +302,12 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
   }
   // Create the HTML to load the optional CSS and JS.
   for (key in this.config.css) {
-    if (this.config.css.hasOwnProperty(key)) {
-      styles = styles + '<link rel="stylesheet" href="' + this.config.css[key] + '">\n';
-    }
+    var cssPath = path.relative(this.config.destination,this.config.css[key]);
+    styles = styles + '<link rel="stylesheet" href="' + cssPath + '">\n';
   }
   for (key in this.config.js) {
-    if (this.config.js.hasOwnProperty(key)) {
-      scripts = scripts + '<script src="' + this.config.js[key] + '"></script>\n';
-    }
+    var jsPath = path.relative(this.config.destination, this.config.js[key]);
+    scripts = scripts + '<script src="' + jsPath + '"></script>\n';
   }
 
   /*eslint-disable key-spacing*/
