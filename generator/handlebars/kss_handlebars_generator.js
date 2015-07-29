@@ -57,6 +57,7 @@ kssHandlebarsGenerator.init = function(config) {
 
   // Save the configuration parameters.
   this.config = config;
+  this.config.helpers = this.config.helpers || [];
 
   if (this.config.verbose) {
     console.log('');
