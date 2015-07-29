@@ -35,22 +35,6 @@ module.exports = {
     });
   },
 
-  sectionQueryFail: function(done, query, options, testFunction) {
-    kss.traverse(this.fixtures(), options || {}, function(err, styleguide) {
-      err.should.not.be.Error();
-      testFunction = testFunction || function() {};
-
-      var returnVal = styleguide.section(query);
-      if (Array.isArray(returnVal)) {
-        returnVal.length.should.equal(0, 'query returned non-empty array');
-      } else {
-        returnVal.should.be.false('query did not return false');
-      }
-      testFunction(styleguide);
-      done();
-    });
-  },
-
   traverseFixtures: function(options, cb) {
     kss.traverse(this.fixtures(), options, function(err, styleguide) {
       err.should.not.be.Error();

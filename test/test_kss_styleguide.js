@@ -1,4 +1,4 @@
-/*global describe,context,it*/
+/*global describe,context,it,before*/
 /*eslint-disable max-nested-callbacks*/
 
 'use strict';
@@ -10,6 +10,14 @@ var query = '',
   options = {mask: 'sections-queries.less'};
 
 describe('KssStyleguide object API', function() {
+  before(function(done) {
+    var self = this;
+    testUtils.traverseFixtures({mask: /(property|sections).*\.less/}, function(styleguide) {
+      self.styleguide = styleguide;
+      done();
+    });
+  });
+
   /*eslint-disable guard-for-in,no-loop-func*/
   [
     'init',
@@ -113,7 +121,8 @@ describe('KssStyleguide object API', function() {
       });
 
       it('should not find a reference with depth 3 that does not exist', function(done) {
-        testUtils.sectionQueryFail(done, '4.1.3', options);
+        this.styleguide.section('4.1.3').should.be.false();
+        done();
       });
 
       it('should find a reference with depth 4 (A)', function(done) {
@@ -186,11 +195,15 @@ describe('KssStyleguide object API', function() {
       });
 
       it('should not find "alpha" section when given a query for "alp.*"', function(done) {
-        testUtils.sectionQueryFail(done, 'alp.*', {mask: 'sections-order.less'});
+        this.styleguide.section('alp.*').should.be.Array();
+        this.styleguide.section('alp.*').length.should.equal(0);
+        done();
       });
 
       it('should not find "alpha" section when given a query for "alp.x"', function(done) {
-        testUtils.sectionQueryFail(done, 'alp.x', {mask: 'sections-order.less'});
+        this.styleguide.section('alp.x').should.be.Array();
+        this.styleguide.section('alp.x').length.should.equal(0);
+        done();
       });
 
       it('should return numeric sections in order', function(done) {
