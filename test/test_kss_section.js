@@ -136,23 +136,26 @@ describe('KssSection object API', function() {
       done();
     });
 
-    it('should return data.modifiers[n] or false if non-existent when given (n)', function(done) {
+    it('should return data.modifiers[n] given an integer as number or string', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        var i, l = section.data.modifiers.length;
-
-        // Search for section for all n sections plus one that doesn't exist.
-        for (i = 0; i < l + 1; i++) {
-          if (i < l) {
-            section.modifiers(i).should.be.eql(section.data.modifiers[i]);
-          } else {
-            section.modifiers(i).should.be.false();
-          }
-        }
+        var i = 0;
+        section.data.modifiers.map(function(modifier) {
+          section.modifiers(i).should.be.eql(modifier);
+          section.modifiers(i.toString()).should.be.eql(modifier);
+          i++;
+        });
       });
       done();
     });
 
-    it('should search by name when given "modifier"', function(done) {
+    it('should return false if number is not found', function(done) {
+      this.styleguide.data.sections.map(function(section) {
+        section.modifiers(section.data.modifiers.length + 1).should.be.false();
+      });
+      done();
+    });
+
+    it('should search by name when given a string', function(done) {
       this.styleguide.data.sections.map(function(section) {
         var i, j, queries = ['.red', '.yellow', ':hover', ':disabled'],
           q = queries.length,
@@ -171,7 +174,7 @@ describe('KssSection object API', function() {
       done();
     });
 
-    it('should return false if not found', function(done) {
+    it('should return false if name not found', function(done) {
       this.styleguide.data.sections.map(function(section) {
         section.modifiers('__should_not_find___').should.be.false();
       });
