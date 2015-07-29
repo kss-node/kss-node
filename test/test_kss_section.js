@@ -6,10 +6,12 @@
 var kss = require('../index.js'),
   testUtils = require('./testUtils');
 
+var custom = ['custom', 'custom2', 'custom property'];
+
 describe('KssSection object API', function() {
   before(function(done) {
     var self = this;
-    testUtils.traverseFixtures({mask: '*.less|*.css'}, function(styleguide) {
+    testUtils.traverseFixtures({mask: '*.less|*.css', custom: custom}, function(styleguide) {
       self.styleguide = styleguide;
       done();
     });
@@ -34,6 +36,38 @@ describe('KssSection object API', function() {
     });
   });
   /*eslint-enable guard-for-in,no-loop-func*/
+
+  describe('.toJSON()', function() {
+    it('should return valid JSON object', function(done) {
+      this.styleguide.data.sections.map(function(section) {
+        var str;
+        section.toJSON().should.be.an.Object();
+        // Verify it converts to a JSON string.
+        (function() {
+          str = JSON.stringify(section.toJSON());
+        }).should.not.throw();
+        str.should.be.String();
+        // Compare JSON string to original.
+        JSON.parse(str).should.eql(section.toJSON());
+      });
+      done();
+    });
+
+    it('should return custom properties given array of property names', function(done) {
+      this.styleguide.data.sections.map(function(section) {
+        var str;
+        section.toJSON(custom).should.be.an.Object();
+        // Verify it converts to a JSON string.
+        (function() {
+          str = JSON.stringify(section.toJSON(custom));
+        }).should.not.throw();
+        str.should.be.String();
+        // Compare JSON string to original.
+        JSON.parse(str).should.eql(section.toJSON(custom));
+      });
+      done();
+    });
+  });
 
   describe('.header()', function() {
     it('should return data.header', function(done) {
