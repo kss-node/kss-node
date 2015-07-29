@@ -12,7 +12,8 @@
   "scripts": {
     "test": "mocha",
     "posttest": "eslint bin/kss-node .",
-    "docs": "make docs"
+    "docs": "make docs",
+    "coverage": "istanbul cover _mocha"
   },
   "bin": {
     "kss-node": "./bin/kss-node"
@@ -31,6 +32,7 @@
   },
   "devDependencies": {
     "eslint": "^0.23.0",
+    "istanbul": "^0.3.17",
     "jsdoc": "^3.3.2",
     "mocha": "^2.2.5",
     "should": "^7.0.1"
