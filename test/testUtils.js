@@ -24,17 +24,6 @@ module.exports = {
     });
   },
 
-  sectionQueryExact: function(done, query, options, testFunction) {
-    kss.traverse(this.fixtures(), options || {}, function(err, styleguide) {
-      err.should.not.be.Error();
-      var section = styleguide.section(query);
-
-      section.should.be.instanceof(kss.KssSection, 'query did not return a KssSection');
-      testFunction(section);
-      done();
-    });
-  },
-
   traverseFixtures: function(options, cb) {
     kss.traverse(this.fixtures(), options, function(err, styleguide) {
       err.should.not.be.Error();

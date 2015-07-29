@@ -12,9 +12,12 @@ var query = '',
 describe('KssStyleguide object API', function() {
   before(function(done) {
     var self = this;
-    testUtils.traverseFixtures({mask: /(property|sections).*\.less/}, function(styleguide) {
+    testUtils.traverseFixtures({mask: /(sections\-queries|sections\-order|property\-styleguide\-word\-keys)\.less/}, function(styleguide) {
       self.styleguide = styleguide;
-      done();
+      testUtils.traverseFixtures({mask: /.*\-word\-phrases\.less/}, function(styleguideWordPhrases) {
+        self.styleguideWordPhrases = styleguideWordPhrases;
+        done();
+      });
     });
   });
 
@@ -97,27 +100,27 @@ describe('KssStyleguide object API', function() {
 
     context('given exact references', function() {
       it('should find a reference with depth 1', function(done) {
-        testUtils.sectionQueryExact(done, '4', options, function(section) {
-          section.header().should.be.equal('DEPTH OF 1');
-          section.depth().should.be.equal(1);
-          section.reference().should.be.equal('4');
-        });
+        var section = this.styleguide.section('4');
+        section.header().should.be.equal('DEPTH OF 1');
+        section.depth().should.be.equal(1);
+        section.reference().should.be.equal('4');
+        done();
       });
 
       it('should find a reference with depth 3 and no modifiers', function(done) {
-        testUtils.sectionQueryExact(done, '4.1.1', options, function(section) {
-          section.header().should.be.equal('DEPTH OF 3, NO MODIFIERS');
-          section.depth().should.be.equal(3);
-          section.reference().should.be.equal('4.1.1');
-        });
+        var section = this.styleguide.section('4.1.1');
+        section.header().should.be.equal('DEPTH OF 3, NO MODIFIERS');
+        section.reference().should.be.equal('4.1.1');
+        section.depth().should.be.equal(3);
+        done();
       });
 
       it('should find a reference with depth 3 and modifiers', function(done) {
-        testUtils.sectionQueryExact(done, '4.1.2', options, function(section) {
-          section.header().should.be.equal('DEPTH OF 3, MODIFIERS');
-          section.depth().should.be.equal(3);
-          section.reference().should.be.equal('4.1.2');
-        });
+        var section = this.styleguide.section('4.1.2');
+        section.header().should.be.equal('DEPTH OF 3, MODIFIERS');
+        section.depth().should.be.equal(3);
+        section.reference().should.be.equal('4.1.2');
+        done();
       });
 
       it('should not find a reference with depth 3 that does not exist', function(done) {
@@ -126,27 +129,27 @@ describe('KssStyleguide object API', function() {
       });
 
       it('should find a reference with depth 4 (A)', function(done) {
-        testUtils.sectionQueryExact(done, '4.1.1.1', options, function(section) {
-          section.header().should.be.equal('DEPTH OF 4 (A)');
-          section.depth().should.be.equal(4);
-          section.reference().should.be.equal('4.1.1.1');
-        });
+        var section = this.styleguide.section('4.1.1.1');
+        section.header().should.be.equal('DEPTH OF 4 (A)');
+        section.depth().should.be.equal(4);
+        section.reference().should.be.equal('4.1.1.1');
+        done();
       });
 
       it('should find a reference with depth 4 (B)', function(done) {
-        testUtils.sectionQueryExact(done, '4.1.1.2', options, function(section) {
-          section.header().should.be.equal('DEPTH OF 4 (B)');
-          section.depth().should.be.equal(4);
-          section.reference().should.be.equal('4.1.1.2');
-        });
+        var section = this.styleguide.section('4.1.1.2');
+        section.header().should.be.equal('DEPTH OF 4 (B)');
+        section.depth().should.be.equal(4);
+        section.reference().should.be.equal('4.1.1.2');
+        done();
       });
 
       it('should find a reference with depth 4 (C)', function(done) {
-        testUtils.sectionQueryExact(done, '4.1.2.2', options, function(section) {
-          section.header().should.be.equal('DEPTH OF 4 (C)');
-          section.depth().should.be.equal(4);
-          section.reference().should.be.equal('4.1.2.2');
-        });
+        var section = this.styleguide.section('4.1.2.2');
+        section.header().should.be.equal('DEPTH OF 4 (C)');
+        section.depth().should.be.equal(4);
+        section.reference().should.be.equal('4.1.2.2');
+        done();
       });
     });
 
