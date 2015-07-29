@@ -11,3 +11,6 @@ styleguide/**
 
 # Ignore old test runs.
 test/output/**
+
+# Ignore test coverage reports
+coverage/**
