@@ -23,8 +23,9 @@ describe('KssModifier object API', function() {
     'className',
     'markup'
   ].forEach(function(method) {
-    it('has ' + method + '() method', function() {
+    it('has ' + method + '() method', function(done) {
       (new kss.KssModifier({})).should.have.method(method);
+      done();
     });
   });
   /*eslint-enable guard-for-in,no-loop-func*/

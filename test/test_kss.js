@@ -14,8 +14,9 @@ describe('kss object API', function() {
     'KssParameter',
     'KssStyleguide'
   ].forEach(function(method) {
-    it('has ' + method + '() method', function() {
+    it('has ' + method + '() method', function(done) {
       kss.should.have.method(method);
+      done();
     });
   });
   /*eslint-enable guard-for-in,no-loop-func*/

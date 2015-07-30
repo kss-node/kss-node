@@ -25,8 +25,9 @@ describe('KssStyleguide object API', function() {
     'sortSections',
     'getWeight'
   ].forEach(function(method) {
-    it('has ' + method + '() method', function() {
+    it('has ' + method + '() method', function(done) {
       (new kss.KssStyleguide({})).should.have.method(method);
+      done();
     });
   });
   /*eslint-enable guard-for-in,no-loop-func*/
