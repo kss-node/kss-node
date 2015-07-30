@@ -32,11 +32,39 @@ describe('KssSection object API', function() {
     'parameters'
   ].forEach(function(method) {
     it('has ' + method + '() method', function(done) {
-      (new kss.KssSection({})).should.have.method(method);
+      (new kss.KssSection()).should.have.method(method);
       done();
     });
   });
   /*eslint-enable guard-for-in,no-loop-func*/
+
+  describe('KssSection constructor', function() {
+    it('should initalize the data', function(done) {
+      var obj = new kss.KssSection();
+      obj.should.have.property('data');
+      obj.should.have.property('styleguide');
+      obj.data.should.have.property('header');
+      obj.data.should.have.property('description');
+      obj.data.should.have.property('deprecated');
+      obj.data.should.have.property('experimental');
+      obj.data.should.have.property('reference');
+      obj.data.should.have.property('depth');
+      obj.data.should.have.property('weight');
+      obj.data.should.have.property('referenceURI');
+      obj.data.should.have.property('markup');
+      obj.data.should.have.property('modifiers');
+      obj.data.should.have.property('parameters');
+      done();
+    });
+
+    it('should return a KssSection object when called normally', function(done) {
+      /*eslint-disable new-cap*/
+      var obj = kss.KssSection();
+      obj.should.be.an.Object().and.an.instanceof(kss.KssSection);
+      done();
+      /*eslint-enable new-cap*/
+    });
+  });
 
   describe('.toJSON()', function() {
     it('should return valid JSON object', function(done) {
