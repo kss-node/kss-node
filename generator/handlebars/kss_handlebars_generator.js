@@ -306,13 +306,13 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
   }
   // Create the HTML to load the optional CSS and JS.
   for (key in this.config.css) {
-    if(typeof this.config.destination != "undefined") {
+    if (typeof this.config.destination !== 'undefined') {
       cssPath = path.relative(this.config.destination, this.config.css[key]);
-      styles = styles + '<link rel="stylesheet" href="' + cssPath + '">\n'; 
+      styles = styles + '<link rel="stylesheet" href="' + cssPath + '">\n';
     }
   }
   for (key in this.config.js) {
-    if(typeof this.config.destination != "undefined") {
+    if (typeof this.config.destination !== 'undefined') {
       jsPath = path.relative(this.config.destination, this.config.js[key]);
       scripts = scripts + '<script src="' + jsPath + '"></script>\n';
     }
