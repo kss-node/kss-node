@@ -261,6 +261,8 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
     homepageText = false,
     styles = '',
     scripts = '',
+    cssPath = '',
+    jsPath = '',
     customFields = this.config.custom,
     key;
 
@@ -270,17 +272,17 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
       console.log(' - homepage');
     }
     // Ensure homepageText is a non-false value.
-    if (fs.existsSync(this.config.homepage) && typeof this.config.homepage !== "undefined") {
+    if (fs.existsSync(this.config.homepage) && typeof this.config.homepage !== 'undefined') {
       if (!homepageText) {
         try {
           files = glob.sync(this.config.homepage);
           if (files.length) {
             homepageText = ' ' + marked(fs.readFileSync(files[0], 'utf8'));
-            console.log("... parsing content from " + this.config.homepage);
+            console.log('... parsing content from ' + this.config.homepage);
           }
         } catch (e) {
           // empty
-          console.log("There was an error reading the content in" + this.config.homepage);
+          console.log('There was an error reading the content in' + this.config.homepage);
         }
       }
     }
@@ -304,12 +306,16 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
   }
   // Create the HTML to load the optional CSS and JS.
   for (key in this.config.css) {
-    var cssPath = path.relative(this.config.destination,this.config.css[key]);
-    styles = styles + '<link rel="stylesheet" href="' + cssPath + '">\n';
+    if(typeof this.config.destination != "undefined") {
+      cssPath = path.relative(this.config.destination, this.config.css[key]);
+      styles = styles + '<link rel="stylesheet" href="' + cssPath + '">\n'; 
+    }
   }
   for (key in this.config.js) {
-    var jsPath = path.relative(this.config.destination, this.config.js[key]);
-    scripts = scripts + '<script src="' + jsPath + '"></script>\n';
+    if(typeof this.config.destination != "undefined") {
+      jsPath = path.relative(this.config.destination, this.config.js[key]);
+      scripts = scripts + '<script src="' + jsPath + '"></script>\n';
+    }
   }
 
   /*eslint-disable key-spacing*/
