@@ -18,6 +18,7 @@ describe('KssModifier object API', function() {
 
   /*eslint-disable guard-for-in,no-loop-func*/
   [
+    'section',
     'name',
     'description',
     'className',
@@ -29,6 +30,37 @@ describe('KssModifier object API', function() {
     });
   });
   /*eslint-enable guard-for-in,no-loop-func*/
+
+  describe('KssModifier constructor', function() {
+    it('should initialize the data', function(done) {
+      var obj = new kss.KssModifier();
+      obj.should.have.property('data');
+      obj.data.should.have.property('section');
+      obj.data.should.have.property('name');
+      obj.data.should.have.property('description');
+      obj.data.should.have.property('className');
+      done();
+    });
+
+    it('should return a KssModifier object when called normally', function(done) {
+      /*eslint-disable new-cap*/
+      var obj = kss.KssModifier();
+      obj.should.be.an.Object().and.an.instanceof(kss.KssModifier);
+      done();
+      /*eslint-enable new-cap*/
+    });
+  });
+
+  describe('.section()', function() {
+    it('should return this.section', function(done) {
+      this.styleguide.data.sections.map(function(section) {
+        section.modifiers().map(function(modifier) {
+          modifier.section().should.be.equal(modifier.data.section).and.equal(section);
+        });
+      });
+      done();
+    });
+  });
 
   describe('.name()', function() {
     it('should return data.name', function(done) {
@@ -61,6 +93,12 @@ describe('KssModifier object API', function() {
       });
       done();
     });
+
+    it('should return false if it does not have a class name', function(done) {
+      var modifier = new kss.KssModifier();
+      modifier.className().should.be.false();
+      done();
+    });
   });
 
   describe('.markup()', function() {
@@ -73,6 +111,19 @@ describe('KssModifier object API', function() {
           }
         });
       });
+      done();
+    });
+
+    it('should return empty string if it does not have any associated markup', function(done) {
+      var modifier = new kss.KssModifier();
+      modifier.data.section = new kss.KssSection();
+      modifier.markup().should.be.String().and.be.empty();
+      done();
+    });
+
+    it('should return empty string if it does not have an associated kssSection', function(done) {
+      var modifier = new kss.KssModifier();
+      modifier.markup().should.be.String().and.be.empty();
       done();
     });
   });
