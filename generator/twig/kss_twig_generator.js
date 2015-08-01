@@ -98,7 +98,8 @@ kssTwigGenerator.init = function(config) {
   this.template = fs.readFileSync(this.config.template + '/index.html', 'utf8');
 
   this.template = this.Twig.twig({
-    data: this.template
+    data: this.template,
+    allowInlineIncludes: true
   });
 
 };
@@ -191,7 +192,7 @@ kssTwigGenerator.generate = function(styleguide) {
       // @TODO Fix this properly. Don't just skip ahead.
       try {
         partials[partial.reference] = this.Twig.twig({
-          id: "template-" + partial.name,
+          id: partial.name,
           data: partial.markup,
           variables: partial.data,
         });
