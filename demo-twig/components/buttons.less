@@ -1,0 +1,75 @@
+// Buttons
+//
+// A majority of buttons in the site are built from the same base class.
+//
+// Markup: buttons.hbs
+//
+// .primary   - Use this class to indicate that the button is the primary
+//              feature of this form.
+// .remove    - Use this class to indicate that the button will remove a
+//              feature, or other negative connotations.
+// :hover     - Highlight the button when hovered.
+// :disabled  - Make the button change appearance to reflect it being disabled.
+// :active    - "Press" the button down when clicked.
+//
+// Style guide: demo.components.buttons
+.button {
+  @color:#aaa;
+
+  -webkit-appearance:none;
+     -moz-appearance:none;
+          appearance:none;
+
+  padding:10px 20px;
+
+  color:#fff;
+  &:visited, &:hover, &:active {
+    color:#fff;
+  }
+
+  font-family:Helvetica, Arial, sans-serif;
+  font-size:16px;
+  font-weight:bold;
+  text-transform:lowercase;
+  text-decoration:none;
+
+  cursor:pointer;
+
+  border-radius:3px;
+  .button-colorize(@color);
+
+  &:hover {
+    .button-colorize(lighten(@color, 8%));
+    border:1px solid darken(@color, 20%);
+  }
+  &:active {
+    position:relative; top:3px;
+    box-shadow:none!important;
+  }
+  &.primary {
+    .button-colorize(#5c4);
+  }
+  &:disabled {
+    .button-colorize(lighten(@color, 20%));
+    cursor:default;
+  }
+  &.remove {
+    .button-colorize(#c54);
+  }
+}
+
+// .button-colorize(@color)
+//
+// Creates button styling with the specified color.
+//
+// @color - Button color.
+//
+// Style guide: demo.mixins.button-colorize
+.button-colorize(@color) {
+  background-color:@color;
+  border:1px solid darken(@color, 20%);
+
+  text-shadow:0 2px 0 darken(@color, 10%);
+  box-shadow:0 3px 0 0 darken(@color, 30%), inset 0 1px 3px rgba(255,255,255,0.4);
+  background-image:-webkit-linear-gradient(top, rgba(255,255,255, 0.125) 0%, rgba(0,0,0, 0.125) 100%);
+}
