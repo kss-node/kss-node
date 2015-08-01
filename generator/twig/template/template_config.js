@@ -14,13 +14,13 @@ try {
   // must use the require('kss/generator/path') syntax (instead of requiring a
   // relative path). But, since this kss module has been git cloned and not
   // installed via npm, require('kss/anything') will always fail.
-  KssHandlebarsGenerator = require('kss/generator/handlebars');
+  KssTwigGenerator = require('kss/generator/twig');
 } catch (e) {
-  KssHandlebarsGenerator = require('../kss_handlebars_generator.js');
+  KssTwigGenerator = require('../kss_twig_generator.js');
 }
 
 // Tell kss-node which generator this template uses.
-module.exports.generator = KssHandlebarsGenerator;
+module.exports.generator = KssTwigGenerator;
 
 // Tell kss-node which Yargs options this template has.
 // See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
