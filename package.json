@@ -10,10 +10,9 @@
   "license": "(MIT OR GPL-2.0)",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "istanbul cover _mocha",
     "posttest": "eslint bin/kss-node .",
-    "docs": "make docs",
-    "coverage": "istanbul cover _mocha"
+    "docs": "make docs"
   },
   "bin": {
     "kss-node": "./bin/kss-node"
