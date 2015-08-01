@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/kss-node/kss-node.png?branch=master)](http://travis-ci.org/kss-node/kss-node)
+[![Build Status](https://secure.travis-ci.org/kss-node/kss-node.png?branch=master)](http://travis-ci.org/kss-node/kss-node) [![Coverage Status][coveralls-image]][coveralls-url]
 
 # kss-node
 

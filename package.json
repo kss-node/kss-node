@@ -12,6 +12,7 @@
   "scripts": {
     "test": "istanbul cover _mocha",
     "posttest": "eslint bin/kss-node .",
+    "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "docs": "make docs"
   },
   "bin": {
@@ -30,6 +31,7 @@
     "yargs": "^3.8.0"
   },
   "devDependencies": {
+    "coveralls": "^2.11.3",
     "eslint": "^0.23.0",
     "istanbul": "^0.3.17",
     "jsdoc": "^3.3.2",
