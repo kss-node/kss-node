@@ -59,55 +59,44 @@
   </nav>
 </div>
 
-<article role="main" class="kss-main">
+<div role="main" class="kss-main">
     {% if homepage %}
     <div id="kssref-0" class="kss-section kss-section--depth-0 kss-overview kss-style">
         {{ homepage|raw }}
     </div>
-    {% else %}
+    {% endif %}
 
-    {#
-    Display each section, in order.
+    {% if not homepage %}
+      {% for section in sections %}
+        <div id="kssref-{{ section.referenceURI }}" class="kss-section kss-section--depth-{{ section.depth }}">
+          <div class="kss-style">
+            <h{{ section.depth }} class="kss-title kss-title--level-{{ section.depth }}">
+              <a class="kss-title__permalink" href="#kssref-{{ section.referenceURI }}">
+                <span class="kss-title__ref">{{ section.reference }}</span>
+                {{ section.header }}
+                <span class="kss-title__permalink-hash">#permalink</span>
+              </a>
+            </h{{ section.depth }}>
 
-    The "root" element comes first in this loop, and can be detected using
-    the "#ifDepth 1" block as seen below.
-    #}
+            {% if section.parameters %}
+              <ul class="kss-parameters">
+                  {% for parameter in section.parameters %}
+                  <li class="kss-parameters__item">
+                      <code class="kss-parameters__name">{{ parameter.name }}</code>
+                      <div class="kss-parameters__description">{{ parameter.description }}</div>
+                  </li>
+                  {% endfor %}
+              </ul>
+            {% endif %}
 
-    {% for section in sections %}
-    {% if section.depth == 1 %}
-    <div     id="kssref-{{ section.referenceURI }}" class="kss-section kss-section--depth-{{ section.depth }}">
-        {% else %}
-        <section id="kssref-{{ section.referenceURI }}" class="kss-section kss-section--depth-{{ section.depth }}">
-            {% endif  %}
+            {% if section.description %}
+              <div class="kss-description">
+                  {{ section.description|raw }}
+              </div>
+            {% endif %}
+          </div>
 
-            <div class="kss-style">
-                <h{{ section.depth }} class="kss-title kss-title--level-{{ section.depth }}">
-                <a class="kss-title__permalink" href="#kssref-{{ section.referenceURI }}">
-          <span class="kss-title__ref">{{ section.reference }}</span
-                  >{{ section.header }}
-                    <span class="kss-title__permalink-hash">#permalink</span>
-                </a>
-                </h{{ section.depth }}>
-
-                {% if section.parameters %}
-                <ul class="kss-parameters">
-                    {% for parameter in section.parameters %}
-                    <li class="kss-parameters__item">
-                        <code class="kss-parameters__name">{{ parameter.name }}</code>
-                        <div class="kss-parameters__description">{{ parameter.description }}</div>
-                    </li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-
-                {% if section.description %}
-                <div class="kss-description">
-                    {{ section.description|raw }}
-                </div>
-                {% endif %}
-            </div>
-
-            {% if section.markup %}
+          {% if section.markup %}
             <div class="kss-modifier__wrapper">
                 <div class="kss-modifier__heading kss-style">
                     Example{% if section.modifiers %}s{% endif %}
@@ -134,18 +123,14 @@
             </div>
 
             <div class="kss-markup kss-style">
-                <pre class="prettyprint linenums lang-html"><code data-language="html">{{ section.markup|render|escape }}</code></pre>
-            </div>
-            {% endif %}
 
-            {% if section.depth == 1 %}
-    </div>
-    {% else %}
-    </section>
+                <pre class="prettyprint linenums lang-html">{{ partials[section.reference].markup|escape }}<code data-language="html"></code></pre>
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
     {% endif %}
-    {% endfor %}
-    {% endif %}
-</article>
+</div>
 
 <!-- SCRIPTS -->
 <script src="public/kss.js"></script>

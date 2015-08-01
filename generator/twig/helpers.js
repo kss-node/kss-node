@@ -3,12 +3,6 @@ var fs = require('fs');
 var path = require('path');
 
 module.exports.register = function(Twig, config) {
-
-  Twig.extendFunction("isReference", function(reference, options) {
-    return (this.reference && reference === this.reference) ? options.fn(this) : options.inverse(this);
-  });
-
-
   /*
    Compile the template on the fly for the examples section. This supports inline
    twig so we can do things like
@@ -51,7 +45,7 @@ module.exports.register = function(Twig, config) {
    {{ section.markup|render|raw }}
    Compile the template on the fly for the raw markup HTML.
    */
-  Twig.extendFilter("render", function(markup) {
+  Twig.extendFilter("render", function(reference) {
     var template = Twig.twig({
       data: markup,
       allowInlineIncludes: true,

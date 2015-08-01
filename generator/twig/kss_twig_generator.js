@@ -192,8 +192,10 @@ kssTwigGenerator.generate = function(styleguide) {
         partials[partial.reference] = this.Twig.twig({
           id: "template-" + partial.name,
           data: partial.markup,
-          variables: partial.data
+          variables: partial.data,
         });
+        partials[partial.reference].markup = partial.markup;
+
       } catch (err) {
         console.log("Couldn't create template. Duplicate template ID " + partial.name + ". What to do?");
       }
