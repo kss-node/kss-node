@@ -20,7 +20,8 @@ module.exports.register = function(Twig, config) {
     open: true,
     parse: function (token, context, chain) {
       var section = context.section || context.loop.parent.section;
-      var markup = section.markup;
+      var partial = context.loop.parent.partials[section.reference];
+      var markup = partial.markup;
       var className = context.modifier ? context.modifier.className : "";
 
       // Compile the template
@@ -41,19 +42,5 @@ module.exports.register = function(Twig, config) {
     }
   });
 
-  /*
-   {{ section.markup|render|raw }}
-   Compile the template on the fly for the raw markup HTML.
-   */
-  Twig.extendFilter("render", function(reference) {
-    var template = Twig.twig({
-      data: markup,
-      allowInlineIncludes: true,
-      async: false,
-      base: config.base
-    });
-    var params = { modifier_class: 'modifier_class' };
-    return template.render(params);
-  });
 
 };

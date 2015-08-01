@@ -139,6 +139,7 @@ kssTwigGenerator.generate = function(styleguide) {
 
   for (i = 0; i < sectionCount; i += 1) {
     // Register all the markup blocks as Twig partials.
+
     if (sections[i].markup()) {
       partial = {
         name: sections[i].reference(),
@@ -225,6 +226,7 @@ kssTwigGenerator.generate = function(styleguide) {
 
   // Generate the homepage.
   childSections = [];
+
   this.generatePage(styleguide, childSections, 'styleguide.homepage', sectionRoots, partials);
 };
 
