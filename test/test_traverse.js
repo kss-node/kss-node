@@ -30,8 +30,16 @@ describe('kss.traverse()', function() {
       });
     });
 
+    it('should function with an array of directories given', function(done) {
+      kss.traverse([testUtils.fixtures('with-include'), testUtils.fixtures('missing-homepage')], {}, function(err, styleguide) {
+        err.should.not.be.Error();
+        styleguide.data.files.length.should.equal(2);
+        done();
+      });
+    });
+
     it('should throw an error without a callback', function(done) {
-      (function() {kss.traverse(testUtils.fixtures(), {}); }).should.throw();
+      (function() {kss.traverse(testUtils.fixtures()); }).should.throw();
       done();
     });
   });
