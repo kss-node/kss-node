@@ -32,8 +32,26 @@ describe('KssStyleguide object API', function() {
   });
   /*eslint-enable guard-for-in,no-loop-func*/
 
-  describe('.section()', function() {
+  describe('KssStyleguide constructor', function() {
+    it('should initialize the data', function(done) {
+      var obj = new kss.KssStyleguide();
+      obj.should.have.property('referenceDelimiter');
+      obj.should.have.property('data');
+      obj.data.should.have.property('weightMap');
+      obj.data.should.have.property('sections');
+      done();
+    });
 
+    it('should return a KssStyleguide object when called normally', function(done) {
+      /*eslint-disable new-cap*/
+      var obj = kss.KssStyleguide();
+      obj.should.be.an.Object().and.an.instanceof(kss.KssStyleguide);
+      done();
+      /*eslint-enable new-cap*/
+    });
+  });
+
+  describe('.section()', function() {
     context('given no arguments', function() {
       it('should return only referenced sections', function(done) {
         this.styleguide.section().map(function(section) {
@@ -210,6 +228,11 @@ describe('KssStyleguide object API', function() {
     });
 
     context('given regex queries', function() {
+      it('should return an empty array when query does not match', function(done) {
+        this.styleguide.section(/__does_not_match__.*/).should.be.Array().and.empty();
+        done();
+      });
+
       it('should return "4" and all levels of descendants when given /4.*/', function(done) {
         var results,
           expected = ['4', '4.1', '4.1.1', '4.1.1.1', '4.1.1.2', '4.1.2', '4.1.2.2'];
@@ -278,6 +301,54 @@ describe('KssStyleguide object API', function() {
         results.should.eql(expected);
         done();
       });
+    });
+  });
+
+  describe('.getWeight()', function() {
+    var expected = {
+      'beta - delta': [0, 0],
+      'beta - alpha': [0, 0],
+      'beta - beta': [0, 0],
+      'beta - epsilon': [0, 0],
+      'beta - gamma': [0, 0],
+      'beta': [0],
+      'beta - alpha - alpha': [0, 0, 0],
+      'gamma': [0],
+      'gamma - alpha': [0, 0],
+      'gamma - alpha - delta': [0, 0, -10000],
+      'gamma - alpha - gamma': [0, 0, -1000],
+      'gamma - alpha - beta': [0, 0, -100],
+      'gamma - alpha - alpha': [0, 0, -10],
+      'gamma - beta': [0, 0],
+      'gamma - gamma': [0, 1],
+      'gamma - delta': [0, 2],
+      'gamma - epsilon': [0, 0, 2],
+      'WordPhrases - Forms - Button': [0, 0, 0],
+      'WordPhrases - Base - Link': [0, 0, 0],
+      'WordPhrases - Components': [0, 0],
+      'WordPhrases - Components - Message box': [0, 0, 0],
+      'WordPhrases - Components - Tabs': [0, 0, 0],
+      'WordPhrases - Forms - Input field': [0, 0, 0]
+    };
+
+    it('should return the proper weight for each depth', function(done) {
+      var self = this;
+      this.styleguideWordPhrases.section().map(function(section) {
+        var ref = section.reference();
+        for (var i; i < expected[ref].length; i++) {
+          self.styleguideWordPhrases.getWeight(ref, i).should.equal(expected[ref][i]);
+        }
+      });
+      done();
+    });
+
+    it('should return the proper weight given no depth', function(done) {
+      var self = this;
+      this.styleguideWordPhrases.section().map(function(section) {
+        var ref = section.reference();
+        self.styleguideWordPhrases.getWeight(ref).should.equal(expected[ref][expected[ref].length - 1]);
+      });
+      done();
     });
   });
 });
