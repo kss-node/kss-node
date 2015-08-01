@@ -39,10 +39,10 @@ describe('KssSection object API', function() {
   /*eslint-enable guard-for-in,no-loop-func*/
 
   describe('KssSection constructor', function() {
-    it('should initalize the data', function(done) {
+    it('should initialize the data', function(done) {
       var obj = new kss.KssSection();
-      obj.should.have.property('data');
       obj.should.have.property('styleguide');
+      obj.should.have.property('data');
       obj.data.should.have.property('header');
       obj.data.should.have.property('description');
       obj.data.should.have.property('deprecated');
