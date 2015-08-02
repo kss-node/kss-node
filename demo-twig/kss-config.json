@@ -8,5 +8,6 @@
   ],
   "js": [],
   "homepage": "homepage.md",
-  "custom": "asdf"
+  "destination": "../styleguide-twig",
+  "title": "kss-node Style Guide"
 }

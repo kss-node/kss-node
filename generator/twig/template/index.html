@@ -29,12 +29,12 @@
           <span class="kss-nav__name">Overview</span>
         </a>
       </li>
-      {% for section in sections %}
+      {% for section in styleguide.data.sections %}
         {% if section.depth == 1 %}
           <li class="kss-nav__menu-item">
             <a href="section-{{section.referenceURI}}.html">
-              <span class="kss-nav__ref">{{section.autoincrement}}</span>
-              <span class="kss-nav__name">{{section.header}}</span>
+              <span class="kss-nav__ref">{{section.data.autoincrement}}</span>
+              <span class="kss-nav__name">{{section.data.header}}</span>
             </a>
 
             {% if section.reference == rootName %}
@@ -72,13 +72,13 @@
           <div class="kss-style">
             <h{{ section.depth }} class="kss-title kss-title--level-{{ section.depth }}">
               <a class="kss-title__permalink" href="#kssref-{{ section.referenceURI }}">
-                <span class="kss-title__ref">{{ section.reference }}</span>
+                <span class="kss-title__ref">{{ section.autoincrement }}</span>
                 {{ section.header }}
                 <span class="kss-title__permalink-hash">#permalink</span>
               </a>
             </h{{ section.depth }}>
 
-            {% if section.parameters %}
+            {% if section.parameters is not empty %}
               <ul class="kss-parameters">
                   {% for parameter in section.parameters %}
                   <li class="kss-parameters__item">
