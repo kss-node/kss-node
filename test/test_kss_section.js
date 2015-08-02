@@ -181,6 +181,11 @@ describe('KssSection object API', function() {
       });
       done();
     });
+
+    it('should replace all runs of non-word characters with a hyphen', function() {
+      var section = new kss.KssSection();
+      section.encodeReferenceURI('test - section - with.multiple.runs..of--non-word.characters').should.be.equal('test-section-with-multiple-runs-of--non-word-characters');
+    });
   });
 
   describe('.modifiers()', function() {
