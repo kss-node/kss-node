@@ -8,14 +8,15 @@
 // .disabled          - Dims the button to indicate it cannot be used.
 //
 // Styleguide 2.1.3.
-a.button.star{
-  background:#ddd;
+a.button.star {
+  background: #ddd;
 
-  &.star-given{
-
+  &.star-given {
+    // ...
   }
-  &.disabled{
-    ...
+
+  &.disabled {
+    // ...
   }
 }
 
@@ -27,13 +28,14 @@ a.button.star{
 // .disabled          - Dims the button to indicate it cannot be used.
 //
 // Styleguide 2.1.4.
-a.button.star{
-  background:#ddd;
+a.button.star {
+  background: #ddd;
 
-  &.star-given{
-
+  &.star-given {
+    // ...
   }
-  &.disabled{
-    ...
+
+  &.disabled {
+    // ...
   }
 }

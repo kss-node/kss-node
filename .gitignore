@@ -1,6 +1,7 @@
 # Exclude stuff specific to this project.
 node_modules
 /test/output
+coverage
 
 # Exclude IDE management files.
   # Eclipse

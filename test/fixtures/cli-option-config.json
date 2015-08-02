@@ -1,0 +1,6 @@
+{
+  "//"          : "A JSON comment",
+  "source"      : "with-include",
+  "destination" : "../output/nested",
+  "template"    : "template"
+}

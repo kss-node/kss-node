@@ -1,4 +1,5 @@
-[![Build Status](https://secure.travis-ci.org/kss-node/kss-node.png?branch=master)](http://travis-ci.org/kss-node/kss-node)
+[![Build Status](https://secure.travis-ci.org/kss-node/kss-node.png?branch=master)](http://travis-ci.org/kss-node/kss-node) [![Coverage Status](https://coveralls.io/repos/kss-node/kss-node/badge.svg?branch=master&service=github)](https://coveralls.io/github/kss-node/kss-node?branch=master)
+
 
 # kss-node
 
