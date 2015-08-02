@@ -181,13 +181,10 @@ describe('KssSection object API', function() {
       });
       done();
     });
-  });
 
-  describe('.referenceURI() changes all delimiters to dashes', function() {
-    it('should return data.referenceURI', function() {
-      var section = new kss.KssSection({});
-
-      section.encodeReferenceURI('test.section.with . depth@the-end').should.be.equal('test-section-with-depth-the-end');
+    it('should replace all runs of non-word characters with a hyphen', function() {
+      var section = new kss.KssSection();
+      section.encodeReferenceURI('test - section - with.multiple.runs..of--non-word.characters').should.be.equal('test-section-with-multiple-runs-of--non-word-characters');
     });
   });
 
