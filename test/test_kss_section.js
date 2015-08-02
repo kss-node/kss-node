@@ -188,6 +188,14 @@ describe('KssSection object API', function() {
     });
   });
 
+  describe('.referenceURI() changes all delimiters to dashes', function() {
+    it('should return data.referenceURI', function() {
+      var section = new kss.KssSection({});
+
+      section.encodeReferenceURI('test.section.with . depth@the-end').should.be.equal('test-section-with-depth-the-end');
+    });
+  });
+
   describe('.modifiers()', function() {
     it('should return data.modifiers', function(done) {
       this.styleguide.data.sections.map(function(section) {
