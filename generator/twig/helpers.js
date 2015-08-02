@@ -1,6 +1,6 @@
-var Kss = require(__dirname + '/../../lib/kss.js');
-var fs = require('fs');
-var path = require('path');
+/*eslint-disable camelcase*/
+
+'use strict';
 
 module.exports.register = function(Twig, config) {
   /*
@@ -9,20 +9,20 @@ module.exports.register = function(Twig, config) {
    ```
    // Markup:
    // <form>
-   // {% include "twig/components/_button.twig" %}
+   // {% include 'twig/components/_button.twig' %}
    // </form>
    ```
    */
   Twig.extendTag({
-    type: "markup",
+    type: 'markup',
     regex: /^markup$/,
-    next: [ ],
+    next: [],
     open: true,
-    parse: function (token, context, chain) {
+    parse: function(token, context) {
       var section = context.section || context.loop.parent.section;
       var partial = context.loop.parent.partials[section.reference];
       var markup = partial.markup;
-      var className = context.modifier ? context.modifier.className : "";
+      var className = context.modifier ? context.modifier.className : '';
 
       // Compile the template
       var template = Twig.twig({
@@ -32,7 +32,9 @@ module.exports.register = function(Twig, config) {
         base: config.base
       });
       // Our templates use classes[] and kss-node uses modifier_class, so set both.
-      var params = { modifier_class: className };
+      var params = {
+        modifier_class: className
+      };
       var output = template.render(params);
 
       return {

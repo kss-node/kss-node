@@ -11,7 +11,7 @@ var KssGenerator = require('../kss_generator.js'),
 
 // Pass a string to KssGenerator() to tell the system which API version is
 // implemented by KssTwigGenerator.
-var kssTwigGenerator = new KssGenerator('2.0', {
+var KssTwigGenerator = new KssGenerator('2.0', {
   'helpers': {
     string: true,
     path: true,
@@ -38,12 +38,9 @@ var kssTwigGenerator = new KssGenerator('2.0', {
  * requested style guide generation. The generator can use this information for
  * any necessary tasks before the KSS parsing of the source files.
  *
- * @alias module:kss/generator/handlebars.init
  * @param {Object} config Configuration object for the style guide generation.
  */
-kssTwigGenerator.init = function(config) {
-  var i, j, helper;
-
+KssTwigGenerator.init = function(config) {
   // Save the configuration parameters.
   this.config = config;
 
@@ -110,7 +107,7 @@ kssTwigGenerator.init = function(config) {
  *
  * @param {KssStyleguide} styleguide The KSS style guide in object format.
  */
-kssTwigGenerator.generate = function(styleguide) {
+KssTwigGenerator.generate = function(styleguide) {
   var sections = styleguide.section(),
     sectionCount = sections.length,
     sectionRoots = [],
@@ -194,12 +191,12 @@ kssTwigGenerator.generate = function(styleguide) {
         partials[partial.reference] = this.Twig.twig({
           id: partial.name,
           data: partial.markup,
-          variables: partial.data,
+          variables: partial.data
         });
         partials[partial.reference].markup = partial.markup;
 
       } catch (err) {
-        console.log("Couldn't create template. Duplicate template ID " + partial.name + ". What to do?");
+        console.log('Could not create template. Duplicate template ID ' + partial.name + '. What to do?');
       }
     }
 
@@ -235,14 +232,13 @@ kssTwigGenerator.generate = function(styleguide) {
 /**
  * Renders the twig template for a section and saves it to a file.
  *
- * @alias module:kss/generator/twig.generatePage
- * @param {KssStyleguide} styleguide The KSS style guide in object format.
+ * @param {kssStyleguide} styleguide The KSS style guide in object format.
  * @param {Array} sections An array of KssSection objects.
  * @param {string} root The current section's reference.
  * @param {Array} sectionRoots An array of section references for all sections at the root of the style guide.
  * @param {Object} partials A hash of the names and data of the registered Handlebars partials.
  */
-kssTwigGenerator.generatePage = function(styleguide, sections, root, sectionRoots, partials) {
+KssTwigGenerator.generatePage = function(styleguide, sections, root, sectionRoots, partials) {
   var filename = '', files,
     homepageText = false,
     styles = '',
@@ -318,6 +314,6 @@ kssTwigGenerator.generatePage = function(styleguide, sections, root, sectionRoot
   /*eslint-enable key-spacing*/
 };
 
-module.exports = kssTwigGenerator;
+module.exports = KssTwigGenerator;
 
 

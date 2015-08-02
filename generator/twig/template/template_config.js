@@ -6,7 +6,7 @@
 // either be named index.js or have its name set in the "main" property of the
 // template's package.json.
 
-var KssHandlebarsGenerator;
+var KssTwigGenerator;
 
 try {
   // This require() line will always fail while testing a git clone of this
