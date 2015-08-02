@@ -57,7 +57,7 @@ kssHandlebarsGenerator.init = function(config) {
 
   // Save the configuration parameters.
   this.config = config;
-
+  this.config.helpers = this.config.helpers || [];
   if (this.config.verbose) {
     console.log('');
     console.log('Generating your KSS style guide!');
@@ -261,6 +261,8 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
     homepageText = false,
     styles = '',
     scripts = '',
+    cssPath = '',
+    jsPath = '',
     customFields = this.config.custom,
     key;
 
@@ -270,15 +272,17 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
       console.log(' - homepage');
     }
     // Ensure homepageText is a non-false value.
-    for (key in this.config.source) {
+    if (fs.existsSync(this.config.homepage) && typeof this.config.homepage !== 'undefined') {
       if (!homepageText) {
         try {
-          files = glob.sync(this.config.source[key] + '/**/' + this.config.homepage);
+          files = glob.sync(this.config.homepage);
           if (files.length) {
             homepageText = ' ' + marked(fs.readFileSync(files[0], 'utf8'));
+            console.log('... parsing content from ' + this.config.homepage);
           }
         } catch (e) {
           // empty
+          console.log('There was an error reading the content in' + this.config.homepage);
         }
       }
     }
@@ -302,13 +306,15 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
   }
   // Create the HTML to load the optional CSS and JS.
   for (key in this.config.css) {
-    if (this.config.css.hasOwnProperty(key)) {
-      styles = styles + '<link rel="stylesheet" href="' + this.config.css[key] + '">\n';
+    if (typeof this.config.destination !== 'undefined') {
+      cssPath = path.relative(this.config.destination, this.config.css[key]);
+      styles = styles + '<link rel="stylesheet" href="' + cssPath + '">\n';
     }
   }
   for (key in this.config.js) {
-    if (this.config.js.hasOwnProperty(key)) {
-      scripts = scripts + '<script src="' + this.config.js[key] + '"></script>\n';
+    if (typeof this.config.destination !== 'undefined') {
+      jsPath = path.relative(this.config.destination, this.config.js[key]);
+      scripts = scripts + '<script src="' + jsPath + '"></script>\n';
     }
   }
 
