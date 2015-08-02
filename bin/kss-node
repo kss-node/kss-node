@@ -32,7 +32,7 @@ var generator,
       path      : true,
       multiple  : false,
       describe  : 'Use a custom template to build your style guide',
-      default   : path.relative(process.cwd(), path.join(__dirname, '../generator/twig/template'))
+      default   : path.relative(process.cwd(), path.join(__dirname, '../generator/handlebars/template'))
     },
 
     'mask': {
@@ -256,7 +256,7 @@ try {
 } catch (e) {
   // Templates don't have to load their own generator. If the template fails to
   // load a generator, we assume it wanted the default generator.
-  generator = require('../generator/twig');
+  generator = require('../generator/handlebars');
 }
 
 // Confirm this is a compatible generator.
