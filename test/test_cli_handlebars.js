@@ -20,7 +20,7 @@ describe('Handlebars template', function() {
     exec(
       'bin/kss-node test/fixtures/with-include test/output/nested --template test/fixtures/template --helpers test/fixtures/template/helpers',
       function(err, stdout) {
-        should.ifError(err);
+        should.not.exist(err);
         self.stdout = stdout;
         files = [
           'index',

@@ -205,7 +205,7 @@ describe('kss.parse()', function() {
 
         it('should do something, not sure what', function(done) {
           kss.parse(this.files, {}, function(err, styleguide) {
-            should.ifError(err);
+            should.not.exist(err);
             styleguide.section('all-by-itself').header().should.be.a.String().and.not.be.empty();
           });
           done();
@@ -383,7 +383,7 @@ describe('kss.parse()', function() {
       describe('.weight', function() {
         it('should correct an invalid weight', function(done) {
           kss.parse(this.files, {}, function(err, styleguide) {
-            should.ifError(err);
+            should.not.exist(err);
             styleguide.section('invalid-weight').weight().should.be.a.Number().and.equal(0);
           });
           done();

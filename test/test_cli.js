@@ -24,7 +24,7 @@ describe('Command Line Interface', function() {
     before(function(done) {
       var self = this;
       exec('bin/kss-node', function(err, stdout, stderr) {
-        should.ifError(err);
+        should.not.exist(err);
         self.stdout = stdout;
         self.stderr = stderr;
         done();
@@ -44,7 +44,7 @@ describe('Command Line Interface', function() {
       exec(
         'bin/kss-node --verbose --source ' + source + ' --destination test/output/nested',
         function(err, stdout) {
-          should.ifError(err);
+          should.not.exist(err);
           stdout.should.containEql('* KSS Source  : ' + source);
           stdout.should.containEql(successMessage);
           done();
@@ -57,6 +57,7 @@ describe('Command Line Interface', function() {
       exec(
         'bin/kss-node --verbose --source ' + source + ' --destination test/output/nested',
         function(err, stdout) {
+          should.exist(err);
           err.should.be.Error();
           stdout.should.containEql('* KSS Source  : ' + source);
           stdout.should.containEql('No KSS documentation discovered in source files.');
@@ -71,7 +72,7 @@ describe('Command Line Interface', function() {
       exec(
         'bin/kss-node --source ' + testUtils.fixtures('missing-homepage') + ' --destination test/output/nested',
         function(err, stdout) {
-          should.ifError(err);
+          should.not.exist(err);
           stdout.should.containEql(noHomepageWarning);
           stdout.should.containEql(successMessage);
           done();
@@ -85,7 +86,7 @@ describe('Command Line Interface', function() {
       exec(
         'bin/kss-node --verbose --source ' + source + ' --source ' + source2 + ' --destination test/output/nested',
         function(err, stdout) {
-          should.ifError(err);
+          should.not.exist(err);
           stdout.should.containEql('* KSS Source  : ' + source + ', ' + source2);
           stdout.should.containEql(successMessage);
           done();
@@ -101,7 +102,7 @@ describe('Command Line Interface', function() {
       exec(
         'bin/kss-node --verbose ' + source + ' --destination ' + destination,
         function(err, stdout) {
-          should.ifError(err);
+          should.not.exist(err);
           stdout.should.containEql('* Destination : ' + destination);
           done();
         }
@@ -114,9 +115,9 @@ describe('Command Line Interface', function() {
       exec(
         'bin/kss-node test/fixtures/with-include test/output/nested --template test/fixtures/template --custom custom --custom custom2',
         function(err) {
-          should.ifError(err);
+          should.not.exist(err);
           fs.readFile(path.join(__dirname, 'output/nested/section-4.html'), 'utf8', function(err2, data) {
-            should.ifError(err2);
+            should.not.exist(err2);
             data.should.containEql('"custom" property: This is the first custom property.');
             data.should.containEql('"custom2" property: This is the second custom property.');
             done();
@@ -131,7 +132,7 @@ describe('Command Line Interface', function() {
       exec(
         'bin/kss-node --config test/fixtures/cli-option-config.json',
         function(err, stdout) {
-          should.ifError(err);
+          should.not.exist(err);
           stdout.should.containEql(successMessage);
           done();
         }
