@@ -1,7 +1,8 @@
 'use strict';
 
 var path = require('path'),
-  kss = require('../index.js');
+  kss = require('../index.js'),
+  should = require('should');
 
 module.exports = {
 
@@ -16,7 +17,7 @@ module.exports = {
   // Simplifies usage of kss.traverse() in various tests.
   traverseFixtures: function(options, cb) {
     kss.traverse(this.fixtures(), options, function(err, styleguide) {
-      err.should.not.be.Error();
+      should.not.exist(err);
       styleguide.data.sections.should.be.ok();
       cb(styleguide);
     });

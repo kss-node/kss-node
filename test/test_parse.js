@@ -27,7 +27,7 @@ describe('kss.parse()', function() {
   describe('API validation checks', function() {
     it('should function with no options', function(done) {
       kss.parse(this.files, {}, function(err, styleguide) {
-        err.should.not.be.Error();
+        should.not.exist(err);
         styleguide.data.files.length.should.equal(4);
         done();
       });
@@ -35,7 +35,7 @@ describe('kss.parse()', function() {
 
     it('should function when given a string', function(done) {
       kss.parse('file contents', {}, function(err, styleguide) {
-        err.should.not.be.Error();
+        should.not.exist(err);
         styleguide.data.should.not.have.property('files');
         done();
       });

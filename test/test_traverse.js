@@ -4,13 +4,14 @@
 'use strict';
 
 var kss = require('../index.js'),
+  should = require('should'),
   testUtils = require('./testUtils');
 
 describe('kss.traverse()', function() {
   describe('API validation checks', function() {
     it('should function without options', function(done) {
       kss.traverse(testUtils.fixtures(), function(err, styleguide) {
-        err.should.not.be.Error();
+        should.not.exist(err);
         styleguide.data.files.length.should.equal(23);
         done();
       });
@@ -18,7 +19,7 @@ describe('kss.traverse()', function() {
 
     it('should function with options', function(done) {
       kss.traverse(testUtils.fixtures(), {}, function(err, styleguide) {
-        err.should.not.be.Error();
+        should.not.exist(err);
         styleguide.data.files.length.should.equal(23);
         done();
       });
@@ -26,7 +27,7 @@ describe('kss.traverse()', function() {
 
     it('should function with an array of directories given', function(done) {
       kss.traverse([testUtils.fixtures('with-include'), testUtils.fixtures('missing-homepage')], {}, function(err, styleguide) {
-        err.should.not.be.Error();
+        should.not.exist(err);
         styleguide.data.files.length.should.equal(2);
         done();
       });
