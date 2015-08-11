@@ -1,5 +1,6 @@
 {
   // http://eslint.org/docs/user-guide/configuring.html
+  "root": true,
   "extends": "eslint:recommended",
   "env": {
     "node": true

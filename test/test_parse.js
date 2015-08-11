@@ -1,4 +1,4 @@
-/* global describe,context,it,before,Buffer */
+/* global Buffer */
 /* eslint-disable max-nested-callbacks */
 
 'use strict';

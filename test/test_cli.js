@@ -1,4 +1,3 @@
-/* global describe,it,before,afterEach */
 /* eslint-disable max-nested-callbacks,no-regex-spaces */
 
 'use strict';

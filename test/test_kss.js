@@ -1,5 +1,3 @@
-/* global describe,it */
-
 'use strict';
 
 var kss = require('../index.js');

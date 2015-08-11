@@ -1,0 +1,6 @@
+{
+  // These configuration options override those in the root .eslintrc file.
+  "env": {
+    "mocha": true
+  }
+}

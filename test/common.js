@@ -1,5 +1,3 @@
-/* global before */
-
 'use strict';
 
 // Run this setup before any tests.
