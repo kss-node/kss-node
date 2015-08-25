@@ -105,6 +105,8 @@ module.exports.register = function(handlebars, config) {
   });
 
   /**
+   * Takes a range of numbers that the current section's depth must be within.
+   *
    * Equivalent to "if the current section is X levels deep". e.g:
    *
    * {{#ifDepth 1}}
@@ -113,8 +115,13 @@ module.exports.register = function(handlebars, config) {
    *    ANYTHING ELSE
    * {{/ifDepth}}
    */
-  handlebars.registerHelper('ifDepth', function(depth, options) {
-    return (this.depth && depth === this.depth) ? options.fn(this) : options.inverse(this);
+  handlebars.registerHelper('ifDepth', function(lowerBound, upperBound, options) {
+    // If only 1 parameter is passed, upper bound is the same as lower bound.
+    if (typeof options === 'undefined' || options === null) {
+      options = upperBound;
+      upperBound = lowerBound;
+    }
+    return (this.depth && this.depth >= lowerBound && this.depth <= upperBound) ? options.fn(this) : options.inverse(this);
   });
 
   /**
