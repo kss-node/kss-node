@@ -28,7 +28,8 @@
     "mkdirp": "^0.5.1",
     "natural": "^0.1.28",
     "wrench": "^1.5.8",
-    "yargs": "^3.8.0"
+    "yargs": "^3.8.0",
+    "twig": "0.8.2"
   },
   "devDependencies": {
     "coveralls": "^2.11.3",
@@ -36,7 +37,6 @@
     "istanbul": "^0.3.17",
     "jsdoc": "^3.3.2",
     "mocha": "^2.2.5",
-    "twig": "0.8.2",
     "should": "^7.0.1"
   },
   "homepage": "http://kss-node.github.io/kss-node"
