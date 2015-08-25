@@ -57,6 +57,7 @@ Options:
   --source        Source directory to parse for KSS comments            [string]
   --destination   Destination directory of generated style guide
                                                 [string] [default: "styleguide"]
+  --verbose       Display verbose details while generating
   --config, -c    Load the kss-node configuration from a json file
   --help, -h, -?  Show help
   --version       Show version number
@@ -70,6 +71,7 @@ Options for the default template:
                                           [string] [default: "[modifier class]"]
   --title         Title of the style guide
                                            [string] [default: "KSS Style Guide"]
+  --nav-depth     Limit the navigation to the depth specified       [default: 3]
 ```
 
 In order to parse your stylesheets containing KSS docs, you need to either specify a single directory as the first argument or you can specify one or more source directories with one or more `--source [directory]` flags.

@@ -27,10 +27,15 @@ module.exports.generator = KssHandlebarsGenerator;
 // Tell kss-node which Yargs options this template has.
 // See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
 module.exports.options = {
-  title: {
+  'title': {
     string: true,
     multiple: false,
     describe: 'Title of the style guide',
     default: 'KSS Style Guide'
+  },
+  'nav-depth': {
+    multiple: false,
+    describe: 'Limit the navigation to the depth specified',
+    default: 3
   }
 };
