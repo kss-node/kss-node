@@ -167,27 +167,7 @@
 
   @media screen and (min-width: 769px) {
     padding: 0;
-
-    /* Old browsers */
-    background: #eee;
-    /* FF3.6+ */
-    background: -webkit-linear-gradient(left, #eee, #e5e5e5 50%, #d7d7d7 100%) 20% 0 ~"/ 10px 1px" repeat-y,
-                -webkit-linear-gradient(left, #eee, #eee 20%, #fff 20%) 0 0 ~"/ 100% 1px";
-    /* Chrome, Safari4+ */
-    background:        -webkit-gradient(linear, left top, right top, color-stop(0%,#eee), color-stop(50%,#e5e5e5), color-stop(100%,#d7d7d7)) 20% 0 ~"/ 10px 1px" repeat-y,
-                       -webkit-gradient(linear, left top, right top, color-stop(0%,#eee), color-stop(20%,#eee), color-stop(20%,#fff)) 0 0 ~"/ 100% 1px";
-    /* Chrome10+, Safari5.1+ */
-    background: -webkit-linear-gradient(to right, #eee, #e5e5e5 50%, #d7d7d7 100%) 20% 0 ~"/ 10px 1px" repeat-y,
-                -webkit-linear-gradient(to right, #eee, #eee 20%, #fff 20%) 0 0 ~"/ 100% 1px";
-    /* Opera 11.10+ */
-    background:      -o-linear-gradient(to right, #eee, #e5e5e5 50%, #d7d7d7 100%) 20% 0 ~"/ 10px 1px" repeat-y,
-                     -o-linear-gradient(to right, #eee, #eee 20%, #fff 20%) 0 0 ~"/ 100% 1px";
-    /* IE10+ */
-    background:     -ms-linear-gradient(to right, #eee, #e5e5e5 50%, #d7d7d7 100%) 20% 0 ~"/ 10px 1px" repeat-y,
-                    -ms-linear-gradient(to right, #eee, #eee 20%, #fff 20%) 0 0 ~"/ 100% 1px";
-    /* W3C */
-    background:         linear-gradient(to right, #eee, #e5e5e5 50%, #d7d7d7 100%) 20% 0 ~"/ 10px 1px" repeat-y,
-                        linear-gradient(to right, #eee, #eee 20%, #fff 20%) 0 0 ~"/ 100% 1px";
+    background: #fff;
 
     .kss-main,
     .kss-sidebar {
@@ -218,7 +198,11 @@
       overflow: auto;
       padding: 0 10px 0 20px;
       border-bottom: 0;
-    }
+      background-image: url(noise-low.png), -webkit-radial-gradient(#fff, #eee);
+      background-image: url(noise-low.png), -o-radial-gradient(#fff, #eee);
+      background-image: url(noise-low.png), -ms-radial-gradient(#fff, #eee);
+      background-image: url(noise-low.png), radial-gradient(#fff, #eee);
+      box-shadow: inset -10px 0px 10px -10px rgba(0,0,0,0.7)    }
   }
 }
 
@@ -293,7 +277,7 @@
       content: ' ';
     }
   }
-  .kss-nav__menu-child .kss-nav__ref {
+  .kss-nav__ref-child {
     font-weight: normal;
   }
 }
