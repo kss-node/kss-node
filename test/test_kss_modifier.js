@@ -2,14 +2,10 @@
 
 'use strict';
 
-var kss = require('../index.js'),
-  testUtils = require('./testUtils');
-
-
 describe('KssModifier object API', function() {
   before(function(done) {
     var self = this;
-    testUtils.traverseFixtures({mask: '*.less|*.css'}, function(styleguide) {
+    helperUtils.traverseFixtures({mask: '*.less|*.css'}, function(styleguide) {
       self.styleguide = styleguide;
       done();
     });
@@ -23,7 +19,7 @@ describe('KssModifier object API', function() {
     'markup'
   ].forEach(function(method) {
     it('has ' + method + '() method', function(done) {
-      (new kss.KssModifier({})).should.have.method(method);
+      (new kss.KssModifier({})).should.respondTo(method);
       done();
     });
   });
@@ -43,7 +39,7 @@ describe('KssModifier object API', function() {
     it('should return a KssModifier object when called normally', function(done) {
       /* eslint-disable new-cap */
       var obj = kss.KssModifier();
-      obj.should.be.an.Object().and.an.instanceof(kss.KssModifier);
+      obj.should.be.an.instanceof(kss.KssModifier);
       done();
       /* eslint-enable new-cap */
     });
@@ -94,7 +90,7 @@ describe('KssModifier object API', function() {
 
     it('should return false if it does not have a class name', function(done) {
       var modifier = new kss.KssModifier();
-      modifier.className().should.be.false();
+      modifier.className().should.be.false;
       done();
     });
   });
@@ -115,13 +111,13 @@ describe('KssModifier object API', function() {
     it('should return empty string if it does not have any associated markup', function(done) {
       var modifier = new kss.KssModifier();
       modifier.data.section = new kss.KssSection();
-      modifier.markup().should.be.String().and.be.empty();
+      modifier.markup().should.be.string('');
       done();
     });
 
     it('should return empty string if it does not have an associated kssSection', function(done) {
       var modifier = new kss.KssModifier();
-      modifier.markup().should.be.String().and.be.empty();
+      modifier.markup().should.be.string('');
       done();
     });
   });

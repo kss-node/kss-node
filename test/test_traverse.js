@@ -2,38 +2,34 @@
 
 'use strict';
 
-var kss = require('../index.js'),
-  should = require('should'),
-  testUtils = require('./testUtils');
-
 describe('kss.traverse()', function() {
   describe('API validation checks', function() {
     it('should function without options', function(done) {
-      kss.traverse(testUtils.fixtures(), function(err, styleguide) {
+      kss.traverse(helperUtils.fixtures(), function(err, styleguide) {
         should.not.exist(err);
-        styleguide.data.files.length.should.equal(23);
+        styleguide.data.files.should.have.length(23);
         done();
       });
     });
 
     it('should function with options', function(done) {
-      kss.traverse(testUtils.fixtures(), {}, function(err, styleguide) {
+      kss.traverse(helperUtils.fixtures(), {}, function(err, styleguide) {
         should.not.exist(err);
-        styleguide.data.files.length.should.equal(23);
+        styleguide.data.files.should.have.length(23);
         done();
       });
     });
 
     it('should function with an array of directories given', function(done) {
-      kss.traverse([testUtils.fixtures('with-include'), testUtils.fixtures('missing-homepage')], {}, function(err, styleguide) {
+      kss.traverse([helperUtils.fixtures('with-include'), helperUtils.fixtures('missing-homepage')], {}, function(err, styleguide) {
         should.not.exist(err);
-        styleguide.data.files.length.should.equal(2);
+        styleguide.data.files.should.have.length(2);
         done();
       });
     });
 
     it('should throw an error without a callback', function(done) {
-      (function() {kss.traverse(testUtils.fixtures()); }).should.throw();
+      (function() {kss.traverse(helperUtils.fixtures()); }).should.throw();
       done();
     });
   });
@@ -44,42 +40,42 @@ describe('kss.traverse()', function() {
       describe('default mask', function() {
         before(function(done) {
           var self = this;
-          testUtils.traverseFixtures({}, function(styleguide) {
+          helperUtils.traverseFixtures({}, function(styleguide) {
             self.styleguide = styleguide;
             done();
           });
         });
 
         it('should find file file-type.css', function(done) {
-          this.styleguide.should.containFile('file-type.css');
+          this.styleguide.should.containFixture('file-type.css');
           done();
         });
         it('should find file file-type.less', function(done) {
-          this.styleguide.should.containFile('file-type.less');
+          this.styleguide.should.containFixture('file-type.less');
           done();
         });
         it('should find file file-type.stylus', function(done) {
-          this.styleguide.should.containFile('file-type.stylus');
+          this.styleguide.should.containFixture('file-type.stylus');
           done();
         });
         it('should find file file-type.styl', function(done) {
-          this.styleguide.should.containFile('file-type.styl');
+          this.styleguide.should.containFixture('file-type.styl');
           done();
         });
         it('should find file file-type.sass', function(done) {
-          this.styleguide.should.containFile('file-type.sass');
+          this.styleguide.should.containFixture('file-type.sass');
           done();
         });
         it('should find file file-type.scss', function(done) {
-          this.styleguide.should.containFile('file-type.scss');
+          this.styleguide.should.containFixture('file-type.scss');
           done();
         });
         it('should find file includes/buttons.less', function(done) {
-          this.styleguide.should.containFile('includes/buttons.less');
+          this.styleguide.should.containFixture('includes/buttons.less');
           done();
         });
-        it('should find not file includes/buttons.js', function(done) {
-          this.styleguide.should.not.containFile('includes/buttons.js');
+        it('should not find file includes/buttons.js', function(done) {
+          this.styleguide.should.not.containFixture('includes/buttons.js');
           done();
         });
       });
@@ -87,22 +83,22 @@ describe('kss.traverse()', function() {
       describe('/\\.js/ (regex)', function() {
         before(function(done) {
           var self = this;
-          testUtils.traverseFixtures({mask: /\.js/}, function(styleguide) {
+          helperUtils.traverseFixtures({mask: /\.js/}, function(styleguide) {
             self.styleguide = styleguide;
             done();
           });
         });
 
         it('should find file includes/buttons.js', function(done) {
-          this.styleguide.should.containFile('includes/buttons.js');
+          this.styleguide.should.containFixture('includes/buttons.js');
           done();
         });
         it('should find file includes/buttons.less', function(done) {
-          this.styleguide.should.not.containFile('includes/buttons.less');
+          this.styleguide.should.not.containFixture('includes/buttons.less');
           done();
         });
         it('should find file style.css', function(done) {
-          this.styleguide.should.not.containFile('file-type.css');
+          this.styleguide.should.not.containFixture('file-type.css');
           done();
         });
       });
@@ -110,22 +106,22 @@ describe('kss.traverse()', function() {
       describe("'*.js' (string)", function() {
         before(function(done) {
           var self = this;
-          testUtils.traverseFixtures({mask: '*.js'}, function(styleguide) {
+          helperUtils.traverseFixtures({mask: '*.js'}, function(styleguide) {
             self.styleguide = styleguide;
             done();
           });
         });
 
         it('should find file includes/buttons.js', function(done) {
-          this.styleguide.should.containFile('includes/buttons.js');
+          this.styleguide.should.containFixture('includes/buttons.js');
           done();
         });
         it('should find file includes/buttons.less', function(done) {
-          this.styleguide.should.not.containFile('includes/buttons.less');
+          this.styleguide.should.not.containFixture('includes/buttons.less');
           done();
         });
         it('should find file style.css', function(done) {
-          this.styleguide.should.not.containFile('file-type.css');
+          this.styleguide.should.not.containFixture('file-type.css');
           done();
         });
       });
@@ -133,22 +129,22 @@ describe('kss.traverse()', function() {
       describe('/\.js|\.less|\.css/ (regex)', function() {
         before(function(done) {
           var self = this;
-          testUtils.traverseFixtures({mask: /\.js|\.less|\.css/}, function(styleguide) {
+          helperUtils.traverseFixtures({mask: /\.js|\.less|\.css/}, function(styleguide) {
             self.styleguide = styleguide;
             done();
           });
         });
 
         it('should find file includes/buttons.js', function(done) {
-          this.styleguide.should.containFile('includes/buttons.js');
+          this.styleguide.should.containFixture('includes/buttons.js');
           done();
         });
         it('should find file includes/buttons.less', function(done) {
-          this.styleguide.should.containFile('includes/buttons.less');
+          this.styleguide.should.containFixture('includes/buttons.less');
           done();
         });
         it('should find file style.css', function(done) {
-          this.styleguide.should.containFile('file-type.css');
+          this.styleguide.should.containFixture('file-type.css');
           done();
         });
       });
@@ -156,22 +152,22 @@ describe('kss.traverse()', function() {
       describe("'*.js|*.less|*.css' (string)", function() {
         before(function(done) {
           var self = this;
-          testUtils.traverseFixtures({mask: '*.js|*.less|*.css'}, function(styleguide) {
+          helperUtils.traverseFixtures({mask: '*.js|*.less|*.css'}, function(styleguide) {
             self.styleguide = styleguide;
             done();
           });
         });
 
         it('should find file includes/buttons.js', function(done) {
-          this.styleguide.should.containFile('includes/buttons.js');
+          this.styleguide.should.containFixture('includes/buttons.js');
           done();
         });
         it('should find file includes/buttons.less', function(done) {
-          this.styleguide.should.containFile('includes/buttons.less');
+          this.styleguide.should.containFixture('includes/buttons.less');
           done();
         });
         it('should find file style.css', function(done) {
-          this.styleguide.should.containFile('file-type.css');
+          this.styleguide.should.containFixture('file-type.css');
           done();
         });
       });

@@ -2,15 +2,12 @@
 
 'use strict';
 
-var kss = require('../index.js'),
-  testUtils = require('./testUtils');
-
 var custom = ['custom', 'custom2', 'custom property'];
 
 describe('KssSection object API', function() {
   before(function(done) {
     var self = this;
-    testUtils.traverseFixtures({mask: '*.less|*.css', custom: custom}, function(styleguide) {
+    helperUtils.traverseFixtures({mask: '*.less|*.css', custom: custom}, function(styleguide) {
       self.styleguide = styleguide;
       done();
     });
@@ -30,7 +27,7 @@ describe('KssSection object API', function() {
     'parameters'
   ].forEach(function(method) {
     it('has ' + method + '() method', function(done) {
-      (new kss.KssSection()).should.have.method(method);
+      (new kss.KssSection()).should.respondTo(method);
       done();
     });
   });
@@ -58,7 +55,7 @@ describe('KssSection object API', function() {
     it('should return a KssSection object when called normally', function(done) {
       /* eslint-disable new-cap */
       var obj = kss.KssSection();
-      obj.should.be.an.Object().and.an.instanceof(kss.KssSection);
+      obj.should.be.an.instanceof(kss.KssSection);
       done();
       /* eslint-enable new-cap */
     });
@@ -68,12 +65,12 @@ describe('KssSection object API', function() {
     it('should return valid JSON object', function(done) {
       this.styleguide.data.sections.map(function(section) {
         var str;
-        section.toJSON().should.be.an.Object();
+        section.toJSON().should.be.an.instanceOf(Object);
         // Verify it converts to a JSON string.
         (function() {
           str = JSON.stringify(section.toJSON());
         }).should.not.throw();
-        str.should.be.String();
+        str.should.be.string;
         // Compare JSON string to original.
         JSON.parse(str).should.eql(section.toJSON());
       });
@@ -83,12 +80,12 @@ describe('KssSection object API', function() {
     it('should return custom properties given array of property names', function(done) {
       this.styleguide.data.sections.map(function(section) {
         var str;
-        section.toJSON(custom).should.be.an.Object();
+        section.toJSON(custom).should.be.an.instanceOf(Object);
         // Verify it converts to a JSON string.
         (function() {
           str = JSON.stringify(section.toJSON(custom));
         }).should.not.throw();
-        str.should.be.String();
+        str.should.be.string;
         // Compare JSON string to original.
         JSON.parse(str).should.eql(section.toJSON(custom));
       });
@@ -146,7 +143,7 @@ describe('KssSection object API', function() {
       this.styleguide.data.sections.map(function(section) {
         section.depth().should.be.equal(section.data.depth);
         section.depth().should.be.equal(section.reference().split(section.styleguide.referenceDelimiter).length);
-        section.depth().should.be.a.Number();
+        section.depth().should.be.at.least(0);
       });
       done();
     });
@@ -156,7 +153,7 @@ describe('KssSection object API', function() {
     it('should return data.weight', function(done) {
       this.styleguide.data.sections.map(function(section) {
         section.weight().should.be.equal(section.data.weight ? section.data.weight : 0);
-        section.weight().should.be.a.Number();
+        section.weight().should.be.at.least(-100000);
       });
       done();
     });
@@ -217,7 +214,7 @@ describe('KssSection object API', function() {
 
     it('should return false if number is not found', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        section.modifiers(section.data.modifiers.length + 1).should.be.false();
+        section.modifiers(section.data.modifiers.length + 1).should.be.false;
       });
       done();
     });
@@ -243,7 +240,7 @@ describe('KssSection object API', function() {
 
     it('should return false if name not found', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        section.modifiers('__should_not_find___').should.be.false();
+        section.modifiers('__should_not_find___').should.be.false;
       });
       done();
     });
@@ -255,7 +252,7 @@ describe('KssSection object API', function() {
         if (section.data.modifiers.length) {
           section.firstModifier().should.be.equal(section.modifiers(0));
         } else {
-          section.firstModifier().should.be.false();
+          section.firstModifier().should.be.false;
         }
       });
       done();

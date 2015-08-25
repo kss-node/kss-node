@@ -3,15 +3,8 @@
 
 'use strict';
 
-var kss = require('../index.js'),
-  should = require('should'),
-  testUtils = require('./testUtils'),
-  fs = require('fs'),
-  marked = require('marked'),
-  /* eslint-disable no-unused-vars */
-  // path will load the Buffer class.
-  path = require('path');
-  /* eslint-enable no-unused-vars */
+var fs = require('fs'),
+  marked = require('marked');
 
 describe('kss.parse()', function() {
   before(function(done) {
@@ -45,7 +38,7 @@ describe('kss.parse()', function() {
   describe('given different comment syntax:', function() {
     before(function(done) {
       var self = this;
-      testUtils.traverseFixtures({mask: 'sections-comment-syntax.less'}, function(styleguide) {
+      helperUtils.traverseFixtures({mask: 'sections-comment-syntax.less'}, function(styleguide) {
         self.styleguide = styleguide;
         done();
       });
@@ -95,9 +88,9 @@ describe('kss.parse()', function() {
   context('returns styleguide.data', function() {
     describe('.files:', function() {
       it('should reflect files found', function(done) {
-        testUtils.traverseFixtures({mask: /.*/g}, function(styleguide) {
-          styleguide.data.should.be.an.Object();
-          styleguide.data.files.should.be.an.Array();
+        helperUtils.traverseFixtures({mask: /.*/g}, function(styleguide) {
+          styleguide.data.should.be.an.instanceOf(Object);
+          styleguide.data.files.should.be.an.instanceOf(Array);
           styleguide.data.files.length.should.equal(31);
           done();
         });
@@ -106,9 +99,9 @@ describe('kss.parse()', function() {
 
     describe('.body:', function() {
       it('should be a string', function(done) {
-        testUtils.traverseFixtures({}, function(styleguide) {
+        helperUtils.traverseFixtures({}, function(styleguide) {
           styleguide.data.body.should.not.be.instanceof(Buffer);
-          styleguide.data.body.should.be.String();
+          styleguide.data.body.should.be.string;
           done();
         });
       });
@@ -116,7 +109,7 @@ describe('kss.parse()', function() {
       it('contains contents of all found files', function(done) {
         var fileReader, fileCounter, sg;
 
-        testUtils.traverseFixtures({}, function(styleguide) {
+        helperUtils.traverseFixtures({}, function(styleguide) {
           sg = styleguide;
           fileCounter = styleguide.data.files.length;
           styleguide.data.files.map(function(file) {
@@ -129,7 +122,7 @@ describe('kss.parse()', function() {
             throw err;
           }
 
-          sg.data.body.should.containEql(data);
+          sg.data.body.should.include(data);
           fileCounter -= 1;
           if (!fileCounter) {
             done();
@@ -142,7 +135,7 @@ describe('kss.parse()', function() {
       describe('.raw', function() {
         before(function(done) {
           var self = this;
-          testUtils.traverseFixtures({}, function(styleguide) {
+          helperUtils.traverseFixtures({}, function(styleguide) {
             self.styleguide = styleguide;
             done();
           });
@@ -153,7 +146,7 @@ describe('kss.parse()', function() {
             filteredBody = data.body.replace(/\/\/|\/\*+|\*\/|\s|\*/g, '');
 
           data.sections.map(function(section) {
-            filteredBody.should.containEql(section.data.raw.replace(/\s|\*/g, ''));
+            filteredBody.should.include(section.data.raw.replace(/\s|\*/g, ''));
           });
         });
       });
@@ -161,7 +154,7 @@ describe('kss.parse()', function() {
       describe('.header / .description', function() {
         before(function(done) {
           var self = this;
-          testUtils.traverseFixtures({mask: 'property-header.less', markdown: false}, function(styleguide) {
+          helperUtils.traverseFixtures({mask: 'property-header.less', markdown: false}, function(styleguide) {
             self.styleguide = styleguide;
             done();
           });
@@ -206,7 +199,7 @@ describe('kss.parse()', function() {
         it('should do something, not sure what', function(done) {
           kss.parse(this.files, {}, function(err, styleguide) {
             should.not.exist(err);
-            styleguide.section('all-by-itself').header().should.be.a.String().and.not.be.empty();
+            styleguide.section('all-by-itself').header().should.be.string('');
           });
           done();
         });
@@ -215,7 +208,7 @@ describe('kss.parse()', function() {
       describe('.modifiers', function() {
         before(function(done) {
           var self = this;
-          testUtils.traverseFixtures({mask: 'property-modifiers.less', markdown: false}, function(styleguide) {
+          helperUtils.traverseFixtures({mask: 'property-modifiers.less', markdown: false}, function(styleguide) {
             self.styleguide = styleguide;
             done();
           });
@@ -313,7 +306,7 @@ describe('kss.parse()', function() {
 
         describe('.data.className', function() {
           it('should convert pseudo-class to KSS-style .pseudo-class-[name]', function(done) {
-            testUtils.traverseFixtures({mask: '*.less|*.css'}, function(styleguide) {
+            helperUtils.traverseFixtures({mask: '*.less|*.css'}, function(styleguide) {
               styleguide.data.sections.map(function(section) {
                 section.data.modifiers.map(function(modifier) {
                   modifier.data.name.replace(/\:/g, '.pseudo-class-').should.equal(modifier.data.className);
@@ -328,52 +321,52 @@ describe('kss.parse()', function() {
       describe('.deprecated/.experimental', function() {
         before(function(done) {
           var self = this;
-          testUtils.traverseFixtures({mask: 'property-deprecated-experimental.less', markdown: false, multiline: true}, function(styleguide) {
+          helperUtils.traverseFixtures({mask: 'property-deprecated-experimental.less', markdown: false, multiline: true}, function(styleguide) {
             self.styleguide = styleguide;
             done();
           });
         });
 
         it('should find with space above and below', function(done) {
-          this.styleguide.section('deprecated.spacing').data.deprecated.should.be.true();
-          this.styleguide.section('experimental.spacing').data.experimental.should.be.true();
+          this.styleguide.section('deprecated.spacing').data.deprecated.should.be.true;
+          this.styleguide.section('experimental.spacing').data.experimental.should.be.true;
           done();
         });
 
         it('should find indented', function(done) {
-          this.styleguide.section('deprecated.indented').data.deprecated.should.be.true();
-          this.styleguide.section('experimental.indented').data.experimental.should.be.true();
+          this.styleguide.section('deprecated.indented').data.deprecated.should.be.true;
+          this.styleguide.section('experimental.indented').data.experimental.should.be.true;
           done();
         });
 
         it('should find in header', function(done) {
-          this.styleguide.section('deprecated.in-header').data.deprecated.should.be.true();
-          this.styleguide.section('experimental.in-header').data.experimental.should.be.true();
+          this.styleguide.section('deprecated.in-header').data.deprecated.should.be.true;
+          this.styleguide.section('experimental.in-header').data.experimental.should.be.true;
           done();
         });
 
         it('should find in description', function(done) {
-          this.styleguide.section('deprecated.in-paragraph').data.deprecated.should.be.true();
-          this.styleguide.section('experimental.in-paragraph').data.experimental.should.be.true();
+          this.styleguide.section('deprecated.in-paragraph').data.deprecated.should.be.true;
+          this.styleguide.section('experimental.in-paragraph').data.experimental.should.be.true;
           done();
         });
 
         it('should not find in modifiers', function(done) {
-          this.styleguide.section('deprecated.in-modifier').data.deprecated.should.be.false();
-          this.styleguide.section('experimental.in-modifier').data.experimental.should.be.false();
+          this.styleguide.section('deprecated.in-modifier').data.deprecated.should.be.false;
+          this.styleguide.section('experimental.in-modifier').data.experimental.should.be.false;
           done();
         });
 
         it('should not find when not at the beginning of a line', function(done) {
-          this.styleguide.section('deprecated.not-at-beginning').data.deprecated.should.be.false();
-          this.styleguide.section('experimental.not-at-beginning').data.experimental.should.be.false();
+          this.styleguide.section('deprecated.not-at-beginning').data.deprecated.should.be.false;
+          this.styleguide.section('experimental.not-at-beginning').data.experimental.should.be.false;
           done();
         });
       });
 
       describe('.reference', function() {
         it('should find reference "X.0" without trailing zero', function(done) {
-          testUtils.traverseFixtures({mask: 'sections-queries.less', multiline: true}, function(styleguide) {
+          helperUtils.traverseFixtures({mask: 'sections-queries.less', multiline: true}, function(styleguide) {
             styleguide.section(/8.*/)[0].data.reference.should.equal('8');
             done();
           });
@@ -384,7 +377,7 @@ describe('kss.parse()', function() {
         it('should correct an invalid weight', function(done) {
           kss.parse(this.files, {}, function(err, styleguide) {
             should.not.exist(err);
-            styleguide.section('invalid-weight').weight().should.be.a.Number().and.equal(0);
+            styleguide.section('invalid-weight').weight().should.equal(0);
           });
           done();
         });
@@ -396,7 +389,7 @@ describe('kss.parse()', function() {
     describe('.custom', function() {
       before(function(done) {
         var self = this;
-        testUtils.traverseFixtures({
+        helperUtils.traverseFixtures({
           mask: 'options-custom.less',
           markdown: false,
           custom: ['custom', 'custom property', 'custom2']
@@ -436,7 +429,7 @@ describe('kss.parse()', function() {
     describe('.markup', function() {
       before(function(done) {
         var self = this;
-        testUtils.traverseFixtures({mask: 'property-markup.less', markdown: false}, function(styleguide) {
+        helperUtils.traverseFixtures({mask: 'property-markup.less', markdown: false}, function(styleguide) {
           self.styleguide = styleguide;
           done();
         });
@@ -468,13 +461,13 @@ describe('kss.parse()', function() {
 
     describe('.markdown:', function() {
       it('should be enabled by default', function(done) {
-        testUtils.traverseFixtures({mask: 'property-header.less'}, function(styleguide) {
+        helperUtils.traverseFixtures({mask: 'property-header.less'}, function(styleguide) {
           styleguide.section('header.three-paragraphs').data.description.should.equal(marked('ANOTHER PARAGRAPH\n\nAND ANOTHER'));
           done();
         });
       });
       it('should not add HTML when disabled', function(done) {
-        testUtils.traverseFixtures({mask: 'property-header.less', markdown: false}, function(styleguide) {
+        helperUtils.traverseFixtures({mask: 'property-header.less', markdown: false}, function(styleguide) {
           styleguide.section('header.three-paragraphs').data.description.should.equal('ANOTHER PARAGRAPH\n\nAND ANOTHER');
           done();
         });
@@ -483,14 +476,14 @@ describe('kss.parse()', function() {
 
     describe('.multiline:', function() {
       it('should be enabled by default', function(done) {
-        testUtils.traverseFixtures({mask: 'property-header.less', markdown: false}, function(styleguide) {
+        helperUtils.traverseFixtures({mask: 'property-header.less', markdown: false}, function(styleguide) {
           styleguide.section('header.three-paragraphs').data.description.should.equal('ANOTHER PARAGRAPH\n\nAND ANOTHER');
           done();
         });
       });
 
       it('should not remove the header from description when disabled', function(done) {
-        testUtils.traverseFixtures({mask: 'property-header.less', markdown: false, multiline: false}, function(styleguide) {
+        helperUtils.traverseFixtures({mask: 'property-header.less', markdown: false, multiline: false}, function(styleguide) {
           styleguide.section('header.three-paragraphs').data.description.should.equal('THREE PARAGRAPHS, NO MODIFIERS\n\nANOTHER PARAGRAPH\n\nAND ANOTHER');
           done();
         });
@@ -500,9 +493,9 @@ describe('kss.parse()', function() {
     describe('.typos:', function() {
       before(function(done) {
         var self = this;
-        testUtils.traverseFixtures({mask: 'options-typos.less', typos: true}, function(styleguide) {
+        helperUtils.traverseFixtures({mask: 'options-typos.less', typos: true}, function(styleguide) {
           self.styleguide = styleguide;
-          testUtils.traverseFixtures({mask: 'property-deprecated-experimental.less', typos: true}, function(styleguide2) {
+          helperUtils.traverseFixtures({mask: 'property-deprecated-experimental.less', typos: true}, function(styleguide2) {
             self.styleguide2 = styleguide2;
           });
           done();
@@ -526,7 +519,7 @@ describe('kss.parse()', function() {
         });
 
         it('should, but doesn\'t, find "Styelguide"', function(done) {
-          this.styleguide.section('typos.styelguide').should.be.false();
+          this.styleguide.section('typos.styelguide').should.be.false;
           done();
         });
 
@@ -538,34 +531,34 @@ describe('kss.parse()', function() {
 
       describe('Misspelt experimental', function() {
         it('should find correct spelling', function(done) {
-          this.styleguide2.section('experimental.in-paragraph').data.experimental.should.be.true();
+          this.styleguide2.section('experimental.in-paragraph').data.experimental.should.be.true;
           done();
         });
 
         it('should still not find when not at the beginning of a line', function(done) {
-          this.styleguide2.section('experimental.not-at-beginning').data.experimental.should.be.false();
+          this.styleguide2.section('experimental.not-at-beginning').data.experimental.should.be.false;
           done();
         });
 
         it('should find "experimentel"', function(done) {
-          this.styleguide.section('typos.experimentel').data.experimental.should.be.true();
+          this.styleguide.section('typos.experimentel').data.experimental.should.be.true;
           done();
         });
       });
 
       describe('Misspelt deprecated', function() {
         it('should find correct spelling', function(done) {
-          this.styleguide2.section('deprecated.in-paragraph').data.deprecated.should.be.true();
+          this.styleguide2.section('deprecated.in-paragraph').data.deprecated.should.be.true;
           done();
         });
 
         it('should still not find when not at the beginning of a line', function(done) {
-          this.styleguide2.section('deprecated.not-at-beginning').data.deprecated.should.be.false();
+          this.styleguide2.section('deprecated.not-at-beginning').data.deprecated.should.be.false;
           done();
         });
 
         it('should find "depricated"', function(done) {
-          this.styleguide.section('typos.depricated').data.deprecated.should.be.true();
+          this.styleguide.section('typos.depricated').data.deprecated.should.be.true;
           done();
         });
       });

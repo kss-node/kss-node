@@ -2,15 +2,12 @@
 
 'use strict';
 
-var kss = require('../index.js'),
-  testUtils = require('./testUtils');
-
 describe('KssStyleguide object API', function() {
   before(function(done) {
     var self = this;
-    testUtils.traverseFixtures({mask: /(sections\-queries|sections\-order|property\-styleguide\-word\-keys)\.less/}, function(styleguide) {
+    helperUtils.traverseFixtures({mask: /(sections\-queries|sections\-order|property\-styleguide\-word\-keys)\.less/}, function(styleguide) {
       self.styleguide = styleguide;
-      testUtils.traverseFixtures({mask: /.*\-word\-phrases\.less/}, function(styleguideWordPhrases) {
+      helperUtils.traverseFixtures({mask: /.*\-word\-phrases\.less/}, function(styleguideWordPhrases) {
         self.styleguideWordPhrases = styleguideWordPhrases;
         done();
       });
@@ -24,7 +21,7 @@ describe('KssStyleguide object API', function() {
     'getWeight'
   ].forEach(function(method) {
     it('has ' + method + '() method', function(done) {
-      (new kss.KssStyleguide({})).should.have.method(method);
+      (new kss.KssStyleguide({})).should.respondTo(method);
       done();
     });
   });
@@ -43,7 +40,7 @@ describe('KssStyleguide object API', function() {
     it('should return a KssStyleguide object when called normally', function(done) {
       /* eslint-disable new-cap */
       var obj = kss.KssStyleguide();
-      obj.should.be.an.Object().and.an.instanceof(kss.KssStyleguide);
+      obj.should.be.an.instanceof(kss.KssStyleguide);
       done();
       /* eslint-enable new-cap */
     });
@@ -103,7 +100,7 @@ describe('KssStyleguide object API', function() {
       });
 
       it('should not find a reference with depth 3 that does not exist', function(done) {
-        this.styleguide.section('4.1.3').should.be.false();
+        this.styleguide.section('4.1.3').should.be.false;
         done();
       });
 
@@ -174,14 +171,14 @@ describe('KssStyleguide object API', function() {
       });
 
       it('should not find "alpha" section when given a query for "alp.*"', function(done) {
-        this.styleguide.section('alp.*').should.be.Array();
-        this.styleguide.section('alp.*').length.should.equal(0);
+        this.styleguide.section('alp.*').should.be.an.instanceOf(Array);
+        this.styleguide.section('alp.*').should.have.length(0);
         done();
       });
 
       it('should not find "alpha" section when given a query for "alp.x"', function(done) {
-        this.styleguide.section('alp.x').should.be.Array();
-        this.styleguide.section('alp.x').length.should.equal(0);
+        this.styleguide.section('alp.x').should.be.an.instanceOf(Array);
+        this.styleguide.section('alp.x').should.have.length(0);
         done();
       });
 
@@ -227,7 +224,7 @@ describe('KssStyleguide object API', function() {
 
     context('given regex queries', function() {
       it('should return an empty array when query does not match', function(done) {
-        this.styleguide.section(/__does_not_match__.*/).should.be.Array().and.empty();
+        this.styleguide.section(/__does_not_match__.*/).should.be.an.instanceOf(Array).and.empty;
         done();
       });
 

@@ -2,5 +2,17 @@
   // These configuration options override those in the root .eslintrc file.
   "env": {
     "mocha": true
+  },
+  "globals": {
+    "chai": true,
+    "helperUtils": true,
+    "kss": true,
+    "path": true,
+    "should": true
+  },
+  "rules": {
+    // Disabled.
+    // Chai assertions are "unused" expressions.
+    "no-unused-expressions": 0
   }
 }

@@ -2,14 +2,10 @@
 
 'use strict';
 
-var kss = require('../index.js'),
-  testUtils = require('./testUtils');
-
-
 describe('KssParameter object API', function() {
   before(function(done) {
     var self = this;
-    testUtils.traverseFixtures({mask: '*.less|*.css'}, function(styleguide) {
+    helperUtils.traverseFixtures({mask: '*.less|*.css'}, function(styleguide) {
       self.styleguide = styleguide;
       done();
     });
@@ -21,7 +17,7 @@ describe('KssParameter object API', function() {
     'description'
   ].forEach(function(method) {
     it('has ' + method + '() method', function(done) {
-      (new kss.KssParameter({})).should.have.method(method);
+      (new kss.KssParameter({})).should.respondTo(method);
       done();
     });
   });
@@ -40,7 +36,7 @@ describe('KssParameter object API', function() {
     it('should return a KssParameter object when called normally', function(done) {
       /* eslint-disable new-cap */
       var obj = kss.KssParameter();
-      obj.should.be.an.Object().and.an.instanceof(kss.KssParameter);
+      obj.should.be.an.instanceof(kss.KssParameter);
       done();
       /* eslint-enable new-cap */
     });
