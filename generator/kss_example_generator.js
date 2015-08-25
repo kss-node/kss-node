@@ -22,7 +22,7 @@ var KssGenerator = require('kss/generator'),
 //
 // See the docs for KssGenerator() for info about its parameters.
 var kssExampleGenerator = new KssGenerator('2.0', {
-  'exampleoption': {
+  exampleoption: {
     alias: 'u',
     string: true,
     description: 'This is a custom command-line option used by this Generator.'

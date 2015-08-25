@@ -1,5 +1,5 @@
 // Remove after https://github.com/Constellation/doctrine/issues/100 is fixed.
-/*eslint-disable valid-jsdoc*/
+/* eslint-disable valid-jsdoc */
 
 'use strict';
 
@@ -23,18 +23,18 @@ var KssGenerator = require('../kss_generator.js'),
 // Pass a string to KssGenerator() to tell the system which API version is
 // implemented by kssHandlebarsGenerator.
 var kssHandlebarsGenerator = new KssGenerator('2.0', {
-  'helpers': {
+  helpers: {
     string: true,
     path: true,
     describe: 'Location of custom handlebars helpers; see http://bit.ly/kss-wiki'
   },
-  'homepage': {
+  homepage: {
     string: true,
     multiple: false,
     describe: 'File name of the homepage\'s Markdown file',
     default: 'styleguide.md'
   },
-  'placeholder': {
+  placeholder: {
     string: true,
     multiple: false,
     describe: 'Placeholder text to use for modifier classes',
@@ -313,7 +313,7 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
     }
   }
 
-  /*eslint-disable key-spacing*/
+  /* eslint-disable key-spacing */
   fs.writeFileSync(this.config.destination + '/' + filename,
     this.template({
       partials:     partials,
@@ -329,7 +329,7 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
       scripts:      scripts
     })
   );
-  /*eslint-enable key-spacing*/
+  /* eslint-enable key-spacing */
 };
 
 module.exports = kssHandlebarsGenerator;

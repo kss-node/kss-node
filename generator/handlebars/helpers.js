@@ -1,5 +1,5 @@
 // @TODO Re-enable this eslint rule.
-/*eslint-disable valid-jsdoc*/
+/* eslint-disable valid-jsdoc */
 
 'use strict';
 
@@ -208,7 +208,7 @@ module.exports.register = function(handlebars, config) {
 
     // Prepare the sample data for the partial.
     data = JSON.parse(JSON.stringify(partial.data));
-    /*eslint-disable camelcase*/
+    /* eslint-disable camelcase */
     if (data.modifier_class) {
       data.modifier_class += ' ';
     } else {
@@ -221,7 +221,7 @@ module.exports.register = function(handlebars, config) {
     } else if (section.firstModifier() !== false) {
       data.modifier_class += config.placeholder;
     }
-    /*eslint-enable camelcase*/
+    /* eslint-enable camelcase */
 
     // Compile the section's markup partial into a template.
     template = handlebars.compile('{{> "' + partial.name + '"}}');

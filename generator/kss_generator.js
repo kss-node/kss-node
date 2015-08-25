@@ -45,7 +45,7 @@ module.exports = KssGenerator = function(version, options) {
 
   // Store the version of the generator API that the generator instance is
   // expecting; we will verify this in checkGenerator().
-  this.instanceAPI = (typeof version === 'undefined') ? 'undefined' : version;
+  this.instanceAPI = typeof version === 'undefined' ? 'undefined' : version;
 
   // Tell kss-node which Yargs options this generator has.
   this.options = options || {};
@@ -95,7 +95,7 @@ KssGenerator.prototype.clone = function(templatePath, destinationPath) {
       throw error;
     }
   } catch (e) {
-    throw 'Error! This folder already exists: ' + destinationPath;
+    throw new Error('Error! This folder already exists: ' + destinationPath);
   }
 };
 
@@ -128,7 +128,7 @@ KssGenerator.prototype.parse = function(callback) {
     console.log('...Parsing your style guide:');
   }
 
-  /*eslint-disable key-spacing*/
+  /* eslint-disable key-spacing */
 
   // The default parse() method looks at the paths to the source folders and
   // uses KSS' traverse method to load, read and parse the source files. Other
@@ -147,10 +147,10 @@ KssGenerator.prototype.parse = function(callback) {
     callback(styleguide);
   });
 
-  /*eslint-enable key-spacing*/
+  /* eslint-enable key-spacing */
 };
 
-/*eslint-disable no-unused-vars*/
+/* eslint-disable no-unused-vars */
 
 /**
  * Generate the HTML files of the style guide given a KssStyleguide object.
@@ -165,4 +165,4 @@ KssGenerator.prototype.parse = function(callback) {
 KssGenerator.prototype.generate = function(styleguide) {
 };
 
-/*eslint-enable no-unused-vars*/
+/* eslint-enable no-unused-vars */

@@ -1,5 +1,5 @@
-/*global describe,it,before*/
-/*eslint-disable max-nested-callbacks*/
+/* global describe,it,before */
+/* eslint-disable max-nested-callbacks */
 
 'use strict';
 
@@ -17,9 +17,8 @@ describe('KssSection object API', function() {
     });
   });
 
-  /*eslint-disable guard-for-in,no-loop-func*/
-  [
-    'header',
+  /* eslint-disable guard-for-in,no-loop-func */
+  ['header',
     'description',
     'deprecated',
     'experimental',
@@ -36,7 +35,7 @@ describe('KssSection object API', function() {
       done();
     });
   });
-  /*eslint-enable guard-for-in,no-loop-func*/
+  /* eslint-enable guard-for-in,no-loop-func */
 
   describe('KssSection constructor', function() {
     it('should initialize the data', function(done) {
@@ -58,11 +57,11 @@ describe('KssSection object API', function() {
     });
 
     it('should return a KssSection object when called normally', function(done) {
-      /*eslint-disable new-cap*/
+      /* eslint-disable new-cap */
       var obj = kss.KssSection();
       obj.should.be.an.Object().and.an.instanceof(kss.KssSection);
       done();
-      /*eslint-enable new-cap*/
+      /* eslint-enable new-cap */
     });
   });
 

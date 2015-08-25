@@ -1,5 +1,5 @@
-/*global describe,context,it,before*/
-/*eslint-disable max-nested-callbacks*/
+/* global describe,context,it,before */
+/* eslint-disable max-nested-callbacks */
 
 'use strict';
 

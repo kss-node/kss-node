@@ -1,3 +1,5 @@
+'use strict';
+
 // This optional file is used to load the CLI options and KSS generator needed
 // by this template.
 //
@@ -25,7 +27,7 @@ module.exports.generator = KssHandlebarsGenerator;
 // Tell kss-node which Yargs options this template has.
 // See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
 module.exports.options = {
-  'title': {
+  title: {
     string: true,
     multiple: false,
     describe: 'Title of the style guide',

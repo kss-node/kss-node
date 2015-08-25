@@ -1,5 +1,5 @@
-/*global describe,context,it,before*/
-/*eslint-disable max-nested-callbacks*/
+/* global describe,context,it,before */
+/* eslint-disable max-nested-callbacks */
 
 'use strict';
 
@@ -18,9 +18,8 @@ describe('KssStyleguide object API', function() {
     });
   });
 
-  /*eslint-disable guard-for-in,no-loop-func*/
-  [
-    'init',
+  /* eslint-disable guard-for-in,no-loop-func */
+  ['init',
     'section',
     'sortSections',
     'getWeight'
@@ -30,7 +29,7 @@ describe('KssStyleguide object API', function() {
       done();
     });
   });
-  /*eslint-enable guard-for-in,no-loop-func*/
+  /* eslint-enable guard-for-in,no-loop-func */
 
   describe('KssStyleguide constructor', function() {
     it('should initialize the data', function(done) {
@@ -43,11 +42,11 @@ describe('KssStyleguide object API', function() {
     });
 
     it('should return a KssStyleguide object when called normally', function(done) {
-      /*eslint-disable new-cap*/
+      /* eslint-disable new-cap */
       var obj = kss.KssStyleguide();
       obj.should.be.an.Object().and.an.instanceof(kss.KssStyleguide);
       done();
-      /*eslint-enable new-cap*/
+      /* eslint-enable new-cap */
     });
   });
 

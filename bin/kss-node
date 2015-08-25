@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-/*eslint-disable no-process-exit*/
+/* eslint-disable no-process-exit */
 
 'use strict';
 
@@ -17,7 +17,7 @@ var generator,
   template,
   key,
 
-  /*eslint-disable key-spacing*/
+  /* eslint-disable key-spacing */
   cliOptions = {
     'init': {
       alias     : 'i',
@@ -89,14 +89,14 @@ var generator,
       string    : true
     }
   };
-  /*eslint-enable key-spacing*/
+  /* eslint-enable key-spacing */
 
 /**
  * Applies path.resolve() to the given path or array of paths.
  *
  * @param {string}        from  Optional path to resolve the "to" path
  * @param {string|array}  to    Relative path(s) to resolve.
- * @return {string} An absolute path.
+ * @returns {string} An absolute path.
  */
 resolveArray = function(from, to) {
   var paths = [];
@@ -119,7 +119,7 @@ resolveArray = function(from, to) {
  * Cleans up a configuration object.
  *
  * @param {object} config Configuration object.
- * @return {object} The corrected configuration object
+ * @returns {object} The corrected configuration object
  */
 normalizeConfig = function(config) {
   var option;

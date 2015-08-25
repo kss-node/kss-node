@@ -1,5 +1,5 @@
-/*global describe,context,it,before,Buffer*/
-/*eslint-disable max-nested-callbacks*/
+/* global describe,context,it,before,Buffer */
+/* eslint-disable max-nested-callbacks */
 
 'use strict';
 
@@ -8,10 +8,10 @@ var kss = require('../index.js'),
   testUtils = require('./testUtils'),
   fs = require('fs'),
   marked = require('marked'),
-  /*eslint-disable no-unused-vars*/
+  /* eslint-disable no-unused-vars */
   // path will load the Buffer class.
   path = require('path');
-  /*eslint-enable no-unused-vars*/
+  /* eslint-enable no-unused-vars */
 
 describe('kss.parse()', function() {
   before(function(done) {

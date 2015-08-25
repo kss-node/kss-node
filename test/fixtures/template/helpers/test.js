@@ -1,6 +1,6 @@
-module.exports.register = function(handlebars) {
-  'use strict';
+'use strict';
 
+module.exports.register = function(handlebars) {
   console.log('The file containing the Handlebars helper was loaded.');
 
   handlebars.registerHelper('test', function() {

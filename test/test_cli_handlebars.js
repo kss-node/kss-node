@@ -1,5 +1,5 @@
-/*global describe,it,before*/
-/*eslint-disable max-nested-callbacks,no-regex-spaces*/
+/* global describe,it,before */
+/* eslint-disable max-nested-callbacks,no-regex-spaces */
 
 'use strict';
 

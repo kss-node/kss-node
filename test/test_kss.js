@@ -1,13 +1,12 @@
-/*global describe,it*/
+/* global describe,it */
 
 'use strict';
 
 var kss = require('../index.js');
 
 describe('kss object API', function() {
-  /*eslint-disable guard-for-in,no-loop-func*/
-  [
-    'parse',
+  /* eslint-disable guard-for-in,no-loop-func */
+  ['parse',
     'traverse',
     'KssSection',
     'KssModifier',
@@ -19,5 +18,5 @@ describe('kss object API', function() {
       done();
     });
   });
-  /*eslint-enable guard-for-in,no-loop-func*/
+  /* eslint-enable guard-for-in,no-loop-func */
 });
