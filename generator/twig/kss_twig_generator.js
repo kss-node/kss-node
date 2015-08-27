@@ -135,6 +135,7 @@ KssTwigGenerator.generate = function(styleguide) {
     console.log('...Determining section markup:');
   }
 
+
   for (i = 0; i < sectionCount; i += 1) {
     // Register all the markup blocks as Twig partials.
 
@@ -163,25 +164,32 @@ KssTwigGenerator.generate = function(styleguide) {
             console.log('WARNING: In section ' + partial.reference + ', ' + partial.markup);
           }
         }
+
         if (this.config.verbose) {
           console.log(' - ' + partial.reference + ': ' + partial.markup);
         }
+
         if (files.length) {
           // Load the partial's markup from file.
           partial.file = files[0];
           partial.markup = fs.readFileSync(partial.file, 'utf8');
-          // Load sample data for the partial from the sample .json file.
-          if (fs.existsSync(path.dirname(partial.file) + '/' + partial.name + '.json')) {
-            try {
-              partial.data = require(path.dirname(partial.file) + '/' + partial.name + '.json');
-              partial.markup = this.Twig.twig({
-                data: partial.markup
-              }).render(partial.data);
-            } catch (e) {
-              partial.data = {};
-            }
+        }
+
+        // Load sample data for the partial from the sample .json file.
+        if (fs.existsSync(path.dirname(partial.file) + '/' + partial.name + '.json')) {
+          try {
+            partial.data = require(path.dirname(partial.file) + '/' + partial.name + '.json');
+          } catch (e) {
+            partial.data = {};
           }
         }
+
+        // Register templates with twig
+        this.Twig.twig({
+          id:   partial.file.substr(partial.file.lastIndexOf('/') + 1),
+          data: partial.markup
+        });
+
       } else if (this.config.verbose) {
         console.log(' - ' + partial.reference + ': inline markup');
       }
@@ -203,12 +211,21 @@ KssTwigGenerator.generate = function(styleguide) {
       }
     }
 
+
     // Accumulate all of the sections' first indexes
     // in case they don't have a root element.
     currentRoot = sections[i].reference().split(/(?:\.|\ \-\ )/)[0];
     if (sectionRoots.indexOf(currentRoot) === -1) {
       sectionRoots.push(currentRoot);
     }
+  }
+
+  // Render markup of sections
+  for (i = 0; i < partials; i += 1) {
+    partials[i].markup = this.Twig.twig({
+      data: partials[i].markup,
+      allowInlineIncludes: true
+    }).render(partials[i].data);
   }
 
   if (this.config.verbose) {
