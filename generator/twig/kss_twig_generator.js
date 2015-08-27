@@ -174,6 +174,9 @@ KssTwigGenerator.generate = function(styleguide) {
           if (fs.existsSync(path.dirname(partial.file) + '/' + partial.name + '.json')) {
             try {
               partial.data = require(path.dirname(partial.file) + '/' + partial.name + '.json');
+              partial.markup = this.Twig.twig({
+                data: partial.markup
+              }).render(partial.data);
             } catch (e) {
               partial.data = {};
             }
@@ -315,5 +318,3 @@ KssTwigGenerator.generatePage = function(styleguide, sections, root, sectionRoot
 };
 
 module.exports = KssTwigGenerator;
-
-
