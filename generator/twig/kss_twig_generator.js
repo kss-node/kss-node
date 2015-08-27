@@ -186,7 +186,7 @@ KssTwigGenerator.generate = function(styleguide) {
 
         // Register templates with twig
         this.Twig.twig({
-          id:   partial.file.substr(partial.file.lastIndexOf('/') + 1),
+          id: partial.file.substr(partial.file.lastIndexOf('/') + 1),
           data: partial.markup
         });
 
