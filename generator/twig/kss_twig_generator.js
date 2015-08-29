@@ -205,6 +205,7 @@ KssTwigGenerator.generate = function(styleguide) {
           variables: partial.data
         });
         partials[partial.reference].markup = partial.markup;
+        partials[partial.reference].data = partial.data;
 
       } catch (err) {
         console.log('Could not create template. Duplicate template ID ' + partial.name + '. What to do?');
@@ -221,11 +222,13 @@ KssTwigGenerator.generate = function(styleguide) {
   }
 
   // Render markup of sections
-  for (i = 0; i < partials; i += 1) {
-    partials[i].markup = this.Twig.twig({
-      data: partials[i].markup,
-      allowInlineIncludes: true
-    }).render(partials[i].data);
+  for(var index in partials) {
+    if (partials.hasOwnProperty(index)) {
+      partials[index].markup = this.Twig.twig({
+        data: partials[index].markup,
+        allowInlineIncludes: true
+      }).render(partials[index].data);
+    }
   }
 
   if (this.config.verbose) {
