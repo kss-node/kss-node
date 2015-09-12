@@ -292,11 +292,14 @@ yargs
   .version(version, 'version');
 
 // And re-parse the options.
+
 if (generatorConfig.xdemo) {
   generatorConfig = yargs.parse(process.argv.slice(2));
 } else {
   generatorConfig = yargs.argv;
 }
+
+
 generatorConfig = normalizeConfig(generatorConfig);
 
 // If no source is specified, display help and exit.
