@@ -222,7 +222,7 @@ KssTwigGenerator.generate = function(styleguide) {
   }
 
   // Render markup of sections
-  for(var index in partials) {
+  for (var index in partials) {
     if (partials.hasOwnProperty(index)) {
       partials[index].markup = this.Twig.twig({
         data: partials[index].markup,
