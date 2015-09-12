@@ -107,7 +107,7 @@
                 </div>
                 {% endif %}
                 <div class="kss-modifier__example">
-                    {% markup %}
+                    {% include section.markup %}
                 </div>
                 {% for modifier in section.modifiers %}
                 <div class="kss-modifier__name kss-style">
@@ -117,13 +117,13 @@
                     {{ modifier.description|raw }}
                 </div>
                 <div class="kss-modifier__example">
-                    {% markup %}
+                    {% include section.markup with { "modifier_class": modifier.className } %}
                 </div>
                 {% endfor %}
             </div>
 
             <div class="kss-markup kss-style">
-                <pre class="prettyprint linenums lang-html">{{ partials[section.reference].markup|escape }}<code data-language="html"></code></pre>
+                <pre class="prettyprint linenums lang-html"><code data-language="html">{% filter escape %}{% include section.markup %}{% endfilter %}</code></pre>
             </div>
           {% endif %}
         </div>
