@@ -11,19 +11,19 @@ var KssGenerator = require('../kss_generator.js'),
 
 // Pass a string to KssGenerator() to tell the system which API version is
 // implemented by KssTwigGenerator.
-var KssTwigGenerator = new KssGenerator('2.0', {
-  'helpers': {
+var KssTwigGenerator = new KssGenerator(2.0, {
+  helpers: {
     string: true,
     path: true,
     describe: 'Location of custom handlebars helpers; see http://bit.ly/kss-wiki'
   },
-  'homepage': {
+  homepage: {
     string: true,
     multiple: false,
     describe: 'File name of the homepage\'s Markdown file',
     default: 'styleguide.md'
   },
-  'placeholder': {
+  placeholder: {
     string: true,
     multiple: false,
     describe: 'Placeholder text to use for modifier classes',
@@ -89,7 +89,7 @@ KssTwigGenerator.init = function(config) {
   this.Twig = require('twig');
 
   // Load the standard Handlebars helpers.
-  require('./helpers.js').register(this.Twig, this.config);
+  require('./extensions.js').register(this.Twig, this.config);
 
   // Compile the Handlebars template.
   this.template = fs.readFileSync(this.config.template + '/index.html', 'utf8');
@@ -317,7 +317,7 @@ KssTwigGenerator.generatePage = function(styleguide, sections, root, sectionRoot
     }
   }
 
-  /*eslint-disable key-spacing*/
+  /* eslint-disable key-spacing */
   fs.writeFileSync(this.config.destination + '/' + filename,
     this.template.render({
       partials:     partials,
@@ -334,7 +334,7 @@ KssTwigGenerator.generatePage = function(styleguide, sections, root, sectionRoot
     })
   );
 
-  /*eslint-enable key-spacing*/
+  /* eslint-enable key-spacing */
 };
 
 module.exports = KssTwigGenerator;
