@@ -28,7 +28,7 @@
     "mkdirp": "^0.5.1",
     "natural": "^0.1.28",
     "wrench": "^1.5.8",
-    "yargs": "^3.8.0"
+    "yargs": "3.29.0"
   },
   "devDependencies": {
     "coveralls": "^2.11.3",
