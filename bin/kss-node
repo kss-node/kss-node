@@ -78,9 +78,9 @@ var generator,
     },
     // This option allows JSON comments in the config file.
     '//': {
-      // Alias is redundant, but prevents "Unknown argument: //" error.
-      alias     : '//',
-      string    : true
+      string    : true,
+      describe  : 'JSON configurations will ignore comments.',
+      default   : ''
     }
   };
   /*eslint-enable key-spacing*/
