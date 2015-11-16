@@ -1,6 +1,8 @@
 # Exclude stuff specific to this project.
 node_modules
 /test/output
+coverage
+npm-debug.log
 
 # Exclude IDE management files.
   # Eclipse
