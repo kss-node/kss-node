@@ -13,22 +13,10 @@ netbeans
 nbproject
   # Komodo
 *.kpf
-  # PHPStorm
+  # WebStorm
 .idea
 
 # Exclude hidden OS files.
 .DS_Store
 ._*
 Thumbs.db
-
-# Exclude Sass temp files.
-.sass-cache
-
-# Exclude files used by FTP, Dreamweaver, Frontpage, vi, etc.
-WS_FTP.LOG
-_notes
-_vti_*
-*.LCK
-*.TMP
-*~
-*.bbprojectd
