@@ -71,16 +71,16 @@ var generator,
     },
 
     'xdemo': {
-      // Alias is redundant, but prevents "Unknown argument: xdemo" error.
-      alias     : 'xdemo',
       multiple  : false,
-      boolean   : true
+      boolean   : true,
+      describe  : 'Builds a KSS demo.',
+      default   : false
     },
     // This option allows JSON comments in the config file.
     '//': {
-      // Alias is redundant, but prevents "Unknown argument: //" error.
-      alias     : '//',
-      string    : true
+      string    : true,
+      describe  : 'JSON configurations will ignore comments.',
+      default   : ''
     }
   };
   /*eslint-enable key-spacing*/
