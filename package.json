@@ -1,6 +1,6 @@
 {
   "name": "kss",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "The Node.js port of KSS: A methodology for documenting CSS and generating style guides",
   "homepage": "http://kss-node.github.io/kss-node",
   "bugs": {
@@ -50,6 +50,6 @@
     "kss-node": "./bin/kss-node"
   },
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=0.12.0"
   }
 }

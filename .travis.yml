@@ -1,5 +1,6 @@
 # Configuration options are documented at:
 # http://docs.travis-ci.com/user/languages/javascript-with-nodejs/
+sudo: false
 language: node_js
 node_js:
   - '0.12'
