@@ -1,37 +1,50 @@
 {
-  "author": "Hugh Kennedy <hughskennedy@gmail.com> (http://hughskennedy.com)",
   "name": "kss",
-  "description": "NodeJS port of kss: A methodology for documenting CSS and generating styleguides",
   "version": "2.1.0",
+  "description": "The Node.js port of KSS: A methodology for documenting CSS and generating style guides",
+  "homepage": "http://kss-node.github.io/kss-node",
+  "bugs": {
+    "url": "https://github.com/kss-node/kss-node/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/kss-node/kss-node.git"
   },
-  "licence": "MIT",
+  "author": "John Albin Wilkins <virtually.johnalbin@gmail.com> (http://john.albin.net/)",
+  "keywords": [
+    "styleguide",
+    "kss",
+    "kss-node"
+  ],
   "main": "index.js",
+  "directories": {
+    "bin": "bin",
+    "example": "demo",
+    "test": "test"
+  },
   "scripts": {
     "test": "mocha -u tdd --reporter spec",
     "posttest": "eslint bin/kss-node .",
     "docs": "make docs"
+  },
+  "license": "(MIT OR GPL-2.0)",
+  "dependencies": {
+    "glob": "^6.0.1",
+    "handlebars": "^4.0.0 || ^3.0.0 || ^2.0.0",
+    "marked": "^0.3.5",
+    "natural": "^0.2.1",
+    "wrench": "^1.5.8",
+    "yargs": "^3.30.0"
+  },
+  "devDependencies": {
+    "eslint": "^0.21.0",
+    "jsdoc": "^3.4.0",
+    "mocha": "^2.3.4"
   },
   "bin": {
     "kss-node": "./bin/kss-node"
   },
   "engines": {
     "node": ">=0.10.0"
-  },
-  "dependencies": {
-    "glob": "^4.0.6",
-    "handlebars": "^3.0.0 || ^2.0.0",
-    "marked": "^0.3.2",
-    "natural": "^0.1.28",
-    "wrench": "^1.5.8",
-    "yargs": "^3.8.0"
-  },
-  "devDependencies": {
-    "eslint": "^0.21.0",
-    "jsdoc": "^3.3.0-beta3",
-    "mocha": "^1.21.4"
-  },
-  "homepage": "http://kss-node.github.io/kss-node"
+  }
 }
