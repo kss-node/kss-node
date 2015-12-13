@@ -106,6 +106,35 @@ describe('Command Line Interface', function() {
     });
   });
 
+  describe('given unnamed option', function() {
+    it('should use the first unnamed as the source directory', function(done) {
+      var source = helperUtils.fixtures('with-include'),
+        destination = helperUtils.fixtures('../output/nested');
+      exec(
+        'bin/kss-node --verbose ' + source + ' --destination ' + destination,
+        function(err, stdout) {
+          should.not.exist(err);
+          stdout.should.include('* KSS Source  : ' + source);
+          stdout.should.include(successMessage);
+          done();
+        }
+      );
+    });
+
+    it('should use the second unnamed as the destination directory', function(done) {
+      var source = helperUtils.fixtures('with-include'),
+        destination = helperUtils.fixtures('../output/nested');
+      exec(
+        'bin/kss-node --verbose ' + source + ' ' + destination,
+        function(err, stdout) {
+          should.not.exist(err);
+          stdout.should.include('* Destination : ' + destination);
+          done();
+        }
+      );
+    });
+  });
+
   describe('given --custom option', function() {
     it('should read custom properties', function(done) {
       exec(
