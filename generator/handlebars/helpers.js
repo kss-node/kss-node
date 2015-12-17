@@ -242,21 +242,21 @@ module.exports.register = function(handlebars, config) {
    * Deprecated variable replaced with {{homepage}}.
    */
   handlebars.registerHelper('overview', function() {
-    throw new Error('The overview variable is deprecated; if your template has {{overview}}, replace it with {{homepage}}.');
+    throw new Error('The {{overview}} variable is deprecated; use {{homepage}} instead.');
   });
 
   /**
    * Deprecated variable replaced with {{depth}}.
    */
   handlebars.registerHelper('refDepth', function() {
-    throw new Error('The refDepth variable is deprecated; if your template has {{refDepth}}, replace it with {{depth}}.');
+    throw new Error('The {{refDepth}} variable is deprecated; use {{depth}} instead.');
   });
 
   /**
    * Deprecated variable replaced with {{rootName}}.
    */
   handlebars.registerHelper('rootNumber', function() {
-    throw new Error('The rootNumber variable is deprecated; if your template has {{rootNumber}}, replace it with {{rootName}}.');
+    throw new Error('The {{rootNumber}} variable is deprecated; use {{rootName}} instead.');
   });
 
   /**
@@ -270,14 +270,14 @@ module.exports.register = function(handlebars, config) {
    * Deprecated helper replaced with {{#if markup}}...{{/if}}.
    */
   handlebars.registerHelper('ifAny', function() {
-    throw new Error('IfAny is deprecated; if your template has {{#ifAny markup modifiers}}...{{/ifAny}}, replace it with {{#if markup}}...{{/if}}.');
+    throw new Error('IfAny is deprecated; in your template, replace {{#ifAny markup modifiers}}...{{/ifAny}} with {{#if markup}}...{{/if}}.');
   });
 
   /**
    * Deprecated helper replaced with {{{markup}}}.
    */
   handlebars.registerHelper('modifierMarkup', function() {
-    throw new Error('The modifierMarkup Handlebars helper is deprecated; if your template has {{modifierMarkup}}, replace it with {{{markup}}}.');
+    throw new Error('The {{modifierMarkup}} Handlebars helper is deprecated; use {{{markup}}} instead.');
   });
 
   /**
