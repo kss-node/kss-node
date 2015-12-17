@@ -28,12 +28,14 @@ module.exports.generator = KssHandlebarsGenerator;
 // See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
 module.exports.options = {
   'title': {
+    group: 'Style guide:',
     string: true,
     multiple: false,
     describe: 'Title of the style guide',
     default: 'KSS Style Guide'
   },
   'nav-depth': {
+    group: 'Style guide:',
     multiple: false,
     describe: 'Limit the navigation to the depth specified',
     default: 3

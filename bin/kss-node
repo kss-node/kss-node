@@ -17,16 +17,48 @@ var generator,
   template,
   key,
 
-  /* eslint-disable key-spacing */
+  /* eslint-disable key-spacing, quote-props */
   cliOptions = {
-    'init': {
+    source: {
+      group     : 'File locations:',
+      string    : true,
+      path      : true,
+      describe  : 'Source directory to parse for KSS comments'
+    },
+    destination: {
+      group     : 'File locations:',
+      string    : true,
+      path      : true,
+      multiple  : false,
+      describe  : 'Destination directory of generated style guide',
+      default   : 'styleguide'
+    },
+    mask: {
+      group     : 'File locations:',
+      alias     : 'm',
+      string    : true,
+      multiple  : false,
+      describe  : 'Use a mask for detecting files containing KSS comments',
+      default   : '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
+    },
+    config: {
+      group     : 'File locations:',
+      alias     : 'c',
+      config    : true,
+      multiple  : false,
+      describe  : 'Load the kss-node configuration from a json file'
+    },
+
+    init: {
+      group     : 'Template:',
       alias     : 'i',
       string    : true,
       path      : true,
       multiple  : false,
       describe  : 'Clone a style guide template to customize'
     },
-    'template': {
+    template: {
+      group     : 'Template:',
       alias     : 't',
       string    : true,
       path      : true,
@@ -35,48 +67,29 @@ var generator,
       default   : path.relative(process.cwd(), path.join(__dirname, '../generator/handlebars/template'))
     },
 
-    'mask': {
-      alias     : 'm',
-      string    : true,
-      multiple  : false,
-      describe  : 'Use a mask for detecting files containing KSS comments',
-      default   : '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
-    },
-
-    'css': {
+    css: {
+      group     : 'Style guide:',
       string    : true,
       describe  : 'URL of a CSS file to include in the style guide'
     },
-    'js': {
+    js: {
+      group     : 'Style guide:',
       string    : true,
       describe  : 'URL of a JavaScript file to include in the style guide'
     },
-
-    'custom': {
+    custom: {
+      group     : 'Style guide:',
       string    : true,
       describe  : 'Process a custom property name when parsing KSS comments'
     },
 
-    'source': {
-      string    : true,
-      path      : true,
-      describe  : 'Source directory to parse for KSS comments'
-    },
-    'destination': {
-      string    : true,
-      path      : true,
-      multiple  : false,
-      describe  : 'Destination directory of generated style guide',
-      default   : 'styleguide'
-    },
-
-    'verbose': {
+    verbose: {
       count     : true,
       multiple  : false,
       describe  : 'Display verbose details while generating'
     },
 
-    'xdemo': {
+    xdemo: {
       multiple  : false,
       boolean   : true,
       describe  : 'Builds a KSS demo.',
@@ -89,7 +102,7 @@ var generator,
       default   : ''
     }
   };
-  /* eslint-enable key-spacing */
+  /* eslint-enable key-spacing, quote-props */
 
 /**
  * Applies path.resolve() to the given path or array of paths.
@@ -203,9 +216,6 @@ normalizeConfig = function(config) {
  */
 generatorConfig = yargs
   .options(cliOptions)
-  .config('config')
-    .alias('config', 'c')
-    .describe('config', 'Load the kss-node configuration from a json file')
   .argv;
 
 // If the demo is requested, load the options from its config file.
@@ -215,9 +225,6 @@ if (generatorConfig.xdemo) {
   generatorConfig = yargs
     .reset()
     .options(cliOptions)
-    .config('config')
-      .alias('config', 'c')
-      .describe('config', 'Load the kss-node configuration from a json file')
     // Yargs doesn't re-read process.argv, so pass it explicitly.
     .parse(process.argv.slice(2));
 }

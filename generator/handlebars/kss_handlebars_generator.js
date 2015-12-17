@@ -24,17 +24,20 @@ var KssGenerator = require('../kss_generator.js'),
 // implemented by kssHandlebarsGenerator.
 var kssHandlebarsGenerator = new KssGenerator('2.0', {
   helpers: {
+    group: 'Style guide:',
     string: true,
     path: true,
     describe: 'Location of custom handlebars helpers; see http://bit.ly/kss-wiki'
   },
   homepage: {
+    group: 'Style guide:',
     string: true,
     multiple: false,
     describe: 'File name of the homepage\'s Markdown file',
     default: 'styleguide.md'
   },
   placeholder: {
+    group: 'Style guide:',
     string: true,
     multiple: false,
     describe: 'Placeholder text to use for modifier classes',
