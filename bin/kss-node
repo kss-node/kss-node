@@ -4,240 +4,24 @@
 
 'use strict';
 
-var yargs = require('yargs'),
+var KssConfig = require('../lib/kss').KssConfig,
+  yargs = require('yargs'),
   path = require('path'),
   version = require('../package.json').version;
 
 var generator,
   KSS_GENERATING = false,
   KSS_FAILED = false,
-  generatorConfig,
-  normalizeConfig,
-  resolveArray,
-  template,
-  key,
-
-  /* eslint-disable key-spacing, quote-props */
-  cliOptions = {
-    source: {
-      group     : 'File locations:',
-      string    : true,
-      path      : true,
-      describe  : 'Source directory to parse for KSS comments'
-    },
-    destination: {
-      group     : 'File locations:',
-      string    : true,
-      path      : true,
-      multiple  : false,
-      describe  : 'Destination directory of generated style guide',
-      default   : 'styleguide'
-    },
-    mask: {
-      group     : 'File locations:',
-      alias     : 'm',
-      string    : true,
-      multiple  : false,
-      describe  : 'Use a mask for detecting files containing KSS comments',
-      default   : '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
-    },
-    config: {
-      group     : 'File locations:',
-      alias     : 'c',
-      config    : true,
-      multiple  : false,
-      describe  : 'Load the kss-node configuration from a json file'
-    },
-
-    init: {
-      group     : 'Template:',
-      alias     : 'i',
-      string    : true,
-      path      : true,
-      multiple  : false,
-      describe  : 'Clone a style guide template to customize'
-    },
-    template: {
-      group     : 'Template:',
-      alias     : 't',
-      string    : true,
-      path      : true,
-      multiple  : false,
-      describe  : 'Use a custom template to build your style guide',
-      default   : path.relative(process.cwd(), path.join(__dirname, '../generator/handlebars/template'))
-    },
-
-    css: {
-      group     : 'Style guide:',
-      string    : true,
-      describe  : 'URL of a CSS file to include in the style guide'
-    },
-    js: {
-      group     : 'Style guide:',
-      string    : true,
-      describe  : 'URL of a JavaScript file to include in the style guide'
-    },
-    custom: {
-      group     : 'Style guide:',
-      string    : true,
-      describe  : 'Process a custom property name when parsing KSS comments'
-    },
-
-    verbose: {
-      count     : true,
-      multiple  : false,
-      describe  : 'Display verbose details while generating'
-    },
-
-    xdemo: {
-      multiple  : false,
-      boolean   : true,
-      describe  : 'Builds a KSS demo.',
-      default   : false
-    },
-    // This option allows JSON comments in the config file.
-    '//': {
-      string    : true,
-      describe  : 'JSON configurations will ignore comments.',
-      default   : ''
-    }
-  };
-  /* eslint-enable key-spacing, quote-props */
-
-/**
- * Applies path.resolve() to the given path or array of paths.
- *
- * @param {string}        from  Optional path to resolve the "to" path
- * @param {string|array}  to    Relative path(s) to resolve.
- * @returns {string} An absolute path.
- */
-resolveArray = function(from, to) {
-  var paths = [];
-  // "from" is optional.
-  if (typeof to === 'undefined') {
-    to = from;
-    from = '';
-  }
-  if (to instanceof Array) {
-    to.forEach(function(value, index) {
-      paths[index] = path.resolve(from, value);
-    });
-  } else {
-    paths = path.resolve(from, to);
-  }
-  return paths;
-};
-
-/**
- * Cleans up a configuration object.
- *
- * @param {object} config Configuration object.
- * @returns {object} The corrected configuration object
- */
-normalizeConfig = function(config) {
-  var option;
-
-  // If some of the options were specified in a JSON config file, determine
-  // which ones by loading the keys from the config file.
-  if (config.config && typeof config.configFileOptions === 'undefined') {
-    // Save the full path to the config file.
-    config.config = path.resolve(config.config);
-    // Store the list of config file options for later.
-    config.configFileOptions = Object.keys(require(config.config));
-  } else {
-    config.configFileOptions = [];
-  }
-
-  // Get the full source path.
-  if (config.xdemo) {
-    config.source = [path.join(__dirname, '../demo')];
-    config.css = ['public/styles.css'];
-  } else {
-    if (!config.source) {
-      config.source = [];
-    }
-    if (config._.length > 0) {
-      config.source.push(config._[0]);
-    }
-  }
-
-  // Check if the destination is the second unnamed parameter.
-  if (config._.length > 1) {
-    config.destination = config._[1];
-  }
-
-  // Normalize all the configuration options.
-  for (option in config) {
-    if (typeof cliOptions[option] !== 'undefined') {
-      if (option === 'config') {
-        cliOptions[option].multiple = false;
-      }
-      // "multiple" defaults to true.
-      if (typeof cliOptions[option].multiple === 'undefined') {
-        cliOptions[option].multiple = true;
-      }
-      // "path" defaults to false.
-      if (typeof cliOptions[option].path === 'undefined') {
-        cliOptions[option].path = false;
-      }
-      // If an option is specified multiple times, yargs will convert it into an
-      // array, but leave it as a string otherwise. This makes accessing the
-      // values of options inconsistent, so make all other options an array.
-      if (cliOptions[option].multiple) {
-        if (typeof config[option] === 'undefined') {
-          config[option] = [];
-        } else if (!(config[option] instanceof Array)) {
-          config[option] = [config[option]];
-        }
-      // For options marked as "multiple: false", use the first value specified,
-      // ignoring the others.
-      } else {
-        if (config[option] instanceof Array) {
-          config[option] = config[option].pop();
-        }
-      }
-      // Resolve any paths relative to the config file or to the working directory.
-      if (cliOptions[option].path) {
-        if (config.configFileOptions.indexOf(option) > -1) {
-          config[option] = resolveArray(path.dirname(config.config), config[option]);
-        } else if (typeof config[option] !== 'undefined') {
-          config[option] = resolveArray(config[option]);
-        }
-      }
-    }
-  }
-
-  return config;
-};
-
-/**
- * Generator configuration.
- * @type {Object}
- */
-generatorConfig = yargs
-  .options(cliOptions)
-  .argv;
-
-// If the demo is requested, load the options from its config file.
-if (generatorConfig.xdemo) {
-  // Add the configuration file to the arguments list.
-  process.argv.push('--config', path.join(__dirname, '../demo/kss-config.json'));
-  generatorConfig = yargs(process.argv.slice(2)).options(cliOptions).argv;
-}
-
-// Clean up paths and massage options to expected types.
-generatorConfig = normalizeConfig(generatorConfig);
+  kssConfig = new KssConfig(),
+  positionalParams;
 
 // Set up error handling.
 process.on('exit', function() {
   if (KSS_GENERATING && !KSS_FAILED) {
-    if (generatorConfig.verbose) {
+    if (kssConfig.get('verbose')) {
       console.log('');
     }
     console.log('Style guide generation completed successfully!');
-    if (generatorConfig.verbose) {
-      console.log('');
-    }
   }
 });
 
@@ -251,42 +35,61 @@ process.on('uncaughtException', function(err) {
   process.exit(1);
 });
 
-
-// Load the template's generator.
-try {
-  template = require(generatorConfig.template);
-  generator = template.generator;
-} catch (e) {
-  // Templates don't have to load their own generator. If the template fails to
-  // load a generator, we assume it wanted the default generator.
-  generator = require('../generator/handlebars');
-}
-
-// Confirm this is a compatible generator.
-generator.checkGenerator();
-
-// Load the generator's and the template's CLI options.
-if (Object.keys(generator.options).length) {
-  for (key in generator.options) {
-    if (generator.options.hasOwnProperty(key)) {
-      cliOptions[key] = generator.options[key];
-    }
+// Add options only needed by the CLI or yargs.
+kssConfig.addOptions({
+  'xdemo': {
+    multiple: false,
+    boolean: true,
+    describe: 'Builds a KSS demo.',
+    default: false
+  },
+  // Prevent yargs from complaining about JSON comments in the config file.
+  '//': {
+    string: true,
+    describe: 'JSON configurations will ignore comments.',
+    default: ''
   }
-  yargs.options(generator.options);
-}
-if (template && template.options && Object.keys(template.options).length) {
-  for (key in template.options) {
-    if (template.options.hasOwnProperty(key)) {
-      cliOptions[key] = template.options[key];
-    }
+});
+
+// The interaction between Yargs and KssConfig is delicate, so we add a
+// convenience function to handle the details.
+kssConfig.yargs = yargs;
+kssConfig.setFromYargs = function(argv) {
+  this.config = this.yargs(argv.slice(2)).options(this.options).argv;
+  return this.yargs;
+};
+kssConfig.setFromYargs(process.argv);
+
+// If the demo is requested, load the options from its config file.
+if (kssConfig.get('xdemo')) {
+  // Add the configuration file to the raw arguments list; otherwise, Yargs
+  // won't read the config from the JSON file.
+  process.argv.push('--config', path.join(__dirname, '../demo/kss-config.json'));
+  kssConfig.setFromYargs(process.argv);
+
+} else {
+  positionalParams = kssConfig.get('_');
+  // Check if the destination is the second unnamed parameter.
+  if (positionalParams.length > 1) {
+    process.argv.push('--destination', positionalParams[1]);
   }
-  yargs.options(template.options);
+
+  // Check if the source directory is the first unnamed parameter.
+  if (positionalParams.length > 0) {
+    process.argv.push('--source', positionalParams[0]);
+
+    kssConfig.setFromYargs(process.argv);
+  }
 }
 
-// Now that yargs knows all the options, ensure strictness (i.e. complain if the
-// user specifies a non-existant option.
-generatorConfig = yargs(process.argv.slice(2))
-  .options(cliOptions)
+// Based on the template location specified in the generatorConfig, load the
+// requested template's generator.
+generator = kssConfig.loadGenerator();
+
+// After the generator is loaded, we finally know all the options, so we tell
+// yargs to ensure strictness (i.e. complain if the user tries to configure a
+// non-existant option.
+kssConfig.setFromYargs(process.argv)
   .strict()
   .wrap(80)
   // And make a help option available.
@@ -294,39 +97,35 @@ generatorConfig = yargs(process.argv.slice(2))
   .help('help')
     .alias('help', 'h')
     .alias('help', '?')
-  .version(version, 'version')
-  .argv;
+  .version(version, 'version');
 
 // Clean up paths and massage options to expected types.
-generatorConfig = normalizeConfig(generatorConfig);
+kssConfig.normalize();
+
+// If requested, clone a template and exit.
+if (kssConfig.get('init')) {
+  console.log('Creating a new style guide template...');
+
+  generator.clone(kssConfig.get('template'), kssConfig.get('init'));
+
+  console.log('You can change it as you like, and use it with your style guide like so:');
+  console.log('kss-node [sourcedir] --template ' + kssConfig.get('init'));
+  return;
+}
 
 // If no source is specified, display help and exit.
-if (!generatorConfig.source.length && !generatorConfig.init) {
+if (!kssConfig.get('source').length) {
   console.log('Error: No --source specified.');
-  console.log('');
   yargs.showHelp();
   return;
 }
 
-// If requested, clone a template and exit.
-if (generatorConfig.init) {
-  console.log('Creating a new style guide template...');
-
-  generator.clone(generatorConfig.template, generatorConfig.init);
-
-  console.log('You can change it as you like, and use it with your style guide like so:');
-  console.log('');
-  console.log('kss-node [sourcedir] --template ' + generatorConfig.init);
-  console.log('');
-  return;
-}
-
-// Initialize the generator.
-generator.init(generatorConfig);
-
 // Parse and generate the static HTML pages in the next tick.
 process.nextTick(function() {
   KSS_GENERATING = true;
+
+  // Initialize the generator.
+  generator.init(kssConfig.config);
 
   // We use a closure so we can use the generator object's methods and
   // properties when generator.generate() is used as a callback.

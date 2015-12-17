@@ -7,7 +7,8 @@ describe('kss object API', function() {
     'KssSection',
     'KssModifier',
     'KssParameter',
-    'KssStyleguide'
+    'KssStyleguide',
+    'KssConfig'
   ].forEach(function(method) {
     it('has ' + method + '() method', function(done) {
       kss.should.exist;

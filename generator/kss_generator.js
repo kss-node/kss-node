@@ -32,7 +32,7 @@ var KssGenerator;
  * @constructor
  * @alias KssGenerator
  * @param {string} version The generator API version implemented.
- * @param {object} options The Yargs options this generator has.
+ * @param {object} options The Yargs-like options this generator has.
  *   See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
  */
 module.exports = KssGenerator = function(version, options) {
@@ -47,7 +47,7 @@ module.exports = KssGenerator = function(version, options) {
   // expecting; we will verify this in checkGenerator().
   this.implementsAPI = typeof version === 'undefined' ? 'undefined' : version;
 
-  // Tell kss-node which Yargs options this generator has.
+  // Tell kss-node which Yargs-like options this generator has.
   this.options = options || {};
 };
 
