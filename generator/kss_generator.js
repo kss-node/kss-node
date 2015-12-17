@@ -45,7 +45,7 @@ module.exports = KssGenerator = function(version, options) {
 
   // Store the version of the generator API that the generator instance is
   // expecting; we will verify this in checkGenerator().
-  this.instanceAPI = typeof version === 'undefined' ? 'undefined' : version;
+  this.implementsAPI = typeof version === 'undefined' ? 'undefined' : version;
 
   // Tell kss-node which Yargs options this generator has.
   this.options = options || {};
@@ -59,14 +59,41 @@ module.exports = KssGenerator = function(version, options) {
  * specified generator has been configured correctly.
  *
  * @alias KssGenerator.prototype.checkGenerator
+ * @returns {Boolean} Returns true if it has not throw an error.
  */
 KssGenerator.prototype.checkGenerator = function() {
+  var isCompatible = true,
+    version,
+    apiMajor,
+    apiMinor,
+    thisMajor,
+    thisMinor;
+
   if (!(this instanceof KssGenerator)) {
     throw new Error('The loaded generator is not a KssGenerator object.');
   }
-  if (this.instanceAPI === 'undefined') {
-    throw new Error('This generator is incompatible with KssGenerator API ' + this.API + ': "' + this.instanceAPI + '"');
+
+  if (this.implementsAPI === 'undefined') {
+    isCompatible = false;
+  } else {
+    version = this.API.split('.');
+    apiMajor = parseInt(version[0]);
+    apiMinor = parseInt(version[1]);
+
+    version = this.implementsAPI.split('.');
+    thisMajor = parseInt(version[0]);
+    thisMinor = parseInt(version[1]);
+
+    if (thisMajor !== apiMajor || thisMinor > apiMinor) {
+      isCompatible = false;
+    }
   }
+
+  if (!isCompatible) {
+    throw new Error('kss-node expected the template\'s generator to implement KssGenerator API version ' + this.API + '; version "' + this.implementsAPI + '" is being used instead.');
+  }
+
+  return true;
 };
 
 /**
