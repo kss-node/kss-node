@@ -222,11 +222,7 @@ generatorConfig = yargs
 if (generatorConfig.xdemo) {
   // Add the configuration file to the arguments list.
   process.argv.push('--config', path.join(__dirname, '../demo/kss-config.json'));
-  generatorConfig = yargs
-    .reset()
-    .options(cliOptions)
-    // Yargs doesn't re-read process.argv, so pass it explicitly.
-    .parse(process.argv.slice(2));
+  generatorConfig = yargs(process.argv.slice(2)).options(cliOptions).argv;
 }
 
 // Clean up paths and massage options to expected types.
@@ -287,8 +283,10 @@ if (template && template.options && Object.keys(template.options).length) {
   yargs.options(template.options);
 }
 
-// Now that we know all the options, ensure strictness.
-yargs
+// Now that yargs knows all the options, ensure strictness (i.e. complain if the
+// user specifies a non-existant option.
+generatorConfig = yargs(process.argv.slice(2))
+  .options(cliOptions)
   .strict()
   .wrap(80)
   // And make a help option available.
@@ -296,14 +294,10 @@ yargs
   .help('help')
     .alias('help', 'h')
     .alias('help', '?')
-  .version(version, 'version');
+  .version(version, 'version')
+  .argv;
 
-// And re-parse the options.
-if (generatorConfig.xdemo) {
-  generatorConfig = yargs.parse(process.argv.slice(2));
-} else {
-  generatorConfig = yargs.argv;
-}
+// Clean up paths and massage options to expected types.
 generatorConfig = normalizeConfig(generatorConfig);
 
 // If no source is specified, display help and exit.
