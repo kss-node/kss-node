@@ -106,10 +106,14 @@ kssConfig.normalize();
 if (kssConfig.get('init')) {
   console.log('Creating a new style guide template...');
 
-  generator.clone(kssConfig.get('template'), kssConfig.get('init'));
+  generator.clone(kssConfig.get('template'), kssConfig.get('init'), function(error) {
+    if (error) {
+      throw error;
+    }
 
-  console.log('You can change it as you like, and use it with your style guide like so:');
-  console.log('kss-node [sourcedir] --template ' + kssConfig.get('init'));
+    console.log('You can change it as you like, and use it with your style guide like so:');
+    console.log('kss-node [sourcedir] --template ' + kssConfig.get('init'));
+  });
   return;
 }
 
@@ -125,15 +129,25 @@ process.nextTick(function() {
   KSS_GENERATING = true;
 
   // Initialize the generator.
-  generator.init(kssConfig.config);
+  /* eslint-disable max-nested-callbacks */
+  generator.init(kssConfig.config, function(error) {
+    if (error) {
+      throw error;
+    }
 
-  // We use a closure so we can use the generator object's methods and
-  // properties when generator.generate() is used as a callback.
-  generator.parse(
-    (function(object) {
-      return function() {
-        object.generate.apply(object, arguments);
-      };
-    })(generator)
-  );
+    // Then traverse the source and parse the files found.
+    generator.parse(function(error, styleguide) {
+      if (error) {
+        throw error;
+      }
+
+      // Then generate the style guide.
+      generator.generate(styleguide, function(error) {
+        if (error) {
+          throw error;
+        }
+        return true;
+      });
+    });
+  });
 });

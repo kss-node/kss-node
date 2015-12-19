@@ -11,6 +11,7 @@
  * ```
  * @module kss/generator/handlebars
  */
+
 var KssGenerator = require('../kss_generator.js'),
   KssSection = require('../../lib/kss_section.js'),
   fs = require('fs'),
@@ -22,7 +23,7 @@ var KssGenerator = require('../kss_generator.js'),
 
 // Pass a string to KssGenerator() to tell the system which API version is
 // implemented by kssHandlebarsGenerator.
-var kssHandlebarsGenerator = new KssGenerator('2.0', {
+var kssHandlebarsGenerator = new KssGenerator('2.1', {
   helpers: {
     group: 'Style guide:',
     string: true,
@@ -53,9 +54,12 @@ var kssHandlebarsGenerator = new KssGenerator('2.0', {
  * any necessary tasks before the KSS parsing of the source files.
  *
  * @alias module:kss/generator/handlebars.init
- * @param {Object} config Configuration object for the style guide generation.
+ * @param {Object} config Configuration object for the requested generation.
+ * @param {Function} cb Callback that will be given an Error as its first
+ *                      parameter, if one occurs.
+ * @returns {*} The callback's return value.
  */
-kssHandlebarsGenerator.init = function(config) {
+kssHandlebarsGenerator.init = function(config, cb) {
   var i, j, helper;
 
   // Save the configuration parameters.
@@ -131,6 +135,8 @@ kssHandlebarsGenerator.init = function(config) {
   // Compile the Handlebars template.
   this.template = fs.readFileSync(this.config.template + '/index.html', 'utf8');
   this.template = this.Handlebars.compile(this.template);
+
+  return cb(null);
 };
 
 /**
@@ -139,7 +145,7 @@ kssHandlebarsGenerator.init = function(config) {
  * @alias module:kss/generator/handlebars.generate
  * @param {KssStyleguide} styleguide The KSS style guide in object format.
  */
-kssHandlebarsGenerator.generate = function(styleguide) {
+kssHandlebarsGenerator.generate = function(styleguide, cb) {
   var sections = styleguide.section(),
     sectionCount = sections.length,
     sectionRoots = [],
@@ -158,9 +164,9 @@ kssHandlebarsGenerator.generate = function(styleguide) {
     }).join('\n'));
   }
 
-  // Throw an error if no KSS sections are found in the source files.
+  // Return an error if no KSS sections are found in the source files.
   if (sectionCount === 0) {
-    throw new Error('No KSS documentation discovered in source files.');
+    return cb(Error('No KSS documentation discovered in source files.'));
   }
 
   if (this.config.verbose) {
@@ -248,6 +254,8 @@ kssHandlebarsGenerator.generate = function(styleguide) {
   // Generate the homepage.
   childSections = [];
   this.generatePage(styleguide, childSections, 'styleguide.homepage', sectionRoots, partials);
+
+  cb(null);
 };
 
 /**

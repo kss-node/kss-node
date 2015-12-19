@@ -41,7 +41,7 @@ module.exports = KssGenerator = function(version, options) {
   }
 
   // Tell generators which generator API version is currently running.
-  this.API = '2.0';
+  this.API = '2.1';
 
   // Store the version of the generator API that the generator instance is
   // expecting; we will verify this in checkGenerator().
@@ -59,18 +59,28 @@ module.exports = KssGenerator = function(version, options) {
  * specified generator has been configured correctly.
  *
  * @alias KssGenerator.prototype.checkGenerator
- * @returns {Boolean} Returns true if it has not throw an error.
+ * @param {Function} cb Callback that will be given an Error as its first
+ *                      parameter, if one occurs.
+ * @returns {*} The callback's return value.
  */
-KssGenerator.prototype.checkGenerator = function() {
+KssGenerator.prototype.checkGenerator = function(cb) {
   var isCompatible = true,
     version,
     apiMajor,
     apiMinor,
     thisMajor,
-    thisMinor;
+    thisMinor,
+    error;
+
+  cb = cb || function() {};
 
   if (!(this instanceof KssGenerator)) {
-    throw new Error('The loaded generator is not a KssGenerator object.');
+    error = new Error('The loaded generator is not a KssGenerator object.');
+    if (this.implementsAPI === '2.0') {
+      throw error;
+    } else {
+      return cb(error);
+    }
   }
 
   if (this.implementsAPI === 'undefined') {
@@ -90,10 +100,15 @@ KssGenerator.prototype.checkGenerator = function() {
   }
 
   if (!isCompatible) {
-    throw new Error('kss-node expected the template\'s generator to implement KssGenerator API version ' + this.API + '; version "' + this.implementsAPI + '" is being used instead.');
+    error = new Error('kss-node expected the template\'s generator to implement KssGenerator API version ' + this.API + '; version "' + this.implementsAPI + '" is being used instead.');
+    if (this.implementsAPI === '2.0') {
+      throw error;
+    } else {
+      return cb(error);
+    }
   }
 
-  return true;
+  return cb(null);
 };
 
 /**
@@ -107,23 +122,34 @@ KssGenerator.prototype.checkGenerator = function() {
  * @param {string} templatePath    Path to the template to clone.
  * @param {string} destinationPath Path to the destination of the newly cloned
  *                                 template.
+ * @param {Function} cb Callback that will be given an Error as its first
+ *                      parameter, if one occurs.
+ * @returns {*} The callback's return value.
  */
-KssGenerator.prototype.clone = function(templatePath, destinationPath) {
-  try {
-    var error = wrench.copyDirSyncRecursive(
-      templatePath,
-      destinationPath,
-      {
-        forceDelete: false,
-        excludeHiddenUnix: true
+KssGenerator.prototype.clone = function(templatePath, destinationPath, cb) {
+  cb = cb || function() {};
+
+  return wrench.copyDirRecursive(
+    templatePath,
+    destinationPath,
+    {
+      forceDelete: false,
+      excludeHiddenUnix: true
+    },
+    function(error) {
+      if (error) {
+        if (error.message === 'You are trying to delete a directory that already exists. Specify forceDelete in an options object to override this.') {
+          error = new Error('This folder already exists: ' + destinationPath);
+        }
+        if (this.implementsAPI === '2.0') {
+          throw error;
+        } else {
+          return cb(error);
+        }
       }
-    );
-    if (error) {
-      throw error;
+      return cb(null);
     }
-  } catch (e) {
-    throw new Error('Error! This folder already exists: ' + destinationPath);
-  }
+  );
 };
 
 /**
@@ -134,11 +160,18 @@ KssGenerator.prototype.clone = function(templatePath, destinationPath) {
  * any necessary tasks before the KSS parsing of the source files.
  *
  * @alias KssGenerator.prototype.init
- * @param {Array} config Array of configuration for the requested generation.
+ * @param {Object} config Configuration object for the requested generation.
+ * @param {Function} cb Callback that will be given an Error as its first
+ *                      parameter, if one occurs.
+ * @returns {*} The callback's return value.
  */
-KssGenerator.prototype.init = function(config) {
+KssGenerator.prototype.init = function(config, cb) {
+  cb = cb || function() {};
+
   // At the very least, generators MUST save the configuration parameters.
   this.config = config;
+
+  return cb(null);
 };
 
 /**
@@ -147,49 +180,54 @@ KssGenerator.prototype.init = function(config) {
  * When finished, it passes the completed KssStyleguide to the given callback.
  *
  * @alias KssGenerator.prototype.parse
- * @param {function} callback Function that takes a KssStyleguide and generates
- *                            the HTML files of the style guide.
+ * @param {Function} cb Callback that will be given an Error as its first
+ *                      parameter, if one occurs, and a fully-populated
+ *                      KssStyleguide as its second parameter.
+ * @returns {*} The callback's return value.
  */
-KssGenerator.prototype.parse = function(callback) {
+KssGenerator.prototype.parse = function(cb) {
+  var traverseCallback;
+
+  if (this.implementsAPI === '2.0') {
+    // For API 2.0, the callback did pass errors to the callback.
+    traverseCallback = function(err, styleguide) {
+      if (err) {
+        throw err;
+      }
+      return cb(styleguide);
+    };
+  } else {
+    traverseCallback = cb;
+  }
+
   if (this.config.verbose) {
     console.log('...Parsing your style guide:');
   }
-
-  /* eslint-disable key-spacing */
 
   // The default parse() method looks at the paths to the source folders and
   // uses KSS' traverse method to load, read and parse the source files. Other
   // generators may want to use KSS' parse method if they have already loaded
   // the source files through some other mechanism.
-  Kss.traverse(this.config.source, {
+  return Kss.traverse(this.config.source, {
     multiline: true,
-    markdown:  true,
-    markup:    true,
-    mask:      this.config.mask,
-    custom:    this.config.custom
-  }, function(err, styleguide) {
-    if (err) {
-      throw err;
-    }
-    callback(styleguide);
-  });
-
-  /* eslint-enable key-spacing */
+    markdown: true,
+    markup: true,
+    mask: this.config.mask,
+    custom: this.config.custom
+  }, traverseCallback);
 };
-
-/* eslint-disable no-unused-vars */
 
 /**
  * Generate the HTML files of the style guide given a KssStyleguide object.
  *
- * This the callback function passed to the parse() method. The callback is
- * wrapped in a closure so that it has access to "this" object (the methods and
- * properties of KssExampleGenerator.)
- *
  * @alias KssGenerator.prototype.generate
  * @param {KssStyleguide} styleguide The KSS style guide in object format.
+ * @param {Function} cb Callback that will be given an Error as its first
+ *                      parameter, if one occurs.
+ * @returns {*} The callback's return value.
  */
-KssGenerator.prototype.generate = function(styleguide) {
-};
+KssGenerator.prototype.generate = function(styleguide, cb) {
+  cb = cb || function() {};
 
-/* eslint-enable no-unused-vars */
+  return cb(null);
+};
