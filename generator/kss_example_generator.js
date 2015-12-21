@@ -46,7 +46,7 @@ var kssExampleGenerator = new KssGenerator('2.1', {
  */
 kssExampleGenerator.prototype.clone = function(templatePath, destinationPath, cb) {
   // Note that, at this point, kssExampleGenerator.init() has not been called.
-  console.log('Example template cloned to ' + destinationPath + '! (not really.)');
+  this.log('Example template cloned to ' + destinationPath + '! (not really.)');
 
   // No error has occurred.
   return cb(null);
@@ -92,7 +92,7 @@ kssExampleGenerator.init = function(config, cb) {
  */
 kssExampleGenerator.prototype.parse = function(cb) {
   if (this.config.verbose) {
-    console.log('...Parsing the demo style guide:');
+    this.log('...Parsing the demo style guide:');
   }
 
   // The default parse() method looks at the paths to the source folders and
@@ -118,7 +118,7 @@ kssExampleGenerator.prototype.parse = function(cb) {
  */
 kssExampleGenerator.prototype.generate = function(styleguide, cb) {
   styleguide.section();
-  console.log('...Generating the demo style guide.' + this.warning);
+  this.log('...Generating the demo style guide.' + this.warning);
 
   // No error has occurred.
   return cb(null);

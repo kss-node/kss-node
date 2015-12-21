@@ -49,6 +49,36 @@ module.exports = KssGenerator = function(version, options) {
 
   // Tell kss-node which Yargs-like options this generator has.
   this.options = options || {};
+
+  // The log function defaults to console.log.
+  this.setLogFunction(function(message) {
+    console.log(message);
+  });
+};
+
+/**
+ * Logs a message to be reported to the user.
+ *
+ * Since a generator can be used in places other than the console, using
+ * console.log() is inappropriate. The log() method should be used to pass
+ * messages to the KSS system so it can report them to the user.
+ *
+ * @param {string} message The message to log.
+ */
+KssGenerator.prototype.log = function(message) {
+  this.logFunction(message);
+};
+
+/**
+ * The log() method logs a message for the user. This method allows the system
+ * to define the underlying function used by the log method to report the
+ * message to the user. The default log function is a wrapper around
+ * console.log().
+ *
+ * @param {Function} logFunction Function to log a message to the user.
+ */
+KssGenerator.prototype.setLogFunction = function(logFunction) {
+  this.logFunction = logFunction;
 };
 
 /**
@@ -201,7 +231,7 @@ KssGenerator.prototype.parse = function(cb) {
   }
 
   if (this.config.verbose) {
-    console.log('...Parsing your style guide:');
+    this.log('...Parsing your style guide:');
   }
 
   // The default parse() method looks at the paths to the source folders and

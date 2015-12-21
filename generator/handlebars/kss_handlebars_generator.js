@@ -66,22 +66,28 @@ kssHandlebarsGenerator.init = function(config, cb) {
   this.config = config;
   this.config.helpers = this.config.helpers || [];
 
+  // Store the global Handlebars object.
+  this.Handlebars = require('handlebars');
+
+  // Load the standard Handlebars helpers.
+  require('./helpers.js').register(this.Handlebars, this.config);
+
   if (this.config.verbose) {
-    console.log('');
-    console.log('Generating your KSS style guide!');
-    console.log('');
-    console.log(' * KSS Source  : ' + this.config.source.join(', '));
-    console.log(' * Destination : ' + this.config.destination);
-    console.log(' * Template    : ' + this.config.template);
+    this.log('');
+    this.log('Generating your KSS style guide!');
+    this.log('');
+    this.log(' * KSS Source  : ' + this.config.source.join(', '));
+    this.log(' * Destination : ' + this.config.destination);
+    this.log(' * Template    : ' + this.config.template);
     if (this.config.helpers.length) {
-      console.log(' * Helpers     : ' + this.config.helpers.join(', '));
+      this.log(' * Helpers     : ' + this.config.helpers.join(', '));
     }
-    console.log('');
+    this.log('');
   }
 
   // Create a new destination directory.
   try {
-    mkdirp.sync(this.config.destination);
+    mkdirp.sync(this.config.destination + '/public');
   } catch (e) {
     // empty
   }
@@ -99,19 +105,6 @@ kssHandlebarsGenerator.init = function(config, cb) {
   } catch (e) {
     // empty
   }
-
-  // Ensure a "public" folder exists.
-  try {
-    mkdirp.sync(this.config.destination + '/public');
-  } catch (e) {
-    // empty
-  }
-
-  // Store the global Handlebars object.
-  this.Handlebars = require('handlebars');
-
-  // Load the standard Handlebars helpers.
-  require('./helpers.js').register(this.Handlebars, this.config);
 
   // Load Handlebars helpers.
   if (this.config.helpers.length > 0) {
@@ -159,7 +152,7 @@ kssHandlebarsGenerator.generate = function(styleguide, cb) {
     key;
 
   if (this.config.verbose) {
-    console.log(styleguide.data.files.map(function(file) {
+    this.log(styleguide.data.files.map(function(file) {
       return ' - ' + file;
     }).join('\n'));
   }
@@ -170,7 +163,7 @@ kssHandlebarsGenerator.generate = function(styleguide, cb) {
   }
 
   if (this.config.verbose) {
-    console.log('...Determining section markup:');
+    this.log('...Determining section markup:');
   }
 
   for (i = 0; i < sectionCount; i += 1) {
@@ -197,11 +190,11 @@ kssHandlebarsGenerator.generate = function(styleguide, cb) {
         if (!files.length) {
           partial.markup += ' NOT FOUND!';
           if (!this.config.verbose) {
-            console.log('WARNING: In section ' + partial.reference + ', ' + partial.markup);
+            this.log('WARNING: In section ' + partial.reference + ', ' + partial.markup);
           }
         }
         if (this.config.verbose) {
-          console.log(' - ' + partial.reference + ': ' + partial.markup);
+          this.log(' - ' + partial.reference + ': ' + partial.markup);
         }
         if (files.length) {
           // Load the partial's markup from file.
@@ -217,7 +210,7 @@ kssHandlebarsGenerator.generate = function(styleguide, cb) {
           }
         }
       } else if (this.config.verbose) {
-        console.log(' - ' + partial.reference + ': inline markup');
+        this.log(' - ' + partial.reference + ': inline markup');
       }
       // Register the partial using the filename (without extension) or using
       // the style guide reference.
@@ -239,7 +232,7 @@ kssHandlebarsGenerator.generate = function(styleguide, cb) {
   }
 
   if (this.config.verbose) {
-    console.log('...Generating style guide sections:');
+    this.log('...Generating style guide sections:');
   }
 
   // Now, group all of the sections by their root
@@ -279,7 +272,7 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
   if (root === 'styleguide.homepage') {
     filename = 'index.html';
     if (this.config.verbose) {
-      console.log(' - homepage');
+      this.log(' - homepage');
     }
     // Ensure homepageText is a non-false value.
     for (key in this.config.source) {
@@ -297,15 +290,15 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
     if (!homepageText) {
       homepageText = ' ';
       if (this.config.verbose) {
-        console.log('   ...no homepage content found in ' + this.config.homepage + '.');
+        this.log('   ...no homepage content found in ' + this.config.homepage + '.');
       } else {
-        console.log('WARNING: no homepage content found in ' + this.config.homepage + '.');
+        this.log('WARNING: no homepage content found in ' + this.config.homepage + '.');
       }
     }
   } else {
     filename = 'section-' + KssSection.prototype.encodeReferenceURI(root) + '.html';
     if (this.config.verbose) {
-      console.log(
+      this.log(
         ' - section ' + root + ' [',
         styleguide.section(root) ? styleguide.section(root).header() : 'Unnamed',
         ']'

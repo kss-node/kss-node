@@ -44,7 +44,8 @@
     "eslint": "^1.10.1",
     "istanbul": "^0.4.0",
     "jsdoc": "^3.4.0",
-    "mocha": "^2.3.4"
+    "mocha": "^2.3.4",
+    "mock-utf8-stream": "^0.1.1"
   },
   "bin": {
     "kss-node": "./bin/kss-node"

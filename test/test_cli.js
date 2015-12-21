@@ -2,45 +2,65 @@
 
 'use strict';
 
-var exec = require('child_process').exec,
-  fs = require('fs');
+var cli = require('../lib/cli'),
+  fs = require('fs'),
+  mockStream = require('mock-utf8-stream'),
+  path = require('path'),
+  wrench = require('wrench');
+
+var kssNode;
+
+// Instead of child_process.exec, we use the lib/cli.js module and feed it mock
+// stdout, stderr and argv.
+kssNode = function(args, cb) {
+  var argv = ['node', 'bin/kss-node'],
+    stdout = new mockStream.MockWritableStream(),
+    stderr = new mockStream.MockWritableStream();
+
+  stdout.startCapture();
+  stderr.startCapture();
+  if (args) {
+    Array.prototype.push.apply(argv, args.split(' '));
+  }
+
+  cli({
+    stdout: stdout,
+    stderr: stderr,
+    argv: argv
+  }, function(error) {
+    cb(error, stdout.capturedData, stderr.capturedData);
+  });
+};
 
 describe('Command Line Interface', function() {
   var noHomepageWarning = 'no homepage content found',
-    failureMessage = 'Error during generation',
     successMessage = 'Style guide generation completed successfully';
 
   afterEach(function(done) {
-    exec('rm -r test/output', function() {
-      done();
+    wrench.rmdirRecursive(path.resolve('test/output'), function(error) {
+      done(error ? error : null);
     });
   });
 
   describe('given no arguments', function() {
-    before(function(done) {
-      var self = this;
-      exec('bin/kss-node', function(err, stdout, stderr) {
-        should.not.exist(err);
-        self.stdout = stdout;
-        self.stderr = stderr;
-        done();
-      });
-    });
-
     it('should display help', function(done) {
-      this.stderr.should.include('Usage:', 'Display usage');
-      this.stderr.should.include('Options:', 'Display options');
-      done();
+      kssNode('',
+        function(error, stdout) {
+          should.not.exist(error);
+          stdout.should.include('Usage:', 'Display usage');
+          stdout.should.include('Options:', 'Display options');
+          done();
+        }
+      );
     });
   });
 
   describe('given --source option', function() {
     it('should read from source directory', function(done) {
       var source = helperUtils.fixtures('with-include');
-      exec(
-        'bin/kss-node --verbose --source ' + source + ' --destination test/output/nested',
-        function(err, stdout) {
-          should.not.exist(err);
+      kssNode('--verbose --source ' + source + ' --destination test/output/nested',
+        function(error, stdout) {
+          should.not.exist(error);
           stdout.should.include('* KSS Source  : ' + source);
           stdout.should.include(successMessage);
           done();
@@ -50,14 +70,11 @@ describe('Command Line Interface', function() {
 
     it('should not declare success if source directory is empty', function(done) {
       var source = helperUtils.fixtures('empty-source');
-      exec(
-        'bin/kss-node --verbose --source ' + source + ' --destination test/output/nested',
-        function(err, stdout) {
+      kssNode('--verbose --source ' + source + ' --destination test/output/nested',
+        function(err, stdout, stderr) {
           should.exist(err);
-          err.should.exist;
           stdout.should.include('* KSS Source  : ' + source);
-          stdout.should.include('No KSS documentation discovered in source files.');
-          stdout.should.include(failureMessage);
+          stderr.should.include('No KSS documentation discovered in source files.');
           stdout.should.not.include(successMessage);
           done();
         }
@@ -65,8 +82,7 @@ describe('Command Line Interface', function() {
     });
 
     it('should warn if homepage content is not found', function(done) {
-      exec(
-        'bin/kss-node --source ' + helperUtils.fixtures('missing-homepage') + ' --destination test/output/nested',
+      kssNode('--source ' + helperUtils.fixtures('missing-homepage') + ' --destination test/output/nested',
         function(err, stdout) {
           should.not.exist(err);
           stdout.should.include(noHomepageWarning);
@@ -79,8 +95,7 @@ describe('Command Line Interface', function() {
     it('should read multiple source directories', function(done) {
       var source = helperUtils.fixtures('with-include'),
         source2 = helperUtils.fixtures('empty-source');
-      exec(
-        'bin/kss-node --verbose --source ' + source + ' --source ' + source2 + ' --destination test/output/nested',
+      kssNode('--verbose --source ' + source + ' --source ' + source2 + ' --destination test/output/nested',
         function(err, stdout) {
           should.not.exist(err);
           stdout.should.include('* KSS Source  : ' + source + ', ' + source2);
@@ -95,8 +110,7 @@ describe('Command Line Interface', function() {
     it('should read destination directory', function(done) {
       var source = helperUtils.fixtures('with-include'),
         destination = helperUtils.fixtures('../output/nested');
-      exec(
-        'bin/kss-node --verbose ' + source + ' --destination ' + destination,
+      kssNode('--verbose ' + source + ' --destination ' + destination,
         function(err, stdout) {
           should.not.exist(err);
           stdout.should.include('* Destination : ' + destination);
@@ -110,8 +124,7 @@ describe('Command Line Interface', function() {
     it('should use the first unnamed as the source directory', function(done) {
       var source = helperUtils.fixtures('with-include'),
         destination = helperUtils.fixtures('../output/nested');
-      exec(
-        'bin/kss-node --verbose ' + source + ' --destination ' + destination,
+      kssNode('--verbose ' + source + ' --destination ' + destination,
         function(err, stdout) {
           should.not.exist(err);
           stdout.should.include('* KSS Source  : ' + source);
@@ -124,8 +137,7 @@ describe('Command Line Interface', function() {
     it('should use the second unnamed as the destination directory', function(done) {
       var source = helperUtils.fixtures('with-include'),
         destination = helperUtils.fixtures('../output/nested');
-      exec(
-        'bin/kss-node --verbose ' + source + ' ' + destination,
+      kssNode('--verbose ' + source + ' ' + destination,
         function(err, stdout) {
           should.not.exist(err);
           stdout.should.include('* Destination : ' + destination);
@@ -137,8 +149,7 @@ describe('Command Line Interface', function() {
 
   describe('given --custom option', function() {
     it('should read custom properties', function(done) {
-      exec(
-        'bin/kss-node test/fixtures/with-include test/output/nested --template test/fixtures/template --custom custom --custom custom2',
+      kssNode('test/fixtures/with-include test/output/nested --template test/fixtures/template --custom custom --custom custom2',
         function(err) {
           should.not.exist(err);
           fs.readFile(path.join(__dirname, 'output/nested/section-4.html'), 'utf8', function(err2, data) {
@@ -154,8 +165,7 @@ describe('Command Line Interface', function() {
 
   describe('given --config option', function() {
     it('should load configuration from JSON file', function(done) {
-      exec(
-        'bin/kss-node --config test/fixtures/cli-option-config.json',
+      kssNode('--config test/fixtures/cli-option-config.json',
         function(err, stdout) {
           should.not.exist(err);
           stdout.should.include(successMessage);
