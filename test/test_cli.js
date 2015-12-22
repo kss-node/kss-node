@@ -36,7 +36,7 @@ describe('Command Line Interface', function() {
   var noHomepageWarning = 'no homepage content found',
     successMessage = 'Style guide generation completed successfully';
 
-  afterEach(function(done) {
+  after(function(done) {
     wrench.rmdirRecursive(path.resolve('test/output'), function(error) {
       done(error ? error : null);
     });
@@ -149,10 +149,10 @@ describe('Command Line Interface', function() {
 
   describe('given --custom option', function() {
     it('should read custom properties', function(done) {
-      kssNode('test/fixtures/with-include test/output/nested --template test/fixtures/template --custom custom --custom custom2',
+      kssNode('test/fixtures/with-include test/output/custom --template test/fixtures/template --custom custom --custom custom2',
         function(err) {
           should.not.exist(err);
-          fs.readFile(path.join(__dirname, 'output/nested/section-4.html'), 'utf8', function(err2, data) {
+          fs.readFile(path.join(__dirname, 'output/custom/section-4.html'), 'utf8', function(err2, data) {
             should.not.exist(err2);
             data.should.include('"custom" property: This is the first custom property.');
             data.should.include('"custom2" property: This is the second custom property.');
