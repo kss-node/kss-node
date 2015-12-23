@@ -223,12 +223,28 @@ kssHandlebarsGenerator.generate = function(styleguide, cb) {
       };
     }
 
-    // Accumulate all of the sections' first indexes
-    // in case they don't have a root element.
+    // Accumulate all of the sections' first indexes.
     currentRoot = sections[i].reference().split(/(?:\.|\ \-\ )/)[0];
     if (sectionRoots.indexOf(currentRoot) === -1) {
       sectionRoots.push(currentRoot);
     }
+  }
+
+  // If a root element doesn't have an actual section, build one for it.
+  rootCount = sectionRoots.length;
+  key = false;
+  for (i = 0; i < rootCount; i += 1) {
+    currentRoot = styleguide.section(sectionRoots[i]);
+    if (currentRoot === false) {
+      key = sectionRoots[i];
+      styleguide.data.sections.push(new KssSection({
+        header: key,
+        reference: key
+      }));
+    }
+  }
+  if (key !== false) {
+    styleguide.init();
   }
 
   if (this.config.verbose) {
