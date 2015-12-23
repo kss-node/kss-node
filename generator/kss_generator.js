@@ -161,6 +161,8 @@ KssGenerator.prototype.checkGenerator = function(cb) {
 KssGenerator.prototype.clone = function(templatePath, destinationPath, cb) {
   cb = cb || /* istanbul ignore next */ function() {};
 
+  var self = this;
+
   return wrench.copyDirRecursive(
     templatePath,
     destinationPath,
@@ -170,11 +172,12 @@ KssGenerator.prototype.clone = function(templatePath, destinationPath, cb) {
     },
     function(error) {
       if (error) {
+        // istanbul ignore else
         if (error.message === 'You are trying to delete a directory that already exists. Specify forceDelete in an options object to override this.') {
           error = new Error('This folder already exists: ' + destinationPath);
         }
         // istanbul ignore if: API 2.0 is deprecated; remove in 3.x
-        if (this.implementsAPI === '2.0') {
+        if (self.implementsAPI === '2.0') {
           // istanbul ignore next: API 2.0 is deprecated; remove in 3.x
           throw error;
         } else {

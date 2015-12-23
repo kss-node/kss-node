@@ -174,4 +174,42 @@ describe('Command Line Interface', function() {
       );
     });
   });
+
+  describe('given --clone option', function() {
+    it('should copy the template', function(done) {
+      kssNode('--clone test/output/template',
+        function(err, stdout) {
+          should.not.exist(err);
+          stdout.should.include('Creating a new style guide template...');
+          stdout.should.include('kss-node [sourcedir] --template ' + path.resolve('test/output/template'));
+          done();
+        }
+      );
+    });
+
+    it('should use a default path', function(done) {
+      var defaultPath = path.resolve('custom-template');
+      kssNode('--clone',
+        function(err, stdout) {
+          should.not.exist(err);
+          stdout.should.include('kss-node [sourcedir] --template ' + defaultPath);
+
+          wrench.rmdirRecursive(defaultPath, function(error) {
+            done(error ? error : null);
+          });
+        }
+      );
+    });
+
+    it('should error if the destination folder exists', function(done) {
+      var existingFolder = path.resolve('test/fixtures/template');
+      kssNode('--clone ' + existingFolder,
+        function(error) {
+          should.exist(error);
+          error.message.should.include('This folder already exists: ' + existingFolder);
+          done();
+        }
+      );
+    });
+  });
 });
