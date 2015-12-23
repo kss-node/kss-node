@@ -11,13 +11,15 @@
 var KssHandlebarsGenerator;
 
 try {
-  // This require() line will always fail while testing a git clone of this
-  // module. In order for a bundled template to be "kss-node clone"-able, it
-  // must use the require('kss/generator/path') syntax (instead of requiring a
-  // relative path). But, since this kss module has been git cloned and not
-  // installed via npm, require('kss/anything') will always fail.
+  // In order for a template to be "kss-node clone"-able, it must use the
+  // require('kss/generator/path') syntax (instead of requiring a relative
+  // path).
   KssHandlebarsGenerator = require('kss/generator/handlebars');
 } catch (e) {
+  // The above require() line will always fail while testing a git clone of this
+  // module because this code is not inside a node_modules/kss folder which
+  // would allow node.js to find it with require('kss/anything'). So we catch
+  // the error and use a relative path.
   KssHandlebarsGenerator = require('../kss_handlebars_generator.js');
 }
 

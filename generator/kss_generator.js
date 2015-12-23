@@ -26,7 +26,7 @@ var KssGenerator;
  *
  * ```
  * var KssGenerator = require('kss/generator');
- * var customGenerator = new KssGenerator('2.0');
+ * var customGenerator = new KssGenerator('2.1');
  * ```
  *
  * @constructor
