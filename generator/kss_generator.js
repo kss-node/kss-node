@@ -102,10 +102,11 @@ KssGenerator.prototype.checkGenerator = function(cb) {
     thisMinor,
     error;
 
-  cb = cb || function() {};
+  cb = cb || /* istanbul ignore next */ function() {};
 
   if (!(this instanceof KssGenerator)) {
     error = new Error('The loaded generator is not a KssGenerator object.');
+    // istanbul ignore if: API 2.0 is deprecated; remove in 3.x
     if (this.implementsAPI === '2.0') {
       throw error;
     } else {
@@ -131,6 +132,7 @@ KssGenerator.prototype.checkGenerator = function(cb) {
 
   if (!isCompatible) {
     error = new Error('kss-node expected the template\'s generator to implement KssGenerator API version ' + this.API + '; version "' + this.implementsAPI + '" is being used instead.');
+    // istanbul ignore if: API 2.0 is deprecated; remove in 3.x
     if (this.implementsAPI === '2.0') {
       throw error;
     } else {
@@ -157,7 +159,7 @@ KssGenerator.prototype.checkGenerator = function(cb) {
  * @returns {*} The callback's return value.
  */
 KssGenerator.prototype.clone = function(templatePath, destinationPath, cb) {
-  cb = cb || function() {};
+  cb = cb || /* istanbul ignore next */ function() {};
 
   return wrench.copyDirRecursive(
     templatePath,
@@ -171,7 +173,9 @@ KssGenerator.prototype.clone = function(templatePath, destinationPath, cb) {
         if (error.message === 'You are trying to delete a directory that already exists. Specify forceDelete in an options object to override this.') {
           error = new Error('This folder already exists: ' + destinationPath);
         }
+        // istanbul ignore if: API 2.0 is deprecated; remove in 3.x
         if (this.implementsAPI === '2.0') {
+          // istanbul ignore next: API 2.0 is deprecated; remove in 3.x
           throw error;
         } else {
           return cb(error);
@@ -196,7 +200,7 @@ KssGenerator.prototype.clone = function(templatePath, destinationPath, cb) {
  * @returns {*} The callback's return value.
  */
 KssGenerator.prototype.init = function(config, cb) {
-  cb = cb || function() {};
+  cb = cb || /* istanbul ignore next */ function() {};
 
   // At the very least, generators MUST save the configuration parameters.
   this.config = config;
@@ -218,6 +222,7 @@ KssGenerator.prototype.init = function(config, cb) {
 KssGenerator.prototype.parse = function(cb) {
   var traverseCallback;
 
+  // istanbul ignore if: API 2.0 is deprecated; remove in 3.x
   if (this.implementsAPI === '2.0') {
     // For API 2.0, the callback did pass errors to the callback.
     traverseCallback = function(err, styleguide) {
@@ -257,7 +262,7 @@ KssGenerator.prototype.parse = function(cb) {
  * @returns {*} The callback's return value.
  */
 KssGenerator.prototype.generate = function(styleguide, cb) {
-  cb = cb || function() {};
+  cb = cb || /* istanbul ignore next */ function() {};
 
   return cb(null);
 };
