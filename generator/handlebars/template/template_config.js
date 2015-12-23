@@ -42,3 +42,11 @@ kssHandlebarsTemplate.options = {
     default: 3
   }
 };
+
+// If this template wants to modify the KssStyleguide object before the HTML is
+// generated, it can do so here. For example, doing special handling of "custom"
+// properties. It can also take this opportunity for other tasks, like running
+// Sass or Bower tasks.
+kssHandlebarsTemplate.generator.prepare = function(styleguide, cb) {
+  return cb(null, styleguide);
+};
