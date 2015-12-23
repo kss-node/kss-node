@@ -8,27 +8,26 @@
 // either be named index.js or have its name set in the "main" property of the
 // template's package.json.
 
-var KssHandlebarsGenerator;
+var kssHandlebarsTemplate;
 
-try {
-  // In order for a template to be "kss-node clone"-able, it must use the
-  // require('kss/generator/path') syntax (instead of requiring a relative
-  // path).
-  KssHandlebarsGenerator = require('kss/generator/handlebars');
-} catch (e) {
-  // The above require() line will always fail while testing a git clone of this
-  // module because this code is not inside a node_modules/kss folder which
-  // would allow node.js to find it with require('kss/anything'). So we catch
-  // the error and use a relative path.
-  KssHandlebarsGenerator = require('../kss_handlebars_generator.js');
-}
+module.exports = kssHandlebarsTemplate = {};
 
 // Tell kss-node which generator this template uses.
-module.exports.generator = KssHandlebarsGenerator;
+try {
+  // In order for a template to be "kss-node clone"-able, it must use the
+  // require('kss/generator/path') syntax.
+  kssHandlebarsTemplate.generator = require('kss/generator/handlebars');
+} catch (e) {
+  // The above require() line will always fail while testing a git clone of this
+  // module because this code is not inside a "node_modules/kss" folder which
+  // would allow node.js to find it with require('kss/anything'). So we catch
+  // the error and use a relative path.
+  kssHandlebarsTemplate.generator = require('../kss_handlebars_generator.js');
+}
 
-// Tell kss-node which Yargs options this template has.
+// Tell kss-node which Yargs-like options this template has.
 // See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
-module.exports.options = {
+kssHandlebarsTemplate.options = {
   'title': {
     group: 'Style guide:',
     string: true,
