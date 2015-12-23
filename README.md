@@ -43,50 +43,52 @@ To get you up and running quickly, a style guide generator is included that can 
 ```
 Usage: kss-node [options]
 
-Options:
-  --init, -i      Clone a style guide template to customize             [string]
+File locations:
+  --source       Source directory to parse for KSS comments
+  --destination  Destination directory of generated style guide
+                                                         [default: "styleguide"]
+  --mask, -m     Use a mask for detecting files containing KSS comments
+                         [default: "*.css|*.less|*.sass|*.scss|*.styl|*.stylus"]
+  --config, -c   Load the kss-node configuration from a json file
+
+Template:
+  --clone        Clone a style guide template to customize
   --template, -t  Use a custom template to build your style guide
-                             [string] [default: "generator/handlebars/template"]
-  --mask, -m      Use a mask for detecting files containing KSS comments
-                [string] [default: "*.css|*.less|*.sass|*.scss|*.styl|*.stylus"]
-  --css           URL of a CSS file to include in the style guide       [string]
-  --js            URL of a JavaScript file to include in the style guide
-                                                                        [string]
-  --custom        Process a custom property name when parsing KSS comments
-                                                                        [string]
-  --source        Source directory to parse for KSS comments            [string]
-  --destination   Destination directory of generated style guide
-                                                [string] [default: "styleguide"]
+                                      [default: "generator/handlebars/template"]
+
+Style guide:
+  --css          URL of a CSS file to include in the style guide
+  --js           URL of a JavaScript file to include in the style guide
+  --custom       Process a custom property name when parsing KSS comments
+  --helpers      Location of custom handlebars helpers; see
+                 http://bit.ly/kss-wiki
+  --homepage     File name of the homepage's Markdown file
+                                                      [default: "styleguide.md"]
+  --placeholder  Placeholder text to use for modifier classes
+                                                   [default: "[modifier class]"]
+  --title        Title of the style guide           [default: "KSS Style Guide"]
+  --nav-depth    Limit the navigation to the depth specified        [default: 3]
+
+Options:
   --verbose       Display verbose details while generating
-  --config, -c    Load the kss-node configuration from a json file
+  --xdemo         Builds a KSS demo.
   --help, -h, -?  Show help
   --version       Show version number
-
-Options for the default template:
-  --helpers       Location of custom handlebars helpers; see
-                  http://bit.ly/kss-wiki                                [string]
-  --homepage      File name of the homepage's Markdown file
-                                             [string] [default: "styleguide.md"]
-  --placeholder   Placeholder text to use for modifier classes
-                                          [string] [default: "[modifier class]"]
-  --title         Title of the style guide
-                                           [string] [default: "KSS Style Guide"]
-  --nav-depth     Limit the navigation to the depth specified       [default: 3]
 ```
 
 In order to parse your stylesheets containing KSS docs, you need to either specify a single directory as the first argument or you can specify one or more source directories with one or more `--source [directory]` flags.
 
 The generated style guide will be put into the `styleguide` directory unless you specify the second argument or use a `--destination [directory]` flag.
 
-Even though kss-node parses your CSS source, your CSS won't be included in the style guide unless you use the `--css` option or create a custom template with `--init`.
+Even though kss-node parses your CSS source, your CSS won't be included in the style guide unless you use the `--css` option or create a custom template with `--clone`.
 
 You can generate a copy of the demo style guide like so:
 
     $ kss-node --xdemo
 
-It is recommended that you create your own template, i.e. skin, theme. Use the `kss-node --init` command to initialize a copy of the default template so you can edit it and use it when generating your style guide with the `--template` flag. Simply link the generated CSS (as well as JS, etc.) from inside the custom template's index.html.
+It is recommended that you create your own template, i.e. skin, theme. Use the `kss-node --clone` command to initialize a copy of the default template so you can edit it and use it when generating your style guide with the `--template` flag. Simply link the generated CSS (as well as JS, etc.) from inside the custom template's index.html.
 
-    $ kss-node --init custom-template
+    $ kss-node --clone custom-template
     $ kss-node path/to/sass styleguide --template custom-template
 
 The default template should look something like this:
