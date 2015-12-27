@@ -38,9 +38,9 @@
       {{#ifReference ../rootName}}
         <ul class="kss-nav__menu-child">
         {{#eachSection reference}}
-          {{#ifDepth 2 ../../../options.[nav-depth]}}
+          {{#ifDepth 2 ../../options.[nav-depth]}}
             <li class="kss-nav__menu-item">
-              <a href="section-{{../../referenceURI}}.html#kssref-{{referenceURI}}">
+              <a href="section-{{../referenceURI}}.html#kssref-{{referenceURI}}">
                 <span class="kss-nav__ref {{#ifDepth 3 100}}kss-nav__ref-child{{/ifDepth}}">{{#ifNumeric reference}}{{reference}}{{else}}{{autoincrement}}{{/ifNumeric}}</span
                 ><span class="kss-nav__name">{{header}}</span>
               </a>
