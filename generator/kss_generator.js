@@ -212,14 +212,14 @@ KssGenerator.prototype.init = function(config, cb) {
 };
 
 /**
- * Parse the source files for KSS comments and create a KssStyleguide object.
+ * Parse the source files for KSS comments and create a KssStyleGuide object.
  *
- * When finished, it passes the completed KssStyleguide to the given callback.
+ * When finished, it passes the completed KssStyleGuide to the given callback.
  *
  * @alias KssGenerator.prototype.parse
  * @param {Function} cb Callback that will be given an Error as its first
  *                      parameter, if one occurs, and a fully-populated
- *                      KssStyleguide as its second parameter.
+ *                      KssStyleGuide as its second parameter.
  * @returns {*} The callback's return value.
  */
 KssGenerator.prototype.parse = function(cb) {
@@ -256,13 +256,13 @@ KssGenerator.prototype.parse = function(cb) {
 };
 
 /**
- * Allow the template to prepare itself or modify the KssStyleguide object.
+ * Allow the template to prepare itself or modify the KssStyleGuide object.
  *
  * @alias KssGenerator.prototype.prepare
- * @param {KssStyleguide} styleguide The KSS style guide in object format.
+ * @param {KssStyleGuide} styleguide The KSS style guide in object format.
  * @param {Function} cb Callback that will be given an Error as its first
  *                      parameter, if one occurs, and a fully-populated
- *                      KssStyleguide as its second parameter.
+ *                      KssStyleGuide as its second parameter.
  * @returns {*} The callback's return value.
  */
 KssGenerator.prototype.prepare = function(styleguide, cb) {
@@ -270,10 +270,10 @@ KssGenerator.prototype.prepare = function(styleguide, cb) {
 };
 
 /**
- * Generate the HTML files of the style guide given a KssStyleguide object.
+ * Generate the HTML files of the style guide given a KssStyleGuide object.
  *
  * @alias KssGenerator.prototype.generate
- * @param {KssStyleguide} styleguide The KSS style guide in object format.
+ * @param {KssStyleGuide} styleguide The KSS style guide in object format.
  * @param {Function} cb Callback that will be given an Error as its first
  *                      parameter, if one occurs.
  * @returns {*} The callback's return value.

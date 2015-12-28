@@ -22,7 +22,7 @@ describe('kss object API', function() {
     'KssModifier',
     'KssParameter',
     'KssSection',
-    'KssStyleguide'
+    'KssStyleGuide'
   ].forEach(function(method) {
     it('has ' + method + '() constructor', function(done) {
       kss.should.itself.respondTo(method);

@@ -43,7 +43,7 @@ kssHandlebarsTemplate.options = {
   }
 };
 
-// If this template wants to modify the KssStyleguide object before the HTML is
+// If this template wants to modify the KssStyleGuide object before the HTML is
 // generated, it can do so here. For example, doing special handling of "custom"
 // properties. It can also take this opportunity for other tasks, like running
 // Sass or Bower tasks.

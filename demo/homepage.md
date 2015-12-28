@@ -43,7 +43,7 @@ Documentation on how to get started with kss-node (and with Node.js' npm) is ava
 If you don't wish to use the default style guide template, you can either:
 * write your own template that uses the default kssHandlebarsGenerator style guide generator, or
 * write your own style guide generator, or
-* use the JavaScript object representation of the style guide, KssStyleguide.
+* use the JavaScript object representation of the style guide, KssStyleGuide.
 
 **For more information on how to integrate kss-node with your own JavaScript, see the [JavaScript API documentation](./section-javascript-api.html).**
 

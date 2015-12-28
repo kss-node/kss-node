@@ -2,7 +2,7 @@
 
 'use strict';
 
-describe('KssStyleguide object API', function() {
+describe('KssStyleGuide object API', function() {
   before(function(done) {
     var self = this;
     helperUtils.traverseFixtures({mask: /(sections\-queries|sections\-order|property\-styleguide\-word\-keys)\.less/}, function(styleguide) {
@@ -21,15 +21,15 @@ describe('KssStyleguide object API', function() {
     'getWeight'
   ].forEach(function(method) {
     it('has ' + method + '() method', function(done) {
-      (new kss.KssStyleguide({})).should.respondTo(method);
+      (new kss.KssStyleGuide({})).should.respondTo(method);
       done();
     });
   });
   /* eslint-enable guard-for-in,no-loop-func */
 
-  describe('KssStyleguide constructor', function() {
+  describe('KssStyleGuide constructor', function() {
     it('should initialize the data', function(done) {
-      var obj = new kss.KssStyleguide();
+      var obj = new kss.KssStyleGuide();
       obj.should.have.property('referenceDelimiter');
       obj.should.have.property('data');
       obj.data.should.have.property('weightMap');
@@ -37,10 +37,10 @@ describe('KssStyleguide object API', function() {
       done();
     });
 
-    it('should return a KssStyleguide object when called normally', function(done) {
+    it('should return a KssStyleGuide object when called normally', function(done) {
       /* eslint-disable new-cap */
-      var obj = kss.KssStyleguide();
-      obj.should.be.an.instanceof(kss.KssStyleguide);
+      var obj = kss.KssStyleGuide();
+      obj.should.be.an.instanceof(kss.KssStyleGuide);
       done();
       /* eslint-enable new-cap */
     });
