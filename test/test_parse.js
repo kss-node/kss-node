@@ -321,7 +321,7 @@ describe('kss.parse()', function() {
       describe('.deprecated/.experimental', function() {
         before(function(done) {
           var self = this;
-          helperUtils.traverseFixtures({mask: 'property-deprecated-experimental.less', markdown: false, multiline: true}, function(styleguide) {
+          helperUtils.traverseFixtures({mask: 'property-deprecated-experimental.less', markdown: false, header: true}, function(styleguide) {
             self.styleguide = styleguide;
             done();
           });
@@ -366,7 +366,7 @@ describe('kss.parse()', function() {
 
       describe('.reference', function() {
         it('should find reference "X.0" without trailing zero', function(done) {
-          helperUtils.traverseFixtures({mask: 'sections-queries.less', multiline: true}, function(styleguide) {
+          helperUtils.traverseFixtures({mask: 'sections-queries.less', header: true}, function(styleguide) {
             styleguide.section(/8.*/)[0].data.reference.should.equal('8');
             done();
           });
@@ -474,7 +474,7 @@ describe('kss.parse()', function() {
       });
     });
 
-    describe('.multiline:', function() {
+    describe('.header:', function() {
       it('should be enabled by default', function(done) {
         helperUtils.traverseFixtures({mask: 'property-header.less', markdown: false}, function(styleguide) {
           styleguide.section('header.three-paragraphs').data.description.should.equal('ANOTHER PARAGRAPH\n\nAND ANOTHER');
@@ -483,7 +483,7 @@ describe('kss.parse()', function() {
       });
 
       it('should not remove the header from description when disabled', function(done) {
-        helperUtils.traverseFixtures({mask: 'property-header.less', markdown: false, multiline: false}, function(styleguide) {
+        helperUtils.traverseFixtures({mask: 'property-header.less', markdown: false, header: false}, function(styleguide) {
           styleguide.section('header.three-paragraphs').data.description.should.equal('THREE PARAGRAPHS, NO MODIFIERS\n\nANOTHER PARAGRAPH\n\nAND ANOTHER');
           done();
         });

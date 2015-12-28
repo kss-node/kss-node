@@ -247,7 +247,7 @@ KssGenerator.prototype.parse = function(cb) {
   // generators may want to use KSS' parse method if they have already loaded
   // the source files through some other mechanism.
   return Kss.traverse(this.config.source, {
-    multiline: true,
+    header: true,
     markdown: true,
     markup: true,
     mask: this.config.mask,
