@@ -178,8 +178,9 @@ describe('Command Line Interface', function() {
   describe('given --clone option', function() {
     it('should copy the template', function(done) {
       kssNode('--clone test/output/template',
-        function(error, stdout) {
+        function(error, stdout, stderr) {
           expect(error).to.not.exist;
+          expect(stderr).to.be.string('');
           expect(stdout).to.include('Creating a new style guide template...');
           expect(stdout).to.include('kss-node [sourcedir] --template ' + path.resolve('test/output/template'));
           done();
@@ -190,8 +191,9 @@ describe('Command Line Interface', function() {
     it('should use a default path', function(done) {
       var defaultPath = path.resolve('custom-template');
       kssNode('--clone',
-        function(error, stdout) {
+        function(error, stdout, stderr) {
           expect(error).to.not.exist;
+          expect(stderr).to.be.string('');
           expect(stdout).to.include('kss-node [sourcedir] --template ' + defaultPath);
 
           wrench.rmdirRecursive(defaultPath, function(error) {
