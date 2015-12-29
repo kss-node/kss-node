@@ -189,6 +189,8 @@ describe('Command Line Interface', function() {
     });
 
     it('should use a default path', function(done) {
+      // This test is long.
+      this.timeout(4000);
       var defaultPath = path.resolve('custom-template');
       kssNode('--clone',
         function(error, stdout, stderr) {
