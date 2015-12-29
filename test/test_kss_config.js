@@ -15,7 +15,7 @@ describe('KssConfig object API', function() {
     'loadGenerator'
   ].forEach(function(method) {
     it('has ' + method + '() method', function(done) {
-      (new kss.KssConfig({})).should.respondTo(method);
+      expect(new kss.KssConfig({})).to.respondTo(method);
       done();
     });
   });
@@ -24,19 +24,19 @@ describe('KssConfig object API', function() {
   describe('KssConfig constructor', function() {
     it('should initialize the data', function(done) {
       var kssConfig = new kss.KssConfig();
-      kssConfig.should.have.property('config');
-      kssConfig.should.have.property('options');
-      kssConfig.options.should.have.property('css');
-      kssConfig.options.should.have.property('js');
-      kssConfig.options.should.have.property('custom');
-      kssConfig.options.should.have.property('verbose');
+      expect(kssConfig).to.have.property('config');
+      expect(kssConfig).to.have.property('options');
+      expect(kssConfig.options).to.have.property('css');
+      expect(kssConfig.options).to.have.property('js');
+      expect(kssConfig.options).to.have.property('custom');
+      expect(kssConfig.options).to.have.property('verbose');
       done();
     });
 
     it('should return a KssConfig object when called normally', function(done) {
       /* eslint-disable new-cap */
       var kssConfig = kss.KssConfig();
-      kssConfig.should.be.an.instanceof(kss.KssConfig);
+      expect(kssConfig).to.be.an.instanceof(kss.KssConfig);
       done();
       /* eslint-enable new-cap */
     });
@@ -44,7 +44,7 @@ describe('KssConfig object API', function() {
     it('should set config when given an object', function(done) {
       var opts = require(pathToJSON);
       var kssConfig = new kss.KssConfig(opts);
-      kssConfig.config.source.should.equal('with-include');
+      expect(kssConfig.config.source).to.equal('with-include');
       done();
     });
   });
@@ -53,14 +53,14 @@ describe('KssConfig object API', function() {
     it('should set this.config', function(done) {
       var kssConfig = new kss.KssConfig();
       kssConfig.set({source: 'isSet'});
-      kssConfig.config.source.should.equal('isSet');
+      expect(kssConfig.config.source).to.equal('isSet');
       done();
     });
 
     it('should not unset this.config', function(done) {
       var kssConfig = new kss.KssConfig(require(pathToJSON));
       kssConfig.set({source: 'isSet'});
-      kssConfig.config.destination.should.equal('../output/nested');
+      expect(kssConfig.config.destination).to.equal('../output/nested');
       done();
     });
   });
@@ -73,7 +73,7 @@ describe('KssConfig object API', function() {
       config = kssConfig.get();
       for (key in config) {
         if (config.hasOwnProperty(key)) {
-          config[key].should.equal(kssConfig.config[key]);
+          expect(config[key]).to.equal(kssConfig.config[key]);
         }
       }
       done();
@@ -84,7 +84,7 @@ describe('KssConfig object API', function() {
         kssConfig = new kss.KssConfig(require(pathToJSON));
       for (key in kssConfig.config) {
         if (kssConfig.config.hasOwnProperty(key)) {
-          kssConfig.get(key).should.equal(kssConfig.config[key]);
+          expect(kssConfig.get(key)).to.equal(kssConfig.config[key]);
         }
       }
       done();
@@ -99,8 +99,8 @@ describe('KssConfig object API', function() {
           description: 'I want candy.'
         }
       });
-      kssConfig.options.candy.should.exist;
-      kssConfig.options.candy.description.should.exist;
+      expect(kssConfig.options.candy).to.exist;
+      expect(kssConfig.options.candy.description).to.exist;
       done();
     });
   });
@@ -109,22 +109,22 @@ describe('KssConfig object API', function() {
     it('should load config from a JSON file', function(done) {
       var kssConfig = new kss.KssConfig();
       kssConfig.loadJSON(pathToJSON);
-      kssConfig.config.source.should.exist;
-      kssConfig.config.source.should.equal('with-include');
+      expect(kssConfig.config.source).to.exist;
+      expect(kssConfig.config.source).to.equal('with-include');
       done();
     });
 
     it('should store the absolute path to the JSON file', function(done) {
       var kssConfig = new kss.KssConfig();
       kssConfig.loadJSON('test/fixtures/cli-option-config.json');
-      kssConfig.config.config.should.equal(helperUtils.fixtures('cli-option-config.json'));
+      expect(kssConfig.config.config).to.equal(helperUtils.fixtures('cli-option-config.json'));
       done();
     });
 
     it('should store keys in the JSON file', function(done) {
       var kssConfig = new kss.KssConfig();
       kssConfig.loadJSON(pathToJSON);
-      kssConfig.config.configFileKeys.should.deep.equal(['//', 'source', 'destination', 'template']);
+      expect(kssConfig.config.configFileKeys).to.deep.equal(['//', 'source', 'destination', 'template']);
       done();
     });
   });
@@ -134,15 +134,15 @@ describe('KssConfig object API', function() {
       var kssConfig = new kss.KssConfig();
       kssConfig.set({source: 'with-include'});
       kssConfig.normalize();
-      kssConfig.config.source.should.be.an.instanceOf(Array);
+      expect(kssConfig.config.source).to.be.an.instanceOf(Array);
       kssConfig.set({source: ['with-include', 'missing-homepage']});
       kssConfig.normalize();
-      kssConfig.config.source.should.be.an.instanceOf(Array);
+      expect(kssConfig.config.source).to.be.an.instanceOf(Array);
       // Yargs will set any option without a default to undefined.
       /* eslint-disable no-undefined */
       kssConfig.set({source: undefined});
       kssConfig.normalize();
-      kssConfig.config.source.should.be.an.instanceOf(Array);
+      expect(kssConfig.config.source).to.be.an.instanceOf(Array);
       done();
     });
 
@@ -150,14 +150,14 @@ describe('KssConfig object API', function() {
       var kssConfig = new kss.KssConfig();
       kssConfig.set({template: ['empty-source', 'with-include', 'template']});
       kssConfig.normalize();
-      kssConfig.config.template.should.be.a('string');
+      expect(kssConfig.config.template).to.be.a('string');
       done();
     });
 
     it('should resolve paths relative to the current working directory', function(done) {
       var kssConfig = new kss.KssConfig(require(pathToJSON));
       kssConfig.normalize();
-      kssConfig.config.source[0].should.equal(path.resolve('with-include'));
+      expect(kssConfig.config.source[0]).to.equal(path.resolve('with-include'));
       done();
     });
 
@@ -167,12 +167,12 @@ describe('KssConfig object API', function() {
       opts['config'] = pathToJSON;
       var kssConfig = new kss.KssConfig(opts);
       kssConfig.normalize();
-      kssConfig.config.source[0].should.equal(path.resolve(helperUtils.fixtures(), 'with-include'));
+      expect(kssConfig.config.source[0]).to.equal(path.resolve(helperUtils.fixtures(), 'with-include'));
       // The normal way to add JSON config.
       kssConfig = new kss.KssConfig();
       kssConfig.loadJSON(pathToJSON);
       kssConfig.normalize();
-      kssConfig.config.source[0].should.equal(path.resolve(helperUtils.fixtures(), 'with-include'));
+      expect(kssConfig.config.source[0]).to.equal(path.resolve(helperUtils.fixtures(), 'with-include'));
       done();
     });
 
@@ -180,7 +180,7 @@ describe('KssConfig object API', function() {
       var kssConfig = new kss.KssConfig(require(pathToJSON));
       kssConfig.set({destination: null});
       kssConfig.normalize();
-      should.equal(kssConfig.config.destination, null);
+      expect(kssConfig.config.destination).to.equal(null);
       done();
     });
   });
@@ -191,7 +191,7 @@ describe('KssConfig object API', function() {
         kssConfig = new kss.KssConfig();
       kssConfig.set({template: 'generator/handlebars/template'});
       generator = kssConfig.loadGenerator();
-      generator.should.be.an.instanceof(KssGenerator);
+      expect(generator).to.be.an.instanceof(KssGenerator);
       done();
     });
 
@@ -199,7 +199,7 @@ describe('KssConfig object API', function() {
       var generator,
         kssConfig = new kss.KssConfig({template: helperUtils.fixtures('template')});
       generator = kssConfig.loadGenerator();
-      generator.should.be.an.instanceof(KssGenerator);
+      expect(generator).to.be.an.instanceof(KssGenerator);
       done();
     });
 
@@ -207,8 +207,8 @@ describe('KssConfig object API', function() {
       var generator,
         kssConfig = new kss.KssConfig({template: 'generator/handlebars/template'});
       generator = kssConfig.loadGenerator();
-      generator.should.be.an.instanceof(KssGenerator);
-      should.exist(kssConfig.options['placeholder']);
+      expect(generator).to.be.an.instanceof(KssGenerator);
+      expect(kssConfig.options['placeholder']).to.exist;
       done();
     });
 
@@ -217,8 +217,8 @@ describe('KssConfig object API', function() {
         kssConfig;
       kssConfig = new kss.KssConfig({template: 'generator/handlebars/template'});
       generator = kssConfig.loadGenerator();
-      generator.should.be.an.instanceof(KssGenerator);
-      should.exist(kssConfig.options['nav-depth']);
+      expect(generator).to.be.an.instanceof(KssGenerator);
+      expect(kssConfig.options['nav-depth']).to.exist;
       done();
     });
   });

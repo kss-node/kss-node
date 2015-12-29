@@ -4,7 +4,7 @@
 global.chai = require('chai');
 global.kss = require('../index.js');
 global.path = require('path');
-global.should = global.chai.should();
+global.expect = global.chai.expect;
 
 // Create a helper utility object.
 global.helperUtils = {
@@ -20,8 +20,8 @@ global.helperUtils = {
   // Simplifies usage of kss.traverse() in various tests.
   traverseFixtures: function(options, cb) {
     kss.traverse(this.fixtures(), options, function(err, styleguide) {
-      should.not.exist(err);
-      styleguide.data.sections.should.be.ok;
+      expect(err).to.not.exist;
+      expect(styleguide.data.sections).to.be.ok;
       cb(styleguide);
     });
   }
@@ -33,7 +33,7 @@ before(function() {
   chai.use(function(chai) {
     var Assertion = chai.Assertion;
 
-    // .should.containFixture(string) asserts that a given file should be in an array.
+    // .containFixture(string) asserts that a given file should be in an array.
     Assertion.addMethod('containFixture', function(file) {
       file = path.resolve(helperUtils.fixtures(), file);
       this.assert(

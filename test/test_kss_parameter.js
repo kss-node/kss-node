@@ -17,7 +17,7 @@ describe('KssParameter object API', function() {
     'description'
   ].forEach(function(method) {
     it('has ' + method + '() method', function(done) {
-      (new kss.KssParameter({})).should.respondTo(method);
+      expect(new kss.KssParameter({})).to.respondTo(method);
       done();
     });
   });
@@ -26,17 +26,17 @@ describe('KssParameter object API', function() {
   describe('KssParameter constructor', function() {
     it('should initialize the data', function(done) {
       var obj = new kss.KssParameter();
-      obj.should.have.property('data');
-      obj.data.should.have.property('section');
-      obj.data.should.have.property('name');
-      obj.data.should.have.property('description');
+      expect(obj).to.have.property('data');
+      expect(obj.data).to.have.property('section');
+      expect(obj.data).to.have.property('name');
+      expect(obj.data).to.have.property('description');
       done();
     });
 
     it('should return a KssParameter object when called normally', function(done) {
       /* eslint-disable new-cap */
       var obj = kss.KssParameter();
-      obj.should.be.an.instanceof(kss.KssParameter);
+      expect(obj).to.be.an.instanceof(kss.KssParameter);
       done();
       /* eslint-enable new-cap */
     });
@@ -46,7 +46,7 @@ describe('KssParameter object API', function() {
     it('should return this.section', function(done) {
       this.styleguide.data.sections.map(function(section) {
         section.parameters().map(function(parameter) {
-          parameter.section().should.be.equal(parameter.data.section).and.equal(section);
+          expect(parameter.section()).to.equal(parameter.data.section).and.equal(section);
         });
       });
       done();
@@ -57,7 +57,7 @@ describe('KssParameter object API', function() {
     it('should return data.name', function(done) {
       this.styleguide.data.sections.map(function(section) {
         section.parameters().map(function(parameter) {
-          parameter.name().should.be.equal(parameter.data.name);
+          expect(parameter.name()).to.equal(parameter.data.name);
         });
       });
       done();
@@ -68,7 +68,7 @@ describe('KssParameter object API', function() {
     it('should return data.description', function(done) {
       this.styleguide.data.sections.map(function(section) {
         section.parameters().map(function(parameter) {
-          parameter.description().should.be.equal(parameter.data.description);
+          expect(parameter.description()).to.equal(parameter.data.description);
         });
       });
       done();

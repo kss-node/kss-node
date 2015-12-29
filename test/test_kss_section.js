@@ -27,7 +27,7 @@ describe('KssSection object API', function() {
     'parameters'
   ].forEach(function(method) {
     it('has ' + method + '() method', function(done) {
-      (new kss.KssSection()).should.respondTo(method);
+      expect(new kss.KssSection()).to.respondTo(method);
       done();
     });
   });
@@ -36,26 +36,26 @@ describe('KssSection object API', function() {
   describe('KssSection constructor', function() {
     it('should initialize the data', function(done) {
       var obj = new kss.KssSection();
-      obj.should.have.property('styleguide');
-      obj.should.have.property('data');
-      obj.data.should.have.property('header');
-      obj.data.should.have.property('description');
-      obj.data.should.have.property('deprecated');
-      obj.data.should.have.property('experimental');
-      obj.data.should.have.property('reference');
-      obj.data.should.have.property('depth');
-      obj.data.should.have.property('weight');
-      obj.data.should.have.property('referenceURI');
-      obj.data.should.have.property('markup');
-      obj.data.should.have.property('modifiers');
-      obj.data.should.have.property('parameters');
+      expect(obj).to.have.property('styleguide');
+      expect(obj).to.have.property('data');
+      expect(obj.data).to.have.property('header');
+      expect(obj.data).to.have.property('description');
+      expect(obj.data).to.have.property('deprecated');
+      expect(obj.data).to.have.property('experimental');
+      expect(obj.data).to.have.property('reference');
+      expect(obj.data).to.have.property('depth');
+      expect(obj.data).to.have.property('weight');
+      expect(obj.data).to.have.property('referenceURI');
+      expect(obj.data).to.have.property('markup');
+      expect(obj.data).to.have.property('modifiers');
+      expect(obj.data).to.have.property('parameters');
       done();
     });
 
     it('should return a KssSection object when called normally', function(done) {
       /* eslint-disable new-cap */
       var obj = kss.KssSection();
-      obj.should.be.an.instanceof(kss.KssSection);
+      expect(obj).to.be.an.instanceof(kss.KssSection);
       done();
       /* eslint-enable new-cap */
     });
@@ -65,14 +65,12 @@ describe('KssSection object API', function() {
     it('should return valid JSON object', function(done) {
       this.styleguide.data.sections.map(function(section) {
         var str;
-        section.toJSON().should.be.an.instanceOf(Object);
+        expect(section.toJSON()).to.be.an.instanceOf(Object);
         // Verify it converts to a JSON string.
-        (function() {
-          str = JSON.stringify(section.toJSON());
-        }).should.not.throw();
-        str.should.be.string;
+        str = JSON.stringify(section.toJSON());
+        expect(str).to.be.string;
         // Compare JSON string to original.
-        JSON.parse(str).should.eql(section.toJSON());
+        expect(JSON.parse(str)).to.eql(section.toJSON());
       });
       done();
     });
@@ -80,14 +78,12 @@ describe('KssSection object API', function() {
     it('should return custom properties given array of property names', function(done) {
       this.styleguide.data.sections.map(function(section) {
         var str;
-        section.toJSON(custom).should.be.an.instanceOf(Object);
+        expect(section.toJSON(custom)).to.be.an.instanceOf(Object);
         // Verify it converts to a JSON string.
-        (function() {
-          str = JSON.stringify(section.toJSON(custom));
-        }).should.not.throw();
-        str.should.be.string;
+        str = JSON.stringify(section.toJSON(custom));
+        expect(str).to.be.string;
         // Compare JSON string to original.
-        JSON.parse(str).should.eql(section.toJSON(custom));
+        expect(JSON.parse(str)).to.eql(section.toJSON(custom));
       });
       done();
     });
@@ -96,7 +92,7 @@ describe('KssSection object API', function() {
   describe('.header()', function() {
     it('should return data.header', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        section.header().should.be.equal(section.data.header);
+        expect(section.header()).to.be.equal(section.data.header);
       });
       done();
     });
@@ -105,7 +101,7 @@ describe('KssSection object API', function() {
   describe('.description()', function() {
     it('should return data.description', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        section.description().should.be.equal(section.data.description);
+        expect(section.description()).to.be.equal(section.data.description);
       });
       done();
     });
@@ -114,7 +110,7 @@ describe('KssSection object API', function() {
   describe('.deprecated()', function() {
     it('should return data.deprecated', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        section.deprecated().should.be.equal(section.data.deprecated);
+        expect(section.deprecated()).to.be.equal(section.data.deprecated);
       });
       done();
     });
@@ -123,7 +119,7 @@ describe('KssSection object API', function() {
   describe('.experimental()', function() {
     it('should return data.experimental', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        section.experimental().should.be.equal(section.data.experimental);
+        expect(section.experimental()).to.be.equal(section.data.experimental);
       });
       done();
     });
@@ -132,7 +128,7 @@ describe('KssSection object API', function() {
   describe('.reference()', function() {
     it('should return data.reference', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        section.reference().should.be.equal(section.data.reference);
+        expect(section.reference()).to.be.equal(section.data.reference);
       });
       done();
     });
@@ -141,9 +137,9 @@ describe('KssSection object API', function() {
   describe('.depth()', function() {
     it('should return data.depth', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        section.depth().should.be.equal(section.data.depth);
-        section.depth().should.be.equal(section.reference().split(section.styleguide.referenceDelimiter).length);
-        section.depth().should.be.at.least(0);
+        expect(section.depth()).to.be.equal(section.data.depth);
+        expect(section.depth()).to.be.equal(section.reference().split(section.styleguide.referenceDelimiter).length);
+        expect(section.depth()).to.be.at.least(0);
       });
       done();
     });
@@ -152,8 +148,8 @@ describe('KssSection object API', function() {
   describe('.weight()', function() {
     it('should return data.weight', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        section.weight().should.be.equal(section.data.weight ? section.data.weight : 0);
-        section.weight().should.be.at.least(-100000);
+        expect(section.weight()).to.be.equal(section.data.weight ? section.data.weight : 0);
+        expect(section.weight()).to.be.at.least(-100000);
       });
       done();
     });
@@ -162,7 +158,7 @@ describe('KssSection object API', function() {
   describe('.encodeReferenceURI()', function() {
     it('should return .referenceURI() when given reference()', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        section.encodeReferenceURI(section.reference()).should.be.equal(section.referenceURI());
+        expect(section.encodeReferenceURI(section.reference())).to.be.equal(section.referenceURI());
       });
       done();
     });
@@ -171,22 +167,22 @@ describe('KssSection object API', function() {
   describe('.referenceURI()', function() {
     it('should return data.referenceURI', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        section.referenceURI().should.be.equal(section.data.referenceURI);
-        section.referenceURI().should.be.equal(section.encodeReferenceURI(section.reference()));
+        expect(section.referenceURI()).to.be.equal(section.data.referenceURI);
+        expect(section.referenceURI()).to.be.equal(section.encodeReferenceURI(section.reference()));
       });
       done();
     });
 
     it('should replace all runs of non-word characters with a hyphen', function() {
       var section = new kss.KssSection();
-      section.encodeReferenceURI('test - section - with.multiple.runs..of--non-word.characters').should.be.equal('test-section-with-multiple-runs-of--non-word-characters');
+      expect(section.encodeReferenceURI('test - section - with.multiple.runs..of--non-word.characters')).to.equal('test-section-with-multiple-runs-of--non-word-characters');
     });
   });
 
   describe('.modifiers()', function() {
     it('should return data.modifiers', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        section.modifiers().should.be.equal(section.data.modifiers);
+        expect(section.modifiers()).to.be.equal(section.data.modifiers);
       });
       done();
     });
@@ -194,7 +190,7 @@ describe('KssSection object API', function() {
     it('should return array of KssModifier', function(done) {
       this.styleguide.data.sections.map(function(section) {
         section.modifiers().map(function(modifier) {
-          modifier.should.be.instanceof(kss.KssModifier);
+          expect(modifier).to.be.instanceof(kss.KssModifier);
         });
       });
       done();
@@ -204,8 +200,8 @@ describe('KssSection object API', function() {
       this.styleguide.data.sections.map(function(section) {
         var i = 0;
         section.data.modifiers.map(function(modifier) {
-          section.modifiers(i).should.be.eql(modifier);
-          section.modifiers(i.toString()).should.be.eql(modifier);
+          expect(section.modifiers(i)).to.be.eql(modifier);
+          expect(section.modifiers(i.toString())).to.be.eql(modifier);
           i++;
         });
       });
@@ -214,7 +210,7 @@ describe('KssSection object API', function() {
 
     it('should return false if number is not found', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        section.modifiers(section.data.modifiers.length + 1).should.be.false;
+        expect(section.modifiers(section.data.modifiers.length + 1)).to.be.false;
       });
       done();
     });
@@ -230,7 +226,7 @@ describe('KssSection object API', function() {
           // If a modifier is equal to a query, run the search.
           for (j = 0; j < q; j += 1) {
             if (section.data.modifiers[i].data.name === queries[j]) {
-              section.modifiers(queries[j]).should.be.eql(section.data.modifiers[i]);
+              expect(section.modifiers(queries[j])).to.be.eql(section.data.modifiers[i]);
             }
           }
         }
@@ -240,7 +236,7 @@ describe('KssSection object API', function() {
 
     it('should return false if name not found', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        section.modifiers('__should_not_find___').should.be.false;
+        expect(section.modifiers('__should_not_find___')).to.be.false;
       });
       done();
     });
@@ -250,9 +246,9 @@ describe('KssSection object API', function() {
     it('should return data.modifiers[0]', function(done) {
       this.styleguide.data.sections.map(function(section) {
         if (section.data.modifiers.length) {
-          section.firstModifier().should.be.equal(section.modifiers(0));
+          expect(section.firstModifier()).to.be.equal(section.modifiers(0));
         } else {
-          section.firstModifier().should.be.false;
+          expect(section.firstModifier()).to.be.false;
         }
       });
       done();
@@ -262,7 +258,7 @@ describe('KssSection object API', function() {
   describe('.parameters()', function() {
     it('should return data.parameters', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        section.parameters().should.be.equal(section.data.parameters);
+        expect(section.parameters()).to.be.equal(section.data.parameters);
       });
       done();
     });
@@ -270,7 +266,7 @@ describe('KssSection object API', function() {
     it('should return array of KssParameter', function(done) {
       this.styleguide.data.sections.map(function(section) {
         section.parameters().map(function(parameter) {
-          parameter.should.be.instanceof(kss.KssParameter);
+          expect(parameter).to.be.instanceof(kss.KssParameter);
         });
       });
       done();

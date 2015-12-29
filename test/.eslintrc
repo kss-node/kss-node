@@ -5,10 +5,10 @@
   },
   "globals": {
     "chai": true,
+    "expect": true,
     "helperUtils": true,
     "kss": true,
-    "path": true,
-    "should": true
+    "path": true
   },
   "rules": {
     // Disabled.

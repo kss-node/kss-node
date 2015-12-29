@@ -21,7 +21,7 @@ describe('KssStyleGuide object API', function() {
     'getWeight'
   ].forEach(function(method) {
     it('has ' + method + '() method', function(done) {
-      (new kss.KssStyleGuide({})).should.respondTo(method);
+      expect(new kss.KssStyleGuide({})).to.respondTo(method);
       done();
     });
   });
@@ -30,17 +30,17 @@ describe('KssStyleGuide object API', function() {
   describe('KssStyleGuide constructor', function() {
     it('should initialize the data', function(done) {
       var obj = new kss.KssStyleGuide();
-      obj.should.have.property('referenceDelimiter');
-      obj.should.have.property('data');
-      obj.data.should.have.property('weightMap');
-      obj.data.should.have.property('sections');
+      expect(obj).to.have.property('referenceDelimiter');
+      expect(obj).to.have.property('data');
+      expect(obj.data).to.have.property('weightMap');
+      expect(obj.data).to.have.property('sections');
       done();
     });
 
     it('should return a KssStyleGuide object when called normally', function(done) {
       /* eslint-disable new-cap */
       var obj = kss.KssStyleGuide();
-      obj.should.be.an.instanceof(kss.KssStyleGuide);
+      expect(obj).to.be.an.instanceof(kss.KssStyleGuide);
       done();
       /* eslint-enable new-cap */
     });
@@ -50,7 +50,7 @@ describe('KssStyleGuide object API', function() {
     context('given no arguments', function() {
       it('should return only referenced sections', function(done) {
         this.styleguide.section().map(function(section) {
-          section.data.should.have.property('reference');
+          expect(section.data).to.have.property('reference');
         });
         done();
       });
@@ -69,7 +69,7 @@ describe('KssStyleGuide object API', function() {
         this.styleguide.section().map(function(section) {
           results.push(section.reference());
         });
-        results.should.be.eql(expected);
+        expect(results).to.be.eql(expected);
         done();
       });
     });
@@ -77,54 +77,54 @@ describe('KssStyleGuide object API', function() {
     context('given exact references', function() {
       it('should find a reference with depth 1', function(done) {
         var section = this.styleguide.section('4');
-        section.header().should.be.equal('DEPTH OF 1');
-        section.depth().should.be.equal(1);
-        section.reference().should.be.equal('4');
+        expect(section.header()).to.be.equal('DEPTH OF 1');
+        expect(section.depth()).to.be.equal(1);
+        expect(section.reference()).to.be.equal('4');
         done();
       });
 
       it('should find a reference with depth 3 and no modifiers', function(done) {
         var section = this.styleguide.section('4.1.1');
-        section.header().should.be.equal('DEPTH OF 3, NO MODIFIERS');
-        section.reference().should.be.equal('4.1.1');
-        section.depth().should.be.equal(3);
+        expect(section.header()).to.be.equal('DEPTH OF 3, NO MODIFIERS');
+        expect(section.reference()).to.be.equal('4.1.1');
+        expect(section.depth()).to.be.equal(3);
         done();
       });
 
       it('should find a reference with depth 3 and modifiers', function(done) {
         var section = this.styleguide.section('4.1.2');
-        section.header().should.be.equal('DEPTH OF 3, MODIFIERS');
-        section.depth().should.be.equal(3);
-        section.reference().should.be.equal('4.1.2');
+        expect(section.header()).to.be.equal('DEPTH OF 3, MODIFIERS');
+        expect(section.depth()).to.be.equal(3);
+        expect(section.reference()).to.be.equal('4.1.2');
         done();
       });
 
       it('should not find a reference with depth 3 that does not exist', function(done) {
-        this.styleguide.section('4.1.3').should.be.false;
+        expect(this.styleguide.section('4.1.3')).to.be.false;
         done();
       });
 
       it('should find a reference with depth 4 (A)', function(done) {
         var section = this.styleguide.section('4.1.1.1');
-        section.header().should.be.equal('DEPTH OF 4 (A)');
-        section.depth().should.be.equal(4);
-        section.reference().should.be.equal('4.1.1.1');
+        expect(section.header()).to.be.equal('DEPTH OF 4 (A)');
+        expect(section.depth()).to.be.equal(4);
+        expect(section.reference()).to.be.equal('4.1.1.1');
         done();
       });
 
       it('should find a reference with depth 4 (B)', function(done) {
         var section = this.styleguide.section('4.1.1.2');
-        section.header().should.be.equal('DEPTH OF 4 (B)');
-        section.depth().should.be.equal(4);
-        section.reference().should.be.equal('4.1.1.2');
+        expect(section.header()).to.be.equal('DEPTH OF 4 (B)');
+        expect(section.depth()).to.be.equal(4);
+        expect(section.reference()).to.be.equal('4.1.1.2');
         done();
       });
 
       it('should find a reference with depth 4 (C)', function(done) {
         var section = this.styleguide.section('4.1.2.2');
-        section.header().should.be.equal('DEPTH OF 4 (C)');
-        section.depth().should.be.equal(4);
-        section.reference().should.be.equal('4.1.2.2');
+        expect(section.header()).to.be.equal('DEPTH OF 4 (C)');
+        expect(section.depth()).to.be.equal(4);
+        expect(section.reference()).to.be.equal('4.1.2.2');
         done();
       });
     });
@@ -133,10 +133,10 @@ describe('KssStyleGuide object API', function() {
       it('should return 1 level of descendants when given "4.x"', function(done) {
         var sections = this.styleguide.section('4.x');
         sections.map(function(section) {
-          section.reference().should.equal('4.1');
-          section.header().should.equal('DEPTH OF 2');
+          expect(section.reference()).to.equal('4.1');
+          expect(section.header()).to.equal('DEPTH OF 2');
         });
-        sections.length.should.equal(1);
+        expect(sections.length).to.equal(1);
         done();
       });
 
@@ -146,7 +146,7 @@ describe('KssStyleGuide object API', function() {
         results = this.styleguide.section('4.1.x').map(function(section) {
           return section.reference();
         });
-        results.should.eql(expected);
+        expect(results).to.eql(expected);
         done();
       });
 
@@ -156,7 +156,7 @@ describe('KssStyleGuide object API', function() {
         results = this.styleguide.section('4.x.x').map(function(section) {
           return section.reference();
         });
-        results.should.eql(expected);
+        expect(results).to.eql(expected);
         done();
       });
 
@@ -166,19 +166,19 @@ describe('KssStyleGuide object API', function() {
         results = this.styleguide.section('4.1.*').map(function(section) {
           return section.reference();
         });
-        results.should.eql(expected);
+        expect(results).to.eql(expected);
         done();
       });
 
       it('should not find "alpha" section when given a query for "alp.*"', function(done) {
-        this.styleguide.section('alp.*').should.be.an.instanceOf(Array);
-        this.styleguide.section('alp.*').should.have.length(0);
+        expect(this.styleguide.section('alp.*')).to.be.an.instanceOf(Array);
+        expect(this.styleguide.section('alp.*')).to.have.length(0);
         done();
       });
 
       it('should not find "alpha" section when given a query for "alp.x"', function(done) {
-        this.styleguide.section('alp.x').should.be.an.instanceOf(Array);
-        this.styleguide.section('alp.x').should.have.length(0);
+        expect(this.styleguide.section('alp.x')).to.be.an.instanceOf(Array);
+        expect(this.styleguide.section('alp.x')).to.have.length(0);
         done();
       });
 
@@ -188,7 +188,7 @@ describe('KssStyleGuide object API', function() {
         results = this.styleguide.section('9.x').map(function(section) {
           return section.reference();
         });
-        results.should.eql(expected);
+        expect(results).to.eql(expected);
         done();
       });
 
@@ -198,16 +198,16 @@ describe('KssStyleGuide object API', function() {
         results = this.styleguide.section('alpha.x').map(function(section) {
           return section.reference();
         });
-        results.should.eql(expected);
+        expect(results).to.eql(expected);
         done();
       });
 
       it('should return "word key" sections with dashes in the name', function(done) {
         var sections = this.styleguide.section('alpha-bet.*');
         sections.map(function(section) {
-          section.reference().should.equal('alpha-bet');
+          expect(section.reference()).to.equal('alpha-bet');
         });
-        sections.length.should.equal(1);
+        expect(sections.length).to.equal(1);
         done();
       });
 
@@ -217,14 +217,14 @@ describe('KssStyleGuide object API', function() {
         results = this.styleguideWordPhrases.section('beta.x').map(function(section) {
           return section.reference();
         });
-        results.should.eql(expected);
+        expect(results).to.eql(expected);
         done();
       });
     });
 
     context('given regex queries', function() {
       it('should return an empty array when query does not match', function(done) {
-        this.styleguide.section(/__does_not_match__.*/).should.be.an.instanceOf(Array).and.empty;
+        expect(this.styleguide.section(/__does_not_match__.*/)).to.be.an.instanceOf(Array).and.empty;
         done();
       });
 
@@ -234,16 +234,16 @@ describe('KssStyleGuide object API', function() {
         results = this.styleguide.section(/4.*/).map(function(section) {
           return section.reference();
         });
-        results.should.eql(expected);
+        expect(results).to.eql(expected);
         done();
       });
 
       it('should return "4" when given /4/', function(done) {
         var sections = this.styleguide.section(/4/);
         sections.map(function(section) {
-          section.reference().should.equal('4');
+          expect(section.reference()).to.equal('4');
         });
-        sections.length.should.equal(1);
+        expect(sections.length).to.equal(1);
         done();
       });
 
@@ -253,7 +253,7 @@ describe('KssStyleGuide object API', function() {
         results = this.styleguide.section(/9.*/).map(function(section) {
           return section.reference();
         });
-        results.should.eql(expected);
+        expect(results).to.eql(expected);
         done();
       });
 
@@ -263,7 +263,7 @@ describe('KssStyleGuide object API', function() {
         results = this.styleguide.section(/alpha\..*/).map(function(section) {
           return section.reference();
         });
-        results.should.eql(expected);
+        expect(results).to.eql(expected);
         done();
       });
 
@@ -273,7 +273,7 @@ describe('KssStyleGuide object API', function() {
         results = this.styleguideWordPhrases.section(/beta - .*/).map(function(section) {
           return section.reference();
         });
-        results.should.eql(expected);
+        expect(results).to.eql(expected);
         done();
       });
 
@@ -283,7 +283,7 @@ describe('KssStyleGuide object API', function() {
         results = this.styleguideWordPhrases.section(/gamma - .*/).map(function(section) {
           return section.reference();
         });
-        results.should.eql(expected);
+        expect(results).to.eql(expected);
         done();
       });
 
@@ -293,7 +293,7 @@ describe('KssStyleGuide object API', function() {
         results = this.styleguideWordPhrases.section(/gamma - .*/).map(function(section) {
           return section.data.autoincrement;
         });
-        results.should.eql(expected);
+        expect(results).to.eql(expected);
         done();
       });
     });
@@ -331,7 +331,7 @@ describe('KssStyleGuide object API', function() {
       this.styleguideWordPhrases.section().map(function(section) {
         var ref = section.reference();
         for (var i; i < expected[ref].length; i++) {
-          self.styleguideWordPhrases.getWeight(ref, i).should.equal(expected[ref][i]);
+          expect(self.styleguideWordPhrases.getWeight(ref, i)).to.equal(expected[ref][i]);
         }
       });
       done();
@@ -341,7 +341,7 @@ describe('KssStyleGuide object API', function() {
       var self = this;
       this.styleguideWordPhrases.section().map(function(section) {
         var ref = section.reference();
-        self.styleguideWordPhrases.getWeight(ref).should.equal(expected[ref][expected[ref].length - 1]);
+        expect(self.styleguideWordPhrases.getWeight(ref)).to.equal(expected[ref][expected[ref].length - 1]);
       });
       done();
     });
