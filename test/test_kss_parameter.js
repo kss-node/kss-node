@@ -35,8 +35,9 @@ describe('KssParameter object API', function() {
 
     it('should return a KssParameter object when called normally', function(done) {
       /* eslint-disable new-cap */
-      var obj = kss.KssParameter();
+      var obj = kss.KssParameter({name: '$variable'});
       expect(obj).to.be.an.instanceof(kss.KssParameter);
+      expect(obj.name()).to.equal('$variable');
       done();
       /* eslint-enable new-cap */
     });
