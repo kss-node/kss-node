@@ -239,55 +239,6 @@ module.exports.register = function(handlebars, config) {
   });
 
   /**
-   * Deprecated variable replaced with {{homepage}}.
-   */
-  handlebars.registerHelper('overview', /* istanbul ignore next */ function() {
-    throw new Error('The {{overview}} variable is deprecated; use {{homepage}} instead.');
-  });
-
-  /**
-   * Deprecated variable replaced with {{depth}}.
-   */
-  handlebars.registerHelper('refDepth', /* istanbul ignore next */ function() {
-    throw new Error('The {{refDepth}} variable is deprecated; use {{depth}} instead.');
-  });
-
-  /**
-   * Deprecated variable replaced with {{rootName}}.
-   */
-  handlebars.registerHelper('rootNumber', /* istanbul ignore next */ function() {
-    throw new Error('The {{rootNumber}} variable is deprecated; use {{rootName}} instead.');
-  });
-
-  /**
-   * Deprecated helper replaced with {{{expression}}}.
-   */
-  handlebars.registerHelper('html', /* istanbul ignore next */ function() {
-    throw new Error('{{html expression}} is deprecated; use HandleBars’ triple-stash instead: {{{expression}}}.');
-  });
-
-  /**
-   * Deprecated helper replaced with {{#if markup}}...{{/if}}.
-   */
-  handlebars.registerHelper('ifAny', /* istanbul ignore next */ function() {
-    throw new Error('IfAny is deprecated; in your template, replace {{#ifAny markup modifiers}}...{{/ifAny}} with {{#if markup}}...{{/if}}.');
-  });
-
-  /**
-   * Deprecated helper replaced with {{{markup}}}.
-   */
-  handlebars.registerHelper('modifierMarkup', /* istanbul ignore next */ function() {
-    throw new Error('The {{modifierMarkup}} Handlebars helper is deprecated; use {{{markup}}} instead.');
-  });
-
-  /**
-   * Deprecated helper replaced with {{ifDepth expression}}.
-   */
-  handlebars.registerHelper('whenDepth', /* istanbul ignore next */ function() {
-    throw new Error('{{whenDepth expression}} is deprecated; use {{ifDepth expression}} instead.');
-  });
-
-  /**
    * Outputs console.log() debugging information for each parameter given.
    *
    * If no parameters are given, the entire context is output with
