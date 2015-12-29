@@ -14,7 +14,8 @@ describe('KssParameter object API', function() {
   /* eslint-disable guard-for-in,no-loop-func */
   ['section',
     'name',
-    'description'
+    'description',
+    'toJSON'
   ].forEach(function(method) {
     it('has ' + method + '() method', function(done) {
       expect(new kss.KssParameter({})).to.respondTo(method);
@@ -116,6 +117,34 @@ describe('KssParameter object API', function() {
     it('should return itself if given a value', function(done) {
       var parameter = new kss.KssParameter({description: 'original'});
       expect(parameter.description('new')).to.deep.equal(parameter);
+      done();
+    });
+  });
+
+  describe('.toJSON()', function() {
+    it('should return valid JSON object', function(done) {
+      this.styleguide.data.sections.map(function(section) {
+        section.parameters().map(function(parameter) {
+          var str;
+          expect(parameter.toJSON()).to.be.an.instanceOf(Object);
+          // Verify it converts to a JSON string.
+          str = JSON.stringify(parameter.toJSON());
+          expect(str).to.be.string;
+          // Compare JSON string to original.
+          expect(JSON.parse(str)).to.eql(parameter.toJSON());
+        });
+      });
+      done();
+    });
+
+    it('should return data as a JSON object', function(done) {
+      this.styleguide.data.sections.map(function(section) {
+        section.parameters().map(function(parameter) {
+          var json = parameter.toJSON();
+          expect(json.name).to.equal(parameter.data.name);
+          expect(json.description).to.equal(parameter.data.description);
+        });
+      });
       done();
     });
   });

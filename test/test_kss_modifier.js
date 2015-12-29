@@ -16,7 +16,8 @@ describe('KssModifier object API', function() {
     'name',
     'description',
     'className',
-    'markup'
+    'markup',
+    'toJSON'
   ].forEach(function(method) {
     it('has ' + method + '() method', function(done) {
       expect(new kss.KssModifier({})).to.respondTo(method);
@@ -186,6 +187,35 @@ describe('KssModifier object API', function() {
     it('should return empty string if it does not have an associated kssSection', function(done) {
       var modifier = new kss.KssModifier();
       expect(modifier.markup()).to.be.string('');
+      done();
+    });
+  });
+
+  describe('.toJSON()', function() {
+    it('should return valid JSON object', function(done) {
+      this.styleguide.data.sections.map(function(section) {
+        section.modifiers().map(function(modifier) {
+          var str;
+          expect(modifier.toJSON()).to.be.an.instanceOf(Object);
+          // Verify it converts to a JSON string.
+          str = JSON.stringify(modifier.toJSON());
+          expect(str).to.be.string;
+          // Compare JSON string to original.
+          expect(JSON.parse(str)).to.eql(modifier.toJSON());
+        });
+      });
+      done();
+    });
+
+    it('should return data as a JSON object', function(done) {
+      this.styleguide.data.sections.map(function(section) {
+        section.modifiers().map(function(modifier) {
+          var json = modifier.toJSON();
+          expect(json.name).to.equal(modifier.data.name);
+          expect(json.description).to.equal(modifier.data.description);
+          expect(json.className).to.equal(modifier.className());
+        });
+      });
       done();
     });
   });
