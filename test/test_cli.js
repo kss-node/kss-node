@@ -71,8 +71,8 @@ describe('Command Line Interface', function() {
     it('should not declare success if source directory is empty', function(done) {
       var source = helperUtils.fixtures('empty-source');
       kssNode('--verbose --source ' + source + ' --destination test/output/nested',
-        function(err, stdout, stderr) {
-          expect(err).to.exist;
+        function(error, stdout, stderr) {
+          expect(error).to.exist;
           expect(stdout).to.include('* KSS Source  : ' + source);
           expect(stderr).to.include('No KSS documentation discovered in source files.');
           expect(stdout).to.not.include(successMessage);
@@ -83,8 +83,8 @@ describe('Command Line Interface', function() {
 
     it('should warn if homepage content is not found', function(done) {
       kssNode('--source ' + helperUtils.fixtures('missing-homepage') + ' --destination test/output/nested',
-        function(err, stdout) {
-          expect(err).to.not.exist;
+        function(error, stdout) {
+          expect(error).to.not.exist;
           expect(stdout).to.include(noHomepageWarning);
           expect(stdout).to.include(successMessage);
           done();
@@ -96,8 +96,8 @@ describe('Command Line Interface', function() {
       var source = helperUtils.fixtures('with-include'),
         source2 = helperUtils.fixtures('empty-source');
       kssNode('--verbose --source ' + source + ' --source ' + source2 + ' --destination test/output/nested',
-        function(err, stdout) {
-          expect(err).to.not.exist;
+        function(error, stdout) {
+          expect(error).to.not.exist;
           expect(stdout).to.include('* KSS Source  : ' + source + ', ' + source2);
           expect(stdout).to.include(successMessage);
           done();
@@ -111,8 +111,8 @@ describe('Command Line Interface', function() {
       var source = helperUtils.fixtures('with-include'),
         destination = helperUtils.fixtures('../output/nested');
       kssNode('--verbose ' + source + ' --destination ' + destination,
-        function(err, stdout) {
-          expect(err).to.not.exist;
+        function(error, stdout) {
+          expect(error).to.not.exist;
           expect(stdout).to.include('* Destination : ' + destination);
           done();
         }
@@ -125,8 +125,8 @@ describe('Command Line Interface', function() {
       var source = helperUtils.fixtures('with-include'),
         destination = helperUtils.fixtures('../output/nested');
       kssNode('--verbose ' + source + ' --destination ' + destination,
-        function(err, stdout) {
-          expect(err).to.not.exist;
+        function(error, stdout) {
+          expect(error).to.not.exist;
           expect(stdout).to.include('* KSS Source  : ' + source);
           expect(stdout).to.include(successMessage);
           done();
@@ -138,8 +138,8 @@ describe('Command Line Interface', function() {
       var source = helperUtils.fixtures('with-include'),
         destination = helperUtils.fixtures('../output/nested');
       kssNode('--verbose ' + source + ' ' + destination,
-        function(err, stdout) {
-          expect(err).to.not.exist;
+        function(error, stdout) {
+          expect(error).to.not.exist;
           expect(stdout).to.include('* Destination : ' + destination);
           done();
         }
@@ -150,10 +150,10 @@ describe('Command Line Interface', function() {
   describe('given --custom option', function() {
     it('should read custom properties', function(done) {
       kssNode('test/fixtures/with-include test/output/custom --template test/fixtures/template --custom custom --custom custom2',
-        function(err) {
-          expect(err).to.not.exist;
-          fs.readFile(path.join(__dirname, 'output/custom/section-4.html'), 'utf8', function(err2, data) {
-            expect(err2).to.not.exist;
+        function(error) {
+          expect(error).to.not.exist;
+          fs.readFile(path.join(__dirname, 'output/custom/section-4.html'), 'utf8', function(error2, data) {
+            expect(error2).to.not.exist;
             expect(data).to.include('"custom" property: This is the first custom property.');
             expect(data).to.include('"custom2" property: This is the second custom property.');
             done();
@@ -166,8 +166,8 @@ describe('Command Line Interface', function() {
   describe('given --config option', function() {
     it('should load configuration from JSON file', function(done) {
       kssNode('--config test/fixtures/cli-option-config.json',
-        function(err, stdout) {
-          expect(err).to.not.exist;
+        function(error, stdout) {
+          expect(error).to.not.exist;
           expect(stdout).to.include(successMessage);
           done();
         }
@@ -178,8 +178,8 @@ describe('Command Line Interface', function() {
   describe('given --clone option', function() {
     it('should copy the template', function(done) {
       kssNode('--clone test/output/template',
-        function(err, stdout) {
-          expect(err).to.not.exist;
+        function(error, stdout) {
+          expect(error).to.not.exist;
           expect(stdout).to.include('Creating a new style guide template...');
           expect(stdout).to.include('kss-node [sourcedir] --template ' + path.resolve('test/output/template'));
           done();
@@ -190,8 +190,8 @@ describe('Command Line Interface', function() {
     it('should use a default path', function(done) {
       var defaultPath = path.resolve('custom-template');
       kssNode('--clone',
-        function(err, stdout) {
-          expect(err).to.not.exist;
+        function(error, stdout) {
+          expect(error).to.not.exist;
           expect(stdout).to.include('kss-node [sourcedir] --template ' + defaultPath);
 
           wrench.rmdirRecursive(defaultPath, function(error) {

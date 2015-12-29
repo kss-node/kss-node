@@ -117,8 +117,8 @@ var kss = require('kss'),
         markdown: false
     };
 
-kss.traverse('public/stylesheets/', options, function(err, styleguide) {
-    if (err) throw err;
+kss.traverse('public/stylesheets/', options, function(error, styleguide) {
+    if (error) throw error;
 
     styleguide.section('2.1.1')                                   // <KssSection>
     styleguide.section('2.1.1').modifiers(0)                      // <KssModifier>

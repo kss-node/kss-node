@@ -19,16 +19,16 @@ describe('kss.parse()', function() {
 
   describe('API validation checks', function() {
     it('should function with no options', function(done) {
-      kss.parse(this.files, {}, function(err, styleguide) {
-        expect(err).to.not.exist;
+      kss.parse(this.files, {}, function(error, styleguide) {
+        expect(error).to.not.exist;
         expect(styleguide.data.files.length).to.equal(4);
         done();
       });
     });
 
     it('should function when given a string', function(done) {
-      kss.parse('file contents', {}, function(err, styleguide) {
-        expect(err).to.not.exist;
+      kss.parse('file contents', {}, function(error, styleguide) {
+        expect(error).to.not.exist;
         expect(styleguide.data).to.not.have.property('files');
         done();
       });
@@ -117,9 +117,9 @@ describe('kss.parse()', function() {
           });
         });
 
-        fileReader = function(err, data) {
-          if (err) {
-            throw err;
+        fileReader = function(error, data) {
+          if (error) {
+            throw error;
           }
 
           expect(sg.data.body).to.include(data);
@@ -197,8 +197,8 @@ describe('kss.parse()', function() {
         });
 
         it('should do something, not sure what', function(done) {
-          kss.parse(this.files, {}, function(err, styleguide) {
-            expect(err).to.not.exist;
+          kss.parse(this.files, {}, function(error, styleguide) {
+            expect(error).to.not.exist;
             expect(styleguide.section('all-by-itself').header()).to.be.string('');
           });
           done();
@@ -375,8 +375,8 @@ describe('kss.parse()', function() {
 
       describe('.weight', function() {
         it('should correct an invalid weight', function(done) {
-          kss.parse(this.files, {}, function(err, styleguide) {
-            expect(err).to.not.exist;
+          kss.parse(this.files, {}, function(error, styleguide) {
+            expect(error).to.not.exist;
             expect(styleguide.section('invalid-weight').weight()).to.equal(0);
           });
           done();

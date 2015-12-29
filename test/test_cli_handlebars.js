@@ -24,8 +24,8 @@ describe('Handlebars template', function() {
       stdout: stdout,
       stderr: stderr,
       argv: ['node', 'bin/kss-node', 'test/fixtures/with-include', 'test/output/nested', '--template', 'test/fixtures/template', '--helpers', 'test/fixtures/template/helpers']
-    }, function(err) {
-      expect(err).to.not.exist;
+    }, function(error) {
+      expect(error).to.not.exist;
       self.stdout = stdout.capturedData;
       files = [
         'index',
@@ -40,9 +40,9 @@ describe('Handlebars template', function() {
 
     // Create a closure with the file name stored.
     fileReader = function(fileName) {
-      return function(err, data) {
-        if (err) {
-          throw err;
+      return function(error, data) {
+        if (error) {
+          throw error;
         }
 
         self.files[fileName] = data;
