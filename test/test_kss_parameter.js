@@ -52,6 +52,22 @@ describe('KssParameter object API', function() {
       });
       done();
     });
+
+    it('should set data.section if given a value', function(done) {
+      var section = new kss.KssSection({header: 'Section'}),
+        parameter = new kss.KssParameter({name: 'original'});
+      parameter.section(section);
+      expect(parameter.data.section).to.deep.equal(section);
+      expect(parameter.section()).to.deep.equal(parameter.data.section);
+      done();
+    });
+
+    it('should return itself if given a value', function(done) {
+      var section = new kss.KssSection({header: 'Section'}),
+        parameter = new kss.KssParameter({name: 'original'});
+      expect(parameter.section(section)).to.deep.equal(parameter);
+      done();
+    });
   });
 
   describe('.name()', function() {
@@ -63,6 +79,20 @@ describe('KssParameter object API', function() {
       });
       done();
     });
+
+    it('should set data.name if given a value', function(done) {
+      var parameter = new kss.KssParameter({name: 'original'});
+      parameter.name('new');
+      expect(parameter.data.name).to.equal('new');
+      expect(parameter.name()).to.equal(parameter.data.name);
+      done();
+    });
+
+    it('should return itself if given a value', function(done) {
+      var parameter = new kss.KssParameter({name: 'original'});
+      expect(parameter.name('new')).to.deep.equal(parameter);
+      done();
+    });
   });
 
   describe('.description()', function() {
@@ -72,6 +102,20 @@ describe('KssParameter object API', function() {
           expect(parameter.description()).to.equal(parameter.data.description);
         });
       });
+      done();
+    });
+
+    it('should set data.description if given a value', function(done) {
+      var parameter = new kss.KssParameter({description: 'original'});
+      parameter.description('new');
+      expect(parameter.data.description).to.equal('new');
+      expect(parameter.description()).to.equal(parameter.data.description);
+      done();
+    });
+
+    it('should return itself if given a value', function(done) {
+      var parameter = new kss.KssParameter({description: 'original'});
+      expect(parameter.description('new')).to.deep.equal(parameter);
       done();
     });
   });
