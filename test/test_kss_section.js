@@ -54,8 +54,9 @@ describe('KssSection object API', function() {
 
     it('should return a KssSection object when called normally', function(done) {
       /* eslint-disable new-cap */
-      var obj = kss.KssSection();
+      var obj = kss.KssSection({header: 'Section'});
       expect(obj).to.be.an.instanceof(kss.KssSection);
+      expect(obj.header()).to.equal('Section');
       done();
       /* eslint-enable new-cap */
     });
