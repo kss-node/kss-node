@@ -13,6 +13,7 @@ describe('KssParameter object API', function() {
   ['section',
     'name',
     'description',
+    'defaultValue',
     'toJSON'
   ].forEach(function(method) {
     it('has ' + method + '() method', function(done) {
@@ -30,6 +31,7 @@ describe('KssParameter object API', function() {
       expect(obj).to.have.property('data');
       expect(obj.data).to.have.property('name');
       expect(obj.data).to.have.property('description');
+      expect(obj.data).to.have.property('defaultValue');
       done();
     });
   });
@@ -111,6 +113,32 @@ describe('KssParameter object API', function() {
     });
   });
 
+  describe('.defaultValue()', function() {
+    it('should return data.defaultValue', function(done) {
+      expect(this.styleGuide.sections('parameter.mixinA').parameters(1).defaultValue()).to.equal('Default param2 value');
+      this.styleGuide.sections(/^parameter\..*/).map(function(section) {
+        section.parameters().map(function(parameter) {
+          expect(parameter.defaultValue()).to.equal(parameter.data.defaultValue);
+        });
+      });
+      done();
+    });
+
+    it('should set data.defaultValue if given a value', function(done) {
+      let parameter = new kss.KssParameter({defaultValue: 'original'});
+      parameter.defaultValue('new');
+      expect(parameter.data.defaultValue).to.equal('new');
+      expect(parameter.defaultValue()).to.equal(parameter.data.defaultValue);
+      done();
+    });
+
+    it('should return itself if given a value', function(done) {
+      let parameter = new kss.KssParameter({defaultValue: 'original'});
+      expect(parameter.defaultValue('new')).to.deep.equal(parameter);
+      done();
+    });
+  });
+
   describe('.toJSON()', function() {
     it('should return valid JSON object', function(done) {
       this.styleGuide.data.sections.map(function(section) {
@@ -131,6 +159,7 @@ describe('KssParameter object API', function() {
         section.parameters().map(function(parameter) {
           let json = parameter.toJSON();
           expect(json.name).to.equal(parameter.data.name);
+          expect(json.defaultValue).to.equal(parameter.data.defaultValue);
           expect(json.description).to.equal(parameter.data.description);
         });
       });
