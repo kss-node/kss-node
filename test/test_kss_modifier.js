@@ -55,6 +55,22 @@ describe('KssModifier object API', function() {
       });
       done();
     });
+
+    it('should set data.section if given a value', function(done) {
+      var section = new kss.KssSection({header: 'Section'}),
+        modifier = new kss.KssModifier({name: 'original'});
+      modifier.section(section);
+      expect(modifier.data.section).to.deep.equal(section);
+      expect(modifier.section()).to.deep.equal(modifier.data.section);
+      done();
+    });
+
+    it('should return itself if given a value', function(done) {
+      var section = new kss.KssSection({header: 'Section'}),
+        modifier = new kss.KssModifier({name: 'original'});
+      expect(modifier.section(section)).to.deep.equal(modifier);
+      done();
+    });
   });
 
   describe('.name()', function() {
@@ -66,6 +82,20 @@ describe('KssModifier object API', function() {
       });
       done();
     });
+
+    it('should set data.name if given a value', function(done) {
+      var modifier = new kss.KssModifier({name: 'original'});
+      modifier.name('new');
+      expect(modifier.data.name).to.equal('new');
+      expect(modifier.name()).to.equal(modifier.data.name);
+      done();
+    });
+
+    it('should return itself if given a value', function(done) {
+      var modifier = new kss.KssModifier({name: 'original'});
+      expect(modifier.name('new')).to.deep.equal(modifier);
+      done();
+    });
   });
 
   describe('.description()', function() {
@@ -75,6 +105,20 @@ describe('KssModifier object API', function() {
           expect(modifier.description()).to.equal(modifier.data.description);
         });
       });
+      done();
+    });
+
+    it('should set data.description if given a value', function(done) {
+      var modifier = new kss.KssModifier({description: 'original'});
+      modifier.description('new');
+      expect(modifier.data.description).to.equal('new');
+      expect(modifier.description()).to.equal(modifier.data.description);
+      done();
+    });
+
+    it('should return itself if given a value', function(done) {
+      var modifier = new kss.KssModifier({description: 'original'});
+      expect(modifier.description('new')).to.deep.equal(modifier);
       done();
     });
   });
@@ -89,9 +133,32 @@ describe('KssModifier object API', function() {
       done();
     });
 
+    it('should convert pseudo-class to kss.js-style .pseudo-class-[name]', function(done) {
+      this.styleguide.data.sections.map(function(section) {
+        section.modifiers().map(function(modifier) {
+          expect(modifier.className()).to.equal(modifier.data.name.replace(/\:/g, '.pseudo-class-').split(/\s/)[0].replace(/\./g, ' ').replace(/^\s*/g, ''));
+        });
+      });
+      done();
+    });
+
     it('should return false if it does not have a class name', function(done) {
       var modifier = new kss.KssModifier();
       expect(modifier.className()).to.be.false;
+      done();
+    });
+
+    it('should set data.className if given a value', function(done) {
+      var modifier = new kss.KssModifier({name: '.original'});
+      modifier.className('new');
+      expect(modifier.data.className).to.equal('new');
+      expect(modifier.className()).to.equal(modifier.data.className);
+      done();
+    });
+
+    it('should return itself if given a value', function(done) {
+      var modifier = new kss.KssModifier({name: '.original'});
+      expect(modifier.className('new')).to.deep.equal(modifier);
       done();
     });
   });

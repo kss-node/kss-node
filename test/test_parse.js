@@ -303,19 +303,6 @@ describe('kss.parse()', function() {
           expect(modifiers.length).to.equal(2);
           done();
         });
-
-        describe('.data.className', function() {
-          it('should convert pseudo-class to KSS-style .pseudo-class-[name]', function(done) {
-            helperUtils.traverseFixtures({mask: '*.less|*.css'}, function(styleguide) {
-              styleguide.data.sections.map(function(section) {
-                section.data.modifiers.map(function(modifier) {
-                  expect(modifier.data.name.replace(/\:/g, '.pseudo-class-')).to.equal(modifier.data.className);
-                });
-              });
-              done();
-            });
-          });
-        });
       });
 
       describe('.deprecated/.experimental', function() {
