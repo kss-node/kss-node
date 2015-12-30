@@ -38,8 +38,9 @@ describe('KssModifier object API', function() {
 
     it('should return a KssModifier object when called normally', function(done) {
       /* eslint-disable new-cap */
-      var obj = kss.KssModifier();
+      var obj = kss.KssModifier({name: '.modifier'});
       expect(obj).to.be.an.instanceof(kss.KssModifier);
+      expect(obj.name()).to.equal('.modifier');
       done();
       /* eslint-enable new-cap */
     });
