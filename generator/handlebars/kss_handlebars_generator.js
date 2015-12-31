@@ -283,7 +283,6 @@ kssHandlebarsGenerator.generatePage = function(root, sections) {
     homepageText = false,
     styles = '',
     scripts = '',
-    customFields = this.config.custom,
     key;
 
   if (root === 'styleguide.homepage') {
@@ -340,7 +339,7 @@ kssHandlebarsGenerator.generatePage = function(root, sections) {
       partials:     this.partials,
       styleguide:   this.styleguide,
       sections:     sections.map(function(section) {
-        return section.toJSON(customFields);
+        return section.toJSON();
       }),
       rootName:     root,
       options:      this.config || {},

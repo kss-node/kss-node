@@ -146,7 +146,7 @@ describe('kss.parse()', function() {
             filteredBody = data.body.replace(/\/\/|\/\*+|\*\/|\s|\*/g, '');
 
           data.sections.map(function(section) {
-            expect(filteredBody).to.include(section.data.raw.replace(/\s|\*/g, ''));
+            expect(filteredBody).to.include(section.meta.raw.replace(/\s|\*/g, ''));
           });
         });
       });

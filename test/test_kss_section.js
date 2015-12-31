@@ -2,7 +2,7 @@
 
 'use strict';
 
-var custom = ['custom', 'custom2', 'custom property'];
+var custom = ['custom', 'custom2', 'custom3'];
 
 describe('KssSection object API', function() {
   before(function(done) {
@@ -24,7 +24,8 @@ describe('KssSection object API', function() {
     'referenceURI',
     'modifiers',
     'firstModifier',
-    'parameters'
+    'parameters',
+    'toJSON'
   ].forEach(function(method) {
     it('has ' + method + '() method', function(done) {
       expect(new kss.KssSection()).to.respondTo(method);
@@ -36,7 +37,10 @@ describe('KssSection object API', function() {
   describe('KssSection constructor', function() {
     it('should initialize the data', function(done) {
       var obj = new kss.KssSection();
-      expect(obj).to.have.property('styleguide');
+      expect(obj).to.have.property('meta');
+      expect(obj.meta).to.have.property('styleguide');
+      expect(obj.meta).to.have.property('raw');
+      expect(obj.meta).to.have.property('customPropertyNames');
       expect(obj).to.have.property('data');
       expect(obj.data).to.have.property('header');
       expect(obj.data).to.have.property('description');
@@ -76,15 +80,15 @@ describe('KssSection object API', function() {
       done();
     });
 
-    it('should return custom properties given array of property names', function(done) {
+    it('should return custom properties', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        var str;
-        expect(section.toJSON(custom)).to.be.an.instanceOf(Object);
-        // Verify it converts to a JSON string.
-        str = JSON.stringify(section.toJSON(custom));
-        expect(str).to.be.string;
-        // Compare JSON string to original.
-        expect(JSON.parse(str)).to.eql(section.toJSON(custom));
+        var json = section.toJSON();
+        custom.map(function(name) {
+          if (section.data[name]) {
+            expect(json).to.have.property(name);
+            expect(json[name]).to.equal(section.data[name]);
+          }
+        });
       });
       done();
     });
