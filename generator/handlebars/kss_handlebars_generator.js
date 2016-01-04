@@ -139,20 +139,22 @@ kssHandlebarsGenerator.init = function(config, cb) {
  * @param {KssStyleGuide} styleguide The KSS style guide in object format.
  */
 kssHandlebarsGenerator.generate = function(styleguide, cb) {
-  var sections = styleguide.section(),
+  this.styleguide = styleguide;
+  this.partials = {};
+
+  var sections = this.styleguide.section(),
     sectionCount = sections.length,
     sectionRoots = [],
     rootCount,
     currentRoot,
     childSections = [],
-    partials = {},
     partial,
     files = [],
     i,
     key;
 
   if (this.config.verbose) {
-    this.log(styleguide.data.files.map(function(file) {
+    this.log(this.styleguide.data.files.map(function(file) {
       return ' - ' + file;
     }).join('\n'));
   }
@@ -217,13 +219,14 @@ kssHandlebarsGenerator.generate = function(styleguide, cb) {
       this.Handlebars.registerPartial(partial.name, partial.markup);
       // Save the name of the partial and its data for retrieval in the markup
       // helper, where we only know the reference.
-      partials[partial.reference] = {
+      this.partials[partial.reference] = {
         name: partial.name,
         data: partial.data
       };
     }
 
-    // Accumulate all of the sections' first indexes.
+    // Accumulate an array of section references for all sections at the root of
+    // the style guide.
     currentRoot = sections[i].reference().split(/(?:\.|\ \-\ )/)[0];
     if (sectionRoots.indexOf(currentRoot) === -1) {
       sectionRoots.push(currentRoot);
@@ -234,17 +237,18 @@ kssHandlebarsGenerator.generate = function(styleguide, cb) {
   rootCount = sectionRoots.length;
   key = false;
   for (i = 0; i < rootCount; i += 1) {
-    currentRoot = styleguide.section(sectionRoots[i]);
+    currentRoot = this.styleguide.section(sectionRoots[i]);
     if (currentRoot === false) {
       key = sectionRoots[i];
-      styleguide.data.sections.push(new KssSection({
+      this.styleguide.data.sections.push(new KssSection({
         header: key,
         reference: key
       }));
     }
   }
+  // Re-sort the style guide if we added new sections.
   if (key !== false) {
-    styleguide.init();
+    this.styleguide.init();
   }
 
   if (this.config.verbose) {
@@ -255,14 +259,14 @@ kssHandlebarsGenerator.generate = function(styleguide, cb) {
   // reference, and make a page for each.
   rootCount = sectionRoots.length;
   for (i = 0; i < rootCount; i += 1) {
-    childSections = styleguide.section(sectionRoots[i] + '.*');
+    childSections = this.styleguide.section(sectionRoots[i] + '.*');
 
-    this.generatePage(styleguide, childSections, sectionRoots[i], sectionRoots, partials);
+    this.generatePage(sectionRoots[i], childSections);
   }
 
   // Generate the homepage.
   childSections = [];
-  this.generatePage(styleguide, childSections, 'styleguide.homepage', sectionRoots, partials);
+  this.generatePage('styleguide.homepage', childSections);
 
   cb(null);
 };
@@ -271,13 +275,10 @@ kssHandlebarsGenerator.generate = function(styleguide, cb) {
  * Renders the handlebars template for a section and saves it to a file.
  *
  * @alias module:kss/generator/handlebars.generatePage
- * @param {KssStyleGuide} styleguide The KSS style guide in object format.
- * @param {Array} sections An array of KssSection objects.
  * @param {string} root The current section's reference.
- * @param {Array} sectionRoots An array of section references for all sections at the root of the style guide.
- * @param {Object} partials A hash of the names and data of the registered Handlebars partials.
+ * @param {Array} sections An array of KssSection objects.
  */
-kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, sectionRoots, partials) {
+kssHandlebarsGenerator.generatePage = function(root, sections) {
   var filename = '', files,
     homepageText = false,
     styles = '',
@@ -316,7 +317,7 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
     if (this.config.verbose) {
       this.log(
         ' - section ' + root + ' [',
-        styleguide.section(root) ? styleguide.section(root).header() : 'Unnamed',
+        this.styleguide.section(root) ? this.styleguide.section(root).header() : 'Unnamed',
         ']'
       );
     }
@@ -336,9 +337,8 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
   /* eslint-disable key-spacing */
   fs.writeFileSync(this.config.destination + '/' + filename,
     this.template({
-      partials:     partials,
-      styleguide:   styleguide,
-      sectionRoots: sectionRoots,
+      partials:     this.partials,
+      styleguide:   this.styleguide,
       sections:     sections.map(function(section) {
         return section.toJSON(customFields);
       }),
