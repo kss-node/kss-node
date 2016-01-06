@@ -42,7 +42,7 @@
 <pre class="prettyprint source"><code>var kss = require('kss');</code></pre><p>The main object is a function that will generate a style guide given the
 correct options.</p>
 <pre class="prettyprint source"><code>kss(opts, callback);</code></pre><p>The various constructors and methods can then be accessed with:</p>
-<pre class="prettyprint source"><code>var kssStyleguide = new kss.KssStyleguide();
+<pre class="prettyprint source"><code>var kssStyleGuide = new kss.KssStyleGuide();
 var kssSection    = new kss.KssSection();
 var kssModifier   = new kss.KssModifier();
 var kssParameter  = new kss.KssParameter();
@@ -147,7 +147,7 @@ kss.traverse();</code></pre></div>
             <dt><a href="module-kss.KssSection.html">KssSection</a></dt>
             <dd></dd>
         
-            <dt><a href="module-kss.KssStyleguide.html">KssStyleguide</a></dt>
+            <dt><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></dt>
             <dd></dd>
         </dl>
     
@@ -354,13 +354,13 @@ accessible as well.</p>
 
 
 <div class="description">
-    <p>Traverse a directory, parse its contents, and create a KssStyleguide.</p>
-<p>Callbacks receive an instance of <code>KssStyleguide</code>.</p>
+    <p>Traverse a directory, parse its contents, and create a KssStyleGuide.</p>
+<p>Callbacks receive an instance of <code>KssStyleGuide</code>.</p>
 <p>If you want to parse anything other than css, less, sass, or stylus files
 then you'll want to use options.mask to target a different set of file
 extensions.</p>
-<pre class="prettyprint source"><code>kss.traverse('./stylesheets', { mask: '*.css' }, function(err, styleguide) {
-    if (err) throw err;
+<pre class="prettyprint source"><code>kss.traverse('./stylesheets', { mask: '*.css' }, function(error, styleguide) {
+    if (error) throw error;
 
     styleguide.section('2.1.1') // &lt;KssSection>
 });</code></pre><p>There a few extra <code>options</code> you can pass to <code>kss.traverse</code> which will effect
@@ -373,10 +373,10 @@ matching this value. Defaults to:
 documentation, thanks to <a href="https://github.com/chjj/marked">marked</a>. It's
 enabled by default, but you can disable it by adding <code>markdown: false</code> to
 the <code>options</code> object.</li>
-<li>multiline: kss-node makes the header available separately from the
+<li>header: kss-node makes the header available separately from the
 description. To make kss-node behave like the Ruby KSS, disable this option
 and the title will remain a part of the description. This setting is
-enabled by default, but you can disable it by adding <code>multiline: false</code> to
+enabled by default, but you can disable it by adding <code>header: false</code> to
 your options.</li>
 <li>typos: Thanks to <a href="https://github.com/NaturalNode/natural">natural</a>,
 kss-node can parse keywords phonetically rather then by their string value.
@@ -742,13 +742,13 @@ Enabled by default.</li>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="KssGenerator.html">KssGenerator</a></li><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleguide.html">KssStyleguide</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="KssGenerator.html">KssGenerator</a></li><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Sun Dec 27 2015 09:44:54 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Wed Jan 06 2016 20:08:40 GMT+0800 (CST)
 </footer>
 
 <script> prettyPrint(); </script>

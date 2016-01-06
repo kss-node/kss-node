@@ -115,16 +115,16 @@ kssHandlebarsGenerator.init = function(config, cb) {
 
   // Create a new destination directory.
   try {
-    mkdirp.sync(this.config.destination + '/public');
+    mkdirp.sync(this.config.destination + '/kss-assets');
   } catch (e) {
     // empty
   }
 
-  // Optionally, copy the contents of the template's "public" folder.
+  // Optionally, copy the contents of the template's "kss-assets" folder.
   try {
     wrench.copyDirSyncRecursive(
-      this.config.template + '/public',
-      this.config.destination + '/public',
+      this.config.template + '/kss-assets',
+      this.config.destination + '/kss-assets',
       {
         forceDelete: true,
         excludeHiddenUnix: true
@@ -161,26 +161,28 @@ kssHandlebarsGenerator.init = function(config, cb) {
 };
 
 /**
- * Generate the HTML files of the style guide given a KssStyleguide object.
+ * Generate the HTML files of the style guide given a KssStyleGuide object.
  *
  * @alias module:kss/generator/handlebars.generate
- * @param {KssStyleguide} styleguide The KSS style guide in object format.
+ * @param {KssStyleGuide} styleguide The KSS style guide in object format.
  */
 kssHandlebarsGenerator.generate = function(styleguide, cb) {
-  var sections = styleguide.section(),
+  this.styleguide = styleguide;
+  this.partials = {};
+
+  var sections = this.styleguide.section(),
     sectionCount = sections.length,
     sectionRoots = [],
     rootCount,
     currentRoot,
     childSections = [],
-    partials = {},
     partial,
     files = [],
     i,
     key;
 
   if (this.config.verbose) {
-    this.log(styleguide.data.files.map(function(file) {
+    this.log(this.styleguide.data.files.map(function(file) {
       return ' - ' + file;
     }).join('\n'));
   }
@@ -245,13 +247,14 @@ kssHandlebarsGenerator.generate = function(styleguide, cb) {
       this.Handlebars.registerPartial(partial.name, partial.markup);
       // Save the name of the partial and its data for retrieval in the markup
       // helper, where we only know the reference.
-      partials[partial.reference] = {
+      this.partials[partial.reference] = {
         name: partial.name,
         data: partial.data
       };
     }
 
-    // Accumulate all of the sections' first indexes.
+    // Accumulate an array of section references for all sections at the root of
+    // the style guide.
     currentRoot = sections[i].reference().split(/(?:\.|\ \-\ )/)[0];
     if (sectionRoots.indexOf(currentRoot) === -1) {
       sectionRoots.push(currentRoot);
@@ -262,17 +265,18 @@ kssHandlebarsGenerator.generate = function(styleguide, cb) {
   rootCount = sectionRoots.length;
   key = false;
   for (i = 0; i &lt; rootCount; i += 1) {
-    currentRoot = styleguide.section(sectionRoots[i]);
+    currentRoot = this.styleguide.section(sectionRoots[i]);
     if (currentRoot === false) {
       key = sectionRoots[i];
-      styleguide.data.sections.push(new KssSection({
+      this.styleguide.data.sections.push(new KssSection({
         header: key,
         reference: key
       }));
     }
   }
+  // Re-sort the style guide if we added new sections.
   if (key !== false) {
-    styleguide.init();
+    this.styleguide.init();
   }
 
   if (this.config.verbose) {
@@ -283,37 +287,84 @@ kssHandlebarsGenerator.generate = function(styleguide, cb) {
   // reference, and make a page for each.
   rootCount = sectionRoots.length;
   for (i = 0; i &lt; rootCount; i += 1) {
-    childSections = styleguide.section(sectionRoots[i] + '.*');
+    childSections = this.styleguide.section(sectionRoots[i] + '.*');
 
-    this.generatePage(styleguide, childSections, sectionRoots[i], sectionRoots, partials);
+    this.generatePage(sectionRoots[i], childSections);
   }
 
   // Generate the homepage.
   childSections = [];
-  this.generatePage(styleguide, childSections, 'styleguide.homepage', sectionRoots, partials);
+  this.generatePage('styleguide.homepage', childSections);
 
   cb(null);
+};
+
+/**
+ * Creates a 2-level hierarchal menu from the style guide.
+ *
+ * @param {string} pageReference The reference of the root section of the page
+ *   being generated.
+ * @returns {Array} An array of menu items that can be used as a Handlebars
+ *   variable.
+ */
+kssHandlebarsGenerator.createMenu = function(pageReference) {
+  var self = this,
+    menu,
+    toMenuItem;
+
+  // Helper function that converts a section to a menu item.
+  toMenuItem = function(section) {
+    var menuItem = section.toJSON();
+
+    // Remove data we won't need for the menu.
+    delete menuItem.markup;
+    delete menuItem.modifiers;
+    delete menuItem.parameters;
+
+    // Mark the current page in the menu.
+    menuItem.isActive = (menuItem.reference === pageReference);
+
+    // Mark any "deep" menu items.
+    menuItem.isGrandChild = (menuItem.depth > 2);
+
+    return menuItem;
+  };
+
+  // Retrieve all the root sections of the style guide.
+  menu = this.styleguide.section('x').map(function(rootSection) {
+    var menuItem = toMenuItem(rootSection);
+
+    // Retrieve the child sections for each of the root sections.
+    menuItem.children = self.styleguide.section(rootSection.reference() + '.*').slice(1).map(toMenuItem);
+
+    // Remove menu items that are deeper than the nav-depth config setting.
+    for (var i = 0; i &lt; menuItem.children.length; i++) {
+      if (menuItem.children[i].depth > self.config['nav-depth']) {
+        delete menuItem.children[i];
+      }
+    }
+
+    return menuItem;
+  });
+
+  return menu;
 };
 
 /**
  * Renders the handlebars template for a section and saves it to a file.
  *
  * @alias module:kss/generator/handlebars.generatePage
- * @param {KssStyleguide} styleguide The KSS style guide in object format.
+ * @param {string} pageReference The reference of the current page's root section.
  * @param {Array} sections An array of KssSection objects.
- * @param {string} root The current section's reference.
- * @param {Array} sectionRoots An array of section references for all sections at the root of the style guide.
- * @param {Object} partials A hash of the names and data of the registered Handlebars partials.
  */
-kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, sectionRoots, partials) {
+kssHandlebarsGenerator.generatePage = function(pageReference, sections) {
   var filename = '', files,
     homepageText = false,
     styles = '',
     scripts = '',
-    customFields = this.config.custom,
     key;
 
-  if (root === 'styleguide.homepage') {
+  if (pageReference === 'styleguide.homepage') {
     filename = 'index.html';
     if (this.config.verbose) {
       this.log(' - homepage');
@@ -340,15 +391,16 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
       }
     }
   } else {
-    filename = 'section-' + KssSection.prototype.encodeReferenceURI(root) + '.html';
+    filename = 'section-' + KssSection.prototype.encodeReferenceURI(pageReference) + '.html';
     if (this.config.verbose) {
       this.log(
-        ' - section ' + root + ' [',
-        styleguide.section(root) ? styleguide.section(root).header() : 'Unnamed',
+        ' - section ' + pageReference + ' [',
+        this.styleguide.section(pageReference) ? this.styleguide.section(pageReference).header() : 'Unnamed',
         ']'
       );
     }
   }
+
   // Create the HTML to load the optional CSS and JS.
   for (key in this.config.css) {
     if (this.config.css.hasOwnProperty(key)) {
@@ -364,17 +416,19 @@ kssHandlebarsGenerator.generatePage = function(styleguide, sections, root, secti
   /* eslint-disable key-spacing */
   fs.writeFileSync(this.config.destination + '/' + filename,
     this.template({
-      partials:     partials,
-      styleguide:   styleguide,
-      sectionRoots: sectionRoots,
-      sections:     sections.map(function(section) {
-        return section.toJSON(customFields);
+      pageReference: pageReference,
+      sections:      sections.map(function(section) {
+        var context = section.toJSON();
+        context.isAutoIncrementReferenceNumber = (context.referenceNumber === context.autoincrement);
+        return context;
       }),
-      rootName:     root,
-      options:      this.config || {},
-      homepage:     homepageText,
-      styles:       styles,
-      scripts:      scripts
+      menu:          this.createMenu(pageReference),
+      homepage:      homepageText,
+      styles:        styles,
+      scripts:       scripts,
+      styleguide:    this.styleguide,
+      partials:      this.partials,
+      options:       this.config || {}
     })
   );
   /* eslint-enable key-spacing */
@@ -391,13 +445,13 @@ module.exports = kssHandlebarsGenerator;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li></ul><h3>Classes</h3><ul><li><a href="KssGenerator.html">KssGenerator</a></li><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleguide.html">KssStyleguide</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li></ul><h3>Classes</h3><ul><li><a href="KssGenerator.html">KssGenerator</a></li><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Sun Dec 27 2015 09:44:53 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Wed Jan 06 2016 20:08:39 GMT+0800 (CST)
 </footer>
 
 <script> prettyPrint(); </script>

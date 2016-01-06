@@ -127,19 +127,10 @@ KssGenerator.prototype.checkGenerator = function(cb) {
     apiMajor,
     apiMinor,
     thisMajor,
-    thisMinor,
-    error;
-
-  cb = cb || /* istanbul ignore next */ function() {};
+    thisMinor;
 
   if (!(this instanceof KssGenerator)) {
-    error = new Error('The loaded generator is not a KssGenerator object.');
-    // istanbul ignore if: API 2.0 is deprecated; remove in 3.x
-    if (this.implementsAPI === '2.0') {
-      throw error;
-    } else {
-      return cb(error);
-    }
+    return cb(new Error('The loaded generator is not a KssGenerator object.'));
   }
 
   if (this.implementsAPI === 'undefined') {
@@ -159,13 +150,7 @@ KssGenerator.prototype.checkGenerator = function(cb) {
   }
 
   if (!isCompatible) {
-    error = new Error('kss-node expected the template\'s generator to implement KssGenerator API version ' + this.API + '; version "' + this.implementsAPI + '" is being used instead.');
-    // istanbul ignore if: API 2.0 is deprecated; remove in 3.x
-    if (this.implementsAPI === '2.0') {
-      throw error;
-    } else {
-      return cb(error);
-    }
+    return cb(new Error('kss-node expected the template\'s generator to implement KssGenerator API version ' + this.API + '; version "' + this.implementsAPI + '" is being used instead.'));
   }
 
   return cb(null);
@@ -187,10 +172,6 @@ KssGenerator.prototype.checkGenerator = function(cb) {
  * @returns {*} The callback's return value.
  */
 KssGenerator.prototype.clone = function(templatePath, destinationPath, cb) {
-  cb = cb || /* istanbul ignore next */ function() {};
-
-  var self = this;
-
   return wrench.copyDirRecursive(
     templatePath,
     destinationPath,
@@ -204,13 +185,7 @@ KssGenerator.prototype.clone = function(templatePath, destinationPath, cb) {
         if (error.message === 'You are trying to delete a directory that already exists. Specify forceDelete in an options object to override this.') {
           error = new Error('This folder already exists: ' + destinationPath);
         }
-        // istanbul ignore if: API 2.0 is deprecated; remove in 3.x
-        if (self.implementsAPI === '2.0') {
-          // istanbul ignore next: API 2.0 is deprecated; remove in 3.x
-          throw error;
-        } else {
-          return cb(error);
-        }
+        return cb(error);
       }
       return cb(null);
     }
@@ -231,8 +206,6 @@ KssGenerator.prototype.clone = function(templatePath, destinationPath, cb) {
  * @returns {*} The callback's return value.
  */
 KssGenerator.prototype.init = function(config, cb) {
-  cb = cb || /* istanbul ignore next */ function() {};
-
   // At the very least, generators MUST save the configuration parameters.
   this.config = config;
 
@@ -240,32 +213,17 @@ KssGenerator.prototype.init = function(config, cb) {
 };
 
 /**
- * Parse the source files for KSS comments and create a KssStyleguide object.
+ * Parse the source files for KSS comments and create a KssStyleGuide object.
  *
- * When finished, it passes the completed KssStyleguide to the given callback.
+ * When finished, it passes the completed KssStyleGuide to the given callback.
  *
  * @alias KssGenerator.prototype.parse
  * @param {Function} cb Callback that will be given an Error as its first
  *                      parameter, if one occurs, and a fully-populated
- *                      KssStyleguide as its second parameter.
+ *                      KssStyleGuide as its second parameter.
  * @returns {*} The callback's return value.
  */
 KssGenerator.prototype.parse = function(cb) {
-  var traverseCallback;
-
-  // istanbul ignore if: API 2.0 is deprecated; remove in 3.x
-  if (this.implementsAPI === '2.0') {
-    // For API 2.0, the callback did pass errors to the callback.
-    traverseCallback = function(err, styleguide) {
-      if (err) {
-        throw err;
-      }
-      return cb(styleguide);
-    };
-  } else {
-    traverseCallback = cb;
-  }
-
   if (this.config.verbose) {
     this.log('...Parsing your style guide:');
   }
@@ -275,22 +233,22 @@ KssGenerator.prototype.parse = function(cb) {
   // generators may want to use KSS' parse method if they have already loaded
   // the source files through some other mechanism.
   return Kss.traverse(this.config.source, {
-    multiline: true,
+    header: true,
     markdown: true,
     markup: true,
     mask: this.config.mask,
     custom: this.config.custom
-  }, traverseCallback);
+  }, cb);
 };
 
 /**
- * Allow the template to prepare itself or modify the KssStyleguide object.
+ * Allow the template to prepare itself or modify the KssStyleGuide object.
  *
  * @alias KssGenerator.prototype.prepare
- * @param {KssStyleguide} styleguide The KSS style guide in object format.
+ * @param {KssStyleGuide} styleguide The KSS style guide in object format.
  * @param {Function} cb Callback that will be given an Error as its first
  *                      parameter, if one occurs, and a fully-populated
- *                      KssStyleguide as its second parameter.
+ *                      KssStyleGuide as its second parameter.
  * @returns {*} The callback's return value.
  */
 KssGenerator.prototype.prepare = function(styleguide, cb) {
@@ -298,17 +256,15 @@ KssGenerator.prototype.prepare = function(styleguide, cb) {
 };
 
 /**
- * Generate the HTML files of the style guide given a KssStyleguide object.
+ * Generate the HTML files of the style guide given a KssStyleGuide object.
  *
  * @alias KssGenerator.prototype.generate
- * @param {KssStyleguide} styleguide The KSS style guide in object format.
+ * @param {KssStyleGuide} styleguide The KSS style guide in object format.
  * @param {Function} cb Callback that will be given an Error as its first
  *                      parameter, if one occurs.
  * @returns {*} The callback's return value.
  */
 KssGenerator.prototype.generate = function(styleguide, cb) {
-  cb = cb || /* istanbul ignore next */ function() {};
-
   return cb(null);
 };
 </code></pre>
@@ -321,13 +277,13 @@ KssGenerator.prototype.generate = function(styleguide, cb) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="KssGenerator.html">KssGenerator</a></li><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleguide.html">KssStyleguide</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="KssGenerator.html">KssGenerator</a></li><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Sun Dec 27 2015 09:44:54 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Wed Jan 06 2016 20:08:40 GMT+0800 (CST)
 </footer>
 
 <script> prettyPrint(); </script>

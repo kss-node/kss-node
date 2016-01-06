@@ -28,6 +28,9 @@
         <article>
             <pre class="prettyprint source linenums"><code>'use strict';
 
+var KssModifier = require('./kss_modifier'),
+  KssParameter = require('./kss_parameter');
+
 /**
  * The `kss/lib/kss_section` module is normally accessed via the
  * [`KssSection()`]{@link module:kss.KssSection} constructor of the `kss`
@@ -43,114 +46,110 @@
 var KssSection;
 
 /**
- * An instance of this class is returned on calling `KssStyleguide.section`.
+ * An instance of this class is returned on calling `KssStyleGuide.section`.
  * Exposes convenience methods for interpreting data.
  *
  * @constructor
  * @alias module:kss.KssSection
- * @param {Object} data A part of the data object passed on by `KssStyleguide`.
+ * @param {Object} data A part of the data object passed on by `KssStyleGuide`.
  */
 KssSection = function(data) {
   if (!(this instanceof KssSection)) {
-    return new KssSection();
+    return new KssSection(data);
   }
-  this.data = data || {};
-  this.init();
-};
 
-/**
- * Initializes the object and data passed to the constructor. Called
- * automatically from the KssSection() constructor; should not be called
- * directly.
- * @private
- */
-KssSection.prototype.init = function() {
-  var self = this;
+  var self = this,
+    custom;
 
-  this.styleguide = this.data.styleguide || null;
+  data = data || {};
 
-  this.data.header = this.data.header || '';
-  this.data.description = this.data.description || '';
-  this.data.deprecated = this.data.deprecated || false;
-  this.data.experimental = this.data.experimental || false;
-  this.data.reference = this.data.reference || '';
-  this.data.depth = this.data.depth || 0;
-  this.data.weight = this.data.weight || 0;
-  this.data.referenceURI = this.data.referenceURI || '';
-  this.data.markup = this.data.markup || '';
+  this.meta = {};
+  this.meta.styleguide = data.styleguide || null;
+  this.meta.raw = data.raw || '';
+  this.meta.customPropertyNames = [];
 
-  if (this.data.modifiers) {
-    this.data.modifiers = this.data.modifiers.map(function(modifier) {
-      modifier.data.section = self;
-      return modifier;
+  this.data = {};
+  this.data.header = data.header || '';
+  this.data.description = data.description || '';
+  this.data.deprecated = data.deprecated || false;
+  this.data.experimental = data.experimental || false;
+  this.data.reference = data.reference || '';
+  this.data.autoincrement = data.autoincrement || '';
+  this.data.depth = data.depth || 0;
+  this.data.weight = data.weight || 0;
+  this.data.referenceURI = data.referenceURI || '';
+  this.data.markup = data.markup || '';
+
+  if (data.modifiers) {
+    this.data.modifiers = data.modifiers.map(function(modifier) {
+      if (!(modifier instanceof KssModifier)) {
+        modifier = new KssModifier(modifier || {});
+      }
+      return modifier.section(self);
     });
   } else {
     this.data.modifiers = [];
   }
 
-  if (this.data.parameters) {
-    this.data.parameters = this.data.parameters.map(function(parameter) {
-      parameter.data.section = self;
-      return parameter;
+  if (data.parameters) {
+    this.data.parameters = data.parameters.map(function(parameter) {
+      if (!(parameter instanceof KssParameter)) {
+        parameter = new KssParameter(parameter || {});
+      }
+      return parameter.section(self);
     });
   } else {
     this.data.parameters = [];
+  }
+
+  // Find custom properties.
+  for (custom in data) {
+    if (data.hasOwnProperty(custom) &amp;&amp; !this.meta.hasOwnProperty(custom) &amp;&amp; !this.data.hasOwnProperty(custom)) {
+      this.meta.customPropertyNames.push(custom);
+      this.data[custom] = data[custom];
+    }
   }
 };
 
 /**
  * Return `KssSection` as a JSON object.
  *
- * @param {Array} customProperties A list of custom properties to include in the JSON.
  * @returns {Object} A JSON object representation of the KssSection.
  */
-KssSection.prototype.toJSON = function(customProperties) {
+KssSection.prototype.toJSON = function() {
   var returnObject;
-
-  customProperties = customProperties || [];
 
   /* eslint-disable key-spacing */
   returnObject = {
-    header:       this.header(),
-    description:  this.description(),
-    deprecated:   this.deprecated(),
-    experimental: this.experimental(),
-    reference:    this.reference(),
-    depth:        this.depth(),
-    weight:       this.weight(),
-    referenceURI: this.referenceURI(),
-    markup:       this.markup()
+    header:          this.header(),
+    description:     this.description(),
+    deprecated:      this.deprecated(),
+    experimental:    this.experimental(),
+    reference:       this.reference(),
+    referenceNumber: this.referenceNumber(),
+    autoincrement:   this.autoincrement(),
+    depth:           this.depth(),
+    weight:          this.weight(),
+    referenceURI:    this.referenceURI(),
+    markup:          this.markup()
   };
   /* eslint-enable key-spacing */
 
-  returnObject.modifiers = this.data.modifiers.map(function(modifier) {
-    return {
-      name: modifier.name(),
-      description: modifier.description(),
-      className: modifier.className()
-    };
+  returnObject.modifiers = this.modifiers().map(function(modifier) {
+    return modifier.toJSON();
   });
-  returnObject.parameters = this.data.parameters.map(function(modifier) {
-    return {
-      name: modifier.name(),
-      description: modifier.description()
-    };
+  returnObject.parameters = this.parameters().map(function(parameter) {
+    return parameter.toJSON();
   });
 
   // Add custom properties to the JSON object.
-  for (var i = 0; i &lt; customProperties.length; i++) {
-    if (this.data[customProperties[i]]) {
-      returnObject[customProperties[i]] = this.data[customProperties[i]];
+  for (var i = 0; i &lt; this.meta.customPropertyNames.length; i++) {
+    if (this.data[this.meta.customPropertyNames[i]]) {
+      returnObject[this.meta.customPropertyNames[i]] = this.data[this.meta.customPropertyNames[i]];
     }
   }
 
   return returnObject;
-};
-
-// DEPRECATED; use toJSON() instead.
-/* istanbul ignore next */
-KssSection.prototype.JSON = function(customProperties) {
-  return this.toJSON(customProperties);
 };
 
 /**
@@ -164,7 +163,7 @@ KssSection.prototype.header = function() {
 /**
  * Returns the description of the section.
  *
- * Note: If the multiline option is disabled this will include the header also.
+ * Note: If the header option is disabled this will include the header also.
  *
  * @returns {string} The description of the section.
  */
@@ -194,6 +193,44 @@ KssSection.prototype.experimental = function() {
  */
 KssSection.prototype.reference = function() {
   return this.data.reference;
+};
+
+/**
+ * Returns a numeric reference number for the section.
+ *
+ * If the section's given reference is already numeric (e.g. 2, 2.1.3, 3.2),
+ * then this method returns the same value as reference() does. Otherwise, an
+ * auto-incremented reference number will be returned.
+ *
+ * @returns {string} The reference number of the section.
+ */
+KssSection.prototype.referenceNumber = function() {
+  // @TODO: The KssStyleGuide should globally determine which should be used
+  // for the referenceNumber.
+  var reference = this.reference();
+  return (!this.autoincrement() || typeof reference === 'number' || typeof reference === 'string' &amp;&amp; reference.match(/^[\.\d]+$/)) ? reference : this.autoincrement();
+};
+
+/**
+ * Gets or sets an auto-incremented reference number for the section.
+ *
+ * If the `autoincrement` value is provided, the `autoincrement` for this
+ * section is set. Otherwise, the `autoincrement` of the section is returned.
+ *
+ * @param {string} autoincrement Optional. The auto-incremented reference number
+ *   of the section.
+ * @returns {KssSection|string} If `autoincrement` is given, the `KssSection`
+ *   object is returned to allow chaining of methods. Otherwise, the
+ *   auto-incremented reference number of the section is returned.
+ */
+KssSection.prototype.autoincrement = function(autoincrement) {
+  if (typeof autoincrement !== 'undefined') {
+    this.data.autoincrement = autoincrement;
+    // Allow chaining.
+    return this;
+  } else {
+    return this.data.autoincrement;
+  }
 };
 
 /**
@@ -315,13 +352,13 @@ module.exports = KssSection;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="KssGenerator.html">KssGenerator</a></li><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleguide.html">KssStyleguide</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="KssGenerator.html">KssGenerator</a></li><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Sun Dec 27 2015 09:44:54 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Wed Jan 06 2016 20:08:40 GMT+0800 (CST)
 </footer>
 
 <script> prettyPrint(); </script>
