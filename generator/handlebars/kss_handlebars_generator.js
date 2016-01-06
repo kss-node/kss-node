@@ -87,16 +87,16 @@ kssHandlebarsGenerator.init = function(config, cb) {
 
   // Create a new destination directory.
   try {
-    mkdirp.sync(this.config.destination + '/public');
+    mkdirp.sync(this.config.destination + '/kss-assets');
   } catch (e) {
     // empty
   }
 
-  // Optionally, copy the contents of the template's "public" folder.
+  // Optionally, copy the contents of the template's "kss-assets" folder.
   try {
     wrench.copyDirSyncRecursive(
-      this.config.template + '/public',
-      this.config.destination + '/public',
+      this.config.template + '/kss-assets',
+      this.config.destination + '/kss-assets',
       {
         forceDelete: true,
         excludeHiddenUnix: true

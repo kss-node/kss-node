@@ -4,7 +4,7 @@
 
   "//": "The css and js paths are URLs relative to the generated style guide.",
   "css": [
-    "public/styles.css"
+    "styles.css"
   ],
   "js": [],
 
