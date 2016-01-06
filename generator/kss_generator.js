@@ -51,9 +51,7 @@ module.exports = KssGenerator = function(version, options) {
   this.options = options || {};
 
   // The log function defaults to console.log.
-  this.setLogFunction(function(message) {
-    console.log(message);
-  });
+  this.setLogFunction(console.log);
 };
 
 /**
@@ -65,8 +63,8 @@ module.exports = KssGenerator = function(version, options) {
  *
  * @param {string} message The message to log.
  */
-KssGenerator.prototype.log = function(message) {
-  this.logFunction(message);
+KssGenerator.prototype.log = function() {
+  this.logFunction.apply(null, arguments);
 };
 
 /**

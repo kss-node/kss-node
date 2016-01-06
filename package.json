@@ -1,6 +1,6 @@
 {
   "name": "kss",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "description": "The Node.js port of KSS: A methodology for documenting CSS and generating style guides",
   "homepage": "http://kss-node.github.io/kss-node",
   "bugs": {
@@ -42,6 +42,7 @@
     "chai": "^3.4.1",
     "coveralls": "^2.11.4",
     "eslint": "^1.10.1",
+    "fs-extra": "^0.26.4",
     "istanbul": "^0.4.0",
     "jsdoc": "^3.4.0",
     "mocha": "^2.3.4",

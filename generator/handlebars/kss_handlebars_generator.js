@@ -252,7 +252,7 @@ kssHandlebarsGenerator.generate = function(styleguide, cb) {
   }
 
   if (this.config.verbose) {
-    this.log('...Generating style guide sections:');
+    this.log('...Generating style guide pages:');
   }
 
   // Now, group all of the sections by their root

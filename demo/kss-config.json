@@ -9,5 +9,6 @@
   "js": [],
 
   "title": "kss-node Style Guide",
-  "homepage": "homepage.md"
+  "homepage": "homepage.md",
+  "verbose": true
 }
