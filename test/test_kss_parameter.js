@@ -27,8 +27,9 @@ describe('KssParameter object API', function() {
   describe('KssParameter constructor', function() {
     it('should initialize the data', function(done) {
       var obj = new kss.KssParameter();
+      expect(obj).to.have.property('meta');
+      expect(obj.meta).to.have.property('section');
       expect(obj).to.have.property('data');
-      expect(obj.data).to.have.property('section');
       expect(obj.data).to.have.property('name');
       expect(obj.data).to.have.property('description');
       done();
@@ -48,18 +49,18 @@ describe('KssParameter object API', function() {
     it('should return this.section', function(done) {
       this.styleguide.data.sections.map(function(section) {
         section.parameters().map(function(parameter) {
-          expect(parameter.section()).to.equal(parameter.data.section).and.equal(section);
+          expect(parameter.section()).to.equal(parameter.meta.section).and.equal(section);
         });
       });
       done();
     });
 
-    it('should set data.section if given a value', function(done) {
+    it('should set meta.section if given a value', function(done) {
       var section = new kss.KssSection({header: 'Section'}),
         parameter = new kss.KssParameter({name: 'original'});
       parameter.section(section);
-      expect(parameter.data.section).to.deep.equal(section);
-      expect(parameter.section()).to.deep.equal(parameter.data.section);
+      expect(parameter.meta.section).to.deep.equal(section);
+      expect(parameter.section()).to.deep.equal(parameter.meta.section);
       done();
     });
 

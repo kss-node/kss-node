@@ -29,8 +29,9 @@ describe('KssModifier object API', function() {
   describe('KssModifier constructor', function() {
     it('should initialize the data', function(done) {
       var obj = new kss.KssModifier();
+      expect(obj).to.have.property('meta');
+      expect(obj.meta).to.have.property('section');
       expect(obj).to.have.property('data');
-      expect(obj.data).to.have.property('section');
       expect(obj.data).to.have.property('name');
       expect(obj.data).to.have.property('description');
       expect(obj.data).to.have.property('className');
@@ -51,18 +52,18 @@ describe('KssModifier object API', function() {
     it('should return this.section', function(done) {
       this.styleguide.data.sections.map(function(section) {
         section.modifiers().map(function(modifier) {
-          expect(modifier.section()).to.equal(modifier.data.section).and.equal(section);
+          expect(modifier.section()).to.equal(modifier.meta.section).and.equal(section);
         });
       });
       done();
     });
 
-    it('should set data.section if given a value', function(done) {
+    it('should set meta.section if given a value', function(done) {
       var section = new kss.KssSection({header: 'Section'}),
         modifier = new kss.KssModifier({name: 'original'});
       modifier.section(section);
-      expect(modifier.data.section).to.deep.equal(section);
-      expect(modifier.section()).to.deep.equal(modifier.data.section);
+      expect(modifier.meta.section).to.deep.equal(section);
+      expect(modifier.section()).to.deep.equal(modifier.meta.section);
       done();
     });
 
@@ -165,11 +166,11 @@ describe('KssModifier object API', function() {
   });
 
   describe('.markup()', function() {
-    it('should return an unfiltered data.section.markup', function(done) {
+    it('should return an unfiltered meta.section.markup', function(done) {
       this.styleguide.data.sections.map(function(section) {
         section.modifiers().map(function(modifier) {
           if (section.data.markup) {
-            expect(modifier.data.section.data.markup).to.equal(section.data.markup);
+            expect(modifier.meta.section.data.markup).to.equal(section.data.markup);
             expect(modifier.markup()).to.equal(section.data.markup);
           }
         });
@@ -179,7 +180,7 @@ describe('KssModifier object API', function() {
 
     it('should return empty string if it does not have any associated markup', function(done) {
       var modifier = new kss.KssModifier();
-      modifier.data.section = new kss.KssSection();
+      modifier.section(new kss.KssSection());
       expect(modifier.markup()).to.be.string('');
       done();
     });
