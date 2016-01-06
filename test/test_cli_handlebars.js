@@ -61,7 +61,19 @@ describe('Handlebars template', function() {
     });
   });
 
-  describe('default Handlebars helpers', function() {
+  describe('generator\'s Handlebars helpers', function() {
+    it('should load Handlerbars helper: {{{markup}}}', function(done) {
+      expect(this.files['section-2']).to.include('Handlebars markup Helper: pseudo-class-hover');
+      expect(this.files['section-2']).to.include('Handlebars markup Helper: stars-given<');
+      expect(this.files['section-2']).to.include('Handlebars markup Helper: stars-given pseudo-class-hover');
+      expect(this.files['section-2']).to.include('Handlebars markup Helper: disabled');
+      expect(this.files['section-2']).to.include('Nested Handlerbars partial part 1:part 2 of Nested Handlerbars partial');
+      expect(this.files['section-2']).to.include('Test of Handlerbars partial data');
+      done();
+    });
+  });
+
+  describe('template\'s Handlebars helpers', function() {
     it('should load Handlerbars helper: {{section [arg]}}', function(done) {
       expect(this.files['section-3']).to.include('Handlebars Section Helper Test 3');
       expect(this.files['section-3']).to.include('Section 3 has been successfully loaded.');
@@ -71,43 +83,10 @@ describe('Handlebars template', function() {
     it('should load Handlerbars helper: {{eachSection [arg]}}', function(done) {
       expect(this.files['section-2']).to.include('Handlebars eachSection Helper Test 2.1.3');
       expect(this.files['section-2']).to.include('Handlebars eachSection Helper Test 2.1.4');
-      done();
-    });
-
-    it('should load Handlerbars helper: {{eachRoot}}', function(done) {
-      expect(this.files.index).to.include('Handlebars eachRoot Helper Test 2');
-      expect(this.files.index).to.include('Handlebars eachRoot Helper Test 3');
-      expect(this.files.index).to.not.include('Handlebars eachRoot Helper Test 2.1.3');
-      done();
-    });
-
-    it('should load Handlerbars helper: {{ifDepth [arg]}}', function(done) {
-      expect(this.files['section-2']).to.include('Handlebars ifDepth Helper Test 2.1<');
-      expect(this.files['section-2']).to.not.include('Handlebars ifDepth Helper Test 2.1.3');
-      done();
-    });
-
-    it('should load Handlerbars helper: {{unlessDepth [arg]}}', function(done) {
-      expect(this.files['section-2']).to.include('Handlebars unlessDepth Helper Test 2.1.3');
-      expect(this.files['section-2']).to.not.include('Handlebars unlessDepth Helper Test 2.1<');
-      done();
-    });
-
-    it('should load Handlerbars helper: {{eachModifier}}', function(done) {
-      expect(this.files['section-2']).to.include('Handlebars eachModifier Helper: :hover');
-      expect(this.files['section-2']).to.include('Handlebars eachModifier Helper: .stars-given<');
-      expect(this.files['section-2']).to.include('Handlebars eachModifier Helper: .stars-given:hover');
-      expect(this.files['section-2']).to.include('Handlebars eachModifier Helper: .disabled');
-      done();
-    });
-
-    it('should load Handlerbars helper: {{{markup}}}', function(done) {
-      expect(this.files['section-2']).to.include('Handlebars markup Helper: pseudo-class-hover');
-      expect(this.files['section-2']).to.include('Handlebars markup Helper: stars-given<');
-      expect(this.files['section-2']).to.include('Handlebars markup Helper: stars-given pseudo-class-hover');
-      expect(this.files['section-2']).to.include('Handlebars markup Helper: disabled');
-      expect(this.files['section-2']).to.include('Nested Handlerbars partial part 1:part 2 of Nested Handlerbars partial');
-      expect(this.files['section-2']).to.include('Test of Handlerbars partial data');
+      expect(this.files['section-2']).to.include('Handlebars eachSection Helper: #each modifiers: :hover');
+      expect(this.files['section-2']).to.include('Handlebars eachSection Helper: #each modifiers: .stars-given<');
+      expect(this.files['section-2']).to.include('Handlebars eachSection Helper: #each modifiers: .stars-given:hover');
+      expect(this.files['section-2']).to.include('Handlebars eachSection Helper: #each modifiers: .disabled');
       done();
     });
   });

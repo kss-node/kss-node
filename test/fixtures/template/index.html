@@ -11,8 +11,22 @@
 {{test}}
 </div>
 
+<div id="kss-test--markup">
+  {{#section "2.1.3"}}
+  {{#each modifiers}}
+  {{{markup ../this}}}
+  {{/each}}
+  {{/section}}
+</div>
+
+<div id="kss-test--markup-2">
+  {{#section "3.1"}}
+  {{{markup}}}
+  {{/section}}
+</div>
+
 <div id="kss-test--section">
-{{#section rootName}}
+{{#section pageReference}}
   <h2>Handlebars Section Helper Test {{reference}}</h2>
   {{{description}}}
 {{/section}}
@@ -25,45 +39,12 @@
 {{/eachSection}}
 </div>
 
-<div id="kss-test--eachRoot">
-{{#eachRoot}}
-  <h2>Handlebars eachRoot Helper Test {{reference}}</h2>
-{{/eachRoot}}
-</div>
-
-<div id="kss-test--ifDepth">
-{{#if rootName}}
-{{#eachSection rootName}}
-  {{#ifDepth 2}}
-    <h2>Handlebars ifDepth Helper Test {{reference}}</h2>
-  {{/ifDepth}}
-  {{#unlessDepth 2}}
-    <h2>Handlebars unlessDepth Helper Test {{reference}}</h2>
-  {{/unlessDepth}}
+<div id="kss-test--eachSection-modifiers">
+{{#eachSection "2.1.3"}}
+  {{#each modifiers}}
+    <h2>Handlebars eachSection Helper: #each modifiers: {{name}}</h2>
+  {{/each}}
 {{/eachSection}}
-{{/if}}
-</div>
-
-<div id="kss-test--eachModifier">
-{{#section "2.1.3"}}
-  {{#eachModifier}}
-    <h3>Handlebars eachModifier Helper: {{name}}</h2>
-  {{/eachModifier}}
-{{/section}}
-</div>
-
-<div id="kss-test--markup">
-{{#section "2.1.3"}}
-  {{#eachModifier}}
-    {{{markup}}}
-  {{/eachModifier}}
-{{/section}}
-</div>
-
-<div id="kss-test--markup-2">
-{{#section "3.1"}}
-  {{{markup}}}
-{{/section}}
 </div>
 
 <div id="kss-test--custom">

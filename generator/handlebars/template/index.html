@@ -29,28 +29,27 @@
           ><span class="kss-nav__name">Overview</span>
         </a>
       </li>
-    {{#eachRoot}}
+    {{#each menu}}
       <li class="kss-nav__menu-item">
         <a href="section-{{referenceURI}}.html">
-          <span class="kss-nav__ref">{{#ifNumeric reference}}{{reference}}{{else}}{{autoincrement}}{{/ifNumeric}}</span
-          ><span class="kss-nav__name">{{header}}</span>
+          <span class="kss-nav__ref">{{referenceNumber}}</span><span class="kss-nav__name">{{header}}</span>
         </a>
-      {{#ifReference ../rootName}}
+        {{#if isActive}}
+        {{#if children}}
         <ul class="kss-nav__menu-child">
-        {{#eachSection reference}}
-          {{#ifDepth 2 ../../options.[nav-depth]}}
-            <li class="kss-nav__menu-item">
-              <a href="section-{{../referenceURI}}.html#kssref-{{referenceURI}}">
-                <span class="kss-nav__ref {{#ifDepth 3 100}}kss-nav__ref-child{{/ifDepth}}">{{#ifNumeric reference}}{{reference}}{{else}}{{autoincrement}}{{/ifNumeric}}</span
-                ><span class="kss-nav__name">{{header}}</span>
-              </a>
-            </li>
-          {{/ifDepth}}
-        {{/eachSection}}
+        {{#each children}}
+          <li class="kss-nav__menu-item">
+            <a href="section-{{../referenceURI}}.html#kssref-{{referenceURI}}">
+              <span class="kss-nav__ref {{#if isGrandChild}}kss-nav__ref-child{{/if}}">{{referenceNumber}}</span
+              ><span class="kss-nav__name">{{header}}</span>
+            </a>
+          </li>
+        {{/each}}
         </ul>
-      {{/ifReference}}
+        {{/if}}
+        {{/if}}
       </li>
-    {{/eachRoot}}
+    {{/each}}
     </ul>
   </nav>
 </div>
@@ -65,30 +64,22 @@
     Display each section, in order.
 
     The "root" element comes first in this loop, and can be detected using
-    the "#ifDepth 1" block as seen below.
+    the "#if @first" block as seen below.
   }}
-  {{#eachSection rootName}}
-    {{#ifDepth 1}}
-      <div     id="kssref-{{referenceURI}}" class="kss-section kss-section--depth-{{depth}}">
-    {{else}}
-      <section id="kssref-{{referenceURI}}" class="kss-section kss-section--depth-{{depth}}">
-    {{/ifDepth}}
+  {{#each sections}}
+    <{{#if @first}}div{{else}}section{{/if}} id="kssref-{{referenceURI}}" class="kss-section kss-section--depth-{{depth}}">
 
     <div class="kss-style">
       <h{{depth}} class="kss-title kss-title--level-{{depth}}">
         <a class="kss-title__permalink" href="#kssref-{{referenceURI}}">
           <span class="kss-title__ref">
-            {{#ifNumeric reference}}
-              {{reference}}
-            {{else}}
-              {{autoincrement}}
-            {{/ifNumeric}}
+            {{referenceNumber}}
             <span class="kss-title__permalink-hash">
-              {{#ifNumeric reference}}
-                #permalink
-              {{else}}
+              {{#if isAutoIncrementReferenceNumber}}
                 #{{reference}}
-              {{/ifNumeric}}
+              {{else}}
+                #permalink
+              {{/if}}
             </span>
           </span>
           {{header}}
@@ -97,12 +88,12 @@
 
     {{#if parameters}}
       <ul class="kss-parameters">
-      {{#eachParameter}}
+      {{#each parameters}}
         <li class="kss-parameters__item">
           <code class="kss-parameters__name">{{name}}</code>
           <div class="kss-parameters__description">{{{description}}}</div>
         </li>
-      {{/eachParameter}}
+      {{/each}}
       </ul>
     {{/if}}
 
@@ -126,7 +117,7 @@
         <div class="kss-modifier__example">
           {{{markup}}}
         </div>
-      {{#eachModifier}}
+      {{#each modifiers}}
         <div class="kss-modifier__name kss-style">
           {{name}}
         </div>
@@ -134,9 +125,9 @@
           {{{description}}}
         </div>
         <div class="kss-modifier__example">
-          {{{markup}}}
+          {{{markup ../this modifier_class=className}}}
         </div>
-      {{/eachModifier}}
+      {{/each}}
       </div>
 
       <div class="kss-markup kss-style">
@@ -144,12 +135,8 @@
       </div>
     {{/if}}
 
-    {{#ifDepth 1}}
-      </div>
-    {{else}}
-      </section>
-    {{/ifDepth}}
-  {{/eachSection}}
+    </{{#if @first}}div{{else}}section{{/if}}>
+  {{/each}}
 {{/if}}
 </article>
 

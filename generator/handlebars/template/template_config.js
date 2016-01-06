@@ -43,10 +43,64 @@ kssHandlebarsTemplate.options = {
   }
 };
 
-// If this template wants to modify the KssStyleGuide object before the HTML is
-// generated, it can do so here. For example, doing special handling of "custom"
-// properties. It can also take this opportunity for other tasks, like running
-// Sass or Bower tasks.
+// If this template needs to do preparation work before the HTML style guide is
+// generated, the template can do its work inside the `prepare()` method. The
+// template has access to the KssStyleGuide object (as the `styleguide`
+// parameter), an object containing the configuration settings for the requested
+// generation (as `this.config`), and the global Handlebars object (as
+// `this.Handlebars`).
+//
+// The template could also take this opportunity to do tasks like special
+// handling of "custom" properties or running Sass or Bower tasks.
 kssHandlebarsTemplate.generator.prepare = function(styleguide, cb) {
+
+  // Load this template's extra Handlebars helpers.
+
+  // Allow a template user to override the {{section [reference]}} helper with
+  // the --helpers setting. Since a user's handlebars helpers are loaded first,
+  // we need to check if this helper already exists.
+  if (!this.Handlebars.helpers['section']) {
+    /**
+     * Returns a single section, found by its reference
+     * @param  {String} reference The reference to search for.
+     */
+    this.Handlebars.registerHelper('section', function(reference, options) {
+      var section = options.data.root.styleguide.section(reference);
+
+      return section ? options.fn(section.toJSON()) : options.inverse('');
+    });
+  }
+
+  // Allow a template user to override the {{eachSection [query]}} helper with
+  // the --helpers setting.
+  if (!this.Handlebars.helpers['eachSection']) {
+    /**
+     * Loop over a section query. If a number is supplied, will convert into
+     * a query for all children and descendants of that reference.
+     * @param  {Mixed} query The section query
+     */
+    this.Handlebars.registerHelper('eachSection', function(query, options) {
+      var styleguide = options.data.root.styleguide,
+        buffer = '',
+        sections,
+        i, l;
+
+      if (!query.match(/\bx\b|\*/g)) {
+        query = query + '.*';
+      }
+      sections = styleguide.section(query);
+      if (!sections) {
+        return options.inverse('');
+      }
+
+      l = sections.length;
+      for (i = 0; i < l; i += 1) {
+        buffer += options.fn(sections[i].toJSON());
+      }
+
+      return buffer;
+    });
+  }
+
   return cb(null, styleguide);
 };

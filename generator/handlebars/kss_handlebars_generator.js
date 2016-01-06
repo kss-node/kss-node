@@ -272,20 +272,71 @@ kssHandlebarsGenerator.generate = function(styleguide, cb) {
 };
 
 /**
+ * Creates a 2-level hierarchal menu from the style guide.
+ *
+ * @param {string} pageReference The reference of the root section of the page
+ *   being generated.
+ * @returns {Array} An array of menu items that can be used as a Handlebars
+ *   variable.
+ */
+kssHandlebarsGenerator.createMenu = function(pageReference) {
+  var self = this,
+    menu,
+    toMenuItem;
+
+  // Helper function that converts a section to a menu item.
+  toMenuItem = function(section) {
+    var menuItem = section.toJSON();
+
+    // Remove data we won't need for the menu.
+    delete menuItem.markup;
+    delete menuItem.modifiers;
+    delete menuItem.parameters;
+
+    // Mark the current page in the menu.
+    menuItem.isActive = (menuItem.reference === pageReference);
+
+    // Mark any "deep" menu items.
+    menuItem.isGrandChild = (menuItem.depth > 2);
+
+    return menuItem;
+  };
+
+  // Retrieve all the root sections of the style guide.
+  menu = this.styleguide.section('x').map(function(rootSection) {
+    var menuItem = toMenuItem(rootSection);
+
+    // Retrieve the child sections for each of the root sections.
+    menuItem.children = self.styleguide.section(rootSection.reference() + '.*').slice(1).map(toMenuItem);
+
+    // Remove menu items that are deeper than the nav-depth config setting.
+    for (var i = 0; i < menuItem.children.length; i++) {
+      if (menuItem.children[i].depth > self.config['nav-depth']) {
+        delete menuItem.children[i];
+      }
+    }
+
+    return menuItem;
+  });
+
+  return menu;
+};
+
+/**
  * Renders the handlebars template for a section and saves it to a file.
  *
  * @alias module:kss/generator/handlebars.generatePage
- * @param {string} root The current section's reference.
+ * @param {string} pageReference The reference of the current page's root section.
  * @param {Array} sections An array of KssSection objects.
  */
-kssHandlebarsGenerator.generatePage = function(root, sections) {
+kssHandlebarsGenerator.generatePage = function(pageReference, sections) {
   var filename = '', files,
     homepageText = false,
     styles = '',
     scripts = '',
     key;
 
-  if (root === 'styleguide.homepage') {
+  if (pageReference === 'styleguide.homepage') {
     filename = 'index.html';
     if (this.config.verbose) {
       this.log(' - homepage');
@@ -312,15 +363,16 @@ kssHandlebarsGenerator.generatePage = function(root, sections) {
       }
     }
   } else {
-    filename = 'section-' + KssSection.prototype.encodeReferenceURI(root) + '.html';
+    filename = 'section-' + KssSection.prototype.encodeReferenceURI(pageReference) + '.html';
     if (this.config.verbose) {
       this.log(
-        ' - section ' + root + ' [',
-        this.styleguide.section(root) ? this.styleguide.section(root).header() : 'Unnamed',
+        ' - section ' + pageReference + ' [',
+        this.styleguide.section(pageReference) ? this.styleguide.section(pageReference).header() : 'Unnamed',
         ']'
       );
     }
   }
+
   // Create the HTML to load the optional CSS and JS.
   for (key in this.config.css) {
     if (this.config.css.hasOwnProperty(key)) {
@@ -336,16 +388,19 @@ kssHandlebarsGenerator.generatePage = function(root, sections) {
   /* eslint-disable key-spacing */
   fs.writeFileSync(this.config.destination + '/' + filename,
     this.template({
-      partials:     this.partials,
-      styleguide:   this.styleguide,
-      sections:     sections.map(function(section) {
-        return section.toJSON();
+      pageReference: pageReference,
+      sections:      sections.map(function(section) {
+        var context = section.toJSON();
+        context.isAutoIncrementReferenceNumber = (context.referenceNumber === context.autoincrement);
+        return context;
       }),
-      rootName:     root,
-      options:      this.config || {},
-      homepage:     homepageText,
-      styles:       styles,
-      scripts:      scripts
+      menu:          this.createMenu(pageReference),
+      homepage:      homepageText,
+      styles:        styles,
+      scripts:       scripts,
+      styleguide:    this.styleguide,
+      partials:      this.partials,
+      options:       this.config || {}
     })
   );
   /* eslint-enable key-spacing */
