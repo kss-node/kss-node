@@ -150,6 +150,7 @@ kssHandlebarsGenerator.generate = function(styleguide, cb) {
     childSections = [],
     partial,
     files = [],
+    newSection,
     i,
     key;
 
@@ -234,16 +235,20 @@ kssHandlebarsGenerator.generate = function(styleguide, cb) {
   }
 
   // If a root element doesn't have an actual section, build one for it.
+  // @TODO: Move this "fixing" into KssStyleGuide.
   rootCount = sectionRoots.length;
   key = false;
   for (i = 0; i < rootCount; i += 1) {
     currentRoot = this.styleguide.section(sectionRoots[i]);
     if (currentRoot === false) {
       key = sectionRoots[i];
-      this.styleguide.data.sections.push(new KssSection({
+      // @TODO: Add section via KssStyleGuide API.
+      newSection = new KssSection({
         header: key,
         reference: key
-      }));
+      });
+      this.styleguide.data.sections.push(newSection);
+      this.styleguide.data.section_refs[newSection.reference()] = newSection;
     }
   }
   // Re-sort the style guide if we added new sections.
@@ -288,7 +293,7 @@ kssHandlebarsGenerator.createMenu = function(pageReference) {
   toMenuItem = function(section) {
     var menuItem = section.toJSON();
 
-    // Remove data we won't need for the menu.
+    // Remove data we definitely won't need for the menu.
     delete menuItem.markup;
     delete menuItem.modifiers;
     delete menuItem.parameters;
