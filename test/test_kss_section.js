@@ -97,7 +97,7 @@ describe('KssSection object API', function() {
   describe('.header()', function() {
     it('should return data.header', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        expect(section.header()).to.be.equal(section.data.header);
+        expect(section.header()).to.equal(section.data.header);
       });
       done();
     });
@@ -106,7 +106,7 @@ describe('KssSection object API', function() {
   describe('.description()', function() {
     it('should return data.description', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        expect(section.description()).to.be.equal(section.data.description);
+        expect(section.description()).to.equal(section.data.description);
       });
       done();
     });
@@ -115,7 +115,7 @@ describe('KssSection object API', function() {
   describe('.deprecated()', function() {
     it('should return data.deprecated', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        expect(section.deprecated()).to.be.equal(section.data.deprecated);
+        expect(section.deprecated()).to.equal(section.data.deprecated);
       });
       done();
     });
@@ -124,7 +124,7 @@ describe('KssSection object API', function() {
   describe('.experimental()', function() {
     it('should return data.experimental', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        expect(section.experimental()).to.be.equal(section.data.experimental);
+        expect(section.experimental()).to.equal(section.data.experimental);
       });
       done();
     });
@@ -133,7 +133,7 @@ describe('KssSection object API', function() {
   describe('.reference()', function() {
     it('should return data.reference', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        expect(section.reference()).to.be.equal(section.data.reference);
+        expect(section.reference()).to.equal(section.data.reference);
       });
       done();
     });
@@ -142,8 +142,8 @@ describe('KssSection object API', function() {
   describe('.depth()', function() {
     it('should return data.depth', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        expect(section.depth()).to.be.equal(section.data.depth);
-        expect(section.depth()).to.be.equal(section.reference().split(section.styleguide.referenceDelimiter).length);
+        expect(section.depth()).to.equal(section.data.depth);
+        expect(section.depth()).to.equal(section.reference().split(section.styleguide.referenceDelimiter).length);
         expect(section.depth()).to.be.at.least(0);
       });
       done();
@@ -153,7 +153,7 @@ describe('KssSection object API', function() {
   describe('.weight()', function() {
     it('should return data.weight', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        expect(section.weight()).to.be.equal(section.data.weight ? section.data.weight : 0);
+        expect(section.weight()).to.equal(section.data.weight ? section.data.weight : 0);
         expect(section.weight()).to.be.at.least(-100000);
       });
       done();
@@ -163,7 +163,7 @@ describe('KssSection object API', function() {
   describe('.encodeReferenceURI()', function() {
     it('should return .referenceURI() when given reference()', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        expect(section.encodeReferenceURI(section.reference())).to.be.equal(section.referenceURI());
+        expect(section.encodeReferenceURI(section.reference())).to.equal(section.referenceURI());
       });
       done();
     });
@@ -172,8 +172,8 @@ describe('KssSection object API', function() {
   describe('.referenceURI()', function() {
     it('should return data.referenceURI', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        expect(section.referenceURI()).to.be.equal(section.data.referenceURI);
-        expect(section.referenceURI()).to.be.equal(section.encodeReferenceURI(section.reference()));
+        expect(section.referenceURI()).to.equal(section.data.referenceURI);
+        expect(section.referenceURI()).to.equal(section.encodeReferenceURI(section.reference()));
       });
       done();
     });
@@ -187,7 +187,7 @@ describe('KssSection object API', function() {
   describe('.modifiers()', function() {
     it('should return data.modifiers', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        expect(section.modifiers()).to.be.equal(section.data.modifiers);
+        expect(section.modifiers()).to.equal(section.data.modifiers);
       });
       done();
     });
@@ -251,7 +251,7 @@ describe('KssSection object API', function() {
     it('should return data.modifiers[0]', function(done) {
       this.styleguide.data.sections.map(function(section) {
         if (section.data.modifiers.length) {
-          expect(section.firstModifier()).to.be.equal(section.modifiers(0));
+          expect(section.firstModifier()).to.equal(section.modifiers(0));
         } else {
           expect(section.firstModifier()).to.be.false;
         }
@@ -263,7 +263,7 @@ describe('KssSection object API', function() {
   describe('.parameters()', function() {
     it('should return data.parameters', function(done) {
       this.styleguide.data.sections.map(function(section) {
-        expect(section.parameters()).to.be.equal(section.data.parameters);
+        expect(section.parameters()).to.equal(section.data.parameters);
       });
       done();
     });

@@ -77,25 +77,25 @@ describe('KssStyleGuide object API', function() {
     context('given exact references', function() {
       it('should find a reference with depth 1', function(done) {
         var section = this.styleguide.section('4');
-        expect(section.header()).to.be.equal('DEPTH OF 1');
-        expect(section.depth()).to.be.equal(1);
-        expect(section.reference()).to.be.equal('4');
+        expect(section.header()).to.equal('DEPTH OF 1');
+        expect(section.depth()).to.equal(1);
+        expect(section.reference()).to.equal('4');
         done();
       });
 
       it('should find a reference with depth 3 and no modifiers', function(done) {
         var section = this.styleguide.section('4.1.1');
-        expect(section.header()).to.be.equal('DEPTH OF 3, NO MODIFIERS');
-        expect(section.reference()).to.be.equal('4.1.1');
-        expect(section.depth()).to.be.equal(3);
+        expect(section.header()).to.equal('DEPTH OF 3, NO MODIFIERS');
+        expect(section.reference()).to.equal('4.1.1');
+        expect(section.depth()).to.equal(3);
         done();
       });
 
       it('should find a reference with depth 3 and modifiers', function(done) {
         var section = this.styleguide.section('4.1.2');
-        expect(section.header()).to.be.equal('DEPTH OF 3, MODIFIERS');
-        expect(section.depth()).to.be.equal(3);
-        expect(section.reference()).to.be.equal('4.1.2');
+        expect(section.header()).to.equal('DEPTH OF 3, MODIFIERS');
+        expect(section.depth()).to.equal(3);
+        expect(section.reference()).to.equal('4.1.2');
         done();
       });
 
@@ -106,25 +106,25 @@ describe('KssStyleGuide object API', function() {
 
       it('should find a reference with depth 4 (A)', function(done) {
         var section = this.styleguide.section('4.1.1.1');
-        expect(section.header()).to.be.equal('DEPTH OF 4 (A)');
-        expect(section.depth()).to.be.equal(4);
-        expect(section.reference()).to.be.equal('4.1.1.1');
+        expect(section.header()).to.equal('DEPTH OF 4 (A)');
+        expect(section.depth()).to.equal(4);
+        expect(section.reference()).to.equal('4.1.1.1');
         done();
       });
 
       it('should find a reference with depth 4 (B)', function(done) {
         var section = this.styleguide.section('4.1.1.2');
-        expect(section.header()).to.be.equal('DEPTH OF 4 (B)');
-        expect(section.depth()).to.be.equal(4);
-        expect(section.reference()).to.be.equal('4.1.1.2');
+        expect(section.header()).to.equal('DEPTH OF 4 (B)');
+        expect(section.depth()).to.equal(4);
+        expect(section.reference()).to.equal('4.1.1.2');
         done();
       });
 
       it('should find a reference with depth 4 (C)', function(done) {
         var section = this.styleguide.section('4.1.2.2');
-        expect(section.header()).to.be.equal('DEPTH OF 4 (C)');
-        expect(section.depth()).to.be.equal(4);
-        expect(section.reference()).to.be.equal('4.1.2.2');
+        expect(section.header()).to.equal('DEPTH OF 4 (C)');
+        expect(section.depth()).to.equal(4);
+        expect(section.reference()).to.equal('4.1.2.2');
         done();
       });
     });
