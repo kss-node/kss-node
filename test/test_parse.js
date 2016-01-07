@@ -97,56 +97,37 @@ describe('kss.parse()', function() {
       });
     });
 
-    describe('.body:', function() {
-      it('should be a string', function(done) {
-        helperUtils.traverseFixtures({}, function(styleguide) {
-          expect(styleguide.data.body).to.not.be.instanceof(Buffer);
-          expect(styleguide.data.body).to.be.string;
-          done();
-        });
-      });
-
-      it('contains contents of all found files', function(done) {
-        var fileReader, fileCounter, sg;
-
-        helperUtils.traverseFixtures({}, function(styleguide) {
-          sg = styleguide;
-          fileCounter = styleguide.data.files.length;
-          styleguide.data.files.map(function(file) {
-            fs.readFile(file, 'utf8', fileReader);
-          });
-        });
-
-        fileReader = function(error, data) {
-          if (error) {
-            throw error;
-          }
-
-          expect(sg.data.body).to.include(data);
-          fileCounter -= 1;
-          if (!fileCounter) {
-            done();
-          }
-        };
-      });
-    });
-
     describe('.sections[]:', function() {
       describe('.raw', function() {
         before(function(done) {
-          var self = this;
+          var self = this,
+            fileCounter;
+
           helperUtils.traverseFixtures({}, function(styleguide) {
             self.styleguide = styleguide;
-            done();
+            self.fileContents = '';
+            fileCounter = styleguide.data.files.length;
+            styleguide.data.files.map(function(file) {
+              fs.readFile(file, 'utf8', function(error, data) {
+                if (error) {
+                  throw error;
+                }
+
+                self.fileContents += data;
+                fileCounter -= 1;
+                if (!fileCounter) {
+                  done();
+                }
+              });
+            });
           });
         });
 
-        it('should contain an array of comment blocks that are from .data.body (disregarding whitespace and asterisks)', function() {
-          var data = this.styleguide.data,
-            filteredBody = data.body.replace(/\/\/|\/\*+|\*\/|\s|\*/g, '');
+        it('should contain a copy of comment blocks that are from the original files (disregarding whitespace and asterisks)', function() {
+          var filteredFileText = this.fileContents.replace(/\/\/|\/\*+|\*\/|\s|\*/g, '');
 
-          data.sections.map(function(section) {
-            expect(filteredBody).to.include(section.meta.raw.replace(/\s|\*/g, ''));
+          this.styleguide.section().map(function(section) {
+            expect(filteredFileText).to.include(section.meta.raw.replace(/\s|\*/g, ''));
           });
         });
       });
