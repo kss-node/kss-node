@@ -291,6 +291,7 @@ kssHandlebarsGenerator.createMenu = function(pageReference) {
 
   // Helper function that converts a section to a menu item.
   toMenuItem = function(section) {
+    // @TODO: Add an option to "include" the specific properties returned.
     var menuItem = section.toJSON();
 
     // Remove data we definitely won't need for the menu.
@@ -337,6 +338,7 @@ kssHandlebarsGenerator.createMenu = function(pageReference) {
 kssHandlebarsGenerator.generatePage = function(pageReference, sections) {
   var filename = '', files,
     homepageText = false,
+    rootSection,
     styles = '',
     scripts = '',
     key;
@@ -368,11 +370,12 @@ kssHandlebarsGenerator.generatePage = function(pageReference, sections) {
       }
     }
   } else {
-    filename = 'section-' + KssSection.prototype.encodeReferenceURI(pageReference) + '.html';
+    rootSection = this.styleguide.section(pageReference);
+    filename = 'section-' + rootSection.referenceURI() + '.html';
     if (this.config.verbose) {
       this.log(
         ' - section ' + pageReference + ' [',
-        this.styleguide.section(pageReference) ? this.styleguide.section(pageReference).header() : 'Unnamed',
+        rootSection.header() ? rootSection.header() : 'Unnamed',
         ']'
       );
     }
@@ -396,7 +399,7 @@ kssHandlebarsGenerator.generatePage = function(pageReference, sections) {
       pageReference: pageReference,
       sections:      sections.map(function(section) {
         var context = section.toJSON();
-        context.isAutoIncrementReferenceNumber = (context.referenceNumber === context.autoincrement);
+        context.hasReferenceNumber = (context.referenceNumber !== context.reference);
         return context;
       }),
       menu:          this.createMenu(pageReference),

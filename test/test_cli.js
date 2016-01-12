@@ -177,6 +177,8 @@ describe('Command Line Interface', function() {
 
   describe('given --clone option', function() {
     it('should copy the template', function(done) {
+      // This test is long.
+      this.timeout(4000);
       kssNode('--clone test/output/template',
         function(error, stdout, stderr) {
           expect(error).to.not.exist;

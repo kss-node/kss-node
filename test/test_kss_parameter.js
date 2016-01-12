@@ -46,7 +46,7 @@ describe('KssParameter object API', function() {
   });
 
   describe('.section()', function() {
-    it('should return this.section', function(done) {
+    it('should return meta.section', function(done) {
       this.styleguide.data.sections.map(function(section) {
         section.parameters().map(function(parameter) {
           expect(parameter.section()).to.equal(parameter.meta.section).and.equal(section);

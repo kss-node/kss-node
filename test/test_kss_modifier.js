@@ -49,7 +49,7 @@ describe('KssModifier object API', function() {
   });
 
   describe('.section()', function() {
-    it('should return this.section', function(done) {
+    it('should return meta.section', function(done) {
       this.styleguide.data.sections.map(function(section) {
         section.modifiers().map(function(modifier) {
           expect(modifier.section()).to.equal(modifier.meta.section).and.equal(section);
