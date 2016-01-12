@@ -132,7 +132,7 @@ describe('KssParameter object API', function() {
           str = JSON.stringify(parameter.toJSON());
           expect(str).to.be.string;
           // Compare JSON string to original.
-          expect(JSON.parse(str)).to.eql(parameter.toJSON());
+          expect(JSON.parse(str)).to.deep.equal(parameter.toJSON());
         });
       });
       done();

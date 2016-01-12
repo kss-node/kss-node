@@ -75,7 +75,7 @@ describe('KssSection object API', function() {
         str = JSON.stringify(section.toJSON());
         expect(str).to.be.string;
         // Compare JSON string to original.
-        expect(JSON.parse(str)).to.eql(section.toJSON());
+        expect(JSON.parse(str)).to.deep.equal(section.toJSON());
       });
       done();
     });
@@ -205,8 +205,8 @@ describe('KssSection object API', function() {
       this.styleguide.data.sections.map(function(section) {
         var i = 0;
         section.data.modifiers.map(function(modifier) {
-          expect(section.modifiers(i)).to.be.eql(modifier);
-          expect(section.modifiers(i.toString())).to.be.eql(modifier);
+          expect(section.modifiers(i)).to.deep.equal(modifier);
+          expect(section.modifiers(i.toString())).to.deep.equal(modifier);
           i++;
         });
       });
@@ -231,7 +231,7 @@ describe('KssSection object API', function() {
           // If a modifier is equal to a query, run the search.
           for (j = 0; j < q; j += 1) {
             if (section.data.modifiers[i].data.name === queries[j]) {
-              expect(section.modifiers(queries[j])).to.be.eql(section.data.modifiers[i]);
+              expect(section.modifiers(queries[j])).to.deep.equal(section.data.modifiers[i]);
             }
           }
         }

@@ -69,7 +69,7 @@ describe('KssStyleGuide object API', function() {
         this.styleguide.section().map(function(section) {
           results.push(section.reference());
         });
-        expect(results).to.be.eql(expected);
+        expect(results).to.deep.equal(expected);
         done();
       });
     });
@@ -146,7 +146,7 @@ describe('KssStyleGuide object API', function() {
         results = this.styleguide.section('4.1.x').map(function(section) {
           return section.reference();
         });
-        expect(results).to.eql(expected);
+        expect(results).to.deep.equal(expected);
         done();
       });
 
@@ -156,7 +156,7 @@ describe('KssStyleGuide object API', function() {
         results = this.styleguide.section('4.x.x').map(function(section) {
           return section.reference();
         });
-        expect(results).to.eql(expected);
+        expect(results).to.deep.equal(expected);
         done();
       });
 
@@ -166,7 +166,7 @@ describe('KssStyleGuide object API', function() {
         results = this.styleguide.section('4.1.*').map(function(section) {
           return section.reference();
         });
-        expect(results).to.eql(expected);
+        expect(results).to.deep.equal(expected);
         done();
       });
 
@@ -188,7 +188,7 @@ describe('KssStyleGuide object API', function() {
         results = this.styleguide.section('9.x').map(function(section) {
           return section.reference();
         });
-        expect(results).to.eql(expected);
+        expect(results).to.deep.equal(expected);
         done();
       });
 
@@ -198,7 +198,7 @@ describe('KssStyleGuide object API', function() {
         results = this.styleguide.section('alpha.x').map(function(section) {
           return section.reference();
         });
-        expect(results).to.eql(expected);
+        expect(results).to.deep.equal(expected);
         done();
       });
 
@@ -217,7 +217,7 @@ describe('KssStyleGuide object API', function() {
         results = this.styleguideWordPhrases.section('beta.x').map(function(section) {
           return section.reference();
         });
-        expect(results).to.eql(expected);
+        expect(results).to.deep.equal(expected);
         done();
       });
     });
@@ -234,7 +234,7 @@ describe('KssStyleGuide object API', function() {
         results = this.styleguide.section(/4.*/).map(function(section) {
           return section.reference();
         });
-        expect(results).to.eql(expected);
+        expect(results).to.deep.equal(expected);
         done();
       });
 
@@ -253,7 +253,7 @@ describe('KssStyleGuide object API', function() {
         results = this.styleguide.section(/9.*/).map(function(section) {
           return section.reference();
         });
-        expect(results).to.eql(expected);
+        expect(results).to.deep.equal(expected);
         done();
       });
 
@@ -263,7 +263,7 @@ describe('KssStyleGuide object API', function() {
         results = this.styleguide.section(/alpha\..*/).map(function(section) {
           return section.reference();
         });
-        expect(results).to.eql(expected);
+        expect(results).to.deep.equal(expected);
         done();
       });
 
@@ -273,7 +273,7 @@ describe('KssStyleGuide object API', function() {
         results = this.styleguideWordPhrases.section(/beta - .*/).map(function(section) {
           return section.reference();
         });
-        expect(results).to.eql(expected);
+        expect(results).to.deep.equal(expected);
         done();
       });
 
@@ -283,7 +283,7 @@ describe('KssStyleGuide object API', function() {
         results = this.styleguideWordPhrases.section(/gamma - .*/).map(function(section) {
           return section.reference();
         });
-        expect(results).to.eql(expected);
+        expect(results).to.deep.equal(expected);
         done();
       });
 
@@ -293,7 +293,7 @@ describe('KssStyleGuide object API', function() {
         results = this.styleguideWordPhrases.section(/gamma - .*/).map(function(section) {
           return section.data.autoincrement;
         });
-        expect(results).to.eql(expected);
+        expect(results).to.deep.equal(expected);
         done();
       });
     });

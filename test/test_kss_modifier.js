@@ -202,7 +202,7 @@ describe('KssModifier object API', function() {
           str = JSON.stringify(modifier.toJSON());
           expect(str).to.be.string;
           // Compare JSON string to original.
-          expect(JSON.parse(str)).to.eql(modifier.toJSON());
+          expect(JSON.parse(str)).to.deep.equal(modifier.toJSON());
         });
       });
       done();
