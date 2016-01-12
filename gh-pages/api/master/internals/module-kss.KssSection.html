@@ -48,8 +48,7 @@
 
 
 <div class="description">
-    <p>An instance of this class is returned on calling <code>KssStyleGuide.section</code>.
-Exposes convenience methods for interpreting data.</p>
+    <p>Creates one section of a style guide.</p>
 </div>
 
 
@@ -101,7 +100,7 @@ Exposes convenience methods for interpreting data.</p>
 
             
 
-            <td class="description last"><p>A part of the data object passed on by <code>KssStyleGuide</code>.</p></td>
+            <td class="description last"><p>The data to use to initialize the <code>KssSection</code> object.</p></td>
         </tr>
 
     
@@ -142,7 +141,7 @@ Exposes convenience methods for interpreting data.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line28">line 28</a>
+        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line27">line 27</a>
     </li></ul></dd>
     
 
@@ -185,6 +184,226 @@ Exposes convenience methods for interpreting data.</p>
 
     
         <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="_propertyHelper"><span class="type-signature">(private) </span>_propertyHelper<span class="signature">(propertyName, objectConstructor, properties)</span><span class="type-signature"> &rarr; {KssSection|Array|KssModifier|false}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Gets or adds nested objects of the section.</p>
+<p>A common helper for <code>.modifiers()</code> and <code>.parameters()</code> methods.</p>
+<p>Different types of arguments for <code>properties</code> will yield different results:</p>
+<ul>
+<li><code>Object|Array</code>: If the value is an array of objects or an object, the
+<code>properties</code> are added to this section.</li>
+<li><code>undefined</code>: Pass nothing to return all of the section's properties in an
+array.</li>
+<li><code>integer</code>: Use a 0-based index to return the section's Nth property.</li>
+<li><code>string</code>: Use a string to return a specific modifier by name.</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>propertyName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The name of property in <code>KssSection</code>.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>objectConstructor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Constructor</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The constructor function for the type of object the property is.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>properties</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Optional. The properties to set for the section.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line411">line 411</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>If <code>header</code> is given, the <code>KssSection</code> object is
+  returned to allow chaining of methods. Otherwise, the header of the section
+  is returned.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">KssSection</span>
+|
+
+<span class="param-type">Array</span>
+|
+
+<span class="param-type">KssModifier</span>
+|
+
+<span class="param-type">false</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
 
         
             
@@ -294,7 +513,7 @@ section is set. Otherwise, the <code>autoincrement</code> of the section is retu
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line198">line 198</a>
+        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line314">line 314</a>
     </li></ul></dd>
     
 
@@ -352,14 +571,16 @@ section is set. Otherwise, the <code>autoincrement</code> of the section is retu
 
     
 
-    <h4 class="name" id="deprecated"><span class="type-signature"></span>deprecated<span class="signature">()</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    <h4 class="name" id="deprecated"><span class="type-signature"></span>deprecated<span class="signature">(deprecated)</span><span class="type-signature"> &rarr; {KssSection|boolean}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Returns whether the section is deprecated or not.</p>
+    <p>Gets or sets the deprecated flag for the section.</p>
+<p>If the <code>deprecated</code> value is provided, the <code>deprecated</code> flag for this section
+is set. Otherwise, the <code>deprecated</code> flag for the section is returned.</p>
 </div>
 
 
@@ -368,6 +589,55 @@ section is set. Otherwise, the <code>autoincrement</code> of the section is retu
 
 
 
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>deprecated</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Optional. The deprecated flag for the section.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -403,7 +673,7 @@ section is set. Otherwise, the <code>autoincrement</code> of the section is retu
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line150">line 150</a>
+        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line203">line 203</a>
     </li></ul></dd>
     
 
@@ -430,7 +700,9 @@ section is set. Otherwise, the <code>autoincrement</code> of the section is retu
 
         
 <div class="param-desc">
-    <p>Whether the section is deprecated or not.</p>
+    <p>If <code>deprecated</code> is given, the <code>KssSection</code>
+  object is returned to allow chaining of methods. Otherwise, the deprecated
+  flag for the section is returned.</p>
 </div>
 
 
@@ -441,7 +713,10 @@ section is set. Otherwise, the <code>autoincrement</code> of the section is retu
     </dt>
     <dd>
         
-<span class="param-type">Boolean</span>
+<span class="param-type">KssSection</span>
+|
+
+<span class="param-type">boolean</span>
 
 
     </dd>
@@ -456,14 +731,16 @@ section is set. Otherwise, the <code>autoincrement</code> of the section is retu
 
     
 
-    <h4 class="name" id="depth"><span class="type-signature"></span>depth<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
+    <h4 class="name" id="depth"><span class="type-signature"></span>depth<span class="signature">(depth)</span><span class="type-signature"> &rarr; {KssSection|integer}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Returns the depth of the section.</p>
+    <p>Gets or sets the depth of the section.</p>
+<p>If the <code>depth</code> value is provided, the <code>depth</code> for this section is set.
+Otherwise, the <code>depth</code> of the section is returned.</p>
 </div>
 
 
@@ -472,6 +749,55 @@ section is set. Otherwise, the <code>autoincrement</code> of the section is retu
 
 
 
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>depth</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">integer</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Optional. The depth of the section.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -507,7 +833,7 @@ section is set. Otherwise, the <code>autoincrement</code> of the section is retu
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line212">line 212</a>
+        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line358">line 358</a>
     </li></ul></dd>
     
 
@@ -534,7 +860,9 @@ section is set. Otherwise, the <code>autoincrement</code> of the section is retu
 
         
 <div class="param-desc">
-    <p>The depth of the section.</p>
+    <p>If <code>depth</code> is given, the <code>KssSection</code> object is
+  returned to allow chaining of methods. Otherwise, the depth of the section
+  is returned.</p>
 </div>
 
 
@@ -545,6 +873,169 @@ section is set. Otherwise, the <code>autoincrement</code> of the section is retu
     </dt>
     <dd>
         
+<span class="param-type">KssSection</span>
+|
+
+<span class="param-type">integer</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="description"><span class="type-signature"></span>description<span class="signature">(description)</span><span class="type-signature"> &rarr; {KssSection|string}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Gets or sets the description of the section.</p>
+<p>If the <code>description</code> value is provided, the <code>description</code> for this section is
+set. Otherwise, the <code>description</code> of the section is returned.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>description</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Optional. The description of the section.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line182">line 182</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>If <code>description</code> is given, the <code>KssSection</code>
+  object is returned to allow chaining of methods. Otherwise, the description
+  of the section is returned.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">KssSection</span>
+|
+
 <span class="param-type">string</span>
 
 
@@ -560,15 +1051,16 @@ section is set. Otherwise, the <code>autoincrement</code> of the section is retu
 
     
 
-    <h4 class="name" id="description"><span class="type-signature"></span>description<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
+    <h4 class="name" id="experimental"><span class="type-signature"></span>experimental<span class="signature">(experimental)</span><span class="type-signature"> &rarr; {KssSection|boolean}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Returns the description of the section.</p>
-<p>Note: If the header option is disabled this will include the header also.</p>
+    <p>Gets or sets the experimental flag for the section.</p>
+<p>If the <code>experimental</code> value is provided, the <code>experimental</code> flag for this
+section is set. Otherwise, the <code>deprecated</code> flag for the section is returned.</p>
 </div>
 
 
@@ -577,6 +1069,56 @@ section is set. Otherwise, the <code>autoincrement</code> of the section is retu
 
 
 
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>experimental</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Optional. The experimental flag for the
+  section.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -612,7 +1154,7 @@ section is set. Otherwise, the <code>autoincrement</code> of the section is retu
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line142">line 142</a>
+        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line225">line 225</a>
     </li></ul></dd>
     
 
@@ -639,7 +1181,9 @@ section is set. Otherwise, the <code>autoincrement</code> of the section is retu
 
         
 <div class="param-desc">
-    <p>The description of the section.</p>
+    <p>If <code>experimental</code> is given, the <code>KssSection</code>
+  object is returned to allow chaining of methods. Otherwise, the
+  experimental flag for the section is returned.</p>
 </div>
 
 
@@ -650,6 +1194,169 @@ section is set. Otherwise, the <code>autoincrement</code> of the section is retu
     </dt>
     <dd>
         
+<span class="param-type">KssSection</span>
+|
+
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="header"><span class="type-signature"></span>header<span class="signature">(header)</span><span class="type-signature"> &rarr; {KssSection|string}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Gets or sets the header of the section, i.e. the first line in the description.</p>
+<p>If the <code>header</code> value is provided, the <code>header</code> for this section is set.
+Otherwise, the <code>header</code> of the section is returned.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>header</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Optional. The header of the section.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line161">line 161</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>If <code>header</code> is given, the <code>KssSection</code> object is
+  returned to allow chaining of methods. Otherwise, the header of the section
+  is returned.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">KssSection</span>
+|
+
 <span class="param-type">string</span>
 
 
@@ -665,14 +1372,531 @@ section is set. Otherwise, the <code>autoincrement</code> of the section is retu
 
     
 
-    <h4 class="name" id="encodeReferenceURI"><span class="type-signature"></span>encodeReferenceURI<span class="signature">(reference)</span><span class="type-signature"> &rarr; {string}</span></h4>
+    <h4 class="name" id="markup"><span class="type-signature"></span>markup<span class="signature">(markup)</span><span class="type-signature"> &rarr; {KssSection|string|false}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Encodes the given reference as a valid URI fragment.</p>
+    <p>Gets or sets the markup of the section.</p>
+<p>If the <code>markup</code> value is provided, the <code>markup</code> for this section is set.
+Otherwise, the <code>markup</code> of the section is returned.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>markup</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Optional. The markup of the section.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line380">line 380</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>If <code>markup</code> is given, the <code>KssSection</code> object is
+  returned to allow chaining of methods. Otherwise, the markup of the section
+  is returned, or <code>false</code> if none.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">KssSection</span>
+|
+
+<span class="param-type">string</span>
+|
+
+<span class="param-type">false</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="modifiers"><span class="type-signature"></span>modifiers<span class="signature">(modifiers)</span><span class="type-signature"> &rarr; {KssSection|Array|KssModifier|false}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Gets or adds modifiers of the section.</p>
+<p>Different types of arguments will yield different results:</p>
+<ul>
+<li><code>modifiers(Object|Array)</code>: If the value is an array of objects or an
+object, the <code>modifiers</code> are added to this section.<ul>
+<li><code>modifiers()</code>: Pass nothing to return all of the section's modifiers in an
+array.</li>
+<li><code>modifiers(Integer)</code>: Use a 0-based index to return the section's Nth
+modifier.</li>
+<li><code>modifiers(String)</code>: Use a string to return a specific modifier by name.</li>
+</ul>
+</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>modifiers</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Optional. The modifiers of the section.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line469">line 469</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>If <code>header</code> is given, the <code>KssSection</code> object is
+  returned to allow chaining of methods. Otherwise, the header of the section
+  is returned.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">KssSection</span>
+|
+
+<span class="param-type">Array</span>
+|
+
+<span class="param-type">KssModifier</span>
+|
+
+<span class="param-type">false</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="parameters"><span class="type-signature"></span>parameters<span class="signature">(parameters)</span><span class="type-signature"> &rarr; {KssSection|Array|KssParameter|false}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Gets or adds parameters if the section is a CSS preprocessor function/mixin.</p>
+<p>Different types of arguments will yield different results:</p>
+<ul>
+<li><code>parameters(Object|Array)</code>: If the value is an array of objects or an
+object, the <code>parameters</code> are added to this section.<ul>
+<li><code>parameters()</code>: Pass nothing to return all of the section's parameters in
+an array.</li>
+<li><code>parameters(Integer)</code>: Use a 0-based index to return the section's Nth
+parameter.</li>
+<li><code>parameters(String)</code>: Use a string to return a specific parameter by name.</li>
+</ul>
+</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>parameters</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Optional. The parameters of the section.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line490">line 490</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>If <code>header</code> is given, the <code>KssSection</code> object is
+  returned to allow chaining of methods. Otherwise, the header of the section
+  is returned.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">KssSection</span>
+|
+
+<span class="param-type">Array</span>
+|
+
+<span class="param-type">KssParameter</span>
+|
+
+<span class="param-type">false</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="reference"><span class="type-signature"></span>reference<span class="signature">(reference)</span><span class="type-signature"> &rarr; {KssSection|string}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Gets or sets the reference for the section.</p>
+<p>If the <code>reference</code> value is provided, the <code>reference</code> for this section is
+set. Otherwise, the <code>reference</code> for the section is returned.</p>
 </div>
 
 
@@ -724,7 +1948,7 @@ section is set. Otherwise, the <code>autoincrement</code> of the section is retu
 
             
 
-            <td class="description last"><p>A style guide section reference.</p></td>
+            <td class="description last"><p>Optional. The reference of the section.</p></td>
         </tr>
 
     
@@ -765,7 +1989,7 @@ section is set. Otherwise, the <code>autoincrement</code> of the section is retu
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line229">line 229</a>
+        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line246">line 246</a>
     </li></ul></dd>
     
 
@@ -792,7 +2016,9 @@ section is set. Otherwise, the <code>autoincrement</code> of the section is retu
 
         
 <div class="param-desc">
-    <p>The reference encoded as a URI.</p>
+    <p>If <code>reference</code> is given, the <code>KssSection</code> object
+  is returned to allow chaining of methods. Otherwise, the reference for the
+  section is returned.</p>
 </div>
 
 
@@ -803,802 +2029,9 @@ section is set. Otherwise, the <code>autoincrement</code> of the section is retu
     </dt>
     <dd>
         
-<span class="param-type">string</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="experimental"><span class="type-signature"></span>experimental<span class="signature">()</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Returns whether the section is experimental or not.</p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line158">line 158</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>Whether the section is experimental or not.</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Boolean</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="firstModifier"><span class="type-signature"></span>firstModifier<span class="signature">()</span><span class="type-signature"> &rarr; {false|string}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Returns the first modifier of the section.</p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line300">line 300</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>The first modifier of the section, or <code>false</code> if none.</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">false</span>
+<span class="param-type">KssSection</span>
 |
 
-<span class="param-type">string</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="header"><span class="type-signature"></span>header<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Returns the header of the section, i.e. the first line in the description.</p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line131">line 131</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>The header of the section.</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">string</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="markup"><span class="type-signature"></span>markup<span class="signature">()</span><span class="type-signature"> &rarr; {false|string}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Returns the markup of the section.</p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line250">line 250</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>The markup of the section, or <code>false</code> if none.</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">false</span>
-|
-
-<span class="param-type">string</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="modifiers"><span class="type-signature"></span>modifiers<span class="signature">(query)</span><span class="type-signature"> &rarr; {false|Array}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Returns the requested modifier of the section.</p>
-<p>Different arguments will yield different results:</p>
-<ul>
-<li><code>modifiers()</code>: Pass nothing to return all of the section's modifiers in an
-array.</li>
-<li><code>modifiers(n)</code>: Use a number to return the section's Nth modifier.</li>
-<li><code>modifiers('name')</code>: Use a string to return a specific modifer by name.</li>
-</ul>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>query</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-|
-
-<span class="param-type">int</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The name (string) or 0-based index (int) of the requested modifier.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line267">line 267</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>An Array of KssModifier objects, or <code>false</code> if none.</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">false</span>
-|
-
-<span class="param-type">Array</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="parameters"><span class="type-signature"></span>parameters<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Returns the parameters if the section is a CSS preprocessor function/mixin.</p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line312">line 312</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>The parameters of the section.</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Array</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="reference"><span class="type-signature"></span>reference<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Returns the reference of the section.</p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line166">line 166</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>The reference of the section.</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
 <span class="param-type">string</span>
 
 
@@ -1668,7 +2101,7 @@ auto-incremented reference number will be returned.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line179">line 179</a>
+        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line266">line 266</a>
     </li></ul></dd>
     
 
@@ -1721,14 +2154,16 @@ auto-incremented reference number will be returned.</p>
 
     
 
-    <h4 class="name" id="referenceURI"><span class="type-signature"></span>referenceURI<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
+    <h4 class="name" id="referenceURI"><span class="type-signature"></span>referenceURI<span class="signature">(referenceURI)</span><span class="type-signature"> &rarr; {KssSection|string}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Returns the reference of the section, encoded as a valid URI fragment.</p>
+    <p>Gets or sets the reference of the section, encoded as a valid URI fragment.</p>
+<p>If the <code>referenceURI</code> value is provided, the <code>referenceURI</code> for this section
+is set. Otherwise, the <code>referenceURI</code> of the section is returned.</p>
 </div>
 
 
@@ -1737,6 +2172,55 @@ auto-incremented reference number will be returned.</p>
 
 
 
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>referenceURI</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Optional. The referenceURI of the section.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -1772,7 +2256,7 @@ auto-incremented reference number will be returned.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line242">line 242</a>
+        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line284">line 284</a>
     </li></ul></dd>
     
 
@@ -1799,7 +2283,9 @@ auto-incremented reference number will be returned.</p>
 
         
 <div class="param-desc">
-    <p>The description of the section.</p>
+    <p>If <code>referenceURI</code> is given, the <code>KssSection</code>
+  object is returned to allow chaining of methods. Otherwise, the
+  referenceURI of the section is returned.</p>
 </div>
 
 
@@ -1810,7 +2296,171 @@ auto-incremented reference number will be returned.</p>
     </dt>
     <dd>
         
+<span class="param-type">KssSection</span>
+|
+
 <span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="styleguide"><span class="type-signature"></span>styleguide<span class="signature">(styleguide)</span><span class="type-signature"> &rarr; {KssStyleGuide|KssSection}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Gets or sets the <code>KssStyleGuide</code> object this <code>KssSection</code> is associated with.</p>
+<p>If the <code>styleguide</code> value is provided, the <code>KssStyleGuide</code> for this section
+is set. Otherwise, the <code>KssStyleGuide</code> of the section is returned.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>styleguide</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">KssStyleGuide</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Optional. The <code>KssStyleGuide</code> that owns the
+  <code>KssSection</code>.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line140">line 140</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>If styleguide is given, the current
+  <code>KssSection</code> object is returned to allow chaining of methods. Otherwise,
+  the <code>KssStyleGuide</code> object the section belongs to is returned.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">KssStyleGuide</span>
+|
+
+<span class="param-type">KssSection</span>
 
 
     </dd>
@@ -1832,7 +2482,7 @@ auto-incremented reference number will be returned.</p>
 
 
 <div class="description">
-    <p>Return <code>KssSection</code> as a JSON object.</p>
+    <p>Return the <code>KssSection</code> as a JSON object.</p>
 </div>
 
 
@@ -1876,7 +2526,7 @@ auto-incremented reference number will be returned.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line91">line 91</a>
+        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line90">line 90</a>
     </li></ul></dd>
     
 
@@ -1929,14 +2579,16 @@ auto-incremented reference number will be returned.</p>
 
     
 
-    <h4 class="name" id="weight"><span class="type-signature"></span>weight<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
+    <h4 class="name" id="weight"><span class="type-signature"></span>weight<span class="signature">(weight)</span><span class="type-signature"> &rarr; {KssSection|integer}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Returns the weight of the section.</p>
+    <p>Gets or sets the weight of the section.</p>
+<p>If the <code>weight</code> value is provided, the <code>weight</code> for this section is set.
+Otherwise, the <code>weight</code> of the section is returned.</p>
 </div>
 
 
@@ -1945,6 +2597,55 @@ auto-incremented reference number will be returned.</p>
 
 
 
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>weight</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">integer</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Optional. The weight of the section.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -1980,7 +2681,7 @@ auto-incremented reference number will be returned.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line220">line 220</a>
+        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line337">line 337</a>
     </li></ul></dd>
     
 
@@ -2007,7 +2708,9 @@ auto-incremented reference number will be returned.</p>
 
         
 <div class="param-desc">
-    <p>The weight of the section.</p>
+    <p>If <code>weight</code> is given, the <code>KssSection</code> object
+  is returned to allow chaining of methods. Otherwise, the weight of the
+  section is returned.</p>
 </div>
 
 
@@ -2018,7 +2721,10 @@ auto-incremented reference number will be returned.</p>
     </dt>
     <dd>
         
-<span class="param-type">string</span>
+<span class="param-type">KssSection</span>
+|
+
+<span class="param-type">integer</span>
 
 
     </dd>
@@ -2050,7 +2756,7 @@ auto-incremented reference number will be returned.</p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Wed Jan 06 2016 20:08:40 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Jan 12 2016 13:43:43 GMT+0800 (CST)
 </footer>
 
 <script> prettyPrint(); </script>
