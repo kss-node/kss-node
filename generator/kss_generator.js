@@ -157,9 +157,9 @@ KssGenerator.prototype.checkGenerator = function(cb) {
  * @returns {*} The callback's return value.
  */
 KssGenerator.prototype.clone = function(templatePath, destinationPath, cb) {
-  cb = cb || /* istanbul ignore next */ function() {};
-
   var self = this;
+
+  cb = cb || /* istanbul ignore next */ function() {};
 
   return wrench.copyDirRecursive(
     templatePath,

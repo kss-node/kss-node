@@ -62,6 +62,8 @@ var kssHandlebarsGenerator = new KssGenerator('2.1', {
 kssHandlebarsGenerator.init = function(config, cb) {
   var i, j, helper;
 
+  cb = cb || /* istanbul ignore next */ function() {};
+
   // Save the configuration parameters.
   this.config = config;
   this.config.helpers = this.config.helpers || [];
@@ -150,6 +152,8 @@ kssHandlebarsGenerator.generate = function(styleguide, cb) {
     files = [],
     i,
     key;
+
+  cb = cb || /* istanbul ignore next */ function() {};
 
   if (this.config.verbose) {
     this.log(styleguide.data.files.map(function(file) {
