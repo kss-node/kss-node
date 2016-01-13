@@ -34,12 +34,6 @@ kssHandlebarsTemplate.options = {
     multiple: false,
     describe: 'Title of the style guide',
     default: 'KSS Style Guide'
-  },
-  'nav-depth': {
-    group: 'Style guide:',
-    multiple: false,
-    describe: 'Limit the navigation to the depth specified',
-    default: 3
   }
 };
 

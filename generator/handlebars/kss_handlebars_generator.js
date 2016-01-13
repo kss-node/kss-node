@@ -43,6 +43,12 @@ var kssHandlebarsGenerator = new KssGenerator('2.1', {
     multiple: false,
     describe: 'Placeholder text to use for modifier classes',
     default: '[modifier class]'
+  },
+  'nav-depth': {
+    group: 'Style guide:',
+    multiple: false,
+    describe: 'Limit the navigation to the depth specified',
+    default: 3
   }
 });
 
