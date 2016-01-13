@@ -144,12 +144,6 @@ describe('KssModifier object API', function() {
       done();
     });
 
-    it('should return false if it does not have a class name', function(done) {
-      var modifier = new kss.KssModifier();
-      expect(modifier.className()).to.be.false;
-      done();
-    });
-
     it('should set data.className if given a value', function(done) {
       var modifier = new kss.KssModifier({name: '.original'});
       modifier.className('new');
