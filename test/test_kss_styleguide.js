@@ -30,9 +30,12 @@ describe('KssStyleGuide object API', function() {
   describe('KssStyleGuide constructor', function() {
     it('should initialize the data', function(done) {
       var obj = new kss.KssStyleGuide();
-      expect(obj).to.have.property('referenceDelimiter');
+      expect(obj).to.have.property('meta');
+      expect(obj.meta).to.have.property('files');
+      expect(obj.meta).to.have.property('referenceDelimiter');
+      expect(obj.meta).to.have.property('referenceMap');
+      expect(obj.meta).to.have.property('weightMap');
       expect(obj).to.have.property('data');
-      expect(obj.data).to.have.property('weightMap');
       expect(obj.data).to.have.property('sections');
       done();
     });

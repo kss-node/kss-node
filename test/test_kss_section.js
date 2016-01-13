@@ -350,7 +350,7 @@ describe('KssSection object API', function() {
       this.styleguide.data.sections.map(function(section) {
         expect(section.depth()).to.be.at.least(0);
         expect(section.depth()).to.equal(section.meta.depth);
-        expect(section.depth()).to.equal(section.reference().split(section.styleguide().referenceDelimiter).length);
+        expect(section.depth()).to.equal(section.reference().split(section.styleguide().meta.referenceDelimiter).length);
       });
       done();
     });

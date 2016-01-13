@@ -21,7 +21,7 @@ describe('kss.parse()', function() {
     it('should function with no options', function(done) {
       kss.parse(this.files, {}, function(error, styleguide) {
         expect(error).to.not.exist;
-        expect(styleguide.data.files.length).to.equal(4);
+        expect(styleguide.meta.files.length).to.equal(4);
         done();
       });
     });
@@ -85,19 +85,19 @@ describe('kss.parse()', function() {
     });
   });
 
-  context('returns styleguide.data', function() {
-    describe('.files:', function() {
+  context('returns styleguide', function() {
+    describe('.meta.files:', function() {
       it('should reflect files found', function(done) {
         helperUtils.traverseFixtures({mask: /.*/g}, function(styleguide) {
           expect(styleguide.data).to.be.an.instanceOf(Object);
-          expect(styleguide.data.files).to.be.an.instanceOf(Array);
-          expect(styleguide.data.files.length).to.equal(31);
+          expect(styleguide.meta.files).to.be.an.instanceOf(Array);
+          expect(styleguide.meta.files.length).to.equal(31);
           done();
         });
       });
     });
 
-    describe('.sections[]:', function() {
+    describe('.sections():', function() {
       describe('.raw', function() {
         before(function(done) {
           var self = this,
@@ -106,8 +106,8 @@ describe('kss.parse()', function() {
           helperUtils.traverseFixtures({}, function(styleguide) {
             self.styleguide = styleguide;
             self.fileContents = '';
-            fileCounter = styleguide.data.files.length;
-            styleguide.data.files.map(function(file) {
+            fileCounter = styleguide.meta.files.length;
+            styleguide.meta.files.map(function(file) {
               fs.readFile(file, 'utf8', function(error, data) {
                 if (error) {
                   throw error;

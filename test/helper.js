@@ -37,11 +37,11 @@ before(function() {
     Assertion.addMethod('containFixture', function(file) {
       file = path.resolve(helperUtils.fixtures(), file);
       this.assert(
-        this._obj.data.files.indexOf(file) >= 0,
+        this._obj.meta.files.indexOf(file) >= 0,
         'to contain the file named #{exp}, but contained #{act}',
         'to not contain the file named #{exp} in #{act}',
         file,
-        this._obj.data.files
+        this._obj.meta.files
       );
     });
   });

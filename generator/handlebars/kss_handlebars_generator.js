@@ -164,8 +164,8 @@ kssHandlebarsGenerator.generate = function(styleguide, cb) {
 
   cb = cb || /* istanbul ignore next */ function() {};
 
-  if (this.config.verbose) {
-    this.log(this.styleguide.data.files.map(function(file) {
+  if (this.config.verbose && this.styleguide.meta.files) {
+    this.log(this.styleguide.meta.files.map(function(file) {
       return ' - ' + file;
     }).join('\n'));
   }
@@ -258,7 +258,7 @@ kssHandlebarsGenerator.generate = function(styleguide, cb) {
         reference: key
       });
       this.styleguide.data.sections.push(newSection);
-      this.styleguide.data.section_refs[newSection.reference()] = newSection;
+      this.styleguide.meta.referenceMap[newSection.reference()] = newSection;
     }
   }
   // Re-sort the style guide if we added new sections.
