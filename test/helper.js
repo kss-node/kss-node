@@ -21,7 +21,7 @@ global.helperUtils = {
   traverseFixtures: function(options, cb) {
     kss.traverse(this.fixtures(), options, function(error, styleguide) {
       expect(error).to.not.exist;
-      expect(styleguide.data.sections).to.be.ok;
+      expect(styleguide.section()).to.be.ok;
       cb(styleguide);
     });
   }

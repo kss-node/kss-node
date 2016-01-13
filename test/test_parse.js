@@ -143,37 +143,37 @@ describe('kss.parse()', function() {
 
         it('should find a one line header, no description or modifiers', function(done) {
           var section = this.styleguide.section('header.one-line.no-modifiers');
-          expect(section.data.header).to.equal('ONE LINE, NO MODIFIERS');
-          expect(section.data.description).to.equal('');
+          expect(section.header()).to.equal('ONE LINE, NO MODIFIERS');
+          expect(section.description()).to.equal('');
           done();
         });
 
         it('should find a one line header, multiple modifiers', function(done) {
           var section = this.styleguide.section('header.one-line.multiple-modifiers');
-          expect(section.data.header).to.equal('ONE LINE, MULTIPLE MODIFIERS');
-          expect(section.data.description).to.equal('');
+          expect(section.header()).to.equal('ONE LINE, MULTIPLE MODIFIERS');
+          expect(section.description()).to.equal('');
           done();
         });
 
         it('should find a header, description and multiple modifiers', function(done) {
           var section = this.styleguide.section('header.description');
-          expect(section.data.header).to.equal('HEADER DETECTION');
-          expect(section.data.description).to.equal('SEPARATE PARAGRAPH');
-          expect(section.data.modifiers.length).to.equal(2);
+          expect(section.header()).to.equal('HEADER DETECTION');
+          expect(section.description()).to.equal('SEPARATE PARAGRAPH');
+          expect(section.modifiers().length).to.equal(2);
           done();
         });
 
         it('should find a two-line header, multiple modifiers and no description', function(done) {
           var section = this.styleguide.section('header.two-lines');
-          expect(section.data.header).to.equal('TWO LINES, MULTIPLE MODIFIERS LIKE SO');
-          expect(section.data.description).to.equal('');
+          expect(section.header()).to.equal('TWO LINES, MULTIPLE MODIFIERS LIKE SO');
+          expect(section.description()).to.equal('');
           done();
         });
 
         it('should find a header, 3-paragraph description and no modifiers', function(done) {
           var section = this.styleguide.section('header.three-paragraphs');
-          expect(section.data.header).to.equal('THREE PARAGRAPHS, NO MODIFIERS');
-          expect(section.data.description).to.equal('ANOTHER PARAGRAPH\n\nAND ANOTHER');
+          expect(section.header()).to.equal('THREE PARAGRAPHS, NO MODIFIERS');
+          expect(section.description()).to.equal('ANOTHER PARAGRAPH\n\nAND ANOTHER');
           done();
         });
 
@@ -204,60 +204,60 @@ describe('kss.parse()', function() {
         it('should find modifiers with a single white space', function(done) {
           var modifiers = this.styleguide.section('modifiers.single-white-space').modifiers();
           expect(modifiers.length).to.equal(2);
-          expect(modifiers[0].data.name).to.equal(':hover');
-          expect(modifiers[0].data.description).to.equal('HOVER');
-          expect(modifiers[1].data.name).to.equal(':disabled');
-          expect(modifiers[1].data.description).to.equal('DISABLED');
+          expect(modifiers[0].name()).to.equal(':hover');
+          expect(modifiers[0].description()).to.equal('HOVER');
+          expect(modifiers[1].name()).to.equal(':disabled');
+          expect(modifiers[1].description()).to.equal('DISABLED');
           done();
         });
 
         it('should find modifiers with variable white space', function(done) {
           var modifiers = this.styleguide.section('modifiers.variable-white-space').modifiers();
           expect(modifiers.length).to.equal(4);
-          expect(modifiers[0].data.name).to.equal(':hover');
-          expect(modifiers[0].data.description).to.equal('HOVER');
-          expect(modifiers[1].data.name).to.equal(':disabled');
-          expect(modifiers[1].data.description).to.equal('DISABLED');
-          expect(modifiers[2].data.name).to.equal(':focus');
-          expect(modifiers[2].data.description).to.equal('INCLUDING MULTIPLE LINES');
-          expect(modifiers[3].data.name).to.equal(':link');
-          expect(modifiers[3].data.description).to.equal('WITH TABS');
+          expect(modifiers[0].name()).to.equal(':hover');
+          expect(modifiers[0].description()).to.equal('HOVER');
+          expect(modifiers[1].name()).to.equal(':disabled');
+          expect(modifiers[1].description()).to.equal('DISABLED');
+          expect(modifiers[2].name()).to.equal(':focus');
+          expect(modifiers[2].description()).to.equal('INCLUDING MULTIPLE LINES');
+          expect(modifiers[3].name()).to.equal(':link');
+          expect(modifiers[3].description()).to.equal('WITH TABS');
           done();
         });
 
         it('should find modifiers with CSS classes', function(done) {
           var modifiers = this.styleguide.section('modifiers.classes').modifiers();
           expect(modifiers.length).to.equal(3);
-          expect(modifiers[0].data.name).to.equal('.red');
-          expect(modifiers[0].data.description).to.equal('MAKE IT RED');
-          expect(modifiers[1].data.name).to.equal('.yellow');
-          expect(modifiers[1].data.description).to.equal('MAKE IT YELLOW');
-          expect(modifiers[2].data.name).to.equal('.red.yellow');
-          expect(modifiers[2].data.description).to.equal('MAKE IT ORANGE');
+          expect(modifiers[0].name()).to.equal('.red');
+          expect(modifiers[0].description()).to.equal('MAKE IT RED');
+          expect(modifiers[1].name()).to.equal('.yellow');
+          expect(modifiers[1].description()).to.equal('MAKE IT YELLOW');
+          expect(modifiers[2].name()).to.equal('.red.yellow');
+          expect(modifiers[2].description()).to.equal('MAKE IT ORANGE');
           done();
         });
 
         it('should find modifiers with CSS classes containing dashes', function(done) {
           var modifiers = this.styleguide.section('modifiers.dashes-in-classes').modifiers();
           expect(modifiers.length).to.equal(3);
-          expect(modifiers[0].data.name).to.equal('.red');
-          expect(modifiers[0].data.description).to.equal('MAKE IT RED');
-          expect(modifiers[1].data.name).to.equal('.yellow');
-          expect(modifiers[1].data.description).to.equal('MAKE IT YELLOW');
-          expect(modifiers[2].data.name).to.equal('.red-yellow');
-          expect(modifiers[2].data.description).to.equal('MAKE IT ORANGE');
+          expect(modifiers[0].name()).to.equal('.red');
+          expect(modifiers[0].description()).to.equal('MAKE IT RED');
+          expect(modifiers[1].name()).to.equal('.yellow');
+          expect(modifiers[1].description()).to.equal('MAKE IT YELLOW');
+          expect(modifiers[2].name()).to.equal('.red-yellow');
+          expect(modifiers[2].description()).to.equal('MAKE IT ORANGE');
           done();
         });
 
         it('should find modifiers with HTML elements', function(done) {
           var modifiers = this.styleguide.section('modifiers.elements').modifiers();
           expect(modifiers.length).to.equal(3);
-          expect(modifiers[0].data.name).to.equal('a');
-          expect(modifiers[0].data.description).to.equal('Contains the image replacement');
-          expect(modifiers[1].data.name).to.equal('span');
-          expect(modifiers[1].data.description).to.equal('Hidden');
-          expect(modifiers[2].data.name).to.equal('a span');
-          expect(modifiers[2].data.description).to.equal('Two elements');
+          expect(modifiers[0].name()).to.equal('a');
+          expect(modifiers[0].description()).to.equal('Contains the image replacement');
+          expect(modifiers[1].name()).to.equal('span');
+          expect(modifiers[1].description()).to.equal('Hidden');
+          expect(modifiers[2].name()).to.equal('a span');
+          expect(modifiers[2].description()).to.equal('Two elements');
           done();
         });
 
@@ -270,12 +270,12 @@ describe('kss.parse()', function() {
         it('should find modifiers with more than one dash', function(done) {
           var modifiers = this.styleguide.section('modifiers.multiple-dashes').modifiers();
           expect(modifiers.length).to.equal(3);
-          expect(modifiers[0].data.name).to.equal('.red');
-          expect(modifiers[0].data.description).to.equal('Color - red');
-          expect(modifiers[1].data.name).to.equal('.yellow');
-          expect(modifiers[1].data.description).to.equal('Color  -  yellow');
-          expect(modifiers[2].data.name).to.equal('.blue');
-          expect(modifiers[2].data.description).to.equal('Color - blue  -  another dash');
+          expect(modifiers[0].name()).to.equal('.red');
+          expect(modifiers[0].description()).to.equal('Color - red');
+          expect(modifiers[1].name()).to.equal('.yellow');
+          expect(modifiers[1].description()).to.equal('Color  -  yellow');
+          expect(modifiers[2].name()).to.equal('.blue');
+          expect(modifiers[2].description()).to.equal('Color - blue  -  another dash');
           done();
         });
 
@@ -296,38 +296,38 @@ describe('kss.parse()', function() {
         });
 
         it('should find with space above and below', function(done) {
-          expect(this.styleguide.section('deprecated.spacing').data.deprecated).to.be.true;
-          expect(this.styleguide.section('experimental.spacing').data.experimental).to.be.true;
+          expect(this.styleguide.section('deprecated.spacing').deprecated()).to.be.true;
+          expect(this.styleguide.section('experimental.spacing').experimental()).to.be.true;
           done();
         });
 
         it('should find indented', function(done) {
-          expect(this.styleguide.section('deprecated.indented').data.deprecated).to.be.true;
-          expect(this.styleguide.section('experimental.indented').data.experimental).to.be.true;
+          expect(this.styleguide.section('deprecated.indented').deprecated()).to.be.true;
+          expect(this.styleguide.section('experimental.indented').experimental()).to.be.true;
           done();
         });
 
         it('should find in header', function(done) {
-          expect(this.styleguide.section('deprecated.in-header').data.deprecated).to.be.true;
-          expect(this.styleguide.section('experimental.in-header').data.experimental).to.be.true;
+          expect(this.styleguide.section('deprecated.in-header').deprecated()).to.be.true;
+          expect(this.styleguide.section('experimental.in-header').experimental()).to.be.true;
           done();
         });
 
         it('should find in description', function(done) {
-          expect(this.styleguide.section('deprecated.in-paragraph').data.deprecated).to.be.true;
-          expect(this.styleguide.section('experimental.in-paragraph').data.experimental).to.be.true;
+          expect(this.styleguide.section('deprecated.in-paragraph').deprecated()).to.be.true;
+          expect(this.styleguide.section('experimental.in-paragraph').experimental()).to.be.true;
           done();
         });
 
         it('should not find in modifiers', function(done) {
-          expect(this.styleguide.section('deprecated.in-modifier').data.deprecated).to.be.false;
-          expect(this.styleguide.section('experimental.in-modifier').data.experimental).to.be.false;
+          expect(this.styleguide.section('deprecated.in-modifier').deprecated()).to.be.false;
+          expect(this.styleguide.section('experimental.in-modifier').experimental()).to.be.false;
           done();
         });
 
         it('should not find when not at the beginning of a line', function(done) {
-          expect(this.styleguide.section('deprecated.not-at-beginning').data.deprecated).to.be.false;
-          expect(this.styleguide.section('experimental.not-at-beginning').data.experimental).to.be.false;
+          expect(this.styleguide.section('deprecated.not-at-beginning').deprecated()).to.be.false;
+          expect(this.styleguide.section('experimental.not-at-beginning').experimental()).to.be.false;
           done();
         });
       });
@@ -335,7 +335,7 @@ describe('kss.parse()', function() {
       describe('.reference', function() {
         it('should find reference "X.0" without trailing zero', function(done) {
           helperUtils.traverseFixtures({mask: 'sections-queries.less', header: true}, function(styleguide) {
-            expect(styleguide.section(/8.*/)[0].data.reference).to.equal('8');
+            expect(styleguide.section(/8.*/)[0].reference()).to.equal('8');
             done();
           });
         });
@@ -405,24 +405,24 @@ describe('kss.parse()', function() {
 
       it('should find markup property', function(done) {
         var section = this.styleguide.section('markup.second-paragraph');
-        expect(section.data.markup).to.equal('<a href="#" class="{{modifier_class}}">Hello World</a>');
-        expect(section.data.description).to.equal('');
-        expect(section.data.modifiers.length).to.equal(3);
+        expect(section.markup()).to.equal('<a href="#" class="{{modifier_class}}">Hello World</a>');
+        expect(section.description()).to.equal('');
+        expect(section.modifiers().length).to.equal(3);
         done();
       });
 
       it('should find markup property below modifiers', function(done) {
         var section = this.styleguide.section('markup.below-modifiers');
-        expect(section.data.markup).to.equal('<a href="#" class="{{modifier_class}}">Lorem Ipsum</a>');
-        expect(section.data.modifiers.length).to.equal(1);
+        expect(section.markup()).to.equal('<a href="#" class="{{modifier_class}}">Lorem Ipsum</a>');
+        expect(section.modifiers().length).to.equal(1);
         done();
       });
 
       it('should not interfere with content when at the top', function(done) {
         var section = this.styleguide.section('markup.at-top');
-        expect(section.data.header).to.equal('Don\'t be the header');
-        expect(section.data.markup).to.equal('<h1 class="{{modifier_class}}">Header</h1>');
-        expect(section.data.modifiers[0].data.name).to.equal('.title');
+        expect(section.header()).to.equal('Don\'t be the header');
+        expect(section.markup()).to.equal('<h1 class="{{modifier_class}}">Header</h1>');
+        expect(section.modifiers()[0].name()).to.equal('.title');
         done();
       });
     });
@@ -430,13 +430,13 @@ describe('kss.parse()', function() {
     describe('.markdown:', function() {
       it('should be enabled by default', function(done) {
         helperUtils.traverseFixtures({mask: 'property-header.less'}, function(styleguide) {
-          expect(styleguide.section('header.three-paragraphs').data.description).to.equal(marked('ANOTHER PARAGRAPH\n\nAND ANOTHER'));
+          expect(styleguide.section('header.three-paragraphs').description()).to.equal(marked('ANOTHER PARAGRAPH\n\nAND ANOTHER'));
           done();
         });
       });
       it('should not add HTML when disabled', function(done) {
         helperUtils.traverseFixtures({mask: 'property-header.less', markdown: false}, function(styleguide) {
-          expect(styleguide.section('header.three-paragraphs').data.description).to.equal('ANOTHER PARAGRAPH\n\nAND ANOTHER');
+          expect(styleguide.section('header.three-paragraphs').description()).to.equal('ANOTHER PARAGRAPH\n\nAND ANOTHER');
           done();
         });
       });
@@ -445,14 +445,14 @@ describe('kss.parse()', function() {
     describe('.header:', function() {
       it('should be enabled by default', function(done) {
         helperUtils.traverseFixtures({mask: 'property-header.less', markdown: false}, function(styleguide) {
-          expect(styleguide.section('header.three-paragraphs').data.description).to.equal('ANOTHER PARAGRAPH\n\nAND ANOTHER');
+          expect(styleguide.section('header.three-paragraphs').description()).to.equal('ANOTHER PARAGRAPH\n\nAND ANOTHER');
           done();
         });
       });
 
       it('should not remove the header from description when disabled', function(done) {
         helperUtils.traverseFixtures({mask: 'property-header.less', markdown: false, header: false}, function(styleguide) {
-          expect(styleguide.section('header.three-paragraphs').data.description).to.equal('THREE PARAGRAPHS, NO MODIFIERS\n\nANOTHER PARAGRAPH\n\nAND ANOTHER');
+          expect(styleguide.section('header.three-paragraphs').description()).to.equal('THREE PARAGRAPHS, NO MODIFIERS\n\nANOTHER PARAGRAPH\n\nAND ANOTHER');
           done();
         });
       });
@@ -472,17 +472,17 @@ describe('kss.parse()', function() {
 
       describe('Misspelt style guide', function() {
         it('should find "Stileguide"', function(done) {
-          expect(this.styleguide.section('typos.stileguide').data.header).to.equal('Misspelt style guide 1');
+          expect(this.styleguide.section('typos.stileguide').header()).to.equal('Misspelt style guide 1');
           done();
         });
 
         it('should find "Style-guide"', function(done) {
-          expect(this.styleguide.section('typos.style-guide').data.header).to.equal('Misspelt style guide 2');
+          expect(this.styleguide.section('typos.style-guide').header()).to.equal('Misspelt style guide 2');
           done();
         });
 
         it('should find "Stylleguide"', function(done) {
-          expect(this.styleguide.section('typos.stylleguide').data.header).to.equal('Misspelt style guide 3');
+          expect(this.styleguide.section('typos.stylleguide').header()).to.equal('Misspelt style guide 3');
           done();
         });
 
@@ -492,41 +492,41 @@ describe('kss.parse()', function() {
         });
 
         it('should find "Style guide" amid word phrases', function(done) {
-          expect(this.styleguide.section('typos - word - phrases').data.header).to.equal('Misspelt style guide 5');
+          expect(this.styleguide.section('typos - word - phrases').header()).to.equal('Misspelt style guide 5');
           done();
         });
       });
 
       describe('Misspelt experimental', function() {
         it('should find correct spelling', function(done) {
-          expect(this.styleguide2.section('experimental.in-paragraph').data.experimental).to.be.true;
+          expect(this.styleguide2.section('experimental.in-paragraph').experimental()).to.be.true;
           done();
         });
 
         it('should still not find when not at the beginning of a line', function(done) {
-          expect(this.styleguide2.section('experimental.not-at-beginning').data.experimental).to.be.false;
+          expect(this.styleguide2.section('experimental.not-at-beginning').experimental()).to.be.false;
           done();
         });
 
         it('should find "experimentel"', function(done) {
-          expect(this.styleguide.section('typos.experimentel').data.experimental).to.be.true;
+          expect(this.styleguide.section('typos.experimentel').experimental()).to.be.true;
           done();
         });
       });
 
       describe('Misspelt deprecated', function() {
         it('should find correct spelling', function(done) {
-          expect(this.styleguide2.section('deprecated.in-paragraph').data.deprecated).to.be.true;
+          expect(this.styleguide2.section('deprecated.in-paragraph').deprecated()).to.be.true;
           done();
         });
 
         it('should still not find when not at the beginning of a line', function(done) {
-          expect(this.styleguide2.section('deprecated.not-at-beginning').data.deprecated).to.be.false;
+          expect(this.styleguide2.section('deprecated.not-at-beginning').deprecated()).to.be.false;
           done();
         });
 
         it('should find "depricated"', function(done) {
-          expect(this.styleguide.section('typos.depricated').data.deprecated).to.be.true;
+          expect(this.styleguide.section('typos.depricated').deprecated()).to.be.true;
           done();
         });
       });
