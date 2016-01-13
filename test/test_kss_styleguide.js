@@ -50,14 +50,6 @@ describe('KssStyleGuide object API', function() {
       expect(obj.data).to.have.property('sections');
       done();
     });
-
-    it('should return a KssStyleGuide object when called normally', function(done) {
-      /* eslint-disable new-cap */
-      var obj = kss.KssStyleGuide();
-      expect(obj).to.be.an.instanceof(kss.KssStyleGuide);
-      done();
-      /* eslint-enable new-cap */
-    });
   });
 
   describe('.toJSON()', function() {

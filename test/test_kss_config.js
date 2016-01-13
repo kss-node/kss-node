@@ -33,14 +33,6 @@ describe('KssConfig object API', function() {
       done();
     });
 
-    it('should return a KssConfig object when called normally', function(done) {
-      /* eslint-disable new-cap */
-      var kssConfig = kss.KssConfig();
-      expect(kssConfig).to.be.an.instanceof(kss.KssConfig);
-      done();
-      /* eslint-enable new-cap */
-    });
-
     it('should set config when given an object', function(done) {
       var opts = require(pathToJSON);
       var kssConfig = new kss.KssConfig(opts);

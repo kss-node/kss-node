@@ -8,9 +8,7 @@
 // either be named index.js or have its name set in the "main" property of the
 // template's package.json.
 
-var kssHandlebarsTemplate;
-
-module.exports = kssHandlebarsTemplate = {};
+const kssHandlebarsTemplate = {};
 
 // Tell kss-node which generator this template uses.
 try {
@@ -59,7 +57,7 @@ kssHandlebarsTemplate.generator.prepare = function(styleGuide, cb) {
      * @param  {String} reference The reference to search for.
      */
     this.Handlebars.registerHelper('section', function(reference, options) {
-      var section = options.data.root.styleGuide.sections(reference);
+      let section = options.data.root.styleGuide.sections(reference);
 
       return section ? options.fn(section.toJSON()) : options.inverse('');
     });
@@ -74,21 +72,19 @@ kssHandlebarsTemplate.generator.prepare = function(styleGuide, cb) {
      * @param  {Mixed} query The section query
      */
     this.Handlebars.registerHelper('eachSection', function(query, options) {
-      var styleGuide = options.data.root.styleGuide,
-        buffer = '',
-        sections,
-        i, l;
+      let styleGuide = options.data.root.styleGuide;
 
       if (!query.match(/\bx\b|\*/g)) {
         query = query + '.*';
       }
-      sections = styleGuide.sections(query);
+      let sections = styleGuide.sections(query);
       if (!sections) {
         return options.inverse('');
       }
 
-      l = sections.length;
-      for (i = 0; i < l; i += 1) {
+      let l = sections.length;
+      let buffer = '';
+      for (let i = 0; i < l; i += 1) {
         buffer += options.fn(sections[i].toJSON());
       }
 
@@ -98,3 +94,5 @@ kssHandlebarsTemplate.generator.prepare = function(styleGuide, cb) {
 
   return cb(null, styleGuide);
 };
+
+module.exports = kssHandlebarsTemplate;

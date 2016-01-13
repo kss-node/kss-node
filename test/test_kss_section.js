@@ -59,15 +59,6 @@ describe('KssSection object API', function() {
       done();
     });
 
-    it('should return a KssSection object when called normally', function(done) {
-      /* eslint-disable new-cap */
-      var obj = kss.KssSection({header: 'Section'});
-      expect(obj).to.be.an.instanceof(kss.KssSection);
-      expect(obj.header()).to.equal('Section');
-      done();
-      /* eslint-enable new-cap */
-    });
-
     it('should set itself as parent of modifier and parameter objects', function(done) {
       var section,
         modifier = new kss.KssModifier({name: 'modifier'}),

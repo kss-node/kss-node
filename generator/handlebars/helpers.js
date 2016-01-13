@@ -7,12 +7,7 @@ module.exports.register = function(handlebars, config) {
    * Outputs the current section's or modifier's markup.
    */
   handlebars.registerHelper('markup', function() {
-    var options = arguments[arguments.length - 1],
-      partials = options.data.root.partials,
-      section,
-      template,
-      partial,
-      data;
+    let options = arguments[arguments.length - 1];
 
     if (!this) {
       return options.inverse('');
@@ -20,7 +15,7 @@ module.exports.register = function(handlebars, config) {
 
     // Assume the current context is the section we want unless one is passed as
     // the first parameter of this helper.
-    section = (arguments.length > 1) ? arguments[0] : this;
+    let section = (arguments.length > 1) ? arguments[0] : this;
 
     // Verify we found a JSON representation of a KssSection object.
     if (!section.reference) {
@@ -28,10 +23,10 @@ module.exports.register = function(handlebars, config) {
     }
 
     // Load the information about this section's markup partial.
-    partial = partials[section.reference];
+    let partial = options.data.root.partials[section.reference];
 
     // Copy the partial.data so we can modify it for this markup instance.
-    data = JSON.parse(JSON.stringify(partial.data));
+    let data = JSON.parse(JSON.stringify(partial.data));
 
     // Display the modifier_class hash (if given), or the modifier's className,
     // or the placeholder text if this section has modifiers.
@@ -52,7 +47,7 @@ module.exports.register = function(handlebars, config) {
     /* eslint-enable camelcase */
 
     // Compile the section's markup partial into a template.
-    template = handlebars.compile('{{> "' + partial.name + '"}}');
+    let template = handlebars.compile('{{> "' + partial.name + '"}}');
     // We don't wrap the rendered template in "new handlebars.SafeString()" since
     // we want the ability to display it as a code sample with {{ }} and as
     // rendered HTML with {{{ }}}.
@@ -68,7 +63,7 @@ module.exports.register = function(handlebars, config) {
   handlebars.registerHelper('consoleLog', function() {
     if (arguments.length > 1) {
       // 'options' is automatically passed as the last argument, so skip it.
-      for (var i = 0; i < arguments.length - 1; i++) {
+      for (let i = 0; i < arguments.length - 1; i++) {
         console.log(arguments[i]);
       }
     } else {
