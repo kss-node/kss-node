@@ -28,7 +28,7 @@ try {
 // Tell kss-node which Yargs-like options this template has.
 // See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
 kssHandlebarsTemplate.options = {
-  'title': {
+  title: {
     group: 'Style guide:',
     string: true,
     multiple: false,
