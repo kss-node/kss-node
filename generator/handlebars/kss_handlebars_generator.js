@@ -24,20 +24,20 @@ var KssGenerator = require('../kss_generator.js'),
 // Pass a string to KssGenerator() to tell the system which API version is
 // implemented by kssHandlebarsGenerator.
 var kssHandlebarsGenerator = new KssGenerator('2.1', {
-  helpers: {
+  'helpers': {
     group: 'Style guide:',
     string: true,
     path: true,
     describe: 'Location of custom handlebars helpers; see http://bit.ly/kss-wiki'
   },
-  homepage: {
+  'homepage': {
     group: 'Style guide:',
     string: true,
     multiple: false,
     describe: 'File name of the homepage\'s Markdown file',
     default: 'styleguide.md'
   },
-  placeholder: {
+  'placeholder': {
     group: 'Style guide:',
     string: true,
     multiple: false,
