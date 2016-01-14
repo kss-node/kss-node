@@ -122,9 +122,9 @@ describe('KssSection object API', function() {
       this.styleguide.data.sections.map(function(section) {
         var json = section.toJSON();
         custom.map(function(name) {
-          if (section.data[name]) {
+          if (typeof section.custom(name) !== 'undefined') {
             expect(json).to.have.property(name);
-            expect(json[name]).to.equal(section.data[name]);
+            expect(json[name]).to.equal(section.custom(name));
           }
         });
       });
@@ -200,6 +200,40 @@ describe('KssSection object API', function() {
     it('should return itself if given a value', function(done) {
       var section = new kss.KssSection({description: 'original'});
       expect(section.description('new')).to.deep.equal(section);
+      done();
+    });
+  });
+
+  describe('.customPropertyNames()', function() {
+    it('should return meta.customPropertyNames', function(done) {
+      this.styleguide.data.sections.map(function(section) {
+        expect(section.customPropertyNames()).to.equal(section.meta.customPropertyNames);
+      });
+      done();
+    });
+  });
+
+  describe('.custom()', function() {
+    it('should return data[name]', function(done) {
+      this.styleguide.data.sections.map(function(section) {
+        section.customPropertyNames().map(function(name) {
+          expect(section.custom(name)).to.equal(section.data[name]);
+        });
+      });
+      done();
+    });
+
+    it('should set data[name] and update meta.customPropertyNames[] if given a value', function(done) {
+      var section = new kss.KssSection();
+      section.custom('newCustom', 'new');
+      expect(section.data.newCustom).to.equal('new');
+      expect(section.customPropertyNames()).to.contain('newCustom');
+      done();
+    });
+
+    it('should return itself if given a value', function(done) {
+      var section = new kss.KssSection({newCustom: 'original'});
+      expect(section.custom('newCustom', 'new')).to.deep.equal(section);
       done();
     });
   });

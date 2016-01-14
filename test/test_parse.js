@@ -368,28 +368,28 @@ describe('kss.parse()', function() {
       });
 
       it('should find an inline value', function(done) {
-        expect(this.styleguide.section('custom.inline').data.custom).to.equal('The value of this property is inline.');
+        expect(this.styleguide.section('custom.inline').custom('custom')).to.equal('The value of this property is inline.');
         done();
       });
 
       it('should find a value on the next line', function(done) {
-        expect(this.styleguide.section('custom.value.next-line').data.custom).to.equal('The value of this property is on the next line.');
+        expect(this.styleguide.section('custom.value.next-line').custom('custom')).to.equal('The value of this property is on the next line.');
         done();
       });
 
       it('should find a multi-line value', function(done) {
-        expect(this.styleguide.section('custom.value.multi-line').data.custom).to.equal('The value of this property spans multiple\nlines.');
+        expect(this.styleguide.section('custom.value.multi-line').custom('custom')).to.equal('The value of this property spans multiple\nlines.');
         done();
       });
 
       it('should find a multi-word property', function(done) {
-        expect(this.styleguide.section('custom.multi-word').data['custom property']).to.equal('This is a multi-word property.');
+        expect(this.styleguide.section('custom.multi-word').custom('custom property')).to.equal('This is a multi-word property.');
         done();
       });
 
       it('should find multiple properties', function(done) {
-        expect(this.styleguide.section('custom.multi').data.custom).to.equal('This is the first property.');
-        expect(this.styleguide.section('custom.multi').data.custom2).to.equal('This is the second property.');
+        expect(this.styleguide.section('custom.multi').custom('custom')).to.equal('This is the first property.');
+        expect(this.styleguide.section('custom.multi').custom('custom2')).to.equal('This is the second property.');
         done();
       });
     });
