@@ -49,6 +49,33 @@ describe('KssStyleGuide object API', function() {
     });
   });
 
+  describe('.customPropertyNames()', function() {
+    it('should return meta.customPropertyNames', function(done) {
+      expect(this.styleguide.customPropertyNames()).to.equal(this.styleguide.meta.customPropertyNames);
+      done();
+    });
+
+    it('should update meta.customPropertyNames if given a string', function(done) {
+      var styleguide = new kss.KssStyleGuide({customPropertyNames: ['original']});
+      styleguide.customPropertyNames('new');
+      expect(styleguide.meta.customPropertyNames).to.deep.equal(['original', 'new']);
+      done();
+    });
+
+    it('should update meta.customPropertyNames if given an array', function(done) {
+      var styleguide = new kss.KssStyleGuide({customPropertyNames: ['original']});
+      styleguide.customPropertyNames(['new', 'new2']);
+      expect(styleguide.meta.customPropertyNames).to.deep.equal(['original', 'new', 'new2']);
+      done();
+    });
+
+    it('should return itself if given a value', function(done) {
+      var styleguide = new kss.KssStyleGuide({header: 'original'});
+      expect(styleguide.customPropertyNames('new')).to.deep.equal(styleguide);
+      done();
+    });
+  });
+
   describe('.section()', function() {
     context('given no arguments', function() {
       it('should return only referenced sections', function(done) {
