@@ -50,22 +50,22 @@ describe('KssStyleGuide object API', function() {
   });
 
   describe('.customPropertyNames()', function() {
-    it('should return meta.customPropertyNames', function(done) {
-      expect(this.styleguide.customPropertyNames()).to.equal(this.styleguide.meta.customPropertyNames);
+    it('should return data.customPropertyNames', function(done) {
+      expect(this.styleguide.customPropertyNames()).to.equal(this.styleguide.data.customPropertyNames);
       done();
     });
 
-    it('should update meta.customPropertyNames if given a string', function(done) {
+    it('should update data.customPropertyNames if given a string', function(done) {
       var styleguide = new kss.KssStyleGuide({customPropertyNames: ['original']});
       styleguide.customPropertyNames('new');
-      expect(styleguide.meta.customPropertyNames).to.deep.equal(['original', 'new']);
+      expect(styleguide.data.customPropertyNames).to.deep.equal(['original', 'new']);
       done();
     });
 
-    it('should update meta.customPropertyNames if given an array', function(done) {
+    it('should update data.customPropertyNames if given an array', function(done) {
       var styleguide = new kss.KssStyleGuide({customPropertyNames: ['original']});
       styleguide.customPropertyNames(['new', 'new2']);
-      expect(styleguide.meta.customPropertyNames).to.deep.equal(['original', 'new', 'new2']);
+      expect(styleguide.data.customPropertyNames).to.deep.equal(['original', 'new', 'new2']);
       done();
     });
 

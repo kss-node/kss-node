@@ -224,10 +224,19 @@ describe('KssSection object API', function() {
     });
 
     it('should set data[name] and update meta.customPropertyNames[] if given a value', function(done) {
-      var section = new kss.KssSection();
+      var section = new kss.KssSection({originalCustom: 'original'});
       section.custom('newCustom', 'new');
       expect(section.data.newCustom).to.equal('new');
-      expect(section.customPropertyNames()).to.contain('newCustom');
+      expect(section.customPropertyNames()).to.deep.equal(['originalCustom', 'newCustom']);
+      done();
+    });
+
+    it('should set update the style guide\'s meta.customPropertyNames[] if given a value', function(done) {
+      var styleguide = new kss.KssStyleGuide(),
+        section = new kss.KssSection();
+      section.styleguide(styleguide);
+      section.custom('newCustom', 'new');
+      expect(styleguide.customPropertyNames()).to.deep.equal(['newCustom']);
       done();
     });
 
