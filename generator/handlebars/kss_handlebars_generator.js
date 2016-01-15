@@ -144,13 +144,13 @@ kssHandlebarsGenerator.init = function(config, cb) {
  * Generate the HTML files of the style guide given a KssStyleGuide object.
  *
  * @alias module:kss/generator/handlebars.generate
- * @param {KssStyleGuide} styleguide The KSS style guide in object format.
+ * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
  */
-kssHandlebarsGenerator.generate = function(styleguide, cb) {
-  this.styleguide = styleguide;
+kssHandlebarsGenerator.generate = function(styleGuide, cb) {
+  this.styleGuide = styleGuide;
   this.partials = {};
 
-  var sections = this.styleguide.section(),
+  var sections = this.styleGuide.section(),
     sectionCount = sections.length,
     sectionRoots = [],
     rootCount,
@@ -164,8 +164,8 @@ kssHandlebarsGenerator.generate = function(styleguide, cb) {
 
   cb = cb || /* istanbul ignore next */ function() {};
 
-  if (this.config.verbose && this.styleguide.meta.files) {
-    this.log(this.styleguide.meta.files.map(function(file) {
+  if (this.config.verbose && this.styleGuide.meta.files) {
+    this.log(this.styleGuide.meta.files.map(function(file) {
       return ' - ' + file;
     }).join('\n'));
   }
@@ -249,7 +249,7 @@ kssHandlebarsGenerator.generate = function(styleguide, cb) {
   rootCount = sectionRoots.length;
   key = false;
   for (i = 0; i < rootCount; i += 1) {
-    currentRoot = this.styleguide.section(sectionRoots[i]);
+    currentRoot = this.styleGuide.section(sectionRoots[i]);
     if (currentRoot === false) {
       key = sectionRoots[i];
       // @TODO: Add section via KssStyleGuide API.
@@ -257,13 +257,13 @@ kssHandlebarsGenerator.generate = function(styleguide, cb) {
         header: key,
         reference: key
       });
-      this.styleguide.data.sections.push(newSection);
-      this.styleguide.meta.referenceMap[newSection.reference()] = newSection;
+      this.styleGuide.data.sections.push(newSection);
+      this.styleGuide.meta.referenceMap[newSection.reference()] = newSection;
     }
   }
   // Re-sort the style guide if we added new sections.
   if (key !== false) {
-    this.styleguide.init();
+    this.styleGuide.init();
   }
 
   if (this.config.verbose) {
@@ -274,14 +274,14 @@ kssHandlebarsGenerator.generate = function(styleguide, cb) {
   // reference, and make a page for each.
   rootCount = sectionRoots.length;
   for (i = 0; i < rootCount; i += 1) {
-    childSections = this.styleguide.section(sectionRoots[i] + '.*');
+    childSections = this.styleGuide.section(sectionRoots[i] + '.*');
 
     this.generatePage(sectionRoots[i], childSections);
   }
 
   // Generate the homepage.
   childSections = [];
-  this.generatePage('styleguide.homepage', childSections);
+  this.generatePage('styleGuide.homepage', childSections);
 
   cb(null);
 };
@@ -319,11 +319,11 @@ kssHandlebarsGenerator.createMenu = function(pageReference) {
   };
 
   // Retrieve all the root sections of the style guide.
-  menu = this.styleguide.section('x').map(function(rootSection) {
+  menu = this.styleGuide.section('x').map(function(rootSection) {
     var menuItem = toMenuItem(rootSection);
 
     // Retrieve the child sections for each of the root sections.
-    menuItem.children = self.styleguide.section(rootSection.reference() + '.*').slice(1).map(toMenuItem);
+    menuItem.children = self.styleGuide.section(rootSection.reference() + '.*').slice(1).map(toMenuItem);
 
     // Remove menu items that are deeper than the nav-depth config setting.
     for (var i = 0; i < menuItem.children.length; i++) {
@@ -353,7 +353,7 @@ kssHandlebarsGenerator.generatePage = function(pageReference, sections) {
     scripts = '',
     key;
 
-  if (pageReference === 'styleguide.homepage') {
+  if (pageReference === 'styleGuide.homepage') {
     filename = 'index.html';
     if (this.config.verbose) {
       this.log(' - homepage');
@@ -380,7 +380,7 @@ kssHandlebarsGenerator.generatePage = function(pageReference, sections) {
       }
     }
   } else {
-    rootSection = this.styleguide.section(pageReference);
+    rootSection = this.styleGuide.section(pageReference);
     filename = 'section-' + rootSection.referenceURI() + '.html';
     if (this.config.verbose) {
       this.log(
@@ -414,9 +414,9 @@ kssHandlebarsGenerator.generatePage = function(pageReference, sections) {
       homepage: homepageText,
       styles: styles,
       scripts: scripts,
-      hasNumericReferences: this.styleguide.hasNumericReferences(),
+      hasNumericReferences: this.styleGuide.hasNumericReferences(),
       partials: this.partials,
-      styleguide: this.styleguide,
+      styleGuide: this.styleGuide,
       options: this.config || {}
     })
   );

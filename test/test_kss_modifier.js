@@ -5,8 +5,8 @@
 describe('KssModifier object API', function() {
   before(function(done) {
     var self = this;
-    helperUtils.traverseFixtures({mask: '*.less|*.css'}, function(styleguide) {
-      self.styleguide = styleguide;
+    helperUtils.traverseFixtures({mask: '*.less|*.css'}, function(styleGuide) {
+      self.styleGuide = styleGuide;
       done();
     });
   });
@@ -50,7 +50,7 @@ describe('KssModifier object API', function() {
 
   describe('.section()', function() {
     it('should return meta.section', function(done) {
-      this.styleguide.data.sections.map(function(section) {
+      this.styleGuide.data.sections.map(function(section) {
         section.modifiers().map(function(modifier) {
           expect(modifier.section()).to.equal(modifier.meta.section).and.equal(section);
         });
@@ -77,7 +77,7 @@ describe('KssModifier object API', function() {
 
   describe('.name()', function() {
     it('should return data.name', function(done) {
-      this.styleguide.data.sections.map(function(section) {
+      this.styleGuide.data.sections.map(function(section) {
         section.modifiers().map(function(modifier) {
           expect(modifier.name()).to.equal(modifier.data.name);
         });
@@ -102,7 +102,7 @@ describe('KssModifier object API', function() {
 
   describe('.description()', function() {
     it('should return data.description', function(done) {
-      this.styleguide.data.sections.map(function(section) {
+      this.styleGuide.data.sections.map(function(section) {
         section.modifiers().map(function(modifier) {
           expect(modifier.description()).to.equal(modifier.data.description);
         });
@@ -127,7 +127,7 @@ describe('KssModifier object API', function() {
 
   describe('.className()', function() {
     it('should be valid CSS classes', function(done) {
-      this.styleguide.data.sections.map(function(section) {
+      this.styleGuide.data.sections.map(function(section) {
         section.modifiers().map(function(modifier) {
           expect(modifier.className()).to.match(/[a-z \-_]/gi);
         });
@@ -136,7 +136,7 @@ describe('KssModifier object API', function() {
     });
 
     it('should convert pseudo-class to kss.js-style .pseudo-class-[name]', function(done) {
-      this.styleguide.data.sections.map(function(section) {
+      this.styleGuide.data.sections.map(function(section) {
         section.modifiers().map(function(modifier) {
           expect(modifier.className()).to.equal(modifier.data.name.replace(/\:/g, '.pseudo-class-').split(/\s/)[0].replace(/\./g, ' ').replace(/^\s*/g, ''));
         });
@@ -161,7 +161,7 @@ describe('KssModifier object API', function() {
 
   describe('.markup()', function() {
     it('should return an unfiltered meta.section.markup', function(done) {
-      this.styleguide.data.sections.map(function(section) {
+      this.styleGuide.data.sections.map(function(section) {
         section.modifiers().map(function(modifier) {
           if (section.data.markup) {
             expect(modifier.meta.section.data.markup).to.equal(section.data.markup);
@@ -188,7 +188,7 @@ describe('KssModifier object API', function() {
 
   describe('.toJSON()', function() {
     it('should return valid JSON object', function(done) {
-      this.styleguide.data.sections.map(function(section) {
+      this.styleGuide.data.sections.map(function(section) {
         section.modifiers().map(function(modifier) {
           var str;
           expect(modifier.toJSON()).to.be.an.instanceOf(Object);
@@ -203,7 +203,7 @@ describe('KssModifier object API', function() {
     });
 
     it('should return data as a JSON object', function(done) {
-      this.styleguide.data.sections.map(function(section) {
+      this.styleGuide.data.sections.map(function(section) {
         section.modifiers().map(function(modifier) {
           var json = modifier.toJSON();
           expect(json.name).to.equal(modifier.data.name);

@@ -39,14 +39,14 @@ kssHandlebarsTemplate.options = {
 
 // If this template needs to do preparation work before the HTML style guide is
 // generated, the template can do its work inside the `prepare()` method. The
-// template has access to the KssStyleGuide object (as the `styleguide`
+// template has access to the KssStyleGuide object (as the `styleGuide`
 // parameter), an object containing the configuration settings for the requested
 // generation (as `this.config`), and the global Handlebars object (as
 // `this.Handlebars`).
 //
 // The template could also take this opportunity to do tasks like special
 // handling of "custom" properties or running Sass or Bower tasks.
-kssHandlebarsTemplate.generator.prepare = function(styleguide, cb) {
+kssHandlebarsTemplate.generator.prepare = function(styleGuide, cb) {
 
   // Load this template's extra Handlebars helpers.
 
@@ -59,7 +59,7 @@ kssHandlebarsTemplate.generator.prepare = function(styleguide, cb) {
      * @param  {String} reference The reference to search for.
      */
     this.Handlebars.registerHelper('section', function(reference, options) {
-      var section = options.data.root.styleguide.section(reference);
+      var section = options.data.root.styleGuide.section(reference);
 
       return section ? options.fn(section.toJSON()) : options.inverse('');
     });
@@ -74,7 +74,7 @@ kssHandlebarsTemplate.generator.prepare = function(styleguide, cb) {
      * @param  {Mixed} query The section query
      */
     this.Handlebars.registerHelper('eachSection', function(query, options) {
-      var styleguide = options.data.root.styleguide,
+      var styleGuide = options.data.root.styleGuide,
         buffer = '',
         sections,
         i, l;
@@ -82,7 +82,7 @@ kssHandlebarsTemplate.generator.prepare = function(styleguide, cb) {
       if (!query.match(/\bx\b|\*/g)) {
         query = query + '.*';
       }
-      sections = styleguide.section(query);
+      sections = styleGuide.section(query);
       if (!sections) {
         return options.inverse('');
       }
@@ -96,5 +96,5 @@ kssHandlebarsTemplate.generator.prepare = function(styleguide, cb) {
     });
   }
 
-  return cb(null, styleguide);
+  return cb(null, styleGuide);
 };

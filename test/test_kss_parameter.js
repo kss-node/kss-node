@@ -5,8 +5,8 @@
 describe('KssParameter object API', function() {
   before(function(done) {
     var self = this;
-    helperUtils.traverseFixtures({mask: '*.less|*.css'}, function(styleguide) {
-      self.styleguide = styleguide;
+    helperUtils.traverseFixtures({mask: '*.less|*.css'}, function(styleGuide) {
+      self.styleGuide = styleGuide;
       done();
     });
   });
@@ -47,7 +47,7 @@ describe('KssParameter object API', function() {
 
   describe('.section()', function() {
     it('should return meta.section', function(done) {
-      this.styleguide.data.sections.map(function(section) {
+      this.styleGuide.data.sections.map(function(section) {
         section.parameters().map(function(parameter) {
           expect(parameter.section()).to.equal(parameter.meta.section).and.equal(section);
         });
@@ -74,7 +74,7 @@ describe('KssParameter object API', function() {
 
   describe('.name()', function() {
     it('should return data.name', function(done) {
-      this.styleguide.data.sections.map(function(section) {
+      this.styleGuide.data.sections.map(function(section) {
         section.parameters().map(function(parameter) {
           expect(parameter.name()).to.equal(parameter.data.name);
         });
@@ -99,7 +99,7 @@ describe('KssParameter object API', function() {
 
   describe('.description()', function() {
     it('should return data.description', function(done) {
-      this.styleguide.data.sections.map(function(section) {
+      this.styleGuide.data.sections.map(function(section) {
         section.parameters().map(function(parameter) {
           expect(parameter.description()).to.equal(parameter.data.description);
         });
@@ -124,7 +124,7 @@ describe('KssParameter object API', function() {
 
   describe('.toJSON()', function() {
     it('should return valid JSON object', function(done) {
-      this.styleguide.data.sections.map(function(section) {
+      this.styleGuide.data.sections.map(function(section) {
         section.parameters().map(function(parameter) {
           var str;
           expect(parameter.toJSON()).to.be.an.instanceOf(Object);
@@ -139,7 +139,7 @@ describe('KssParameter object API', function() {
     });
 
     it('should return data as a JSON object', function(done) {
-      this.styleguide.data.sections.map(function(section) {
+      this.styleGuide.data.sections.map(function(section) {
         section.parameters().map(function(parameter) {
           var json = parameter.toJSON();
           expect(json.name).to.equal(parameter.data.name);

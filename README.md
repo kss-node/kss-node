@@ -117,15 +117,15 @@ var kss = require('kss'),
         markdown: false
     };
 
-kss.traverse('public/stylesheets/', options, function(error, styleguide) {
+kss.traverse('public/stylesheets/', options, function(error, styleGuide) {
     if (error) throw error;
 
-    styleguide.section('2.1.1')                                   // <KssSection>
-    styleguide.section('2.1.1').modifiers(0)                      // <KssModifier>
-    styleguide.section('2.1.1').modifiers(':hover').description() // 'Subtle hover highlight'
-    styleguide.section('2.1.1').modifiers(0).className()          // 'pseudo-class-hover'
-    styleguide.section('2.x.x')                                   // [<KssSection>, ...]
-    styleguide.section('2.1.1').modifiers()                       // [<KssModifier>, ...]
+    styleGuide.section('2.1.1')                                   // <KssSection>
+    styleGuide.section('2.1.1').modifiers(0)                      // <KssModifier>
+    styleGuide.section('2.1.1').modifiers(':hover').description() // 'Subtle hover highlight'
+    styleGuide.section('2.1.1').modifiers(0).className()          // 'pseudo-class-hover'
+    styleGuide.section('2.x.x')                                   // [<KssSection>, ...]
+    styleGuide.section('2.1.1').modifiers()                       // [<KssModifier>, ...]
 });
 ```
 

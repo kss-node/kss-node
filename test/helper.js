@@ -19,10 +19,10 @@ global.helperUtils = {
 
   // Simplifies usage of kss.traverse() in various tests.
   traverseFixtures: function(options, cb) {
-    kss.traverse(this.fixtures(), options, function(error, styleguide) {
+    kss.traverse(this.fixtures(), options, function(error, styleGuide) {
       expect(error).to.not.exist;
-      expect(styleguide.section()).to.be.ok;
-      cb(styleguide);
+      expect(styleGuide.section()).to.be.ok;
+      cb(styleGuide);
     });
   }
 };

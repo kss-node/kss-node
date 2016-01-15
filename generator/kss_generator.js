@@ -215,25 +215,25 @@ KssGenerator.prototype.parse = function(cb) {
  * Allow the template to prepare itself or modify the KssStyleGuide object.
  *
  * @alias KssGenerator.prototype.prepare
- * @param {KssStyleGuide} styleguide The KSS style guide in object format.
+ * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
  * @param {Function} cb Callback that will be given an Error as its first
  *                      parameter, if one occurs, and a fully-populated
  *                      KssStyleGuide as its second parameter.
  * @returns {*} The callback's return value.
  */
-KssGenerator.prototype.prepare = function(styleguide, cb) {
-  return cb(null, styleguide);
+KssGenerator.prototype.prepare = function(styleGuide, cb) {
+  return cb(null, styleGuide);
 };
 
 /**
  * Generate the HTML files of the style guide given a KssStyleGuide object.
  *
  * @alias KssGenerator.prototype.generate
- * @param {KssStyleGuide} styleguide The KSS style guide in object format.
+ * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
  * @param {Function} cb Callback that will be given an Error as its first
  *                      parameter, if one occurs.
  * @returns {*} The callback's return value.
  */
-KssGenerator.prototype.generate = function(styleguide, cb) {
+KssGenerator.prototype.generate = function(styleGuide, cb) {
   return cb(null);
 };

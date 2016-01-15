@@ -7,14 +7,14 @@ var custom = ['custom', 'custom2', 'custom3'];
 describe('KssSection object API', function() {
   before(function(done) {
     var self = this;
-    helperUtils.traverseFixtures({mask: '*.less|*.css', custom: custom}, function(styleguide) {
-      self.styleguide = styleguide;
+    helperUtils.traverseFixtures({mask: '*.less|*.css', custom: custom}, function(styleGuide) {
+      self.styleGuide = styleGuide;
       done();
     });
   });
 
   /* eslint-disable guard-for-in,no-loop-func */
-  ['styleguide',
+  ['styleGuide',
     'header',
     'description',
     'deprecated',
@@ -40,7 +40,7 @@ describe('KssSection object API', function() {
     it('should initialize the data', function(done) {
       var obj = new kss.KssSection();
       expect(obj).to.have.property('meta');
-      expect(obj.meta).to.have.property('styleguide');
+      expect(obj.meta).to.have.property('styleGuide');
       expect(obj.meta).to.have.property('raw');
       expect(obj.meta).to.have.property('customPropertyNames');
       expect(obj.meta).to.have.property('depth');
@@ -87,7 +87,7 @@ describe('KssSection object API', function() {
 
   describe('.toJSON()', function() {
     it('should return valid JSON object', function(done) {
-      this.styleguide.section().map(function(section) {
+      this.styleGuide.section().map(function(section) {
         var str;
         expect(section.toJSON()).to.be.an.instanceOf(Object);
         // Verify it converts to a JSON string.
@@ -118,7 +118,7 @@ describe('KssSection object API', function() {
     });
 
     it('should return custom properties', function(done) {
-      this.styleguide.section().map(function(section) {
+      this.styleGuide.section().map(function(section) {
         var json = section.toJSON();
         custom.map(function(name) {
           if (typeof section.custom(name) !== 'undefined') {
@@ -131,35 +131,35 @@ describe('KssSection object API', function() {
     });
   });
 
-  describe('.styleguide()', function() {
-    it('should return meta.styleguide', function(done) {
+  describe('.styleGuide()', function() {
+    it('should return meta.styleGuide', function(done) {
       var self = this;
-      this.styleguide.section().map(function(section) {
-        expect(section.styleguide()).to.deep.equal(section.meta.styleguide).and.deep.equal(self.styleguide);
+      this.styleGuide.section().map(function(section) {
+        expect(section.styleGuide()).to.deep.equal(section.meta.styleGuide).and.deep.equal(self.styleGuide);
       });
       done();
     });
 
-    it('should set meta.styleguide if given a value', function(done) {
-      var styleguide = new kss.KssStyleGuide(),
+    it('should set meta.styleGuide if given a value', function(done) {
+      var styleGuide = new kss.KssStyleGuide(),
         section = new kss.KssSection({header: 'Section'});
-      section.styleguide(styleguide);
-      expect(section.meta.styleguide).to.deep.equal(styleguide);
-      expect(section.styleguide()).to.deep.equal(section.meta.styleguide);
+      section.styleGuide(styleGuide);
+      expect(section.meta.styleGuide).to.deep.equal(styleGuide);
+      expect(section.styleGuide()).to.deep.equal(section.meta.styleGuide);
       done();
     });
 
     it('should return itself if given a value', function(done) {
-      var styleguide = new kss.KssStyleGuide(),
+      var styleGuide = new kss.KssStyleGuide(),
         section = new kss.KssSection({header: 'Section'});
-      expect(section.styleguide(styleguide)).to.deep.equal(section);
+      expect(section.styleGuide(styleGuide)).to.deep.equal(section);
       done();
     });
   });
 
   describe('.header()', function() {
     it('should return data.header', function(done) {
-      this.styleguide.section().map(function(section) {
+      this.styleGuide.section().map(function(section) {
         expect(section.header()).to.equal(section.data.header);
       });
       done();
@@ -182,7 +182,7 @@ describe('KssSection object API', function() {
 
   describe('.description()', function() {
     it('should return data.description', function(done) {
-      this.styleguide.section().map(function(section) {
+      this.styleGuide.section().map(function(section) {
         expect(section.description()).to.equal(section.data.description);
       });
       done();
@@ -205,7 +205,7 @@ describe('KssSection object API', function() {
 
   describe('.customPropertyNames()', function() {
     it('should return meta.customPropertyNames', function(done) {
-      this.styleguide.section().map(function(section) {
+      this.styleGuide.section().map(function(section) {
         expect(section.customPropertyNames()).to.equal(section.meta.customPropertyNames);
       });
       done();
@@ -214,7 +214,7 @@ describe('KssSection object API', function() {
 
   describe('.custom()', function() {
     it('should return data[name]', function(done) {
-      this.styleguide.section().map(function(section) {
+      this.styleGuide.section().map(function(section) {
         section.customPropertyNames().map(function(name) {
           expect(section.custom(name)).to.equal(section.data[name]);
         });
@@ -231,11 +231,11 @@ describe('KssSection object API', function() {
     });
 
     it('should set update the style guide\'s meta.customPropertyNames[] if given a value', function(done) {
-      var styleguide = new kss.KssStyleGuide(),
+      var styleGuide = new kss.KssStyleGuide(),
         section = new kss.KssSection();
-      section.styleguide(styleguide);
+      section.styleGuide(styleGuide);
       section.custom('newCustom', 'new');
-      expect(styleguide.customPropertyNames()).to.deep.equal(['newCustom']);
+      expect(styleGuide.customPropertyNames()).to.deep.equal(['newCustom']);
       done();
     });
 
@@ -248,7 +248,7 @@ describe('KssSection object API', function() {
 
   describe('.deprecated()', function() {
     it('should return data.deprecated', function(done) {
-      this.styleguide.section().map(function(section) {
+      this.styleGuide.section().map(function(section) {
         expect(section.deprecated()).to.equal(section.data.deprecated);
       });
       done();
@@ -278,7 +278,7 @@ describe('KssSection object API', function() {
 
   describe('.experimental()', function() {
     it('should return data.experimental', function(done) {
-      this.styleguide.section().map(function(section) {
+      this.styleGuide.section().map(function(section) {
         expect(section.experimental()).to.equal(section.data.experimental);
       });
       done();
@@ -308,7 +308,7 @@ describe('KssSection object API', function() {
 
   describe('.reference()', function() {
     it('should return data.reference', function(done) {
-      this.styleguide.section().map(function(section) {
+      this.styleGuide.section().map(function(section) {
         expect(section.reference()).to.equal(section.data.reference);
       });
       done();
@@ -331,7 +331,7 @@ describe('KssSection object API', function() {
 
   describe('.referenceURI()', function() {
     it('should return data.referenceURI', function(done) {
-      this.styleguide.section().map(function(section) {
+      this.styleGuide.section().map(function(section) {
         expect(section.referenceURI()).to.equal(section.data.referenceURI);
         expect(section.referenceURI()).to.equal(encodeURI(
           section.data.reference
@@ -365,7 +365,7 @@ describe('KssSection object API', function() {
 
   describe('.weight()', function() {
     it('should return data.weight', function(done) {
-      this.styleguide.section().map(function(section) {
+      this.styleGuide.section().map(function(section) {
         expect(section.weight()).to.equal(section.data.weight);
         expect(section.weight()).to.be.at.least(-100000);
       });
@@ -389,10 +389,10 @@ describe('KssSection object API', function() {
 
   describe('.depth()', function() {
     it('should return meta.depth', function(done) {
-      this.styleguide.section().map(function(section) {
+      this.styleGuide.section().map(function(section) {
         expect(section.depth()).to.be.at.least(0);
         expect(section.depth()).to.equal(section.meta.depth);
-        expect(section.depth()).to.equal(section.reference().split(section.styleguide().meta.referenceDelimiter).length);
+        expect(section.depth()).to.equal(section.reference().split(section.styleGuide().meta.referenceDelimiter).length);
       });
       done();
     });
@@ -414,7 +414,7 @@ describe('KssSection object API', function() {
 
   describe('.markup()', function() {
     it('should return data.markup', function(done) {
-      this.styleguide.section().map(function(section) {
+      this.styleGuide.section().map(function(section) {
         expect(section.markup()).to.equal(section.data.markup);
       });
       done();
@@ -437,14 +437,14 @@ describe('KssSection object API', function() {
 
   describe('.modifiers()', function() {
     it('should return data.modifiers', function(done) {
-      this.styleguide.section().map(function(section) {
+      this.styleGuide.section().map(function(section) {
         expect(section.modifiers()).to.equal(section.data.modifiers);
       });
       done();
     });
 
     it('should return array of KssModifier', function(done) {
-      this.styleguide.section().map(function(section) {
+      this.styleGuide.section().map(function(section) {
         section.modifiers().map(function(modifier) {
           expect(modifier).to.be.instanceof(kss.KssModifier);
         });
@@ -453,7 +453,7 @@ describe('KssSection object API', function() {
     });
 
     it('should return data.modifiers[n] given an integer as number or string', function(done) {
-      this.styleguide.section().map(function(section) {
+      this.styleGuide.section().map(function(section) {
         var i = 0;
         section.data.modifiers.map(function(modifier) {
           expect(section.modifiers(i)).to.deep.equal(modifier);
@@ -465,14 +465,14 @@ describe('KssSection object API', function() {
     });
 
     it('should return false if number is not found', function(done) {
-      this.styleguide.section().map(function(section) {
+      this.styleGuide.section().map(function(section) {
         expect(section.modifiers(section.data.modifiers.length + 1)).to.be.false;
       });
       done();
     });
 
     it('should search by name when given a string', function(done) {
-      this.styleguide.section().map(function(section) {
+      this.styleGuide.section().map(function(section) {
         var i, j, queries = ['.red', '.yellow', ':hover', ':disabled'],
           q = queries.length,
           l = section.data.modifiers.length;
@@ -491,7 +491,7 @@ describe('KssSection object API', function() {
     });
 
     it('should return false if name not found', function(done) {
-      this.styleguide.section().map(function(section) {
+      this.styleGuide.section().map(function(section) {
         expect(section.modifiers('__should_not_find___')).to.be.false;
       });
       done();
@@ -527,14 +527,14 @@ describe('KssSection object API', function() {
 
   describe('.parameters()', function() {
     it('should return data.parameters', function(done) {
-      this.styleguide.section().map(function(section) {
+      this.styleGuide.section().map(function(section) {
         expect(section.parameters()).to.equal(section.data.parameters);
       });
       done();
     });
 
     it('should return array of KssParameter', function(done) {
-      this.styleguide.section().map(function(section) {
+      this.styleGuide.section().map(function(section) {
         section.parameters().map(function(parameter) {
           expect(parameter).to.be.instanceof(kss.KssParameter);
         });
