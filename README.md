@@ -63,7 +63,7 @@ Style guide:
   --helpers      Location of custom handlebars helpers; see
                  http://bit.ly/kss-wiki
   --homepage     File name of the homepage's Markdown file
-                                                      [default: "styleguide.md"]
+                                                      [default: "homepage.md"]
   --placeholder  Placeholder text to use for modifier classes
                                                    [default: "[modifier class]"]
   --title        Title of the style guide           [default: "KSS Style Guide"]
@@ -101,7 +101,7 @@ Unlike the default Ruby implementation at kneath/kss, kss-node includes a few op
 
 **Language Agnostic**. kss-node does not care what language your application is written in (Ruby, Node.js, PHP, whatever). It just scans your CSS source files looking for KSS docs so that it can generate a living style guide. And since it only looks for properly formatted KSS comments, it also doesn't need to know what kind of CSS preprocessor you use either.
 
-**Homepage Text**. The overview text needed for the style guide homepage is generated from a Markdown file, which you should place in a `--source` directory, just name it `styleguide.md` and it will be included in the final style guide automatically.
+**Homepage Text**. The overview text needed for the style guide homepage is generated from a Markdown file, which you should place in a `--source` directory, just name it `homepage.md` and it will be included in the final style guide automatically.
 
 Additional kss-node specifics are detailed in this version of the [KSS spec](https://github.com/kss-node/kss/blob/spec/SPEC.md).
 

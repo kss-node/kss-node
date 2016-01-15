@@ -35,7 +35,7 @@ var kssHandlebarsGenerator = new KssGenerator('2.1', {
     string: true,
     multiple: false,
     describe: 'File name of the homepage\'s Markdown file',
-    default: 'styleguide.md'
+    default: 'homepage.md'
   },
   'placeholder': {
     group: 'Style guide:',
