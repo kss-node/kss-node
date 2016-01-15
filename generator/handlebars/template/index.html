@@ -75,10 +75,10 @@
           <span class="kss-title__ref">
             {{referenceNumber}}
             <span class="kss-title__permalink-hash">
-              {{#if hasReferenceNumber}}
-                #{{reference}}
-              {{else}}
+              {{#if @root.hasNumericReferences}}
                 #permalink
+              {{else}}
+                #{{reference}}
               {{/if}}
             </span>
           </span>

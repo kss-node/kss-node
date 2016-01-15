@@ -403,25 +403,23 @@ kssHandlebarsGenerator.generatePage = function(pageReference, sections) {
     }
   }
 
-  /* eslint-disable key-spacing */
   fs.writeFileSync(this.config.destination + '/' + filename,
     this.template({
       pageReference: pageReference,
-      sections:      sections.map(function(section) {
+      sections: sections.map(function(section) {
         var context = section.toJSON();
-        context.hasReferenceNumber = (context.referenceNumber !== context.reference);
         return context;
       }),
-      menu:          this.createMenu(pageReference),
-      homepage:      homepageText,
-      styles:        styles,
-      scripts:       scripts,
-      styleguide:    this.styleguide,
-      partials:      this.partials,
-      options:       this.config || {}
+      menu: this.createMenu(pageReference),
+      homepage: homepageText,
+      styles: styles,
+      scripts: scripts,
+      hasNumericReferences: this.styleguide.hasNumericReferences(),
+      partials: this.partials,
+      styleguide: this.styleguide,
+      options: this.config || {}
     })
   );
-  /* eslint-enable key-spacing */
 };
 
 module.exports = kssHandlebarsGenerator;

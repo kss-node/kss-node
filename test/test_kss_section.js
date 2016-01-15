@@ -22,7 +22,6 @@ describe('KssSection object API', function() {
     'reference',
     'referenceNumber',
     'referenceURI',
-    'autoincrement',
     'weight',
     'depth',
     'markup',
@@ -51,8 +50,8 @@ describe('KssSection object API', function() {
       expect(obj.data).to.have.property('deprecated');
       expect(obj.data).to.have.property('experimental');
       expect(obj.data).to.have.property('reference');
+      expect(obj.data).to.have.property('referenceNumber');
       expect(obj.data).to.have.property('referenceURI');
-      expect(obj.data).to.have.property('autoincrement');
       expect(obj.data).to.have.property('weight');
       expect(obj.data).to.have.property('markup');
       expect(obj.data).to.have.property('modifiers');

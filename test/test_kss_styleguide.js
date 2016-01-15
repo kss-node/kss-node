@@ -7,15 +7,20 @@ describe('KssStyleGuide object API', function() {
     var self = this;
     helperUtils.traverseFixtures({mask: /(sections\-queries|sections\-order|property\-styleguide\-word\-keys)\.less/}, function(styleguide) {
       self.styleguide = styleguide;
-      helperUtils.traverseFixtures({mask: /.*\-word\-phrases\.less/}, function(styleguideWordPhrases) {
-        self.styleguideWordPhrases = styleguideWordPhrases;
-        done();
+      helperUtils.traverseFixtures({mask: /.*\-word\-phrases\.less/}, function(styleguide) {
+        self.styleguideWordPhrases = styleguide;
+        helperUtils.traverseFixtures({mask: /sections\-queries\.less/}, function(styleguide) {
+          self.styleguideNumeric = styleguide;
+          done();
+        });
       });
     });
   });
 
   /* eslint-disable guard-for-in,no-loop-func */
   ['init',
+    'customPropertyNames',
+    'hasNumericReferences',
     'section',
     'sortSections',
     'getWeight'
@@ -76,15 +81,17 @@ describe('KssStyleGuide object API', function() {
     });
   });
 
+  describe('.hasNumericReferences()', function() {
+    it('should return meta.hasNumericReferences', function(done) {
+      expect(this.styleguide.hasNumericReferences()).to.equal(this.styleguide.meta.hasNumericReferences).and.to.be.false;
+      expect(this.styleguideNumeric.hasNumericReferences()).to.equal(this.styleguideNumeric.meta.hasNumericReferences).and.to.be.true;
+      expect(this.styleguideWordPhrases.hasNumericReferences()).to.equal(this.styleguide.meta.hasNumericReferences).and.to.be.false;
+      done();
+    });
+  });
+
   describe('.section()', function() {
     context('given no arguments', function() {
-      it('should return only referenced sections', function(done) {
-        this.styleguide.section().map(function(section) {
-          expect(section.data).to.have.property('reference');
-        });
-        done();
-      });
-
       it('should return all referenced sections', function(done) {
         var results = [],
           expected = [
@@ -317,11 +324,11 @@ describe('KssStyleGuide object API', function() {
         done();
       });
 
-      it('should return autoincrement values for "word phrase" sections in order', function(done) {
+      it('should return referenceNumber values for "word phrase" sections in order', function(done) {
         var results,
           expected = ['2.1', '2.1.1', '2.1.2', '2.1.3', '2.1.4', '2.2', '2.3', '2.4', '2.5'];
         results = this.styleguideWordPhrases.section(/gamma - .*/).map(function(section) {
-          return section.data.autoincrement;
+          return section.referenceNumber();
         });
         expect(results).to.deep.equal(expected);
         done();
