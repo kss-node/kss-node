@@ -59,7 +59,7 @@ kssHandlebarsTemplate.generator.prepare = function(styleGuide, cb) {
      * @param  {String} reference The reference to search for.
      */
     this.Handlebars.registerHelper('section', function(reference, options) {
-      var section = options.data.root.styleGuide.section(reference);
+      var section = options.data.root.styleGuide.sections(reference);
 
       return section ? options.fn(section.toJSON()) : options.inverse('');
     });
@@ -82,7 +82,7 @@ kssHandlebarsTemplate.generator.prepare = function(styleGuide, cb) {
       if (!query.match(/\bx\b|\*/g)) {
         query = query + '.*';
       }
-      sections = styleGuide.section(query);
+      sections = styleGuide.sections(query);
       if (!sections) {
         return options.inverse('');
       }

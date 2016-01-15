@@ -120,12 +120,12 @@ var kss = require('kss'),
 kss.traverse('public/stylesheets/', options, function(error, styleGuide) {
     if (error) throw error;
 
-    styleGuide.section('2.1.1')                                   // <KssSection>
-    styleGuide.section('2.1.1').modifiers(0)                      // <KssModifier>
-    styleGuide.section('2.1.1').modifiers(':hover').description() // 'Subtle hover highlight'
-    styleGuide.section('2.1.1').modifiers(0).className()          // 'pseudo-class-hover'
-    styleGuide.section('2.x.x')                                   // [<KssSection>, ...]
-    styleGuide.section('2.1.1').modifiers()                       // [<KssModifier>, ...]
+    styleGuide.sections('2.1.1')                                   // <KssSection>
+    styleGuide.sections('2.1.1').modifiers(0)                      // <KssModifier>
+    styleGuide.sections('2.1.1').modifiers(':hover').description() // 'Subtle hover highlight'
+    styleGuide.sections('2.1.1').modifiers(0).className()          // 'pseudo-class-hover'
+    styleGuide.sections('2.x.x')                                   // [<KssSection>, ...]
+    styleGuide.sections('2.1.1').modifiers()                       // [<KssModifier>, ...]
 });
 ```
 

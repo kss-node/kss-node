@@ -117,7 +117,7 @@ kssExampleGenerator.prototype.parse = function(cb) {
  * @returns {*} The callback's return value.
  */
 kssExampleGenerator.prototype.generate = function(styleGuide, cb) {
-  styleGuide.section();
+  styleGuide.sections();
   this.log('...Generating the demo style guide.' + this.warning);
 
   // No error has occurred.

@@ -150,7 +150,7 @@ kssHandlebarsGenerator.generate = function(styleGuide, cb) {
   this.styleGuide = styleGuide;
   this.partials = {};
 
-  var sections = this.styleGuide.section(),
+  var sections = this.styleGuide.sections(),
     sectionCount = sections.length,
     sectionRoots = [],
     rootCount,
@@ -249,7 +249,7 @@ kssHandlebarsGenerator.generate = function(styleGuide, cb) {
   rootCount = sectionRoots.length;
   key = false;
   for (i = 0; i < rootCount; i += 1) {
-    currentRoot = this.styleGuide.section(sectionRoots[i]);
+    currentRoot = this.styleGuide.sections(sectionRoots[i]);
     if (currentRoot === false) {
       key = sectionRoots[i];
       // @TODO: Add section via KssStyleGuide API.
@@ -274,7 +274,7 @@ kssHandlebarsGenerator.generate = function(styleGuide, cb) {
   // reference, and make a page for each.
   rootCount = sectionRoots.length;
   for (i = 0; i < rootCount; i += 1) {
-    childSections = this.styleGuide.section(sectionRoots[i] + '.*');
+    childSections = this.styleGuide.sections(sectionRoots[i] + '.*');
 
     this.generatePage(sectionRoots[i], childSections);
   }
@@ -319,11 +319,11 @@ kssHandlebarsGenerator.createMenu = function(pageReference) {
   };
 
   // Retrieve all the root sections of the style guide.
-  menu = this.styleGuide.section('x').map(function(rootSection) {
+  menu = this.styleGuide.sections('x').map(function(rootSection) {
     var menuItem = toMenuItem(rootSection);
 
     // Retrieve the child sections for each of the root sections.
-    menuItem.children = self.styleGuide.section(rootSection.reference() + '.*').slice(1).map(toMenuItem);
+    menuItem.children = self.styleGuide.sections(rootSection.reference() + '.*').slice(1).map(toMenuItem);
 
     // Remove menu items that are deeper than the nav-depth config setting.
     for (var i = 0; i < menuItem.children.length; i++) {
@@ -380,7 +380,7 @@ kssHandlebarsGenerator.generatePage = function(pageReference, sections) {
       }
     }
   } else {
-    rootSection = this.styleGuide.section(pageReference);
+    rootSection = this.styleGuide.sections(pageReference);
     filename = 'section-' + rootSection.referenceURI() + '.html';
     if (this.config.verbose) {
       this.log(
