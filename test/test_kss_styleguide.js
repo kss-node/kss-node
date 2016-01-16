@@ -18,7 +18,8 @@ describe('KssStyleGuide object API', function() {
   });
 
   /* eslint-disable guard-for-in,no-loop-func */
-  ['autoInit',
+  ['toJSON',
+    'autoInit',
     'init',
     'customPropertyNames',
     'hasNumericReferences',
@@ -56,6 +57,47 @@ describe('KssStyleGuide object API', function() {
       expect(obj).to.be.an.instanceof(kss.KssStyleGuide);
       done();
       /* eslint-enable new-cap */
+    });
+  });
+
+  describe('.toJSON()', function() {
+    it('should return valid JSON object', function(done) {
+      var str;
+      expect(this.styleGuide.toJSON()).to.be.an.instanceOf(Object);
+      // Verify it converts to a JSON string.
+      str = JSON.stringify(this.styleGuide.toJSON());
+      expect(str).to.be.string;
+      // Compare JSON string to original.
+      expect(JSON.parse(str)).to.deep.equal(this.styleGuide.toJSON());
+      done();
+    });
+
+    it('should output the same data given to constructor', function(done) {
+      var data, styleGuide;
+      data = {
+        customPropertyNames: ['custom1', 'custom2'],
+        hasNumericReferences: true,
+        referenceDelimiter: '.',
+        sections: [
+          {
+            deprecated: false,
+            depth: 2,
+            description: 'lorem ipsum',
+            experimental: false,
+            header: 'example',
+            markup: '<div class="example">lorem ipsum</div>',
+            modifiers: [],
+            parameters: [],
+            reference: '1.1',
+            referenceNumber: '1.1',
+            referenceURI: '1-1',
+            weight: 0
+          }
+        ]
+      };
+      styleGuide = new kss.KssStyleGuide(data);
+      expect(styleGuide.toJSON()).to.deep.equal(data);
+      done();
     });
   });
 
