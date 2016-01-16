@@ -18,12 +18,11 @@ describe('KssStyleGuide object API', function() {
   });
 
   /* eslint-disable guard-for-in,no-loop-func */
-  ['init',
+  ['autoInit',
+    'init',
     'customPropertyNames',
     'hasNumericReferences',
-    'sections',
-    'sortSections',
-    'getWeight'
+    'sections'
   ].forEach(function(method) {
     it('has ' + method + '() method', function(done) {
       expect(new kss.KssStyleGuide({})).to.respondTo(method);
@@ -36,11 +35,17 @@ describe('KssStyleGuide object API', function() {
     it('should initialize the data', function(done) {
       var obj = new kss.KssStyleGuide();
       expect(obj).to.have.property('meta');
+      expect(obj.meta).to.have.property('autoInit');
       expect(obj.meta).to.have.property('files');
+      expect(obj.meta).to.have.property('hasNumericReferences');
+      expect(obj.meta).to.have.property('needsDepth');
+      expect(obj.meta).to.have.property('needsReferenceNumber');
+      expect(obj.meta).to.have.property('needsSort');
       expect(obj.meta).to.have.property('referenceDelimiter');
       expect(obj.meta).to.have.property('referenceMap');
       expect(obj.meta).to.have.property('weightMap');
       expect(obj).to.have.property('data');
+      expect(obj.data).to.have.property('customPropertyNames');
       expect(obj.data).to.have.property('sections');
       done();
     });
@@ -52,6 +57,32 @@ describe('KssStyleGuide object API', function() {
       done();
       /* eslint-enable new-cap */
     });
+  });
+
+  describe('.autoInit()', function() {
+    it('should update meta.autoInit if given true', function(done) {
+      var styleGuide = new kss.KssStyleGuide({autoInit: false});
+      styleGuide.autoInit(true);
+      expect(styleGuide.meta.autoInit).to.be.true;
+      done();
+    });
+
+    it('should update meta.autoInit if given false', function(done) {
+      var styleGuide = new kss.KssStyleGuide();
+      styleGuide.autoInit(false);
+      expect(styleGuide.meta.autoInit).to.be.false;
+      done();
+    });
+
+    it('should return itself', function(done) {
+      var styleGuide = new kss.KssStyleGuide({autoInit: false});
+      expect(styleGuide.autoInit(true)).to.deep.equal(styleGuide);
+      done();
+    });
+  });
+
+  describe('.init()', function() {
+    it('should do things');
   });
 
   describe('.customPropertyNames()', function() {
@@ -75,7 +106,7 @@ describe('KssStyleGuide object API', function() {
     });
 
     it('should return itself if given a value', function(done) {
-      var styleGuide = new kss.KssStyleGuide({header: 'original'});
+      var styleGuide = new kss.KssStyleGuide({customPropertyNames: ['original']});
       expect(styleGuide.customPropertyNames('new')).to.deep.equal(styleGuide);
       done();
     });
@@ -91,6 +122,10 @@ describe('KssStyleGuide object API', function() {
   });
 
   describe('.sections()', function() {
+    context('given new sections', function() {
+      it('should do things');
+    });
+
     context('given no arguments', function() {
       it('should return all referenced sections', function(done) {
         var results = [],
@@ -333,54 +368,6 @@ describe('KssStyleGuide object API', function() {
         expect(results).to.deep.equal(expected);
         done();
       });
-    });
-  });
-
-  describe('.getWeight()', function() {
-    var expected = {
-      'beta - delta': [0, 0],
-      'beta - alpha': [0, 0],
-      'beta - beta': [0, 0],
-      'beta - epsilon': [0, 0],
-      'beta - gamma': [0, 0],
-      'beta': [0],
-      'beta - alpha - alpha': [0, 0, 0],
-      'gamma': [0],
-      'gamma - alpha': [0, 0],
-      'gamma - alpha - delta': [0, 0, -10000],
-      'gamma - alpha - gamma': [0, 0, -1000],
-      'gamma - alpha - beta': [0, 0, -100],
-      'gamma - alpha - alpha': [0, 0, -10],
-      'gamma - beta': [0, 0],
-      'gamma - gamma': [0, 1],
-      'gamma - delta': [0, 2],
-      'gamma - epsilon': [0, 0, 2],
-      'WordPhrases - Forms - Button': [0, 0, 0],
-      'WordPhrases - Base - Link': [0, 0, 0],
-      'WordPhrases - Components': [0, 0],
-      'WordPhrases - Components - Message box': [0, 0, 0],
-      'WordPhrases - Components - Tabs': [0, 0, 0],
-      'WordPhrases - Forms - Input field': [0, 0, 0]
-    };
-
-    it('should return the proper weight for each depth', function(done) {
-      var self = this;
-      this.styleGuideWordPhrases.sections().map(function(section) {
-        var ref = section.reference();
-        for (var i; i < expected[ref].length; i++) {
-          expect(self.styleGuideWordPhrases.getWeight(ref, i)).to.equal(expected[ref][i]);
-        }
-      });
-      done();
-    });
-
-    it('should return the proper weight given no depth', function(done) {
-      var self = this;
-      this.styleGuideWordPhrases.sections().map(function(section) {
-        var ref = section.reference();
-        expect(self.styleGuideWordPhrases.getWeight(ref)).to.equal(expected[ref][expected[ref].length - 1]);
-      });
-      done();
     });
   });
 });
