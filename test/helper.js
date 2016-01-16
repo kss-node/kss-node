@@ -11,7 +11,7 @@ global.helperUtils = {
   // Returns the full path to the test fixtures in test/fixtures or sub-directory.
   fixtures: function() {
     // Add the fixtures path to the start our list of paths.
-    var args = Array.prototype.slice.call(arguments);
+    let args = Array.prototype.slice.call(arguments);
     args.unshift('fixtures');
     args.unshift(__dirname);
     return path.join.apply(this, args);
@@ -31,7 +31,7 @@ global.helperUtils = {
 before(function() {
   // Add custom assertions.
   chai.use(function(chai) {
-    var Assertion = chai.Assertion;
+    let Assertion = chai.Assertion;
 
     // .containFixture(string) asserts that a given file should be in an array.
     Assertion.addMethod('containFixture', function(file) {

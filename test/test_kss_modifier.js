@@ -4,7 +4,7 @@
 
 describe('KssModifier object API', function() {
   before(function(done) {
-    var self = this;
+    let self = this;
     helperUtils.traverseFixtures({mask: '*.less|*.css'}, function(styleGuide) {
       self.styleGuide = styleGuide;
       done();
@@ -28,7 +28,7 @@ describe('KssModifier object API', function() {
 
   describe('KssModifier constructor', function() {
     it('should initialize the data', function(done) {
-      var obj = new kss.KssModifier();
+      let obj = new kss.KssModifier();
       expect(obj).to.have.property('meta');
       expect(obj.meta).to.have.property('section');
       expect(obj).to.have.property('data');
@@ -50,7 +50,7 @@ describe('KssModifier object API', function() {
     });
 
     it('should set meta.section if given a value', function(done) {
-      var section = new kss.KssSection({header: 'Section'}),
+      let section = new kss.KssSection({header: 'Section'}),
         modifier = new kss.KssModifier({name: 'original'});
       modifier.section(section);
       expect(modifier.meta.section).to.deep.equal(section);
@@ -59,7 +59,7 @@ describe('KssModifier object API', function() {
     });
 
     it('should return itself if given a value', function(done) {
-      var section = new kss.KssSection({header: 'Section'}),
+      let section = new kss.KssSection({header: 'Section'}),
         modifier = new kss.KssModifier({name: 'original'});
       expect(modifier.section(section)).to.deep.equal(modifier);
       done();
@@ -77,7 +77,7 @@ describe('KssModifier object API', function() {
     });
 
     it('should set data.name if given a value', function(done) {
-      var modifier = new kss.KssModifier({name: 'original'});
+      let modifier = new kss.KssModifier({name: 'original'});
       modifier.name('new');
       expect(modifier.data.name).to.equal('new');
       expect(modifier.name()).to.equal(modifier.data.name);
@@ -85,7 +85,7 @@ describe('KssModifier object API', function() {
     });
 
     it('should return itself if given a value', function(done) {
-      var modifier = new kss.KssModifier({name: 'original'});
+      let modifier = new kss.KssModifier({name: 'original'});
       expect(modifier.name('new')).to.deep.equal(modifier);
       done();
     });
@@ -102,7 +102,7 @@ describe('KssModifier object API', function() {
     });
 
     it('should set data.description if given a value', function(done) {
-      var modifier = new kss.KssModifier({description: 'original'});
+      let modifier = new kss.KssModifier({description: 'original'});
       modifier.description('new');
       expect(modifier.data.description).to.equal('new');
       expect(modifier.description()).to.equal(modifier.data.description);
@@ -110,7 +110,7 @@ describe('KssModifier object API', function() {
     });
 
     it('should return itself if given a value', function(done) {
-      var modifier = new kss.KssModifier({description: 'original'});
+      let modifier = new kss.KssModifier({description: 'original'});
       expect(modifier.description('new')).to.deep.equal(modifier);
       done();
     });
@@ -136,7 +136,7 @@ describe('KssModifier object API', function() {
     });
 
     it('should set data.className if given a value', function(done) {
-      var modifier = new kss.KssModifier({name: '.original'});
+      let modifier = new kss.KssModifier({name: '.original'});
       modifier.className('new');
       expect(modifier.data.className).to.equal('new');
       expect(modifier.className()).to.equal(modifier.data.className);
@@ -144,7 +144,7 @@ describe('KssModifier object API', function() {
     });
 
     it('should return itself if given a value', function(done) {
-      var modifier = new kss.KssModifier({name: '.original'});
+      let modifier = new kss.KssModifier({name: '.original'});
       expect(modifier.className('new')).to.deep.equal(modifier);
       done();
     });
@@ -164,14 +164,14 @@ describe('KssModifier object API', function() {
     });
 
     it('should return empty string if it does not have any associated markup', function(done) {
-      var modifier = new kss.KssModifier();
+      let modifier = new kss.KssModifier();
       modifier.section(new kss.KssSection());
       expect(modifier.markup()).to.be.string('');
       done();
     });
 
     it('should return empty string if it does not have an associated kssSection', function(done) {
-      var modifier = new kss.KssModifier();
+      let modifier = new kss.KssModifier();
       expect(modifier.markup()).to.be.string('');
       done();
     });
@@ -181,10 +181,9 @@ describe('KssModifier object API', function() {
     it('should return valid JSON object', function(done) {
       this.styleGuide.data.sections.map(function(section) {
         section.modifiers().map(function(modifier) {
-          var str;
           expect(modifier.toJSON()).to.be.an.instanceOf(Object);
           // Verify it converts to a JSON string.
-          str = JSON.stringify(modifier.toJSON());
+          let str = JSON.stringify(modifier.toJSON());
           expect(str).to.be.string;
           // Compare JSON string to original.
           expect(JSON.parse(str)).to.deep.equal(modifier.toJSON());
@@ -196,7 +195,7 @@ describe('KssModifier object API', function() {
     it('should return data as a JSON object', function(done) {
       this.styleGuide.data.sections.map(function(section) {
         section.modifiers().map(function(modifier) {
-          var json = modifier.toJSON();
+          let json = modifier.toJSON();
           expect(json.name).to.equal(modifier.data.name);
           expect(json.description).to.equal(modifier.data.description);
           expect(json.className).to.equal(modifier.className());

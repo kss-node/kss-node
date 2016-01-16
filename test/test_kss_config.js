@@ -2,8 +2,9 @@
 
 'use strict';
 
-var KssGenerator = require('../generator/kss_generator');
-var pathToJSON = helperUtils.fixtures('cli-option-config.json');
+const KssGenerator = require('../generator/kss_generator');
+
+let pathToJSON = helperUtils.fixtures('cli-option-config.json');
 
 describe('KssConfig object API', function() {
   /* eslint-disable guard-for-in,no-loop-func */
@@ -23,7 +24,7 @@ describe('KssConfig object API', function() {
 
   describe('KssConfig constructor', function() {
     it('should initialize the data', function(done) {
-      var kssConfig = new kss.KssConfig();
+      let kssConfig = new kss.KssConfig();
       expect(kssConfig).to.have.property('config');
       expect(kssConfig).to.have.property('options');
       expect(kssConfig.options).to.have.property('css');
@@ -34,8 +35,8 @@ describe('KssConfig object API', function() {
     });
 
     it('should set config when given an object', function(done) {
-      var opts = require(pathToJSON);
-      var kssConfig = new kss.KssConfig(opts);
+      let opts = require(pathToJSON);
+      let kssConfig = new kss.KssConfig(opts);
       expect(kssConfig.config.source).to.equal('with-include');
       done();
     });
@@ -43,14 +44,14 @@ describe('KssConfig object API', function() {
 
   describe('.set()', function() {
     it('should set this.config', function(done) {
-      var kssConfig = new kss.KssConfig();
+      let kssConfig = new kss.KssConfig();
       kssConfig.set({source: 'isSet'});
       expect(kssConfig.config.source).to.equal('isSet');
       done();
     });
 
     it('should not unset this.config', function(done) {
-      var kssConfig = new kss.KssConfig(require(pathToJSON));
+      let kssConfig = new kss.KssConfig(require(pathToJSON));
       kssConfig.set({source: 'isSet'});
       expect(kssConfig.config.destination).to.equal('../output/nested');
       done();
@@ -59,11 +60,9 @@ describe('KssConfig object API', function() {
 
   describe('.get()', function() {
     it('should return this.config', function(done) {
-      var key,
-        config,
-        kssConfig = new kss.KssConfig(require(pathToJSON));
-      config = kssConfig.get();
-      for (key in config) {
+      let kssConfig = new kss.KssConfig(require(pathToJSON));
+      let config = kssConfig.get();
+      for (let key in config) {
         if (config.hasOwnProperty(key)) {
           expect(config[key]).to.equal(kssConfig.config[key]);
         }
@@ -72,9 +71,8 @@ describe('KssConfig object API', function() {
     });
 
     it('should return this.config.key given key', function(done) {
-      var key,
-        kssConfig = new kss.KssConfig(require(pathToJSON));
-      for (key in kssConfig.config) {
+      let kssConfig = new kss.KssConfig(require(pathToJSON));
+      for (let key in kssConfig.config) {
         if (kssConfig.config.hasOwnProperty(key)) {
           expect(kssConfig.get(key)).to.equal(kssConfig.config[key]);
         }
@@ -85,7 +83,7 @@ describe('KssConfig object API', function() {
 
   describe('.addOptions()', function() {
     it('should add to this.options', function(done) {
-      var kssConfig = new kss.KssConfig(require(pathToJSON));
+      let kssConfig = new kss.KssConfig(require(pathToJSON));
       kssConfig.addOptions({
         candy: {
           description: 'I want candy.'
@@ -99,7 +97,7 @@ describe('KssConfig object API', function() {
 
   describe('.loadJSON()', function() {
     it('should load config from a JSON file', function(done) {
-      var kssConfig = new kss.KssConfig();
+      let kssConfig = new kss.KssConfig();
       kssConfig.loadJSON(pathToJSON);
       expect(kssConfig.config.source).to.exist;
       expect(kssConfig.config.source).to.equal('with-include');
@@ -107,14 +105,14 @@ describe('KssConfig object API', function() {
     });
 
     it('should store the absolute path to the JSON file', function(done) {
-      var kssConfig = new kss.KssConfig();
+      let kssConfig = new kss.KssConfig();
       kssConfig.loadJSON('test/fixtures/cli-option-config.json');
       expect(kssConfig.config.config).to.equal(helperUtils.fixtures('cli-option-config.json'));
       done();
     });
 
     it('should store keys in the JSON file', function(done) {
-      var kssConfig = new kss.KssConfig();
+      let kssConfig = new kss.KssConfig();
       kssConfig.loadJSON(pathToJSON);
       expect(kssConfig.config.configFileKeys).to.deep.equal(['//', 'source', 'destination', 'template']);
       done();
@@ -123,7 +121,7 @@ describe('KssConfig object API', function() {
 
   describe('.normalize()', function() {
     it('should normalize a "multiple" option to an array of values', function(done) {
-      var kssConfig = new kss.KssConfig();
+      let kssConfig = new kss.KssConfig();
       kssConfig.set({source: 'with-include'});
       kssConfig.normalize();
       expect(kssConfig.config.source).to.be.an.instanceOf(Array);
@@ -139,7 +137,7 @@ describe('KssConfig object API', function() {
     });
 
     it('should normalize a non-"multiple" option to a single value', function(done) {
-      var kssConfig = new kss.KssConfig();
+      let kssConfig = new kss.KssConfig();
       kssConfig.set({template: ['empty-source', 'with-include', 'template']});
       kssConfig.normalize();
       expect(kssConfig.config.template).to.be.a('string');
@@ -147,7 +145,7 @@ describe('KssConfig object API', function() {
     });
 
     it('should resolve paths relative to the current working directory', function(done) {
-      var kssConfig = new kss.KssConfig(require(pathToJSON));
+      let kssConfig = new kss.KssConfig(require(pathToJSON));
       kssConfig.normalize();
       expect(kssConfig.config.source[0]).to.equal(path.resolve('with-include'));
       done();
@@ -155,9 +153,9 @@ describe('KssConfig object API', function() {
 
     it('should resolve paths relative to the given config file', function(done) {
       // Simulate how yargs outputs its --config option.
-      var opts = require(pathToJSON);
+      let opts = require(pathToJSON);
       opts['config'] = pathToJSON;
-      var kssConfig = new kss.KssConfig(opts);
+      let kssConfig = new kss.KssConfig(opts);
       kssConfig.normalize();
       expect(kssConfig.config.source[0]).to.equal(path.resolve(helperUtils.fixtures(), 'with-include'));
       // The normal way to add JSON config.
@@ -169,7 +167,7 @@ describe('KssConfig object API', function() {
     });
 
     it('should not try to resolve a null path', function(done) {
-      var kssConfig = new kss.KssConfig(require(pathToJSON));
+      let kssConfig = new kss.KssConfig(require(pathToJSON));
       kssConfig.set({destination: null});
       kssConfig.normalize();
       expect(kssConfig.config.destination).to.equal(null);
@@ -179,36 +177,31 @@ describe('KssConfig object API', function() {
 
   describe('.loadGenerator()', function() {
     it('should return KssGenerator object', function(done) {
-      var generator,
-        kssConfig = new kss.KssConfig();
+      let kssConfig = new kss.KssConfig();
       kssConfig.set({template: 'generator/handlebars/template'});
-      generator = kssConfig.loadGenerator();
+      let generator = kssConfig.loadGenerator();
       expect(generator).to.be.an.instanceof(KssGenerator);
       done();
     });
 
     it('should return KssGenerator object even if the template does not specify one', function(done) {
-      var generator,
-        kssConfig = new kss.KssConfig({template: helperUtils.fixtures('template')});
-      generator = kssConfig.loadGenerator();
+      let kssConfig = new kss.KssConfig({template: helperUtils.fixtures('template')});
+      let generator = kssConfig.loadGenerator();
       expect(generator).to.be.an.instanceof(KssGenerator);
       done();
     });
 
     it('should load the generator\'s options', function(done) {
-      var generator,
-        kssConfig = new kss.KssConfig({template: 'generator/handlebars/template'});
-      generator = kssConfig.loadGenerator();
+      let kssConfig = new kss.KssConfig({template: 'generator/handlebars/template'});
+      let generator = kssConfig.loadGenerator();
       expect(generator).to.be.an.instanceof(KssGenerator);
       expect(kssConfig.options['placeholder']).to.exist;
       done();
     });
 
     it('should load the template\'s options', function(done) {
-      var generator,
-        kssConfig;
-      kssConfig = new kss.KssConfig({template: 'generator/handlebars/template'});
-      generator = kssConfig.loadGenerator();
+      let kssConfig = new kss.KssConfig({template: 'generator/handlebars/template'});
+      let generator = kssConfig.loadGenerator();
       expect(generator).to.be.an.instanceof(KssGenerator);
       expect(kssConfig.options['nav-depth']).to.exist;
       done();

@@ -2,18 +2,16 @@
 
 'use strict';
 
-var cli = require('../lib/cli'),
+const cli = require('../lib/cli'),
   fs = require('fs'),
   mockStream = require('mock-utf8-stream'),
   path = require('path'),
   wrench = require('wrench');
 
-var kssNode;
-
 // Instead of child_process.exec, we use the lib/cli.js module and feed it mock
 // stdout, stderr and argv.
-kssNode = function(args, cb) {
-  var argv = ['node', 'bin/kss-node'],
+const kssNode = function(args, cb) {
+  let argv = ['node', 'bin/kss-node'],
     stdout = new mockStream.MockWritableStream(),
     stderr = new mockStream.MockWritableStream();
 
@@ -33,7 +31,7 @@ kssNode = function(args, cb) {
 };
 
 describe('Command Line Interface', function() {
-  var noHomepageWarning = 'no homepage content found',
+  let noHomepageWarning = 'no homepage content found',
     successMessage = 'Style guide generation completed successfully';
 
   after(function(done) {
@@ -57,7 +55,7 @@ describe('Command Line Interface', function() {
 
   describe('given --source option', function() {
     it('should read from source directory', function(done) {
-      var source = helperUtils.fixtures('with-include');
+      let source = helperUtils.fixtures('with-include');
       kssNode('--verbose --source ' + source + ' --destination test/output/nested',
         function(error, stdout) {
           expect(error).to.not.exist;
@@ -69,7 +67,7 @@ describe('Command Line Interface', function() {
     });
 
     it('should not declare success if source directory is empty', function(done) {
-      var source = helperUtils.fixtures('empty-source');
+      let source = helperUtils.fixtures('empty-source');
       kssNode('--verbose --source ' + source + ' --destination test/output/nested',
         function(error, stdout, stderr) {
           expect(error).to.exist;
@@ -93,7 +91,7 @@ describe('Command Line Interface', function() {
     });
 
     it('should read multiple source directories', function(done) {
-      var source = helperUtils.fixtures('with-include'),
+      let source = helperUtils.fixtures('with-include'),
         source2 = helperUtils.fixtures('empty-source');
       kssNode('--verbose --source ' + source + ' --source ' + source2 + ' --destination test/output/nested',
         function(error, stdout) {
@@ -108,7 +106,7 @@ describe('Command Line Interface', function() {
 
   describe('given --destination option', function() {
     it('should read destination directory', function(done) {
-      var source = helperUtils.fixtures('with-include'),
+      let source = helperUtils.fixtures('with-include'),
         destination = helperUtils.fixtures('../output/nested');
       kssNode('--verbose ' + source + ' --destination ' + destination,
         function(error, stdout) {
@@ -122,7 +120,7 @@ describe('Command Line Interface', function() {
 
   describe('given unnamed option', function() {
     it('should use the first unnamed as the source directory', function(done) {
-      var source = helperUtils.fixtures('with-include'),
+      let source = helperUtils.fixtures('with-include'),
         destination = helperUtils.fixtures('../output/nested');
       kssNode('--verbose ' + source + ' --destination ' + destination,
         function(error, stdout) {
@@ -135,7 +133,7 @@ describe('Command Line Interface', function() {
     });
 
     it('should use the second unnamed as the destination directory', function(done) {
-      var source = helperUtils.fixtures('with-include'),
+      let source = helperUtils.fixtures('with-include'),
         destination = helperUtils.fixtures('../output/nested');
       kssNode('--verbose ' + source + ' ' + destination,
         function(error, stdout) {
@@ -193,7 +191,7 @@ describe('Command Line Interface', function() {
     it('should use a default path', function(done) {
       // This test is long.
       this.timeout(4000);
-      var defaultPath = path.resolve('custom-template');
+      let defaultPath = path.resolve('custom-template');
       kssNode('--clone',
         function(error, stdout, stderr) {
           expect(error).to.not.exist;
@@ -208,7 +206,7 @@ describe('Command Line Interface', function() {
     });
 
     it('should error if the destination folder exists', function(done) {
-      var existingFolder = path.resolve('test/fixtures/template');
+      let existingFolder = path.resolve('test/fixtures/template');
       kssNode('--clone ' + existingFolder,
         function(error) {
           expect(error).to.exist;

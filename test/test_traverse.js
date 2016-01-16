@@ -39,7 +39,7 @@ describe('kss.traverse()', function() {
     describe('.mask:', function() {
       describe('default mask', function() {
         before(function(done) {
-          var self = this;
+          let self = this;
           helperUtils.traverseFixtures({}, function(styleGuide) {
             self.styleGuide = styleGuide;
             done();
@@ -82,7 +82,7 @@ describe('kss.traverse()', function() {
 
       describe('/\\.js/ (regex)', function() {
         before(function(done) {
-          var self = this;
+          let self = this;
           helperUtils.traverseFixtures({mask: /\.js/}, function(styleGuide) {
             self.styleGuide = styleGuide;
             done();
@@ -105,7 +105,7 @@ describe('kss.traverse()', function() {
 
       describe("'*.js' (string)", function() {
         before(function(done) {
-          var self = this;
+          let self = this;
           helperUtils.traverseFixtures({mask: '*.js'}, function(styleGuide) {
             self.styleGuide = styleGuide;
             done();
@@ -128,7 +128,7 @@ describe('kss.traverse()', function() {
 
       describe('/\.js|\.less|\.css/ (regex)', function() {
         before(function(done) {
-          var self = this;
+          let self = this;
           helperUtils.traverseFixtures({mask: /\.js|\.less|\.css/}, function(styleGuide) {
             self.styleGuide = styleGuide;
             done();
@@ -151,7 +151,7 @@ describe('kss.traverse()', function() {
 
       describe("'*.js|*.less|*.css' (string)", function() {
         before(function(done) {
-          var self = this;
+          let self = this;
           helperUtils.traverseFixtures({mask: '*.js|*.less|*.css'}, function(styleGuide) {
             self.styleGuide = styleGuide;
             done();

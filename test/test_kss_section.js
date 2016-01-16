@@ -2,11 +2,11 @@
 
 'use strict';
 
-var custom = ['custom', 'custom2', 'custom3'];
+let custom = ['custom', 'custom2', 'custom3'];
 
 describe('KssSection object API', function() {
   before(function(done) {
-    var self = this;
+    let self = this;
     helperUtils.traverseFixtures({mask: '*.less|*.css', custom: custom}, function(styleGuide) {
       self.styleGuide = styleGuide;
       done();
@@ -38,7 +38,7 @@ describe('KssSection object API', function() {
 
   describe('KssSection constructor', function() {
     it('should initialize the data', function(done) {
-      var obj = new kss.KssSection();
+      let obj = new kss.KssSection();
       expect(obj).to.have.property('meta');
       expect(obj.meta).to.have.property('styleGuide');
       expect(obj.meta).to.have.property('raw');
@@ -60,7 +60,7 @@ describe('KssSection object API', function() {
     });
 
     it('should set itself as parent of modifier and parameter objects', function(done) {
-      var section,
+      let section,
         modifier = new kss.KssModifier({name: 'modifier'}),
         parameter = new kss.KssParameter({name: '$parameter'});
       section = new kss.KssSection({
@@ -79,10 +79,9 @@ describe('KssSection object API', function() {
   describe('.toJSON()', function() {
     it('should return valid JSON object', function(done) {
       this.styleGuide.sections().map(function(section) {
-        var str;
         expect(section.toJSON()).to.be.an.instanceOf(Object);
         // Verify it converts to a JSON string.
-        str = JSON.stringify(section.toJSON());
+        let str = JSON.stringify(section.toJSON());
         expect(str).to.be.string;
         // Compare JSON string to original.
         expect(JSON.parse(str)).to.deep.equal(section.toJSON());
@@ -92,15 +91,14 @@ describe('KssSection object API', function() {
 
     it('should output the same data given to constructor', function(done) {
       // Note: no custom properties, please. (for testing code coverage.)
-      var data, property, section;
-      data = {
+      let data = {
         header: 'example',
         description: 'lorem ipsum',
         reference: '1.1',
         markup: '<div class="example">lorem ipsum</div>'
       };
-      section = new kss.KssSection(data);
-      for (property in data) {
+      let section = new kss.KssSection(data);
+      for (let property in data) {
         if (data.hasOwnProperty(property)) {
           expect(section.toJSON()[property]).to.equal(data[property]);
         }
@@ -110,7 +108,7 @@ describe('KssSection object API', function() {
 
     it('should return custom properties', function(done) {
       this.styleGuide.sections().map(function(section) {
-        var json = section.toJSON();
+        let json = section.toJSON();
         custom.map(function(name) {
           if (typeof section.custom(name) !== 'undefined') {
             expect(json).to.have.property(name);
@@ -124,7 +122,7 @@ describe('KssSection object API', function() {
 
   describe('.styleGuide()', function() {
     it('should return meta.styleGuide', function(done) {
-      var self = this;
+      let self = this;
       this.styleGuide.sections().map(function(section) {
         expect(section.styleGuide()).to.deep.equal(section.meta.styleGuide).and.deep.equal(self.styleGuide);
       });
@@ -132,7 +130,7 @@ describe('KssSection object API', function() {
     });
 
     it('should set meta.styleGuide if given a value', function(done) {
-      var styleGuide = new kss.KssStyleGuide(),
+      let styleGuide = new kss.KssStyleGuide(),
         section = new kss.KssSection({header: 'Section'});
       section.styleGuide(styleGuide);
       expect(section.meta.styleGuide).to.deep.equal(styleGuide);
@@ -141,7 +139,7 @@ describe('KssSection object API', function() {
     });
 
     it('should return itself if given a value', function(done) {
-      var styleGuide = new kss.KssStyleGuide(),
+      let styleGuide = new kss.KssStyleGuide(),
         section = new kss.KssSection({header: 'Section'});
       expect(section.styleGuide(styleGuide)).to.deep.equal(section);
       done();
@@ -157,7 +155,7 @@ describe('KssSection object API', function() {
     });
 
     it('should set data.header if given a value', function(done) {
-      var section = new kss.KssSection({header: 'original'});
+      let section = new kss.KssSection({header: 'original'});
       section.header('new');
       expect(section.data.header).to.equal('new');
       expect(section.header()).to.equal(section.data.header);
@@ -165,7 +163,7 @@ describe('KssSection object API', function() {
     });
 
     it('should return itself if given a value', function(done) {
-      var section = new kss.KssSection({header: 'original'});
+      let section = new kss.KssSection({header: 'original'});
       expect(section.header('new')).to.deep.equal(section);
       done();
     });
@@ -180,7 +178,7 @@ describe('KssSection object API', function() {
     });
 
     it('should set data.description if given a value', function(done) {
-      var section = new kss.KssSection({description: 'original'});
+      let section = new kss.KssSection({description: 'original'});
       section.description('new');
       expect(section.data.description).to.equal('new');
       expect(section.description()).to.equal(section.data.description);
@@ -188,7 +186,7 @@ describe('KssSection object API', function() {
     });
 
     it('should return itself if given a value', function(done) {
-      var section = new kss.KssSection({description: 'original'});
+      let section = new kss.KssSection({description: 'original'});
       expect(section.description('new')).to.deep.equal(section);
       done();
     });
@@ -214,7 +212,7 @@ describe('KssSection object API', function() {
     });
 
     it('should set data[name] and update meta.customPropertyNames[] if given a value', function(done) {
-      var section = new kss.KssSection({originalCustom: 'original'});
+      let section = new kss.KssSection({originalCustom: 'original'});
       section.custom('newCustom', 'new');
       expect(section.data.newCustom).to.equal('new');
       expect(section.customPropertyNames()).to.deep.equal(['originalCustom', 'newCustom']);
@@ -222,7 +220,7 @@ describe('KssSection object API', function() {
     });
 
     it('should set update the style guide\'s meta.customPropertyNames[] if given a value', function(done) {
-      var styleGuide = new kss.KssStyleGuide(),
+      let styleGuide = new kss.KssStyleGuide(),
         section = new kss.KssSection();
       section.styleGuide(styleGuide);
       section.custom('newCustom', 'new');
@@ -231,7 +229,7 @@ describe('KssSection object API', function() {
     });
 
     it('should return itself if given a value', function(done) {
-      var section = new kss.KssSection({newCustom: 'original'});
+      let section = new kss.KssSection({newCustom: 'original'});
       expect(section.custom('newCustom', 'new')).to.deep.equal(section);
       done();
     });
@@ -246,7 +244,7 @@ describe('KssSection object API', function() {
     });
 
     it('should set data.deprecated if given a value', function(done) {
-      var section = new kss.KssSection({deprecated: false});
+      let section = new kss.KssSection({deprecated: false});
       expect(section.data.deprecated).to.equal(false);
       section.deprecated(true);
       expect(section.data.deprecated).to.equal(true);
@@ -255,13 +253,13 @@ describe('KssSection object API', function() {
     });
 
     it('should return itself if given true', function(done) {
-      var section = new kss.KssSection({deprecated: false});
+      let section = new kss.KssSection({deprecated: false});
       expect(section.deprecated(true)).to.deep.equal(section);
       done();
     });
 
     it('should return itself if given false', function(done) {
-      var section = new kss.KssSection({deprecated: true});
+      let section = new kss.KssSection({deprecated: true});
       expect(section.deprecated(false)).to.deep.equal(section);
       done();
     });
@@ -276,7 +274,7 @@ describe('KssSection object API', function() {
     });
 
     it('should set data.experimental if given a value', function(done) {
-      var section = new kss.KssSection({experimental: false});
+      let section = new kss.KssSection({experimental: false});
       expect(section.data.experimental).to.equal(false);
       section.experimental(true);
       expect(section.data.experimental).to.equal(true);
@@ -285,13 +283,13 @@ describe('KssSection object API', function() {
     });
 
     it('should return itself if given true', function(done) {
-      var section = new kss.KssSection({experimental: false});
+      let section = new kss.KssSection({experimental: false});
       expect(section.experimental(true)).to.deep.equal(section);
       done();
     });
 
     it('should return itself if given false', function(done) {
-      var section = new kss.KssSection({experimental: true});
+      let section = new kss.KssSection({experimental: true});
       expect(section.experimental(false)).to.deep.equal(section);
       done();
     });
@@ -306,7 +304,7 @@ describe('KssSection object API', function() {
     });
 
     it('should set data.reference if given a value', function(done) {
-      var section = new kss.KssSection({reference: 'original'});
+      let section = new kss.KssSection({reference: 'original'});
       section.reference('new');
       expect(section.data.reference).to.equal('new');
       expect(section.reference()).to.equal(section.data.reference);
@@ -314,7 +312,7 @@ describe('KssSection object API', function() {
     });
 
     it('should return itself if given a value', function(done) {
-      var section = new kss.KssSection({reference: 'original'});
+      let section = new kss.KssSection({reference: 'original'});
       expect(section.reference('new')).to.deep.equal(section);
       done();
     });
@@ -335,12 +333,12 @@ describe('KssSection object API', function() {
     });
 
     it('should replace all runs of non-word characters with a hyphen', function() {
-      var section = new kss.KssSection({reference: 'test - section - with.multiple.runs..of--non-word.characters'});
+      let section = new kss.KssSection({reference: 'test - section - with.multiple.runs..of--non-word.characters'});
       expect(section.referenceURI()).to.equal('test-section-with-multiple-runs-of--non-word-characters');
     });
 
     it('should set data.referenceURI if given a value', function(done) {
-      var section = new kss.KssSection({reference: 'original.ref'});
+      let section = new kss.KssSection({reference: 'original.ref'});
       section.referenceURI('newRef');
       expect(section.data.referenceURI).to.equal('newRef');
       expect(section.referenceURI()).to.equal(section.data.referenceURI);
@@ -348,7 +346,7 @@ describe('KssSection object API', function() {
     });
 
     it('should return itself if given a value', function(done) {
-      var section = new kss.KssSection({reference: 'original.ref'});
+      let section = new kss.KssSection({reference: 'original.ref'});
       expect(section.referenceURI('newRef')).to.deep.equal(section);
       done();
     });
@@ -364,7 +362,7 @@ describe('KssSection object API', function() {
     });
 
     it('should set data.weight if given a value', function(done) {
-      var section = new kss.KssSection({weight: 2});
+      let section = new kss.KssSection({weight: 2});
       section.weight(3);
       expect(section.data.weight).to.equal(3);
       expect(section.weight()).to.equal(section.data.weight);
@@ -372,7 +370,7 @@ describe('KssSection object API', function() {
     });
 
     it('should return itself if given a value', function(done) {
-      var section = new kss.KssSection({weight: 2});
+      let section = new kss.KssSection({weight: 2});
       expect(section.weight(3)).to.deep.equal(section);
       done();
     });
@@ -389,7 +387,7 @@ describe('KssSection object API', function() {
     });
 
     it('should set meta.depth if given a value', function(done) {
-      var section = new kss.KssSection({depth: 2});
+      let section = new kss.KssSection({depth: 2});
       section.depth(3);
       expect(section.meta.depth).to.equal(3);
       expect(section.depth()).to.equal(section.meta.depth);
@@ -397,7 +395,7 @@ describe('KssSection object API', function() {
     });
 
     it('should return itself if given a value', function(done) {
-      var section = new kss.KssSection({depth: 2});
+      let section = new kss.KssSection({depth: 2});
       expect(section.depth(3)).to.deep.equal(section);
       done();
     });
@@ -412,7 +410,7 @@ describe('KssSection object API', function() {
     });
 
     it('should set data.markup if given a value', function(done) {
-      var section = new kss.KssSection({markup: 'original'});
+      let section = new kss.KssSection({markup: 'original'});
       section.markup('new');
       expect(section.data.markup).to.equal('new');
       expect(section.markup()).to.equal(section.data.markup);
@@ -420,7 +418,7 @@ describe('KssSection object API', function() {
     });
 
     it('should return itself if given a value', function(done) {
-      var section = new kss.KssSection({markup: 'original'});
+      let section = new kss.KssSection({markup: 'original'});
       expect(section.markup('new')).to.deep.equal(section);
       done();
     });
@@ -445,7 +443,7 @@ describe('KssSection object API', function() {
 
     it('should return data.modifiers[n] given an integer as number or string', function(done) {
       this.styleGuide.sections().map(function(section) {
-        var i = 0;
+        let i = 0;
         section.data.modifiers.map(function(modifier) {
           expect(section.modifiers(i)).to.deep.equal(modifier);
           expect(section.modifiers(i.toString())).to.deep.equal(modifier);
@@ -464,14 +462,12 @@ describe('KssSection object API', function() {
 
     it('should search by name when given a string', function(done) {
       this.styleGuide.sections().map(function(section) {
-        var i, j, queries = ['.red', '.yellow', ':hover', ':disabled'],
-          q = queries.length,
-          l = section.data.modifiers.length;
+        let queries = ['.red', '.yellow', ':hover', ':disabled'];
 
         // Loop through each modifier.
-        for (i = 0; i < l; i += 1) {
+        for (let i = 0; i < section.data.modifiers.length; i += 1) {
           // If a modifier is equal to a query, run the search.
-          for (j = 0; j < q; j += 1) {
+          for (let j = 0; j < queries.length; j += 1) {
             if (section.data.modifiers[i].data.name === queries[j]) {
               expect(section.modifiers(queries[j])).to.deep.equal(section.data.modifiers[i]);
             }
@@ -489,7 +485,7 @@ describe('KssSection object API', function() {
     });
 
     it('should add to data.modifiers if given a value', function(done) {
-      var section = new kss.KssSection({header: 'original'}),
+      let section = new kss.KssSection({header: 'original'}),
         modifier = new kss.KssModifier({name: '.modifier'});
       section.modifiers(modifier);
       expect(section.data.modifiers[0]).to.deep.equal(modifier);
@@ -498,7 +494,7 @@ describe('KssSection object API', function() {
     });
 
     it('should add to data.modifiers if given an array of values', function(done) {
-      var section = new kss.KssSection({header: 'original'}),
+      let section = new kss.KssSection({header: 'original'}),
         modifier = new kss.KssModifier({name: '.modifier'}),
         modifier2 = new kss.KssModifier({name: '.modifier'});
       section.modifiers([modifier, modifier2]);
@@ -509,7 +505,7 @@ describe('KssSection object API', function() {
     });
 
     it('should return itself if given a value', function(done) {
-      var section = new kss.KssSection({header: 'original'}),
+      let section = new kss.KssSection({header: 'original'}),
         modifier = new kss.KssModifier();
       expect(section.modifiers(modifier)).to.deep.equal(section);
       done();
@@ -534,7 +530,7 @@ describe('KssSection object API', function() {
     });
 
     it('should add to data.parameters if given a value', function(done) {
-      var section = new kss.KssSection({header: 'original'}),
+      let section = new kss.KssSection({header: 'original'}),
         parameter = new kss.KssParameter({name: '$var'});
       section.parameters(parameter);
       expect(section.data.parameters[0]).to.deep.equal(parameter);
@@ -543,7 +539,7 @@ describe('KssSection object API', function() {
     });
 
     it('should add to data.parameters if given an array of values', function(done) {
-      var section = new kss.KssSection({header: 'original'}),
+      let section = new kss.KssSection({header: 'original'}),
         parameter = new kss.KssParameter({name: '$var1'}),
         parameter2 = new kss.KssParameter({name: '$var2'});
       section.parameters([parameter, parameter2]);
@@ -554,7 +550,7 @@ describe('KssSection object API', function() {
     });
 
     it('should return itself if given a value', function(done) {
-      var section = new kss.KssSection({header: 'original'}),
+      let section = new kss.KssSection({header: 'original'}),
         parameter = new kss.KssModifier();
       expect(section.parameters(parameter)).to.deep.equal(section);
       done();

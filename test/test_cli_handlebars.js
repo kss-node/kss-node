@@ -2,44 +2,24 @@
 
 'use strict';
 
-var cli = require('../lib/cli'),
+const cli = require('../lib/cli'),
   fs = require('fs'),
   mockStream = require('mock-utf8-stream'),
   path = require('path');
 
 describe('Handlebars template', function() {
   before(function(done) {
-    var self = this,
-      files,
-      fileReader,
-      fileCounter,
+    let self = this,
       stdout = new mockStream.MockWritableStream(),
       stderr = new mockStream.MockWritableStream();
 
-    self.files = {};
     stdout.startCapture();
     stderr.startCapture();
 
-    cli({
-      stdout: stdout,
-      stderr: stderr,
-      argv: ['node', 'bin/kss-node', 'test/fixtures/with-include', 'test/output/nested', '--template', 'test/fixtures/template', '--helpers', 'test/fixtures/template/helpers']
-    }, function(error) {
-      expect(error).to.not.exist;
-      self.stdout = stdout.capturedData;
-      files = [
-        'index',
-        'section-2',
-        'section-3'
-      ];
-      fileCounter = files.length;
-      files.map(function(file) {
-        fs.readFile(path.join(__dirname, 'output/nested', file + '.html'), 'utf8', fileReader(file));
-      });
-    });
-
     // Create a closure with the file name stored.
-    fileReader = function(fileName) {
+    let fileCounter;
+    self.files = {};
+    let fileReader = function(fileName) {
       return function(error, data) {
         if (error) {
           throw error;
@@ -52,6 +32,24 @@ describe('Handlebars template', function() {
         }
       };
     };
+
+    cli({
+      stdout: stdout,
+      stderr: stderr,
+      argv: ['node', 'bin/kss-node', 'test/fixtures/with-include', 'test/output/nested', '--template', 'test/fixtures/template', '--helpers', 'test/fixtures/template/helpers']
+    }, function(error) {
+      expect(error).to.not.exist;
+      self.stdout = stdout.capturedData;
+      let files = [
+        'index',
+        'section-2',
+        'section-3'
+      ];
+      fileCounter = files.length;
+      files.forEach(function(file) {
+        fs.readFile(path.join(__dirname, 'output/nested', file + '.html'), 'utf8', fileReader(file));
+      });
+    });
   });
 
   describe('given --helpers option', function() {

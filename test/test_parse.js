@@ -3,7 +3,7 @@
 
 'use strict';
 
-var fs = require('fs'),
+const fs = require('fs'),
   marked = require('marked');
 
 describe('kss.parse()', function() {
@@ -37,7 +37,7 @@ describe('kss.parse()', function() {
 
   describe('given different comment syntax:', function() {
     before(function(done) {
-      var self = this;
+      let self = this;
       helperUtils.traverseFixtures({mask: 'sections-comment-syntax.less'}, function(styleGuide) {
         self.styleGuide = styleGuide;
         done();
@@ -100,7 +100,7 @@ describe('kss.parse()', function() {
     describe('.sections():', function() {
       describe('.raw', function() {
         before(function(done) {
-          var self = this,
+          let self = this,
             fileCounter;
 
           helperUtils.traverseFixtures({}, function(styleGuide) {
@@ -124,7 +124,7 @@ describe('kss.parse()', function() {
         });
 
         it('should contain a copy of comment blocks that are from the original files (disregarding whitespace and asterisks)', function() {
-          var filteredFileText = this.fileContents.replace(/\/\/|\/\*+|\*\/|\s|\*/g, '');
+          let filteredFileText = this.fileContents.replace(/\/\/|\/\*+|\*\/|\s|\*/g, '');
 
           this.styleGuide.sections().map(function(section) {
             expect(filteredFileText).to.include(section.meta.raw.replace(/\s|\*/g, ''));
@@ -134,7 +134,7 @@ describe('kss.parse()', function() {
 
       describe('.header / .description', function() {
         before(function(done) {
-          var self = this;
+          let self = this;
           helperUtils.traverseFixtures({mask: 'property-header.less', markdown: false}, function(styleGuide) {
             self.styleGuide = styleGuide;
             done();
@@ -142,21 +142,21 @@ describe('kss.parse()', function() {
         });
 
         it('should find a one line header, no description or modifiers', function(done) {
-          var section = this.styleGuide.sections('header.one-line.no-modifiers');
+          let section = this.styleGuide.sections('header.one-line.no-modifiers');
           expect(section.header()).to.equal('ONE LINE, NO MODIFIERS');
           expect(section.description()).to.equal('');
           done();
         });
 
         it('should find a one line header, multiple modifiers', function(done) {
-          var section = this.styleGuide.sections('header.one-line.multiple-modifiers');
+          let section = this.styleGuide.sections('header.one-line.multiple-modifiers');
           expect(section.header()).to.equal('ONE LINE, MULTIPLE MODIFIERS');
           expect(section.description()).to.equal('');
           done();
         });
 
         it('should find a header, description and multiple modifiers', function(done) {
-          var section = this.styleGuide.sections('header.description');
+          let section = this.styleGuide.sections('header.description');
           expect(section.header()).to.equal('HEADER DETECTION');
           expect(section.description()).to.equal('SEPARATE PARAGRAPH');
           expect(section.modifiers().length).to.equal(2);
@@ -164,14 +164,14 @@ describe('kss.parse()', function() {
         });
 
         it('should find a two-line header, multiple modifiers and no description', function(done) {
-          var section = this.styleGuide.sections('header.two-lines');
+          let section = this.styleGuide.sections('header.two-lines');
           expect(section.header()).to.equal('TWO LINES, MULTIPLE MODIFIERS LIKE SO');
           expect(section.description()).to.equal('');
           done();
         });
 
         it('should find a header, 3-paragraph description and no modifiers', function(done) {
-          var section = this.styleGuide.sections('header.three-paragraphs');
+          let section = this.styleGuide.sections('header.three-paragraphs');
           expect(section.header()).to.equal('THREE PARAGRAPHS, NO MODIFIERS');
           expect(section.description()).to.equal('ANOTHER PARAGRAPH\n\nAND ANOTHER');
           done();
@@ -188,7 +188,7 @@ describe('kss.parse()', function() {
 
       describe('.modifiers', function() {
         before(function(done) {
-          var self = this;
+          let self = this;
           helperUtils.traverseFixtures({mask: 'property-modifiers.less', markdown: false}, function(styleGuide) {
             self.styleGuide = styleGuide;
             done();
@@ -196,13 +196,13 @@ describe('kss.parse()', function() {
         });
 
         it('should find no modifiers', function(done) {
-          var modifiers = this.styleGuide.sections('no-modifiers').modifiers();
+          let modifiers = this.styleGuide.sections('no-modifiers').modifiers();
           expect(modifiers.length).to.equal(0);
           done();
         });
 
         it('should find modifiers with a single white space', function(done) {
-          var modifiers = this.styleGuide.sections('modifiers.single-white-space').modifiers();
+          let modifiers = this.styleGuide.sections('modifiers.single-white-space').modifiers();
           expect(modifiers.length).to.equal(2);
           expect(modifiers[0].name()).to.equal(':hover');
           expect(modifiers[0].description()).to.equal('HOVER');
@@ -212,7 +212,7 @@ describe('kss.parse()', function() {
         });
 
         it('should find modifiers with variable white space', function(done) {
-          var modifiers = this.styleGuide.sections('modifiers.variable-white-space').modifiers();
+          let modifiers = this.styleGuide.sections('modifiers.variable-white-space').modifiers();
           expect(modifiers.length).to.equal(4);
           expect(modifiers[0].name()).to.equal(':hover');
           expect(modifiers[0].description()).to.equal('HOVER');
@@ -226,7 +226,7 @@ describe('kss.parse()', function() {
         });
 
         it('should find modifiers with CSS classes', function(done) {
-          var modifiers = this.styleGuide.sections('modifiers.classes').modifiers();
+          let modifiers = this.styleGuide.sections('modifiers.classes').modifiers();
           expect(modifiers.length).to.equal(3);
           expect(modifiers[0].name()).to.equal('.red');
           expect(modifiers[0].description()).to.equal('MAKE IT RED');
@@ -238,7 +238,7 @@ describe('kss.parse()', function() {
         });
 
         it('should find modifiers with CSS classes containing dashes', function(done) {
-          var modifiers = this.styleGuide.sections('modifiers.dashes-in-classes').modifiers();
+          let modifiers = this.styleGuide.sections('modifiers.dashes-in-classes').modifiers();
           expect(modifiers.length).to.equal(3);
           expect(modifiers[0].name()).to.equal('.red');
           expect(modifiers[0].description()).to.equal('MAKE IT RED');
@@ -250,7 +250,7 @@ describe('kss.parse()', function() {
         });
 
         it('should find modifiers with HTML elements', function(done) {
-          var modifiers = this.styleGuide.sections('modifiers.elements').modifiers();
+          let modifiers = this.styleGuide.sections('modifiers.elements').modifiers();
           expect(modifiers.length).to.equal(3);
           expect(modifiers[0].name()).to.equal('a');
           expect(modifiers[0].description()).to.equal('Contains the image replacement');
@@ -262,13 +262,13 @@ describe('kss.parse()', function() {
         });
 
         it('should find modifiers with mixed classes and elements', function(done) {
-          var modifiers = this.styleGuide.sections('modifiers.classes-elements').modifiers();
+          let modifiers = this.styleGuide.sections('modifiers.classes-elements').modifiers();
           expect(modifiers.length).to.equal(5);
           done();
         });
 
         it('should find modifiers with more than one dash', function(done) {
-          var modifiers = this.styleGuide.sections('modifiers.multiple-dashes').modifiers();
+          let modifiers = this.styleGuide.sections('modifiers.multiple-dashes').modifiers();
           expect(modifiers.length).to.equal(3);
           expect(modifiers[0].name()).to.equal('.red');
           expect(modifiers[0].description()).to.equal('Color - red');
@@ -280,7 +280,7 @@ describe('kss.parse()', function() {
         });
 
         it('should find modifiers after description', function(done) {
-          var modifiers = this.styleGuide.sections('modifiers.after-description').modifiers();
+          let modifiers = this.styleGuide.sections('modifiers.after-description').modifiers();
           expect(modifiers.length).to.equal(2);
           done();
         });
@@ -288,7 +288,7 @@ describe('kss.parse()', function() {
 
       describe('.deprecated/.experimental', function() {
         before(function(done) {
-          var self = this;
+          let self = this;
           helperUtils.traverseFixtures({mask: 'property-deprecated-experimental.less', markdown: false, header: true}, function(styleGuide) {
             self.styleGuide = styleGuide;
             done();
@@ -356,7 +356,7 @@ describe('kss.parse()', function() {
   context('given options', function() {
     describe('.custom', function() {
       before(function(done) {
-        var self = this;
+        let self = this;
         helperUtils.traverseFixtures({
           mask: 'options-custom.less',
           markdown: false,
@@ -396,7 +396,7 @@ describe('kss.parse()', function() {
 
     describe('.markup', function() {
       before(function(done) {
-        var self = this;
+        let self = this;
         helperUtils.traverseFixtures({mask: 'property-markup.less', markdown: false}, function(styleGuide) {
           self.styleGuide = styleGuide;
           done();
@@ -404,7 +404,7 @@ describe('kss.parse()', function() {
       });
 
       it('should find markup property', function(done) {
-        var section = this.styleGuide.sections('markup.second-paragraph');
+        let section = this.styleGuide.sections('markup.second-paragraph');
         expect(section.markup()).to.equal('<a href="#" class="{{modifier_class}}">Hello World</a>');
         expect(section.description()).to.equal('');
         expect(section.modifiers().length).to.equal(3);
@@ -412,14 +412,14 @@ describe('kss.parse()', function() {
       });
 
       it('should find markup property below modifiers', function(done) {
-        var section = this.styleGuide.sections('markup.below-modifiers');
+        let section = this.styleGuide.sections('markup.below-modifiers');
         expect(section.markup()).to.equal('<a href="#" class="{{modifier_class}}">Lorem Ipsum</a>');
         expect(section.modifiers().length).to.equal(1);
         done();
       });
 
       it('should not interfere with content when at the top', function(done) {
-        var section = this.styleGuide.sections('markup.at-top');
+        let section = this.styleGuide.sections('markup.at-top');
         expect(section.header()).to.equal('Don\'t be the header');
         expect(section.markup()).to.equal('<h1 class="{{modifier_class}}">Header</h1>');
         expect(section.modifiers()[0].name()).to.equal('.title');
@@ -460,7 +460,7 @@ describe('kss.parse()', function() {
 
     describe('.typos:', function() {
       before(function(done) {
-        var self = this;
+        let self = this;
         helperUtils.traverseFixtures({mask: 'options-typos.less', typos: true}, function(styleGuide) {
           self.styleGuide = styleGuide;
           helperUtils.traverseFixtures({mask: 'property-deprecated-experimental.less', typos: true}, function(styleGuide2) {

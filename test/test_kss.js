@@ -26,9 +26,8 @@ describe('kss object API', function() {
   ].forEach(function(method) {
     it('has ' + method + '() constructor', function(done) {
       expect(kss).to.itself.respondTo(method);
-      var Constructor = require('../lib/kss_' + method.replace('Kss', '').toLowerCase());
-      var obj = new kss[method]();
-      expect(obj).to.be.an.instanceof(Constructor);
+      let Constructor = require('../lib/kss_' + method.replace('Kss', '').toLowerCase());
+      expect(new kss[method]()).to.be.an.instanceof(Constructor);
       done();
     });
   });
