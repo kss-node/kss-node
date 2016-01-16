@@ -4,14 +4,14 @@
  * The `kss/generator/example` module loads the KssExampleGenerator
  * object, a `{@link KssGenerator}` object using no templating.
  * ```
- * var kssExampleGenerator = require('kss/generator/example');
+ * const kssExampleGenerator = require('kss/generator/example');
  * ```
  * @module kss/generator/example
  */
 
 // Import the KssGenerator object. We will use its API to scaffold our
 // generator.
-var KssGenerator = require('kss/generator'),
+const KssGenerator = require('kss/generator'),
   Kss = require('kss'),
   path = require('path');
 
@@ -21,7 +21,7 @@ var KssGenerator = require('kss/generator'),
 // additional functionality added by overriding the parent methods.
 //
 // See the docs for KssGenerator() for info about its parameters.
-var kssExampleGenerator = new KssGenerator('2.1', {
+const kssExampleGenerator = new KssGenerator('2.1', {
   'example-option': {
     alias: 'u',
     string: true,

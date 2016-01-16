@@ -5,6 +5,32 @@
   "env": {
     "node": true
   },
+  "ecmaFeatures": {
+    // Based on https://nodejs.org/en/docs/es6/
+    "arrowFunctions": true,
+    "binaryLiterals": true,
+    "blockBindings": true,
+    "classes": true,
+    "forOf": true,
+    "generators": true,
+    "objectLiteralShorthandMethods": true,
+    "objectLiteralShorthandProperties": true,
+    "octalLiterals": true,
+    "templateStrings": true,
+    "unicodeCodePointEscapes": true,
+    // Node.js 5.0 and above.
+    "spread": false,
+    // Not in Node.js yet.
+    "defaultParams": false,
+    "destructuring": false,
+    "modules": false,
+    "objectLiteralComputedProperties": false, // Unsure.
+    "objectLiteralDuplicateProperties": false, // Unsure.
+    "regexUFlag": false,
+    "regexYFlag": false,
+    "restParams": false,
+    "superInFunctions": false // Unsure.
+  },
   "rules": {
     // Errors.
     "array-bracket-spacing": [2, "never"],

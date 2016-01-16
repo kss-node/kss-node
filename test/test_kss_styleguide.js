@@ -4,7 +4,7 @@
 
 describe('KssStyleGuide object API', function() {
   before(function(done) {
-    var self = this;
+    let self = this;
     helperUtils.traverseFixtures({mask: /(sections\-queries|sections\-order|property\-styleguide\-word\-keys)\.less/}, function(styleGuide) {
       self.styleGuide = styleGuide;
       helperUtils.traverseFixtures({mask: /.*\-word\-phrases\.less/}, function(styleGuide) {
@@ -34,7 +34,7 @@ describe('KssStyleGuide object API', function() {
 
   describe('KssStyleGuide constructor', function() {
     it('should initialize the data', function(done) {
-      var obj = new kss.KssStyleGuide();
+      let obj = new kss.KssStyleGuide();
       expect(obj).to.have.property('meta');
       expect(obj.meta).to.have.property('autoInit');
       expect(obj.meta).to.have.property('files');
@@ -50,22 +50,13 @@ describe('KssStyleGuide object API', function() {
       expect(obj.data).to.have.property('sections');
       done();
     });
-
-    it('should return a KssStyleGuide object when called normally', function(done) {
-      /* eslint-disable new-cap */
-      var obj = kss.KssStyleGuide();
-      expect(obj).to.be.an.instanceof(kss.KssStyleGuide);
-      done();
-      /* eslint-enable new-cap */
-    });
   });
 
   describe('.toJSON()', function() {
     it('should return valid JSON object', function(done) {
-      var str;
       expect(this.styleGuide.toJSON()).to.be.an.instanceOf(Object);
       // Verify it converts to a JSON string.
-      str = JSON.stringify(this.styleGuide.toJSON());
+      let str = JSON.stringify(this.styleGuide.toJSON());
       expect(str).to.be.string;
       // Compare JSON string to original.
       expect(JSON.parse(str)).to.deep.equal(this.styleGuide.toJSON());
@@ -73,8 +64,7 @@ describe('KssStyleGuide object API', function() {
     });
 
     it('should output the same data given to constructor', function(done) {
-      var data, styleGuide;
-      data = {
+      let data = {
         customPropertyNames: ['custom1', 'custom2'],
         hasNumericReferences: true,
         referenceDelimiter: '.',
@@ -95,7 +85,7 @@ describe('KssStyleGuide object API', function() {
           }
         ]
       };
-      styleGuide = new kss.KssStyleGuide(data);
+      let styleGuide = new kss.KssStyleGuide(data);
       expect(styleGuide.toJSON()).to.deep.equal(data);
       done();
     });
@@ -103,21 +93,21 @@ describe('KssStyleGuide object API', function() {
 
   describe('.autoInit()', function() {
     it('should update meta.autoInit if given true', function(done) {
-      var styleGuide = new kss.KssStyleGuide({autoInit: false});
+      let styleGuide = new kss.KssStyleGuide({autoInit: false});
       styleGuide.autoInit(true);
       expect(styleGuide.meta.autoInit).to.be.true;
       done();
     });
 
     it('should update meta.autoInit if given false', function(done) {
-      var styleGuide = new kss.KssStyleGuide();
+      let styleGuide = new kss.KssStyleGuide();
       styleGuide.autoInit(false);
       expect(styleGuide.meta.autoInit).to.be.false;
       done();
     });
 
     it('should return itself', function(done) {
-      var styleGuide = new kss.KssStyleGuide({autoInit: false});
+      let styleGuide = new kss.KssStyleGuide({autoInit: false});
       expect(styleGuide.autoInit(true)).to.deep.equal(styleGuide);
       done();
     });
@@ -134,21 +124,21 @@ describe('KssStyleGuide object API', function() {
     });
 
     it('should update data.customPropertyNames if given a string', function(done) {
-      var styleGuide = new kss.KssStyleGuide({customPropertyNames: ['original']});
+      let styleGuide = new kss.KssStyleGuide({customPropertyNames: ['original']});
       styleGuide.customPropertyNames('new');
       expect(styleGuide.data.customPropertyNames).to.deep.equal(['original', 'new']);
       done();
     });
 
     it('should update data.customPropertyNames if given an array', function(done) {
-      var styleGuide = new kss.KssStyleGuide({customPropertyNames: ['original']});
+      let styleGuide = new kss.KssStyleGuide({customPropertyNames: ['original']});
       styleGuide.customPropertyNames(['new', 'new2']);
       expect(styleGuide.data.customPropertyNames).to.deep.equal(['original', 'new', 'new2']);
       done();
     });
 
     it('should return itself if given a value', function(done) {
-      var styleGuide = new kss.KssStyleGuide({customPropertyNames: ['original']});
+      let styleGuide = new kss.KssStyleGuide({customPropertyNames: ['original']});
       expect(styleGuide.customPropertyNames('new')).to.deep.equal(styleGuide);
       done();
     });
@@ -170,7 +160,7 @@ describe('KssStyleGuide object API', function() {
 
     context('given no arguments', function() {
       it('should return all referenced sections', function(done) {
-        var results = [],
+        let results = [],
           expected = [
             '4', '4.1',
             '4.1.1', '4.1.1.1', '4.1.1.2',
@@ -190,7 +180,7 @@ describe('KssStyleGuide object API', function() {
 
     context('given exact references', function() {
       it('should find a reference with depth 1', function(done) {
-        var section = this.styleGuide.sections('4');
+        let section = this.styleGuide.sections('4');
         expect(section.header()).to.equal('DEPTH OF 1');
         expect(section.depth()).to.equal(1);
         expect(section.reference()).to.equal('4');
@@ -198,7 +188,7 @@ describe('KssStyleGuide object API', function() {
       });
 
       it('should find a reference with depth 3 and no modifiers', function(done) {
-        var section = this.styleGuide.sections('4.1.1');
+        let section = this.styleGuide.sections('4.1.1');
         expect(section.header()).to.equal('DEPTH OF 3, NO MODIFIERS');
         expect(section.reference()).to.equal('4.1.1');
         expect(section.depth()).to.equal(3);
@@ -206,7 +196,7 @@ describe('KssStyleGuide object API', function() {
       });
 
       it('should find a reference with depth 3 and modifiers', function(done) {
-        var section = this.styleGuide.sections('4.1.2');
+        let section = this.styleGuide.sections('4.1.2');
         expect(section.header()).to.equal('DEPTH OF 3, MODIFIERS');
         expect(section.depth()).to.equal(3);
         expect(section.reference()).to.equal('4.1.2');
@@ -219,7 +209,7 @@ describe('KssStyleGuide object API', function() {
       });
 
       it('should find a reference with depth 4 (A)', function(done) {
-        var section = this.styleGuide.sections('4.1.1.1');
+        let section = this.styleGuide.sections('4.1.1.1');
         expect(section.header()).to.equal('DEPTH OF 4 (A)');
         expect(section.depth()).to.equal(4);
         expect(section.reference()).to.equal('4.1.1.1');
@@ -227,7 +217,7 @@ describe('KssStyleGuide object API', function() {
       });
 
       it('should find a reference with depth 4 (B)', function(done) {
-        var section = this.styleGuide.sections('4.1.1.2');
+        let section = this.styleGuide.sections('4.1.1.2');
         expect(section.header()).to.equal('DEPTH OF 4 (B)');
         expect(section.depth()).to.equal(4);
         expect(section.reference()).to.equal('4.1.1.2');
@@ -235,7 +225,7 @@ describe('KssStyleGuide object API', function() {
       });
 
       it('should find a reference with depth 4 (C)', function(done) {
-        var section = this.styleGuide.sections('4.1.2.2');
+        let section = this.styleGuide.sections('4.1.2.2');
         expect(section.header()).to.equal('DEPTH OF 4 (C)');
         expect(section.depth()).to.equal(4);
         expect(section.reference()).to.equal('4.1.2.2');
@@ -245,7 +235,7 @@ describe('KssStyleGuide object API', function() {
 
     context('given string queries', function() {
       it('should return 1 level of descendants when given "4.x"', function(done) {
-        var sections = this.styleGuide.sections('4.x');
+        let sections = this.styleGuide.sections('4.x');
         sections.map(function(section) {
           expect(section.reference()).to.equal('4.1');
           expect(section.header()).to.equal('DEPTH OF 2');
@@ -255,9 +245,8 @@ describe('KssStyleGuide object API', function() {
       });
 
       it('should return 1 level of descendants when given "4.1.x"', function(done) {
-        var results,
-          expected = ['4.1.1', '4.1.2'];
-        results = this.styleGuide.sections('4.1.x').map(function(section) {
+        let expected = ['4.1.1', '4.1.2'];
+        let results = this.styleGuide.sections('4.1.x').map(function(section) {
           return section.reference();
         });
         expect(results).to.deep.equal(expected);
@@ -265,9 +254,8 @@ describe('KssStyleGuide object API', function() {
       });
 
       it('should return 2 levels of descendants when given "4.x.x"', function(done) {
-        var results,
-          expected = ['4.1', '4.1.1', '4.1.2'];
-        results = this.styleGuide.sections('4.x.x').map(function(section) {
+        let expected = ['4.1', '4.1.1', '4.1.2'];
+        let results = this.styleGuide.sections('4.x.x').map(function(section) {
           return section.reference();
         });
         expect(results).to.deep.equal(expected);
@@ -275,7 +263,7 @@ describe('KssStyleGuide object API', function() {
       });
 
       it('should return "4.1" and all levels of descendants when given "4.1.*"', function(done) {
-        var results,
+        let results,
           expected = ['4.1', '4.1.1', '4.1.1.1', '4.1.1.2', '4.1.2', '4.1.2.2'];
         results = this.styleGuide.sections('4.1.*').map(function(section) {
           return section.reference();
@@ -297,9 +285,8 @@ describe('KssStyleGuide object API', function() {
       });
 
       it('should return numeric sections in order', function(done) {
-        var results,
-          expected = ['9.1', '9.2', '9.3', '9.4', '9.5', '9.10', '9.11', '9.100'];
-        results = this.styleGuide.sections('9.x').map(function(section) {
+        let expected = ['9.1', '9.2', '9.3', '9.4', '9.5', '9.10', '9.11', '9.100'];
+        let results = this.styleGuide.sections('9.x').map(function(section) {
           return section.reference();
         });
         expect(results).to.deep.equal(expected);
@@ -307,9 +294,8 @@ describe('KssStyleGuide object API', function() {
       });
 
       it('should return "word key" sections in order', function(done) {
-        var results,
-          expected = ['alpha.alpha', 'alpha.beta', 'alpha.delta', 'alpha.epsilon', 'alpha.gamma'];
-        results = this.styleGuide.sections('alpha.x').map(function(section) {
+        let expected = ['alpha.alpha', 'alpha.beta', 'alpha.delta', 'alpha.epsilon', 'alpha.gamma'];
+        let results = this.styleGuide.sections('alpha.x').map(function(section) {
           return section.reference();
         });
         expect(results).to.deep.equal(expected);
@@ -317,7 +303,7 @@ describe('KssStyleGuide object API', function() {
       });
 
       it('should return "word key" sections with dashes in the name', function(done) {
-        var sections = this.styleGuide.sections('alpha-bet.*');
+        let sections = this.styleGuide.sections('alpha-bet.*');
         sections.map(function(section) {
           expect(section.reference()).to.equal('alpha-bet');
         });
@@ -326,9 +312,8 @@ describe('KssStyleGuide object API', function() {
       });
 
       it('should return "word phrase" sections in order', function(done) {
-        var results,
-          expected = ['beta - alpha', 'beta - beta', 'beta - delta', 'beta - epsilon', 'beta - gamma'];
-        results = this.styleGuideWordPhrases.sections('beta.x').map(function(section) {
+        let expected = ['beta - alpha', 'beta - beta', 'beta - delta', 'beta - epsilon', 'beta - gamma'];
+        let results = this.styleGuideWordPhrases.sections('beta.x').map(function(section) {
           return section.reference();
         });
         expect(results).to.deep.equal(expected);
@@ -343,9 +328,8 @@ describe('KssStyleGuide object API', function() {
       });
 
       it('should return "4" and all levels of descendants when given /4.*/', function(done) {
-        var results,
-          expected = ['4', '4.1', '4.1.1', '4.1.1.1', '4.1.1.2', '4.1.2', '4.1.2.2'];
-        results = this.styleGuide.sections(/4.*/).map(function(section) {
+        let expected = ['4', '4.1', '4.1.1', '4.1.1.1', '4.1.1.2', '4.1.2', '4.1.2.2'];
+        let results = this.styleGuide.sections(/4.*/).map(function(section) {
           return section.reference();
         });
         expect(results).to.deep.equal(expected);
@@ -353,7 +337,7 @@ describe('KssStyleGuide object API', function() {
       });
 
       it('should return "4" when given /4/', function(done) {
-        var sections = this.styleGuide.sections(/4/);
+        let sections = this.styleGuide.sections(/4/);
         sections.map(function(section) {
           expect(section.reference()).to.equal('4');
         });
@@ -362,9 +346,8 @@ describe('KssStyleGuide object API', function() {
       });
 
       it('should return numeric sections in order', function(done) {
-        var results,
-          expected = ['9', '9.1', '9.1.1', '9.2', '9.3', '9.4', '9.5', '9.10', '9.11', '9.100'];
-        results = this.styleGuide.sections(/9.*/).map(function(section) {
+        let expected = ['9', '9.1', '9.1.1', '9.2', '9.3', '9.4', '9.5', '9.10', '9.11', '9.100'];
+        let results = this.styleGuide.sections(/9.*/).map(function(section) {
           return section.reference();
         });
         expect(results).to.deep.equal(expected);
@@ -372,9 +355,8 @@ describe('KssStyleGuide object API', function() {
       });
 
       it('should return "word key" sections in order', function(done) {
-        var results,
-          expected = ['alpha.alpha', 'alpha.alpha.alpha', 'alpha.beta', 'alpha.delta', 'alpha.epsilon', 'alpha.gamma'];
-        results = this.styleGuide.sections(/alpha\..*/).map(function(section) {
+        let expected = ['alpha.alpha', 'alpha.alpha.alpha', 'alpha.beta', 'alpha.delta', 'alpha.epsilon', 'alpha.gamma'];
+        let results = this.styleGuide.sections(/alpha\..*/).map(function(section) {
           return section.reference();
         });
         expect(results).to.deep.equal(expected);
@@ -382,9 +364,8 @@ describe('KssStyleGuide object API', function() {
       });
 
       it('should return "word phrase" sections in order', function(done) {
-        var results,
-          expected = ['beta - alpha', 'beta - alpha - alpha', 'beta - beta', 'beta - delta', 'beta - epsilon', 'beta - gamma'];
-        results = this.styleGuideWordPhrases.sections(/beta - .*/).map(function(section) {
+        let expected = ['beta - alpha', 'beta - alpha - alpha', 'beta - beta', 'beta - delta', 'beta - epsilon', 'beta - gamma'];
+        let results = this.styleGuideWordPhrases.sections(/beta - .*/).map(function(section) {
           return section.reference();
         });
         expect(results).to.deep.equal(expected);
@@ -392,9 +373,8 @@ describe('KssStyleGuide object API', function() {
       });
 
       it('should return weighted "word phrase" sections in order', function(done) {
-        var results,
-          expected = ['gamma - alpha', 'gamma - alpha - delta', 'gamma - alpha - gamma', 'gamma - alpha - beta', 'gamma - alpha - alpha', 'gamma - beta', 'gamma - gamma', 'gamma - delta', 'gamma - epsilon'];
-        results = this.styleGuideWordPhrases.sections(/gamma - .*/).map(function(section) {
+        let expected = ['gamma - alpha', 'gamma - alpha - delta', 'gamma - alpha - gamma', 'gamma - alpha - beta', 'gamma - alpha - alpha', 'gamma - beta', 'gamma - gamma', 'gamma - delta', 'gamma - epsilon'];
+        let results = this.styleGuideWordPhrases.sections(/gamma - .*/).map(function(section) {
           return section.reference();
         });
         expect(results).to.deep.equal(expected);
@@ -402,9 +382,8 @@ describe('KssStyleGuide object API', function() {
       });
 
       it('should return referenceNumber values for "word phrase" sections in order', function(done) {
-        var results,
-          expected = ['2.1', '2.1.1', '2.1.2', '2.1.3', '2.1.4', '2.2', '2.3', '2.4', '2.5'];
-        results = this.styleGuideWordPhrases.sections(/gamma - .*/).map(function(section) {
+        let expected = ['2.1', '2.1.1', '2.1.2', '2.1.3', '2.1.4', '2.2', '2.3', '2.4', '2.5'];
+        let results = this.styleGuideWordPhrases.sections(/gamma - .*/).map(function(section) {
           return section.referenceNumber();
         });
         expect(results).to.deep.equal(expected);

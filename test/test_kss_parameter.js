@@ -4,7 +4,7 @@
 
 describe('KssParameter object API', function() {
   before(function(done) {
-    var self = this;
+    let self = this;
     helperUtils.traverseFixtures({mask: '*.less|*.css'}, function(styleGuide) {
       self.styleGuide = styleGuide;
       done();
@@ -26,22 +26,13 @@ describe('KssParameter object API', function() {
 
   describe('KssParameter constructor', function() {
     it('should initialize the data', function(done) {
-      var obj = new kss.KssParameter();
+      let obj = new kss.KssParameter();
       expect(obj).to.have.property('meta');
       expect(obj.meta).to.have.property('section');
       expect(obj).to.have.property('data');
       expect(obj.data).to.have.property('name');
       expect(obj.data).to.have.property('description');
       done();
-    });
-
-    it('should return a KssParameter object when called normally', function(done) {
-      /* eslint-disable new-cap */
-      var obj = kss.KssParameter({name: '$variable'});
-      expect(obj).to.be.an.instanceof(kss.KssParameter);
-      expect(obj.name()).to.equal('$variable');
-      done();
-      /* eslint-enable new-cap */
     });
   });
 
@@ -56,7 +47,7 @@ describe('KssParameter object API', function() {
     });
 
     it('should set meta.section if given a value', function(done) {
-      var section = new kss.KssSection({header: 'Section'}),
+      let section = new kss.KssSection({header: 'Section'}),
         parameter = new kss.KssParameter({name: 'original'});
       parameter.section(section);
       expect(parameter.meta.section).to.deep.equal(section);
@@ -65,7 +56,7 @@ describe('KssParameter object API', function() {
     });
 
     it('should return itself if given a value', function(done) {
-      var section = new kss.KssSection({header: 'Section'}),
+      let section = new kss.KssSection({header: 'Section'}),
         parameter = new kss.KssParameter({name: 'original'});
       expect(parameter.section(section)).to.deep.equal(parameter);
       done();
@@ -83,7 +74,7 @@ describe('KssParameter object API', function() {
     });
 
     it('should set data.name if given a value', function(done) {
-      var parameter = new kss.KssParameter({name: 'original'});
+      let parameter = new kss.KssParameter({name: 'original'});
       parameter.name('new');
       expect(parameter.data.name).to.equal('new');
       expect(parameter.name()).to.equal(parameter.data.name);
@@ -91,7 +82,7 @@ describe('KssParameter object API', function() {
     });
 
     it('should return itself if given a value', function(done) {
-      var parameter = new kss.KssParameter({name: 'original'});
+      let parameter = new kss.KssParameter({name: 'original'});
       expect(parameter.name('new')).to.deep.equal(parameter);
       done();
     });
@@ -108,7 +99,7 @@ describe('KssParameter object API', function() {
     });
 
     it('should set data.description if given a value', function(done) {
-      var parameter = new kss.KssParameter({description: 'original'});
+      let parameter = new kss.KssParameter({description: 'original'});
       parameter.description('new');
       expect(parameter.data.description).to.equal('new');
       expect(parameter.description()).to.equal(parameter.data.description);
@@ -116,7 +107,7 @@ describe('KssParameter object API', function() {
     });
 
     it('should return itself if given a value', function(done) {
-      var parameter = new kss.KssParameter({description: 'original'});
+      let parameter = new kss.KssParameter({description: 'original'});
       expect(parameter.description('new')).to.deep.equal(parameter);
       done();
     });
@@ -126,10 +117,9 @@ describe('KssParameter object API', function() {
     it('should return valid JSON object', function(done) {
       this.styleGuide.data.sections.map(function(section) {
         section.parameters().map(function(parameter) {
-          var str;
           expect(parameter.toJSON()).to.be.an.instanceOf(Object);
           // Verify it converts to a JSON string.
-          str = JSON.stringify(parameter.toJSON());
+          let str = JSON.stringify(parameter.toJSON());
           expect(str).to.be.string;
           // Compare JSON string to original.
           expect(JSON.parse(str)).to.deep.equal(parameter.toJSON());
@@ -141,7 +131,7 @@ describe('KssParameter object API', function() {
     it('should return data as a JSON object', function(done) {
       this.styleGuide.data.sections.map(function(section) {
         section.parameters().map(function(parameter) {
-          var json = parameter.toJSON();
+          let json = parameter.toJSON();
           expect(json.name).to.equal(parameter.data.name);
           expect(json.description).to.equal(parameter.data.description);
         });

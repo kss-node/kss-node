@@ -7,13 +7,12 @@
  * The `kss/generator/handlebars` module loads the kssHandlebarsGenerator
  * object, a `{@link KssGenerator}` object using Handlebars templating.
  * ```
- * var kssHandlebarsGenerator = require('kss/generator/handlebars');
+ * const kssHandlebarsGenerator = require('kss/generator/handlebars');
  * ```
  * @module kss/generator/handlebars
  */
 
-var KssGenerator = require('../kss_generator.js'),
-  KssSection = require('../../lib/kss_section.js'),
+const KssGenerator = require('../kss_generator.js'),
   fs = require('fs'),
   glob = require('glob'),
   marked = require('marked'),
@@ -23,7 +22,7 @@ var KssGenerator = require('../kss_generator.js'),
 
 // Pass a string to KssGenerator() to tell the system which API version is
 // implemented by kssHandlebarsGenerator.
-var kssHandlebarsGenerator = new KssGenerator('2.1', {
+let kssHandlebarsGenerator = new KssGenerator('2.1', {
   'helpers': {
     group: 'Style guide:',
     string: true,
@@ -66,8 +65,6 @@ var kssHandlebarsGenerator = new KssGenerator('2.1', {
  * @returns {*} The callback's return value.
  */
 kssHandlebarsGenerator.init = function(config, cb) {
-  var i, j, helper;
-
   cb = cb || /* istanbul ignore next */ function() {};
 
   // Save the configuration parameters.
@@ -116,14 +113,14 @@ kssHandlebarsGenerator.init = function(config, cb) {
 
   // Load Handlebars helpers.
   if (this.config.helpers.length > 0) {
-    for (i = 0; i < this.config.helpers.length; i++) {
+    for (let i = 0; i < this.config.helpers.length; i++) {
       if (fs.existsSync(this.config.helpers[i])) {
         // Load custom Handlebars helpers.
-        var helperFiles = fs.readdirSync(this.config.helpers[i]);
+        let helperFiles = fs.readdirSync(this.config.helpers[i]);
 
-        for (j = 0; j < helperFiles.length; j++) {
+        for (let j = 0; j < helperFiles.length; j++) {
           if (path.extname(helperFiles[j]) === '.js') {
-            helper = require(this.config.helpers[i] + '/' + helperFiles[j]);
+            let helper = require(this.config.helpers[i] + '/' + helperFiles[j]);
             if (typeof helper.register === 'function') {
               helper.register(this.Handlebars, this.config);
             }
@@ -150,27 +147,19 @@ kssHandlebarsGenerator.generate = function(styleGuide, cb) {
   this.styleGuide = styleGuide;
   this.partials = {};
 
-  var sections = this.styleGuide.sections(),
-    sectionCount = sections.length,
-    sectionRoots = [],
-    rootCount,
-    currentRoot,
-    childSections = [],
-    partial,
-    files = [],
-    newSection,
-    i,
-    key;
+  let sections = this.styleGuide.sections(),
+    sectionRoots = [];
 
   cb = cb || /* istanbul ignore next */ function() {};
 
   if (this.config.verbose && this.styleGuide.meta.files) {
-    this.log(this.styleGuide.meta.files.map(function(file) {
+    this.log(this.styleGuide.meta.files.map(file => {
       return ' - ' + file;
     }).join('\n'));
   }
 
   // Return an error if no KSS sections are found in the source files.
+  let sectionCount = sections.length;
   if (sectionCount === 0) {
     return cb(Error('No KSS documentation discovered in source files.'));
   }
@@ -179,10 +168,10 @@ kssHandlebarsGenerator.generate = function(styleGuide, cb) {
     this.log('...Determining section markup:');
   }
 
-  for (i = 0; i < sectionCount; i += 1) {
+  for (let i = 0; i < sectionCount; i += 1) {
     // Register all the markup blocks as Handlebars partials.
     if (sections[i].markup()) {
-      partial = {
+      let partial = {
         name: sections[i].reference(),
         reference: sections[i].reference(),
         file: '',
@@ -193,8 +182,8 @@ kssHandlebarsGenerator.generate = function(styleGuide, cb) {
       if (partial.markup.match(/^[^\n]+\.(html|hbs)$/)) {
         partial.file = partial.markup;
         partial.name = path.basename(partial.file, path.extname(partial.file));
-        files = [];
-        for (key in this.config.source) {
+        let files = [];
+        for (let key in this.config.source) {
           if (!files.length) {
             files = glob.sync(this.config.source[key] + '/**/' + partial.file);
           }
@@ -238,7 +227,7 @@ kssHandlebarsGenerator.generate = function(styleGuide, cb) {
 
     // Accumulate an array of section references for all sections at the root of
     // the style guide.
-    currentRoot = sections[i].reference().split(/(?:\.|\ \-\ )/)[0];
+    let currentRoot = sections[i].reference().split(/(?:\.|\ \-\ )/)[0];
     if (sectionRoots.indexOf(currentRoot) === -1) {
       sectionRoots.push(currentRoot);
     }
@@ -246,24 +235,24 @@ kssHandlebarsGenerator.generate = function(styleGuide, cb) {
 
   // If a root element doesn't have an actual section, build one for it.
   // @TODO: Move this "fixing" into KssStyleGuide.
-  rootCount = sectionRoots.length;
-  key = false;
-  for (i = 0; i < rootCount; i += 1) {
-    currentRoot = this.styleGuide.sections(sectionRoots[i]);
+  let rootCount = sectionRoots.length;
+  let newSection = false;
+  for (let i = 0; i < rootCount; i += 1) {
+    let currentRoot = this.styleGuide.sections(sectionRoots[i]);
     if (currentRoot === false) {
-      key = sectionRoots[i];
-      // @TODO: Add section via KssStyleGuide API.
-      newSection = new KssSection({
-        header: key,
-        reference: key
-      });
-      this.styleGuide.data.sections.push(newSection);
-      this.styleGuide.meta.referenceMap[newSection.reference()] = newSection;
+      // Add a section to the style guide.
+      newSection = true;
+      this.styleGuide
+        .autoInit(false)
+        .sections({
+          header: sectionRoots[i],
+          reference: sectionRoots[i]
+        });
     }
   }
-  // Re-sort the style guide if we added new sections.
-  if (key !== false) {
-    this.styleGuide.init();
+  // Re-init the style guide if we added new sections.
+  if (newSection) {
+    this.styleGuide.autoInit(true);
   }
 
   if (this.config.verbose) {
@@ -273,15 +262,14 @@ kssHandlebarsGenerator.generate = function(styleGuide, cb) {
   // Now, group all of the sections by their root
   // reference, and make a page for each.
   rootCount = sectionRoots.length;
-  for (i = 0; i < rootCount; i += 1) {
-    childSections = this.styleGuide.sections(sectionRoots[i] + '.*');
+  for (let i = 0; i < rootCount; i += 1) {
+    let childSections = this.styleGuide.sections(sectionRoots[i] + '.*');
 
     this.generatePage(sectionRoots[i], childSections);
   }
 
   // Generate the homepage.
-  childSections = [];
-  this.generatePage('styleGuide.homepage', childSections);
+  this.generatePage('styleGuide.homepage', []);
 
   cb(null);
 };
@@ -295,14 +283,10 @@ kssHandlebarsGenerator.generate = function(styleGuide, cb) {
  *   variable.
  */
 kssHandlebarsGenerator.createMenu = function(pageReference) {
-  var self = this,
-    menu,
-    toMenuItem;
-
   // Helper function that converts a section to a menu item.
-  toMenuItem = function(section) {
+  const toMenuItem = function(section) {
     // @TODO: Add an option to "include" the specific properties returned.
-    var menuItem = section.toJSON();
+    let menuItem = section.toJSON();
 
     // Remove data we definitely won't need for the menu.
     delete menuItem.markup;
@@ -319,23 +303,21 @@ kssHandlebarsGenerator.createMenu = function(pageReference) {
   };
 
   // Retrieve all the root sections of the style guide.
-  menu = this.styleGuide.sections('x').map(function(rootSection) {
-    var menuItem = toMenuItem(rootSection);
+  return this.styleGuide.sections('x').map(rootSection => {
+    let menuItem = toMenuItem(rootSection);
 
     // Retrieve the child sections for each of the root sections.
-    menuItem.children = self.styleGuide.sections(rootSection.reference() + '.*').slice(1).map(toMenuItem);
+    menuItem.children = this.styleGuide.sections(rootSection.reference() + '.*').slice(1).map(toMenuItem);
 
     // Remove menu items that are deeper than the nav-depth config setting.
-    for (var i = 0; i < menuItem.children.length; i++) {
-      if (menuItem.children[i].depth > self.config['nav-depth']) {
+    for (let i = 0; i < menuItem.children.length; i++) {
+      if (menuItem.children[i].depth > this.config['nav-depth']) {
         delete menuItem.children[i];
       }
     }
 
     return menuItem;
   });
-
-  return menu;
 };
 
 /**
@@ -346,12 +328,8 @@ kssHandlebarsGenerator.createMenu = function(pageReference) {
  * @param {Array} sections An array of KssSection objects.
  */
 kssHandlebarsGenerator.generatePage = function(pageReference, sections) {
-  var filename = '', files,
-    homepageText = false,
-    rootSection,
-    styles = '',
-    scripts = '',
-    key;
+  let filename = '',
+    homepageText = false;
 
   if (pageReference === 'styleGuide.homepage') {
     filename = 'index.html';
@@ -359,10 +337,10 @@ kssHandlebarsGenerator.generatePage = function(pageReference, sections) {
       this.log(' - homepage');
     }
     // Ensure homepageText is a non-false value.
-    for (key in this.config.source) {
+    for (let key in this.config.source) {
       if (!homepageText) {
         try {
-          files = glob.sync(this.config.source[key] + '/**/' + this.config.homepage);
+          let files = glob.sync(this.config.source[key] + '/**/' + this.config.homepage);
           if (files.length) {
             homepageText = ' ' + marked(fs.readFileSync(files[0], 'utf8'));
           }
@@ -380,7 +358,7 @@ kssHandlebarsGenerator.generatePage = function(pageReference, sections) {
       }
     }
   } else {
-    rootSection = this.styleGuide.sections(pageReference);
+    let rootSection = this.styleGuide.sections(pageReference);
     filename = 'section-' + rootSection.referenceURI() + '.html';
     if (this.config.verbose) {
       this.log(
@@ -392,12 +370,14 @@ kssHandlebarsGenerator.generatePage = function(pageReference, sections) {
   }
 
   // Create the HTML to load the optional CSS and JS.
-  for (key in this.config.css) {
+  let styles = '',
+    scripts = '';
+  for (let key in this.config.css) {
     if (this.config.css.hasOwnProperty(key)) {
       styles = styles + '<link rel="stylesheet" href="' + this.config.css[key] + '">\n';
     }
   }
-  for (key in this.config.js) {
+  for (let key in this.config.js) {
     if (this.config.js.hasOwnProperty(key)) {
       scripts = scripts + '<script src="' + this.config.js[key] + '"></script>\n';
     }
@@ -406,9 +386,8 @@ kssHandlebarsGenerator.generatePage = function(pageReference, sections) {
   fs.writeFileSync(this.config.destination + '/' + filename,
     this.template({
       pageReference: pageReference,
-      sections: sections.map(function(section) {
-        var context = section.toJSON();
-        return context;
+      sections: sections.map(section => {
+        return section.toJSON();
       }),
       menu: this.createMenu(pageReference),
       homepage: homepageText,
