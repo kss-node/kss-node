@@ -88,10 +88,10 @@ describe('kss.parse()', function() {
   context('returns styleGuide', function() {
     describe('.meta.files:', function() {
       it('should reflect files found', function(done) {
-        helperUtils.traverseFixtures({mask: /.*/g}, function(styleGuide) {
+        helperUtils.traverseFixtures({mask: /with\-include\/.*/g}, function(styleGuide) {
           expect(styleGuide.data).to.be.an.instanceOf(Object);
           expect(styleGuide.meta.files).to.be.an.instanceOf(Array);
-          expect(styleGuide.meta.files.length).to.equal(31);
+          expect(styleGuide.meta.files.length).to.equal(5);
           done();
         });
       });
