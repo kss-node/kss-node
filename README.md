@@ -71,7 +71,7 @@ Style guide:
 
 Options:
   --verbose       Display verbose details while generating
-  --xdemo         Builds a KSS demo.
+  --demo          Builds a KSS demo.
   --help, -h, -?  Show help
   --version       Show version number
 ```
@@ -84,7 +84,7 @@ Even though kss-node parses your CSS source, your CSS won't be included in the s
 
 You can generate a copy of the demo style guide like so:
 
-    $ kss-node --xdemo
+    $ kss-node --demo
 
 It is recommended that you create your own template, i.e. skin, theme. Use the `kss-node --clone` command to initialize a copy of the default template so you can edit it and use it when generating your style guide with the `--template` flag. Simply link the generated CSS (as well as JS, etc.) from inside the custom template's index.html.
 
