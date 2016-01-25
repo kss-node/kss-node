@@ -35,10 +35,6 @@ class KssGenerator {
    *   See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
    */
   constructor(version, options) {
-    if (!(this instanceof KssGenerator)) {
-      return new KssGenerator();
-    }
-
     // Tell generators which generator API version is currently running.
     this.API = '2.1';
 
