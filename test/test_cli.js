@@ -181,8 +181,7 @@ describe('Command Line Interface', function() {
         function(error, stdout, stderr) {
           expect(error).to.not.exist;
           expect(stderr).to.be.string('');
-          expect(stdout).to.include('Creating a new style guide template...');
-          expect(stdout).to.include('kss-node [sourcedir] --template ' + path.resolve('test/output/template'));
+          expect(stdout).to.include('Creating a new style guide template in ' + path.resolve('test/output/template') + '...');
           done();
         }
       );
@@ -196,7 +195,7 @@ describe('Command Line Interface', function() {
         function(error, stdout, stderr) {
           expect(error).to.not.exist;
           expect(stderr).to.be.string('');
-          expect(stdout).to.include('kss-node [sourcedir] --template ' + defaultPath);
+          expect(stdout).to.include('Creating a new style guide template in ' + defaultPath + '...');
 
           wrench.rmdirRecursive(defaultPath, function(error) {
             done(error ? error : null);

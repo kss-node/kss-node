@@ -11,7 +11,7 @@ describe('KssConfig object API', function() {
   ['set',
     'get',
     'addOptions',
-    'loadJSON',
+    'getOptions',
     'normalize',
     'loadGenerator'
   ].forEach(function(method) {
@@ -37,7 +37,7 @@ describe('KssConfig object API', function() {
     it('should set config when given an object', function(done) {
       let opts = require(pathToJSON);
       let kssConfig = new kss.KssConfig(opts);
-      expect(kssConfig.config.source).to.equal('with-include');
+      expect(kssConfig.config.source).to.deep.equal([path.resolve('with-include')]);
       done();
     });
   });
@@ -45,15 +45,24 @@ describe('KssConfig object API', function() {
   describe('.set()', function() {
     it('should set this.config', function(done) {
       let kssConfig = new kss.KssConfig();
-      kssConfig.set({source: 'isSet'});
-      expect(kssConfig.config.source).to.equal('isSet');
+      kssConfig.set({aSetting: 'isSet'});
+      expect(kssConfig.config.aSetting).to.equal('isSet');
       done();
     });
 
     it('should not unset this.config', function(done) {
-      let kssConfig = new kss.KssConfig(require(pathToJSON));
-      kssConfig.set({source: 'isSet'});
-      expect(kssConfig.config.destination).to.equal('../output/nested');
+      let kssConfig = new kss.KssConfig({newSetting: '../output/nested'});
+      kssConfig.set({aSetting: 'isSet'});
+      expect(kssConfig.config.newSetting).to.equal('../output/nested');
+      done();
+    });
+
+    it('should automatically normalize known settings', function(done) {
+      let kssConfig = new kss.KssConfig();
+      kssConfig.set({destination: 'test/output/nested'});
+      kssConfig.set({source: 'test/output/nested'});
+      expect(kssConfig.config.destination).to.equal(path.resolve('test/output/nested'));
+      expect(kssConfig.config.source).to.deep.equal([path.resolve('test/output/nested')]);
       done();
     });
   });
@@ -91,30 +100,21 @@ describe('KssConfig object API', function() {
       });
       expect(kssConfig.options.candy).to.exist;
       expect(kssConfig.options.candy.description).to.exist;
-      done();
-    });
-  });
-
-  describe('.loadJSON()', function() {
-    it('should load config from a JSON file', function(done) {
-      let kssConfig = new kss.KssConfig();
-      kssConfig.loadJSON(pathToJSON);
-      expect(kssConfig.config.source).to.exist;
-      expect(kssConfig.config.source).to.equal('with-include');
+      expect(kssConfig.options.candy.multiple).to.be.true;
+      expect(kssConfig.options.candy.path).to.false;
       done();
     });
 
-    it('should store the absolute path to the JSON file', function(done) {
-      let kssConfig = new kss.KssConfig();
-      kssConfig.loadJSON('test/fixtures/cli-option-config.json');
-      expect(kssConfig.config.config).to.equal(helperUtils.fixtures('cli-option-config.json'));
-      done();
-    });
-
-    it('should store keys in the JSON file', function(done) {
-      let kssConfig = new kss.KssConfig();
-      kssConfig.loadJSON(pathToJSON);
-      expect(kssConfig.config.configFileKeys).to.deep.equal(['//', 'source', 'destination', 'template']);
+    it('should automatically normalize corresponding settings', function(done) {
+      let kssConfig = new kss.KssConfig({aSetting: 'test/output/nested'});
+      expect(kssConfig.config.aSetting).to.equal('test/output/nested');
+      kssConfig.addOptions({
+        aSetting: {
+          multiple: false,
+          path: true
+        }
+      });
+      expect(kssConfig.config.aSetting).to.equal(path.resolve('test/output/nested'));
       done();
     });
   });
@@ -123,54 +123,54 @@ describe('KssConfig object API', function() {
     it('should normalize a "multiple" option to an array of values', function(done) {
       let kssConfig = new kss.KssConfig();
       kssConfig.set({source: 'with-include'});
-      kssConfig.normalize();
+      kssConfig.normalize(['source']);
       expect(kssConfig.config.source).to.be.an.instanceOf(Array);
       kssConfig.set({source: ['with-include', 'missing-homepage']});
-      kssConfig.normalize();
+      kssConfig.normalize(['source']);
       expect(kssConfig.config.source).to.be.an.instanceOf(Array);
       // Yargs will set any option without a default to undefined.
       /* eslint-disable no-undefined */
       kssConfig.set({source: undefined});
-      kssConfig.normalize();
+      kssConfig.normalize(['source']);
       expect(kssConfig.config.source).to.be.an.instanceOf(Array);
+      expect(kssConfig.config.source.length).to.equal(0);
       done();
     });
 
     it('should normalize a non-"multiple" option to a single value', function(done) {
       let kssConfig = new kss.KssConfig();
       kssConfig.set({template: ['empty-source', 'with-include', 'template']});
-      kssConfig.normalize();
+      kssConfig.normalize(['template']);
       expect(kssConfig.config.template).to.be.a('string');
       done();
     });
 
     it('should resolve paths relative to the current working directory', function(done) {
       let kssConfig = new kss.KssConfig(require(pathToJSON));
-      kssConfig.normalize();
+      kssConfig.normalize(['source']);
       expect(kssConfig.config.source[0]).to.equal(path.resolve('with-include'));
-      done();
-    });
-
-    it('should resolve paths relative to the given config file', function(done) {
-      // Simulate how yargs outputs its --config option.
-      let opts = require(pathToJSON);
-      opts['config'] = pathToJSON;
-      let kssConfig = new kss.KssConfig(opts);
-      kssConfig.normalize();
-      expect(kssConfig.config.source[0]).to.equal(path.resolve(helperUtils.fixtures(), 'with-include'));
-      // The normal way to add JSON config.
-      kssConfig = new kss.KssConfig();
-      kssConfig.loadJSON(pathToJSON);
-      kssConfig.normalize();
-      expect(kssConfig.config.source[0]).to.equal(path.resolve(helperUtils.fixtures(), 'with-include'));
       done();
     });
 
     it('should not try to resolve a null path', function(done) {
       let kssConfig = new kss.KssConfig(require(pathToJSON));
       kssConfig.set({destination: null});
-      kssConfig.normalize();
+      kssConfig.normalize(['destination']);
       expect(kssConfig.config.destination).to.equal(null);
+      done();
+    });
+
+    it('should set default values', function(done) {
+      let kssConfig = new kss.KssConfig();
+      expect(kssConfig.config).to.deep.equal({
+        source: [],
+        destination: path.resolve('styleguide'),
+        mask: '*.css|*.less|*.sass|*.scss|*.styl|*.stylus',
+        template: path.resolve('generator/handlebars/template'),
+        css: [],
+        js: [],
+        custom: []
+      });
       done();
     });
   });
