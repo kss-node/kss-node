@@ -176,35 +176,53 @@ describe('KssConfig object API', function() {
   });
 
   describe('.loadGenerator()', function() {
-    it('should return KssGenerator object', function(done) {
+    it('should provide KssGenerator object', function(done) {
       let kssConfig = new kss.KssConfig();
       kssConfig.set({template: 'generator/handlebars/template'});
-      let generator = kssConfig.loadGenerator();
-      expect(generator).to.be.an.instanceof(KssGenerator);
-      done();
+      kssConfig.loadGenerator(function(error, generator) {
+        expect(error).to.not.exist;
+        expect(generator).to.be.an.instanceof(KssGenerator);
+        done();
+      });
     });
 
-    it('should return KssGenerator object even if the template does not specify one', function(done) {
+    it('should provide KssGenerator object even if the template does not specify one', function(done) {
       let kssConfig = new kss.KssConfig({template: helperUtils.fixtures('template')});
-      let generator = kssConfig.loadGenerator();
-      expect(generator).to.be.an.instanceof(KssGenerator);
-      done();
+      kssConfig.loadGenerator(function(error, generator) {
+        expect(error).to.not.exist;
+        expect(generator).to.be.an.instanceof(KssGenerator);
+        done();
+      });
     });
 
     it('should load the generator\'s options', function(done) {
       let kssConfig = new kss.KssConfig({template: 'generator/handlebars/template'});
-      let generator = kssConfig.loadGenerator();
-      expect(generator).to.be.an.instanceof(KssGenerator);
-      expect(kssConfig.options['placeholder']).to.exist;
-      done();
+      kssConfig.loadGenerator(function(error, generator) {
+        expect(error).to.not.exist;
+        expect(generator).to.be.an.instanceof(KssGenerator);
+        expect(kssConfig.options['placeholder']).to.exist;
+        done();
+      });
     });
 
     it('should load the template\'s options', function(done) {
       let kssConfig = new kss.KssConfig({template: 'generator/handlebars/template'});
-      let generator = kssConfig.loadGenerator();
-      expect(generator).to.be.an.instanceof(KssGenerator);
-      expect(kssConfig.options['nav-depth']).to.exist;
-      done();
+      kssConfig.loadGenerator(function(error, generator) {
+        expect(error).to.not.exist;
+        expect(generator).to.be.an.instanceof(KssGenerator);
+        expect(kssConfig.options['nav-depth']).to.exist;
+        done();
+      });
+    });
+
+    it('should provide an error if generator\'s checkGenerator method fails', function(done) {
+      let kssConfig = new kss.KssConfig({template: helperUtils.fixtures('old-template')});
+      kssConfig.loadGenerator(function(error, generator) {
+        expect(error).to.exist;
+        expect(error.message).to.equal('kss-node expected the template\'s generator to implement KssGenerator API version 2.1; version "1.0" is being used instead.');
+        expect(generator).to.not.exist;
+        done();
+      });
     });
   });
 });
