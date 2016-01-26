@@ -12,7 +12,6 @@
 // Import the KssGenerator object. We will use its API to scaffold our
 // generator.
 const KssGenerator = require('kss/generator'),
-  Kss = require('kss'),
   path = require('path');
 
 // Define "kssExampleGenerator" as the name of our example template engine.
@@ -21,7 +20,7 @@ const KssGenerator = require('kss/generator'),
 // additional functionality added by overriding the parent methods.
 //
 // See the docs for KssGenerator() for info about its parameters.
-const kssExampleGenerator = new KssGenerator('2.1', {
+const kssExampleGenerator = new KssGenerator('3.0', {
   'example-option': {
     alias: 'u',
     string: true,
@@ -78,34 +77,6 @@ kssExampleGenerator.init = function(config, cb) {
 
   // No error has occurred.
   return cb(null);
-};
-
-/**
- * Parse the source files for KSS comments and create a KssStyleGuide object.
- *
- * When finished, it passes the completed KssStyleGuide to the given callback.
- *
- * @param {Function} cb Callback that will be given an Error as its first
- *                      parameter, if one occurs, and a fully-populated
- *                      KssStyleGuide as its second parameter.
- * @returns {*} The callback's return value.
- */
-kssExampleGenerator.prototype.parse = function(cb) {
-  if (this.config.verbose) {
-    this.log('...Parsing the demo style guide:');
-  }
-
-  // The default parse() method looks at the paths to the source folders and
-  // uses KSS' traverse method to load, read and parse the source files. Other
-  // generators may want to use KSS' parse method if they have already loaded
-  // the source files through some other mechanism.
-  return Kss.traverse(this.config.source, {
-    header: true,
-    markdown: true,
-    markup: true,
-    mask: this.config.mask,
-    custom: this.config.custom
-  }, cb);
 };
 
 /**

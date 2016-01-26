@@ -22,7 +22,7 @@ const KssGenerator = require('../kss_generator.js'),
 
 // Pass a string to KssGenerator() to tell the system which API version is
 // implemented by kssHandlebarsGenerator.
-let kssHandlebarsGenerator = new KssGenerator('2.1', {
+let kssHandlebarsGenerator = new KssGenerator('3.0', {
   'helpers': {
     group: 'Style guide:',
     string: true,

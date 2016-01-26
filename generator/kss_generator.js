@@ -12,8 +12,7 @@
    See kss_example_generator.js for how to implement a generator.
    ************************************************************** */
 
-const Kss = require('../lib/kss.js'),
-  wrench = require('wrench');
+const wrench = require('wrench');
 
 class KssGenerator {
   /**
@@ -25,7 +24,7 @@ class KssGenerator {
    *
    * ```
    * const KssGenerator = require('kss/generator');
-   * const customGenerator = new KssGenerator('2.1');
+   * const customGenerator = new KssGenerator('3.0');
    * ```
    *
    * @constructor
@@ -36,7 +35,7 @@ class KssGenerator {
    */
   constructor(version, options) {
     // Tell generators which generator API version is currently running.
-    this.API = '2.1';
+    this.API = '3.0';
 
     // Store the version of the generator API that the generator instance is
     // expecting; we will verify this in checkGenerator().
@@ -175,35 +174,6 @@ class KssGenerator {
     this.config = config;
 
     return cb(null);
-  }
-
-  /**
-   * Parse the source files for KSS comments and create a KssStyleGuide object.
-   *
-   * When finished, it passes the completed KssStyleGuide to the given callback.
-   *
-   * @alias KssGenerator.prototype.parse
-   * @param {Function} cb Callback that will be given an Error as its first
-   *                      parameter, if one occurs, and a fully-populated
-   *                      KssStyleGuide as its second parameter.
-   * @returns {*} The callback's return value.
-   */
-  parse(cb) {
-    if (this.config.verbose) {
-      this.log('...Parsing your style guide:');
-    }
-
-    // The default parse() method looks at the paths to the source folders and
-    // uses KSS' traverse method to load, read and parse the source files. Other
-    // generators may want to use KSS' parse method if they have already loaded
-    // the source files through some other mechanism.
-    return Kss.traverse(this.config.source, {
-      header: true,
-      markdown: true,
-      markup: true,
-      mask: this.config.mask,
-      custom: this.config.custom
-    }, cb);
   }
 
   /**

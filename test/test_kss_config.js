@@ -219,7 +219,7 @@ describe('KssConfig object API', function() {
       let kssConfig = new kss.KssConfig({template: helperUtils.fixtures('old-template')});
       kssConfig.loadGenerator(function(error, generator) {
         expect(error).to.exist;
-        expect(error.message).to.equal('kss-node expected the template\'s generator to implement KssGenerator API version 2.1; version "1.0" is being used instead.');
+        expect(error.message).to.equal('kss-node expected the template\'s generator to implement KssGenerator API version 3.0; version "1.0" is being used instead.');
         expect(generator).to.not.exist;
         done();
       });
