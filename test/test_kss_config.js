@@ -116,6 +116,29 @@ describe('KssConfig object API', function() {
     });
   });
 
+  describe('.getOptions()', function() {
+    it('should return this.options', function(done) {
+      let kssConfig = new kss.KssConfig();
+      let options = kssConfig.getOptions();
+      for (let key in options) {
+        if (options.hasOwnProperty(key)) {
+          expect(options[key]).to.equal(kssConfig.options[key]);
+        }
+      }
+      done();
+    });
+
+    it('should return this.options.key given key', function(done) {
+      let kssConfig = new kss.KssConfig();
+      for (let key in kssConfig.options) {
+        if (kssConfig.options.hasOwnProperty(key)) {
+          expect(kssConfig.getOptions(key)).to.equal(kssConfig.options[key]);
+        }
+      }
+      done();
+    });
+  });
+
   describe('.normalize()', function() {
     it('should normalize a "multiple" option to an array of values', function(done) {
       let kssConfig = new kss.KssConfig();
