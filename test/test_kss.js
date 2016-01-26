@@ -64,4 +64,16 @@ describe('kss object API', function() {
       );
     });
   });
+
+  describe('given a template path', function() {
+    it('should provide an error if generator\'s checkGenerator method fails', function(done) {
+      testKss({template: helperUtils.fixtures('old-template')},
+        function(error, stdout, stderr) {
+          expect(error).to.exist;
+          expect(stderr).to.include('kss-node expected the template\'s generator to implement KssGenerator API version 3.0; version "1.0" is being used instead.');
+          done();
+        }
+      );
+    });
+  });
 });
