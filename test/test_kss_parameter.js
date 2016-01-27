@@ -4,9 +4,8 @@
 
 describe('KssParameter object API', function() {
   before(function(done) {
-    let self = this;
-    helperUtils.traverseFixtures({mask: '*.less|*.css'}, function(styleGuide) {
-      self.styleGuide = styleGuide;
+    helperUtils.traverseFixtures({mask: '*.less|*.css'}, styleGuide => {
+      this.styleGuide = styleGuide;
       done();
     });
   });

@@ -4,13 +4,12 @@
 
 describe('KssStyleGuide object API', function() {
   before(function(done) {
-    let self = this;
-    helperUtils.traverseFixtures({mask: /(sections\-queries|sections\-order|property\-styleguide\-word\-keys)\.less/}, function(styleGuide) {
-      self.styleGuide = styleGuide;
-      helperUtils.traverseFixtures({mask: /.*\-word\-phrases\.less/}, function(styleGuide) {
-        self.styleGuideWordPhrases = styleGuide;
-        helperUtils.traverseFixtures({mask: /sections\-queries\.less/}, function(styleGuide) {
-          self.styleGuideNumeric = styleGuide;
+    helperUtils.traverseFixtures({mask: /(sections\-queries|sections\-order|property\-styleguide\-word\-keys)\.less/}, styleGuide => {
+      this.styleGuide = styleGuide;
+      helperUtils.traverseFixtures({mask: /.*\-word\-phrases\.less/}, styleGuide => {
+        this.styleGuideWordPhrases = styleGuide;
+        helperUtils.traverseFixtures({mask: /sections\-queries\.less/}, styleGuide => {
+          this.styleGuideNumeric = styleGuide;
           done();
         });
       });

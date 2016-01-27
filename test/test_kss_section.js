@@ -6,9 +6,8 @@ let custom = ['custom', 'custom2', 'custom3'];
 
 describe('KssSection object API', function() {
   before(function(done) {
-    let self = this;
-    helperUtils.traverseFixtures({mask: '*.less|*.css', custom: custom}, function(styleGuide) {
-      self.styleGuide = styleGuide;
+    helperUtils.traverseFixtures({mask: '*.less|*.css', custom: custom}, styleGuide => {
+      this.styleGuide = styleGuide;
       done();
     });
   });
@@ -122,9 +121,8 @@ describe('KssSection object API', function() {
 
   describe('.styleGuide()', function() {
     it('should return meta.styleGuide', function(done) {
-      let self = this;
-      this.styleGuide.sections().map(function(section) {
-        expect(section.styleGuide()).to.deep.equal(section.meta.styleGuide).and.deep.equal(self.styleGuide);
+      this.styleGuide.sections().map(section => {
+        expect(section.styleGuide()).to.deep.equal(section.meta.styleGuide).and.deep.equal(this.styleGuide);
       });
       done();
     });

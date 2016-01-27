@@ -37,9 +37,8 @@ describe('kss.parse()', function() {
 
   describe('given different comment syntax:', function() {
     before(function(done) {
-      let self = this;
-      helperUtils.traverseFixtures({mask: 'sections-comment-syntax.less'}, function(styleGuide) {
-        self.styleGuide = styleGuide;
+      helperUtils.traverseFixtures({mask: 'sections-comment-syntax.less'}, styleGuide => {
+        this.styleGuide = styleGuide;
         done();
       });
     });
@@ -100,20 +99,19 @@ describe('kss.parse()', function() {
     describe('.sections():', function() {
       describe('.raw', function() {
         before(function(done) {
-          let self = this,
-            fileCounter;
+          let fileCounter;
 
-          helperUtils.traverseFixtures({}, function(styleGuide) {
-            self.styleGuide = styleGuide;
-            self.fileContents = '';
+          helperUtils.traverseFixtures({}, styleGuide => {
+            this.styleGuide = styleGuide;
+            this.fileContents = '';
             fileCounter = styleGuide.meta.files.length;
-            styleGuide.meta.files.map(function(file) {
-              fs.readFile(file, 'utf8', function(error, data) {
+            styleGuide.meta.files.map(file => {
+              fs.readFile(file, 'utf8', (error, data) => {
                 if (error) {
                   throw error;
                 }
 
-                self.fileContents += data;
+                this.fileContents += data;
                 fileCounter -= 1;
                 if (!fileCounter) {
                   done();
@@ -134,9 +132,8 @@ describe('kss.parse()', function() {
 
       describe('.header / .description', function() {
         before(function(done) {
-          let self = this;
-          helperUtils.traverseFixtures({mask: 'property-header.less', markdown: false}, function(styleGuide) {
-            self.styleGuide = styleGuide;
+          helperUtils.traverseFixtures({mask: 'property-header.less', markdown: false}, styleGuide => {
+            this.styleGuide = styleGuide;
             done();
           });
         });
@@ -188,9 +185,8 @@ describe('kss.parse()', function() {
 
       describe('.modifiers', function() {
         before(function(done) {
-          let self = this;
-          helperUtils.traverseFixtures({mask: 'property-modifiers.less', markdown: false}, function(styleGuide) {
-            self.styleGuide = styleGuide;
+          helperUtils.traverseFixtures({mask: 'property-modifiers.less', markdown: false}, styleGuide => {
+            this.styleGuide = styleGuide;
             done();
           });
         });
@@ -288,9 +284,8 @@ describe('kss.parse()', function() {
 
       describe('.deprecated/.experimental', function() {
         before(function(done) {
-          let self = this;
-          helperUtils.traverseFixtures({mask: 'property-deprecated-experimental.less', markdown: false, header: true}, function(styleGuide) {
-            self.styleGuide = styleGuide;
+          helperUtils.traverseFixtures({mask: 'property-deprecated-experimental.less', markdown: false, header: true}, styleGuide => {
+            this.styleGuide = styleGuide;
             done();
           });
         });
@@ -356,13 +351,12 @@ describe('kss.parse()', function() {
   context('given options', function() {
     describe('.custom', function() {
       before(function(done) {
-        let self = this;
         helperUtils.traverseFixtures({
           mask: 'options-custom.less',
           markdown: false,
           custom: ['custom', 'custom property', 'custom2']
-        }, function(styleGuide) {
-          self.styleGuide = styleGuide;
+        }, styleGuide => {
+          this.styleGuide = styleGuide;
           done();
         });
       });
@@ -396,9 +390,8 @@ describe('kss.parse()', function() {
 
     describe('.markup', function() {
       before(function(done) {
-        let self = this;
-        helperUtils.traverseFixtures({mask: 'property-markup.less', markdown: false}, function(styleGuide) {
-          self.styleGuide = styleGuide;
+        helperUtils.traverseFixtures({mask: 'property-markup.less', markdown: false}, styleGuide => {
+          this.styleGuide = styleGuide;
           done();
         });
       });
@@ -460,11 +453,10 @@ describe('kss.parse()', function() {
 
     describe('.typos:', function() {
       before(function(done) {
-        let self = this;
-        helperUtils.traverseFixtures({mask: 'options-typos.less', typos: true}, function(styleGuide) {
-          self.styleGuide = styleGuide;
-          helperUtils.traverseFixtures({mask: 'property-deprecated-experimental.less', typos: true}, function(styleGuide2) {
-            self.styleGuide2 = styleGuide2;
+        helperUtils.traverseFixtures({mask: 'options-typos.less', typos: true}, styleGuide => {
+          this.styleGuide = styleGuide;
+          helperUtils.traverseFixtures({mask: 'property-deprecated-experimental.less', typos: true}, styleGuide2 => {
+            this.styleGuide2 = styleGuide2;
           });
           done();
         });

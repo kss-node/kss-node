@@ -9,8 +9,7 @@ const cli = require('../lib/cli'),
 
 describe('Handlebars template', function() {
   before(function(done) {
-    let self = this,
-      stdout = new mockStream.MockWritableStream(),
+    let stdout = new mockStream.MockWritableStream(),
       stderr = new mockStream.MockWritableStream();
 
     stdout.startCapture();
@@ -18,14 +17,14 @@ describe('Handlebars template', function() {
 
     // Create a closure with the file name stored.
     let fileCounter;
-    self.files = {};
-    let fileReader = function(fileName) {
-      return function(error, data) {
+    this.files = {};
+    let fileReader = fileName => {
+      return (error, data) => {
         if (error) {
           throw error;
         }
 
-        self.files[fileName] = data;
+        this.files[fileName] = data;
         fileCounter -= 1;
         if (!fileCounter) {
           done();
@@ -37,9 +36,9 @@ describe('Handlebars template', function() {
       stdout: stdout,
       stderr: stderr,
       argv: ['node', 'bin/kss-node', 'test/fixtures/with-include', 'test/output/nested', '--template', 'test/fixtures/template', '--helpers', 'test/fixtures/template/helpers']
-    }, function(error) {
+    }, error => {
       expect(error).to.not.exist;
-      self.stdout = stdout.capturedData;
+      this.stdout = stdout.capturedData;
       let files = [
         'index',
         'section-2',
