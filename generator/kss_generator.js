@@ -14,6 +14,9 @@
 
 const wrench = require('wrench');
 
+/**
+ * A kss-node generator takes input files and generates a style guide.
+ */
 class KssGenerator {
   /**
    * Create a KssGenerator object.
@@ -82,7 +85,7 @@ class KssGenerator {
    *
    * @alias KssGenerator.prototype.checkGenerator
    * @param {Function} cb Callback that will be given an Error as its first
-   *                      parameter, if one occurs.
+   *   parameter, if one occurs.
    * @returns {*} The callback's return value.
    */
   checkGenerator(cb) {
