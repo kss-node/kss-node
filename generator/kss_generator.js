@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * The `kss/generator` module loads the {@link KssGenerator} class constructor.
+ * The `kss/generator` module loads the {@link KssGenerator} class.
  * ```
  * const KssGenerator = require('kss/generator');
  * ```
@@ -18,6 +18,7 @@ const wrench = require('wrench');
  * A kss-node generator takes input files and generates a style guide.
  */
 class KssGenerator {
+
   /**
    * Create a KssGenerator object.
    *
@@ -30,8 +31,6 @@ class KssGenerator {
    * const customGenerator = new KssGenerator('3.0');
    * ```
    *
-   * @constructor
-   * @alias KssGenerator
    * @param {string} version The generator API version implemented.
    * @param {object} options The Yargs-like options this generator has.
    *   See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
@@ -51,6 +50,7 @@ class KssGenerator {
     this.setLogFunction(console.log);
   }
 
+  /* eslint-disable no-unused-vars */
   /**
    * Logs a message to be reported to the user.
    *
@@ -58,9 +58,10 @@ class KssGenerator {
    * console.log() is inappropriate. The log() method should be used to pass
    * messages to the KSS system so it can report them to the user.
    *
-   * @param {string} message The message to log.
+   * @param {...string} message The message to log.
    */
-  log() {
+  log(message) {
+    /* eslint-enable no-unused-vars */
     this.logFunction.apply(null, arguments);
   }
 
@@ -68,7 +69,7 @@ class KssGenerator {
    * The log() method logs a message for the user. This method allows the system
    * to define the underlying function used by the log method to report the
    * message to the user. The default log function is a wrapper around
-   * console.log().
+   * `console.log()`.
    *
    * @param {Function} logFunction Function to log a message to the user.
    */
@@ -83,7 +84,6 @@ class KssGenerator {
    * controlling the generator should call this method to verify the
    * specified generator has been configured correctly.
    *
-   * @alias KssGenerator.prototype.checkGenerator
    * @param {Function} cb Callback that will be given an Error as its first
    *   parameter, if one occurs.
    * @returns {*} The callback's return value.
@@ -130,7 +130,6 @@ class KssGenerator {
    * location. An instance of KssGenerator does not need to override this method,
    * but it can if it needs to do something more complicated.
    *
-   * @alias KssGenerator.prototype.clone
    * @param {string} templatePath    Path to the template to clone.
    * @param {string} destinationPath Path to the destination of the newly cloned
    *                                 template.
@@ -166,7 +165,6 @@ class KssGenerator {
    * requested style guide generation. The generator can use this information for
    * any necessary tasks before the KSS parsing of the source files.
    *
-   * @alias KssGenerator.prototype.init
    * @param {Object} config Configuration object for the requested generation.
    * @param {Function} cb Callback that will be given an Error as its first
    *                      parameter, if one occurs.
@@ -182,7 +180,6 @@ class KssGenerator {
   /**
    * Allow the template to prepare itself or modify the KssStyleGuide object.
    *
-   * @alias KssGenerator.prototype.prepare
    * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
    * @param {Function} cb Callback that will be given an Error as its first
    *                      parameter, if one occurs, and a fully-populated
@@ -196,7 +193,6 @@ class KssGenerator {
   /**
    * Generate the HTML files of the style guide given a KssStyleGuide object.
    *
-   * @alias KssGenerator.prototype.generate
    * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
    * @param {Function} cb Callback that will be given an Error as its first
    *                      parameter, if one occurs.
