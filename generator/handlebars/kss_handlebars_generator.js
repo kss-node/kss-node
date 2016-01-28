@@ -13,12 +13,11 @@
  */
 
 const KssGenerator = require('../kss_generator.js'),
-  fs = require('fs'),
+  fs = require('fs-extra'),
   glob = require('glob'),
   marked = require('marked'),
   path = require('path'),
-  wrench = require('wrench'),
-  mkdirp = require('mkdirp');
+  wrench = require('wrench');
 
 // Pass a string to KssGenerator() to tell the system which API version is
 // implemented by kssHandlebarsGenerator.
@@ -92,7 +91,7 @@ kssHandlebarsGenerator.init = function(config, cb) {
 
   // Create a new destination directory.
   try {
-    mkdirp.sync(this.config.destination + '/kss-assets');
+    fs.mkdirsSync(this.config.destination + '/kss-assets');
   } catch (e) {
     // empty
   }
