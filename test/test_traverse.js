@@ -4,44 +4,37 @@
 
 describe('kss.traverse()', function() {
   describe('API validation checks', function() {
-    it('should function without options', function(done) {
-      kss.traverse(helperUtils.fixtures(), function(error, styleGuide) {
-        expect(error).to.not.exist;
+    it('should function without options', function() {
+      return kss.traverse(helperUtils.fixtures()).then(styleGuide => {
         expect(styleGuide.meta.files).to.have.length(23);
-        done();
+      }).catch(error => {
+        expect(error).to.not.exist;
       });
     });
 
-    it('should function with options', function(done) {
-      kss.traverse(helperUtils.fixtures(), {}, function(error, styleGuide) {
-        expect(error).to.not.exist;
+    it('should function with options', function() {
+      return kss.traverse(helperUtils.fixtures(), {}).then(styleGuide => {
         expect(styleGuide.meta.files).to.have.length(23);
-        done();
+      }).catch(error => {
+        expect(error).to.not.exist;
       });
     });
 
-    it('should function with an array of directories given', function(done) {
-      kss.traverse([helperUtils.fixtures('with-include'), helperUtils.fixtures('missing-homepage')], {}, function(error, styleGuide) {
-        expect(error).to.not.exist;
+    it('should function with an array of directories given', function() {
+      return kss.traverse([helperUtils.fixtures('with-include'), helperUtils.fixtures('missing-homepage')], {}).then(styleGuide => {
         expect(styleGuide.meta.files).to.have.length(2);
-        done();
+      }).catch(error => {
+        expect(error).to.not.exist;
       });
-    });
-
-    it('should throw an error without a callback', function(done) {
-      expect(function() {kss.traverse(helperUtils.fixtures()); }).to.throw();
-      done();
     });
   });
-
 
   context('given options', function() {
     describe('.mask:', function() {
       describe('default mask', function() {
-        before(function(done) {
-          helperUtils.traverseFixtures({}, styleGuide => {
+        before(function() {
+          return helperUtils.traverseFixtures({}).then(styleGuide => {
             this.styleGuide = styleGuide;
-            done();
           });
         });
 
@@ -80,10 +73,9 @@ describe('kss.traverse()', function() {
       });
 
       describe('/\\.js/ (regex)', function() {
-        before(function(done) {
-          helperUtils.traverseFixtures({mask: /\.js/}, styleGuide => {
+        before(function() {
+          return helperUtils.traverseFixtures({mask: /\.js/}).then(styleGuide => {
             this.styleGuide = styleGuide;
-            done();
           });
         });
 
@@ -102,10 +94,9 @@ describe('kss.traverse()', function() {
       });
 
       describe("'*.js' (string)", function() {
-        before(function(done) {
-          helperUtils.traverseFixtures({mask: '*.js'}, styleGuide => {
+        before(function() {
+          return helperUtils.traverseFixtures({mask: '*.js'}).then(styleGuide => {
             this.styleGuide = styleGuide;
-            done();
           });
         });
 
@@ -124,10 +115,9 @@ describe('kss.traverse()', function() {
       });
 
       describe('/\.js|\.less|\.css/ (regex)', function() {
-        before(function(done) {
-          helperUtils.traverseFixtures({mask: /\.js|\.less|\.css/}, styleGuide => {
+        before(function() {
+          return helperUtils.traverseFixtures({mask: /\.js|\.less|\.css/}).then(styleGuide => {
             this.styleGuide = styleGuide;
-            done();
           });
         });
 
@@ -146,10 +136,9 @@ describe('kss.traverse()', function() {
       });
 
       describe("'*.js|*.less|*.css' (string)", function() {
-        before(function(done) {
-          helperUtils.traverseFixtures({mask: '*.js|*.less|*.css'}, styleGuide => {
+        before(function() {
+          return helperUtils.traverseFixtures({mask: '*.js|*.less|*.css'}).then(styleGuide => {
             this.styleGuide = styleGuide;
-            done();
           });
         });
 

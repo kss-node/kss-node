@@ -5,10 +5,9 @@
 let custom = ['custom', 'custom2', 'custom3'];
 
 describe('KssSection object API', function() {
-  before(function(done) {
-    helperUtils.traverseFixtures({mask: '*.less|*.css', custom: custom}, styleGuide => {
+  before(function() {
+    return helperUtils.traverseFixtures({mask: '*.less|*.css', custom: custom}).then(styleGuide => {
       this.styleGuide = styleGuide;
-      done();
     });
   });
 
