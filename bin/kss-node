@@ -7,10 +7,11 @@
 const cli = require('../lib/cli');
 
 cli({
-  stdin: process.stdin,
   stdout: process.stdout,
   stderr: process.stderr,
   argv: process.argv
-}, function(error) {
-  process.exit(error ? 1 : 0);
+}).then(function() {
+  process.exit(0);
+}).catch(function() {
+  process.exit(1);
 });

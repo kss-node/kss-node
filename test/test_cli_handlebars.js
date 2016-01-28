@@ -36,8 +36,11 @@ describe('Handlebars template', function() {
       stdout: stdout,
       stderr: stderr,
       argv: ['node', 'bin/kss-node', 'test/fixtures/with-include', 'test/output/nested', '--template', 'test/fixtures/template', '--helpers', 'test/fixtures/template/helpers']
-    }, error => {
-      expect(error).to.not.exist;
+    }).catch(function(error) {
+      // Pass the error on to the next .then().
+      return error;
+    }).then(result => {
+      expect(result).to.not.be.instanceOf(Error);
       this.stdout = stdout.capturedData;
       let files = [
         'index',
