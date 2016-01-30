@@ -3,10 +3,9 @@
 'use strict';
 
 const cli = require('../lib/cli'),
-  fs = require('fs'),
+  fs = require('fs-extra'),
   mockStream = require('mock-utf8-stream'),
-  path = require('path'),
-  wrench = require('wrench');
+  path = require('path');
 
 // Instead of child_process.exec, we use the lib/cli.js module and feed it mock
 // stdout, stderr and argv.
@@ -35,7 +34,7 @@ describe('Command Line Interface', function() {
     successMessage = 'Style guide generation completed successfully';
 
   after(function(done) {
-    wrench.rmdirRecursive(path.resolve('test/output'), function(error) {
+    fs.remove(path.resolve('test/output'), function(error) {
       done(error ? error : null);
     });
   });
@@ -197,7 +196,7 @@ describe('Command Line Interface', function() {
           expect(stderr).to.be.string('');
           expect(stdout).to.include('Creating a new style guide template in ' + defaultPath + '...');
 
-          wrench.rmdirRecursive(defaultPath, function(error) {
+          fs.remove(defaultPath, function(error) {
             done(error ? error : null);
           });
         }

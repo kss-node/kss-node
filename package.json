@@ -35,7 +35,6 @@
     "handlebars": "^4.0.0",
     "marked": "^0.3.5",
     "natural": "^0.2.1",
-    "wrench": "^1.5.8",
     "yargs": "^3.30.0"
   },
   "devDependencies": {

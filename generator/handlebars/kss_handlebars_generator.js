@@ -16,8 +16,7 @@ const KssGenerator = require('../kss_generator.js'),
   fs = require('fs-extra'),
   glob = require('glob'),
   marked = require('marked'),
-  path = require('path'),
-  wrench = require('wrench');
+  path = require('path');
 
 // Pass a string to KssGenerator() to tell the system which API version is
 // implemented by kssHandlebarsGenerator.
@@ -97,18 +96,16 @@ kssHandlebarsGenerator.init = function(config, cb) {
   }
 
   // Optionally, copy the contents of the template's "kss-assets" folder.
-  try {
-    wrench.copyDirSyncRecursive(
-      this.config.template + '/kss-assets',
-      this.config.destination + '/kss-assets',
-      {
-        forceDelete: true,
-        excludeHiddenUnix: true
-      }
-    );
-  } catch (e) {
-    // empty
-  }
+  fs.copy(
+    this.config.template + '/kss-assets',
+    this.config.destination + '/kss-assets',
+    {
+      clobber: true,
+      filter: /^[^.]/
+    },
+    // If the template does not have a kss-assets folder, ignore the error.
+    function() {}
+  );
 
   // Load Handlebars helpers.
   if (this.config.helpers.length > 0) {

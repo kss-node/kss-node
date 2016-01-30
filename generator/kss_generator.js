@@ -12,7 +12,7 @@
    See kss_example_generator.js for how to implement a generator.
    ************************************************************** */
 
-const wrench = require('wrench');
+const fs = require('fs-extra');
 
 /**
  * A kss-node generator takes input files and generates a style guide.
@@ -138,24 +138,28 @@ class KssGenerator {
    * @returns {*} The callback's return value.
    */
   clone(templatePath, destinationPath, cb) {
-    return wrench.copyDirRecursive(
-      templatePath,
-      destinationPath,
-      {
-        forceDelete: false,
-        excludeHiddenUnix: true
-      },
-      function(error) {
-        if (error) {
-          // istanbul ignore else
-          if (error.message === 'You are trying to delete a directory that already exists. Specify forceDelete in an options object to override this.') {
-            error = new Error('This folder already exists: ' + destinationPath);
+    return fs.stat(destinationPath, function(error) {
+      if (error && error.code === 'ENOENT') {
+        // If the destination path does not exist, we copy the template to it.
+        return fs.copy(
+          templatePath,
+          destinationPath,
+          {
+            clobber: true,
+            filter: /^[^.]/
+          },
+          function(error) {
+            if (error) {
+              return cb(error);
+            }
+            return cb(null);
           }
-          return cb(error);
-        }
-        return cb(null);
+        );
+      } else if (error) {
+        return cb(error);
       }
-    );
+      return cb(new Error('This folder already exists: ' + destinationPath));
+    });
   }
 
   /**
