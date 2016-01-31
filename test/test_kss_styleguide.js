@@ -22,6 +22,7 @@ describe('KssStyleGuide object API', function() {
     'init',
     'customPropertyNames',
     'hasNumericReferences',
+    'referenceDelimiter',
     'sections'
   ].forEach(function(method) {
     it('has ' + method + '() method', function(done) {
@@ -147,7 +148,16 @@ describe('KssStyleGuide object API', function() {
     it('should return meta.hasNumericReferences', function(done) {
       expect(this.styleGuide.hasNumericReferences()).to.equal(this.styleGuide.meta.hasNumericReferences).and.to.be.false;
       expect(this.styleGuideNumeric.hasNumericReferences()).to.equal(this.styleGuideNumeric.meta.hasNumericReferences).and.to.be.true;
-      expect(this.styleGuideWordPhrases.hasNumericReferences()).to.equal(this.styleGuide.meta.hasNumericReferences).and.to.be.false;
+      expect(this.styleGuideWordPhrases.hasNumericReferences()).to.equal(this.styleGuideWordPhrases.meta.hasNumericReferences).and.to.be.false;
+      done();
+    });
+  });
+
+  describe('.referenceDelimiter()', function() {
+    it('should return meta.referenceDelimiter', function(done) {
+      expect(this.styleGuide.referenceDelimiter()).to.equal(this.styleGuide.meta.referenceDelimiter).and.to.equal('.');
+      expect(this.styleGuideNumeric.referenceDelimiter()).to.equal(this.styleGuideNumeric.meta.referenceDelimiter).and.to.equal('.');
+      expect(this.styleGuideWordPhrases.referenceDelimiter()).to.equal(this.styleGuideWordPhrases.meta.referenceDelimiter).and.to.equal(' - ');
       done();
     });
   });
