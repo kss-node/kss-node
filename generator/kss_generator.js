@@ -183,13 +183,10 @@ class KssGenerator {
    * Allow the template to prepare itself or modify the KssStyleGuide object.
    *
    * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
-   * @param {Function} cb Callback that will be given an Error as its first
-   *                      parameter, if one occurs, and a fully-populated
-   *                      KssStyleGuide as its second parameter.
-   * @returns {*} The callback's return value.
+   * @returns {Promise} A `Promise` object resolving to `styleGuide`.
    */
-  prepare(styleGuide, cb) {
-    return cb(null, styleGuide);
+  prepare(styleGuide) {
+    return Promise.resolve(styleGuide);
   }
 
   /**
