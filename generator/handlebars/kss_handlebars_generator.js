@@ -58,13 +58,9 @@ let kssHandlebarsGenerator = new KssGenerator('3.0', {
  *
  * @alias module:kss/generator/handlebars.init
  * @param {Object} config Configuration object for the requested generation.
- * @param {Function} cb Callback that will be given an Error as its first
- *                      parameter, if one occurs.
- * @returns {*} The callback's return value.
+ * @returns {Promise} A `Promise` object.
  */
-kssHandlebarsGenerator.init = function(config, cb) {
-  cb = cb || /* istanbul ignore next */ function() {};
-
+kssHandlebarsGenerator.init = function(config) {
   // Save the configuration parameters.
   this.config = config;
   this.config.helpers = this.config.helpers || [];
@@ -89,48 +85,48 @@ kssHandlebarsGenerator.init = function(config, cb) {
   }
 
   // Create a new destination directory.
-  try {
-    fs.mkdirsSync(this.config.destination + '/kss-assets');
-  } catch (e) {
-    // empty
-  }
-
-  // Optionally, copy the contents of the template's "kss-assets" folder.
-  fs.copy(
-    this.config.template + '/kss-assets',
-    this.config.destination + '/kss-assets',
-    {
-      clobber: true,
-      filter: /^[^.]/
-    },
-    // If the template does not have a kss-assets folder, ignore the error.
-    function() {}
-  );
-
-  // Load Handlebars helpers.
-  if (this.config.helpers.length > 0) {
-    for (let i = 0; i < this.config.helpers.length; i++) {
-      if (fs.existsSync(this.config.helpers[i])) {
-        // Load custom Handlebars helpers.
-        let helperFiles = fs.readdirSync(this.config.helpers[i]);
-
-        for (let j = 0; j < helperFiles.length; j++) {
-          if (path.extname(helperFiles[j]) === '.js') {
-            let helper = require(this.config.helpers[i] + '/' + helperFiles[j]);
-            if (typeof helper.register === 'function') {
-              helper.register(this.Handlebars, this.config);
-            }
-          }
-        }
+  return fs.mkdirsAsync(this.config.destination).then(() => {
+    // Optionally, copy the contents of the template's "kss-assets" folder.
+    return fs.copyAsync(
+      this.config.template + '/kss-assets',
+      this.config.destination + '/kss-assets',
+      {
+        clobber: true,
+        filter: /^[^.]/
       }
+    ).catch(() => {
+      // If the template does not have a kss-assets folder, ignore the error.
+      return Promise.resolve();
+    });
+  }).then(() => {
+    if (this.config.helpers.length === 0) {
+      return Promise.resolve();
     }
-  }
 
-  // Compile the Handlebars template.
-  this.template = fs.readFileSync(this.config.template + '/index.html', 'utf8');
-  this.template = this.Handlebars.compile(this.template);
-
-  return cb(null);
+    // Load Handlebars helpers.
+    return Promise.all(
+      this.config.helpers.map(directory => {
+        return fs.readdirAsync(directory).then(helperFiles => {
+          /* eslint-disable max-nested-callbacks */
+          helperFiles.forEach(fileName => {
+            if (path.extname(fileName) === '.js') {
+              let helper = require(path.join(directory, fileName));
+              if (typeof helper.register === 'function') {
+                helper.register(this.Handlebars, this.config);
+              }
+            }
+          });
+          /* eslint-enable max-nested-callbacks */
+        });
+      })
+    );
+  }).then(() => {
+    // Compile the Handlebars template.
+    return fs.readFileAsync(this.config.template + '/index.html', 'utf8').then(content => {
+      this.template = this.Handlebars.compile(content);
+      return Promise.resolve();
+    });
+  });
 };
 
 /**

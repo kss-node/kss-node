@@ -56,11 +56,9 @@ kssExampleGenerator.prototype.clone = function(templatePath, destinationPath) {
  * any necessary tasks before the KSS parsing of the source files.
  *
  * @param {Object} config Configuration object for the requested generation.
- * @param {Function} cb Callback that will be given an Error as its first
- *                      parameter, if one occurs.
- * @returns {*} The callback's return value.
+ * @returns {Promise} A `Promise` object.
  */
-kssExampleGenerator.init = function(config, cb) {
+kssExampleGenerator.init = function(config) {
   // At the very least, generators MUST save the configuration parameters.
   this.config = config;
 
@@ -72,8 +70,7 @@ kssExampleGenerator.init = function(config, cb) {
   // Handlebars templating system.
   this.warning = ' (not really.)';
 
-  // No error has occurred.
-  return cb(null);
+  return Promise.resolve();
 };
 
 /**
