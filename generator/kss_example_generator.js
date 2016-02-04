@@ -77,16 +77,13 @@ kssExampleGenerator.init = function(config) {
  * Generate the HTML files of the style guide given a KssStyleGuide object.
  *
  * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
- * @param {Function} cb Callback that will be given an Error as its first
- *                      parameter, if one occurs.
- * @returns {*} The callback's return value.
+ * @returns {Promise} A `Promise` object.
  */
-kssExampleGenerator.prototype.generate = function(styleGuide, cb) {
+kssExampleGenerator.prototype.generate = function(styleGuide) {
   styleGuide.sections();
   this.log('...Generating the demo style guide.' + this.warning);
 
-  // No error has occurred.
-  return cb(null);
+  return Promise.resolve();
 };
 
 // Export our "kssExampleGenerator" object.

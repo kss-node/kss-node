@@ -193,12 +193,10 @@ class KssGenerator {
    * Generate the HTML files of the style guide given a KssStyleGuide object.
    *
    * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
-   * @param {Function} cb Callback that will be given an Error as its first
-   *                      parameter, if one occurs.
-   * @returns {*} The callback's return value.
+   * @returns {Promise} A `Promise` object resolving to `styleGuide`.
    */
-  generate(styleGuide, cb) {
-    return cb(null);
+  generate(styleGuide) {
+    return Promise.resolve(styleGuide);
   }
 }
 
