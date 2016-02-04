@@ -84,11 +84,9 @@ class KssGenerator {
    * controlling the generator should call this method to verify the
    * specified generator has been configured correctly.
    *
-   * @param {Function} cb Callback that will be given an Error as its first
-   *   parameter, if one occurs.
-   * @returns {*} The callback's return value.
+   * @returns {Promise} A `Promise` object resolving to `null`.
    */
-  checkGenerator(cb) {
+  checkGenerator() {
     let isCompatible = true,
       version,
       apiMajor,
@@ -97,7 +95,7 @@ class KssGenerator {
       thisMinor;
 
     if (!(this instanceof KssGenerator)) {
-      return cb(new Error('The loaded generator is not a KssGenerator object.'));
+      return Promise.reject(new Error('The loaded generator is not a KssGenerator object.'));
     }
 
     if (this.implementsAPI === 'undefined') {
@@ -117,10 +115,10 @@ class KssGenerator {
     }
 
     if (!isCompatible) {
-      return cb(new Error('kss-node expected the template\'s generator to implement KssGenerator API version ' + this.API + '; version "' + this.implementsAPI + '" is being used instead.'));
+      return Promise.reject(new Error('kss-node expected the template\'s generator to implement KssGenerator API version ' + this.API + '; version "' + this.implementsAPI + '" is being used instead.'));
     }
 
-    return cb(null);
+    return Promise.resolve();
   }
 
   /**
