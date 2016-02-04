@@ -26,9 +26,7 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/* eslint-disable key-spacing */
-
-'use strict';
+            <pre class="prettyprint source linenums"><code>'use strict';
 
 /**
  * The core kss API can be imported with:
@@ -39,76 +37,136 @@
  * The main object is a function that will generate a style guide given the
  * correct options.
  * ```
- * kss(opts, callback);
+ * kss(options, callback);
  * ```
  * The various constructors and methods can then be accessed with:
  * ```
- * var kssStyleGuide = new kss.KssStyleGuide();
- * var kssSection    = new kss.KssSection();
- * var kssModifier   = new kss.KssModifier();
- * var kssParameter  = new kss.KssParameter();
- * var kssConfig     = new kss.KssConfig();
- * kss.parse();
- * kss.traverse();
+ * const KssStyleGuide = require('kss').KssStyleGuide;
+ * const KssSection    = require('kss').KssSection;
+ * const KssModifier   = require('kss').KssModifier;
+ * const KssParameter  = require('kss').KssParameter;
+ * const KssConfig     = require('kss').KssConfig;
+ *
+ * const kss           = require('kss');
+ * const traverse      = require('kss').traverse();
+ * const parse         = require('kss').parse();
  * ```
  * @module kss
  */
 
-var cli = require('./cli.js');
+const KssConfig = require('./kss_config.js'),
+  Promise = require('bluebird'),
+  traverse = require('./traverse.js');
 
 /**
  * Generates a style guide given the proper options.
  *
- * @param {object} options A collection of configuration options.
- * @param {Function} done Callback function
- * @returns {*} null
+ * @param {object} [options] A collection of configuration options.
+ * @returns {Promise} A `Promise` object.
  */
-var kss = function(options, done) {
-  var stdout, stderr, argv,
-    flag, values, i;
+const kss = function(options) {
+  options = options || {};
+  options.pipes = options.pipes || {};
+  options.pipes.stdout = options.pipes.stdout || process.stdout;
+  options.pipes.stderr = options.pipes.stderr || process.stderr;
 
-  // Allow options to provide an alternative to the process' stdout/stderr.
-  stdout = (options.pipes &amp;&amp; options.pipes.stdout) ? options.pipes.stdout : process.stdout;
-  stderr = (options.pipes &amp;&amp; options.pipes.stderr) ? options.pipes.stderr : process.stderr;
+  const kssConfig = new KssConfig(options);
 
-  // Create an argv-like Array from the options.
-  argv = ['node', 'bin/kss-node'];
-  for (flag in options) {
-    if (options.hasOwnProperty(flag)) {
-      values = options[flag];
-      if (!Array.isArray(values)) {
-        values = [values];
-      }
-      for (i = 0; i &lt; values.length; i++) {
-        if (values[i] === null
-          || typeof values[i] === 'boolean'
-          || typeof values[i] === 'undefined'
-        ) {
-          argv.push('--' + flag);
-        } else {
-          argv.push('--' + flag, values[i]);
-        }
-      }
-    }
+  // Based on the template location specified in the kssConfig, load the
+  // requested template's generator.
+  let template,
+    generator;
+
+  try {
+    template = require(kssConfig.get('template'));
+    generator = template.generator;
+  } catch (error) {
+    // Templates don't have to load their own generator. If the template fails
+    // to load a generator, we assume it wanted the default generator.
+    generator = require('../generator/handlebars');
   }
 
-  // @TODO: This is a bit backwards, but our CLI came first. So now our "pure"
-  // JavaScript API is calling the cli module. In 3.x, swap this around.
-  return cli({
-    stdout: stdout,
-    stderr: stderr,
-    argv: argv
-  }, done);
+  // Load the generator's and the template's CLI options.
+  // istanbul ignore else
+  if (generator.options) {
+    kssConfig.addOptions(generator.options);
+  }
+  if (template &amp;&amp; template.options) {
+    kssConfig.addOptions(template.options);
+  }
+
+  // Set the logging function of the generator.
+  generator.setLogFunction(function() {
+    let message = '';
+    for (let i = 0; i &lt; arguments.length; i++) {
+      message += arguments[i];
+    }
+    options.pipes.stdout.write(message + '\n');
+  });
+
+  // Confirm this is a compatible generator.
+  return generator.checkGenerator().then(() => {
+    // If requested, clone a template and exit.
+    if (kssConfig.get('clone')) {
+      generator.log('Creating a new style guide template in ' + kssConfig.get('clone') + '...');
+
+      return generator.clone(kssConfig.get('template'), kssConfig.get('clone')).then(() => {
+        generator.log('You can change it as you like, and use it to generate your style guide using the "template" option');
+        return Promise.resolve();
+      });
+    }
+
+    // If no source is specified, display helpful error and exit.
+    if (!kssConfig.get('source').length) {
+      return Promise.reject(new Error('No "source" option specified.'));
+    }
+
+    // Initialize the generator.
+    return generator.init(kssConfig.get()).then(() => {
+      if (kssConfig.get('verbose')) {
+        generator.log('...Parsing your style guide:');
+      }
+
+      // Then traverse the source and parse the files found.
+      return traverse(kssConfig.get('source'), {
+        header: true,
+        markdown: true,
+        markup: true,
+        mask: kssConfig.get('mask'),
+        custom: kssConfig.get('custom')
+      });
+    }).then(styleGuide => {
+      // Then allow the template to prepare itself and the KssStyleGuide object.
+      return generator.prepare(styleGuide);
+    }).then(styleGuide => {
+      // Then generate the style guide.
+      return generator.generate(styleGuide);
+    }).then(() => {
+      if (kssConfig.get('verbose')) {
+        generator.log('');
+      }
+      generator.log('Style guide generation completed successfully!');
+      return Promise.resolve();
+    });
+  }).catch(error => {
+    // Show the full error stack if the verbose flag is used.
+    if (kssConfig.get('verbose')) {
+      options.pipes.stderr.write(error + '\n');
+    } else {
+      options.pipes.stderr.write('Error: ' + error.message + '\n');
+    }
+    throw error;
+  });
 };
 
 module.exports = kss;
-module.exports.KssConfig = require('./kss_config.js');
+module.exports.KssConfig = KssConfig;
 module.exports.KssStyleGuide = require('./kss_styleguide.js');
 module.exports.KssSection = require('./kss_section.js');
 module.exports.KssModifier = require('./kss_modifier.js');
 module.exports.KssParameter = require('./kss_parameter.js');
 module.exports.parse = require('./parse.js');
-module.exports.traverse = require('./traverse.js');
+module.exports.traverse = traverse;
 </code></pre>
         </article>
     </section>
@@ -119,13 +177,13 @@ module.exports.traverse = require('./traverse.js');
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="KssGenerator.html">KssGenerator</a></li><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_generator-KssGenerator.html">KssGenerator</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Jan 12 2016 13:43:43 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Feb 05 2016 01:14:40 GMT+0800 (CST)
 </footer>
 
 <script> prettyPrint(); </script>

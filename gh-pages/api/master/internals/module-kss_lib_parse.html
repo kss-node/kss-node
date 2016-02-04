@@ -40,8 +40,8 @@
         
             <div class="description"><p>The <code>kss/lib/parse</code> module is normally accessed via the
 <a href="module-kss.html#.parse"><code>parse()</code></a> method of the <code>kss</code> module:</p>
-<pre class="prettyprint source"><code>var kss = require('kss');
-kss.parse(input, options, callback);</code></pre></div>
+<pre class="prettyprint source"><code>const kss = require('kss');
+let styleGuide = kss.parse(input, options);</code></pre></div>
         
 
         
@@ -90,7 +90,7 @@ kss.parse(input, options, callback);</code></pre></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_parse.js.html">lib/parse.js</a>, <a href="lib_parse.js.html#line5">line 5</a>
+        <a href="lib_parse.js.html">lib/parse.js</a>, <a href="lib_parse.js.html#line3">line 3</a>
     </li></ul></dd>
     
 
@@ -263,7 +263,7 @@ kss.parse(input, options, callback);</code></pre></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_parse.js.html">lib/parse.js</a>, <a href="lib_parse.js.html#line405">line 405</a>
+        <a href="lib_parse.js.html">lib/parse.js</a>, <a href="lib_parse.js.html#line383">line 383</a>
     </li></ul></dd>
     
 
@@ -326,7 +326,7 @@ kss.parse(input, options, callback);</code></pre></div>
 
 
 <div class="description">
-    <p>Takes an array of modifier lines, and turns it into instances of KssModifier.</p>
+    <p>Takes an array of modifier lines, and turns it into a JSON equivalent of KssModifier.</p>
 </div>
 
 
@@ -442,7 +442,7 @@ kss.parse(input, options, callback);</code></pre></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_parse.js.html">lib/parse.js</a>, <a href="lib_parse.js.html#line248">line 248</a>
+        <a href="lib_parse.js.html">lib/parse.js</a>, <a href="lib_parse.js.html#line331">line 331</a>
     </li></ul></dd>
     
 
@@ -618,7 +618,7 @@ kss.parse(input, options, callback);</code></pre></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_parse.js.html">lib/parse.js</a>, <a href="lib_parse.js.html#line276">line 276</a>
+        <a href="lib_parse.js.html">lib/parse.js</a>, <a href="lib_parse.js.html#line357">line 357</a>
     </li></ul></dd>
     
 
@@ -771,7 +771,7 @@ kss.parse(input, options, callback);</code></pre></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_parse.js.html">lib/parse.js</a>, <a href="lib_parse.js.html#line303">line 303</a>
+        <a href="lib_parse.js.html">lib/parse.js</a>, <a href="lib_parse.js.html#line230">line 230</a>
     </li></ul></dd>
     
 
@@ -973,7 +973,7 @@ the word we're checking for.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_parse.js.html">lib/parse.js</a>, <a href="lib_parse.js.html#line515">line 515</a>
+        <a href="lib_parse.js.html">lib/parse.js</a>, <a href="lib_parse.js.html#line457">line 457</a>
     </li></ul></dd>
     
 
@@ -1026,359 +1026,7 @@ the word we're checking for.</p>
 
     
 
-    <h4 class="name" id="~isDeprecated"><span class="type-signature">(private, inner) </span>isDeprecated<span class="signature">(description, options)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Check if the description indicates that a section is deprecated.</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>description</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The description of that section</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>options</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The options passed on from previous functions</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_parse.js.html">lib/parse.js</a>, <a href="lib_parse.js.html#line486">line 486</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>Whether the description indicates the section is deprecated.</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Boolean</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="~isExperimental"><span class="type-signature">(private, inner) </span>isExperimental<span class="signature">(description, options)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Check if the description indicates that a section is experimental.</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>description</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The description of that section</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>options</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The options passed on from previous functions</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_parse.js.html">lib/parse.js</a>, <a href="lib_parse.js.html#line498">line 498</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>Whether the description indicates the section is experimental.</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Boolean</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="~parseChunk"><span class="type-signature">(private, inner) </span>parseChunk<span class="signature">(styleguide, input, options)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id="~parseChunk"><span class="type-signature">(private, inner) </span>parseChunk<span class="signature">(styleGuide, input, options)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
@@ -1423,7 +1071,7 @@ instance of <code>KssStyleGuide</code>.</p>
 
         <tr>
             
-                <td class="name"><code>styleguide</code></td>
+                <td class="name"><code>styleGuide</code></td>
             
 
             <td class="type">
@@ -1526,7 +1174,7 @@ instance of <code>KssStyleGuide</code>.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_parse.js.html">lib/parse.js</a>, <a href="lib_parse.js.html#line102">line 102</a>
+        <a href="lib_parse.js.html">lib/parse.js</a>, <a href="lib_parse.js.html#line95">line 95</a>
     </li></ul></dd>
     
 
@@ -1771,7 +1419,7 @@ instance of <code>KssStyleGuide</code>.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_parse.js.html">lib/parse.js</a>, <a href="lib_parse.js.html#line454">line 454</a>
+        <a href="lib_parse.js.html">lib/parse.js</a>, <a href="lib_parse.js.html#line420">line 420</a>
     </li></ul></dd>
     
 
@@ -1835,13 +1483,13 @@ instance of <code>KssStyleGuide</code>.</p>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="KssGenerator.html">KssGenerator</a></li><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_generator-KssGenerator.html">KssGenerator</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Jan 12 2016 13:43:43 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Feb 05 2016 01:14:40 GMT+0800 (CST)
 </footer>
 
 <script> prettyPrint(); </script>

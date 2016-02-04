@@ -41,14 +41,16 @@
             <div class="description"><p>The core kss API can be imported with:</p>
 <pre class="prettyprint source"><code>var kss = require('kss');</code></pre><p>The main object is a function that will generate a style guide given the
 correct options.</p>
-<pre class="prettyprint source"><code>kss(opts, callback);</code></pre><p>The various constructors and methods can then be accessed with:</p>
-<pre class="prettyprint source"><code>var kssStyleGuide = new kss.KssStyleGuide();
-var kssSection    = new kss.KssSection();
-var kssModifier   = new kss.KssModifier();
-var kssParameter  = new kss.KssParameter();
-var kssConfig     = new kss.KssConfig();
-kss.parse();
-kss.traverse();</code></pre></div>
+<pre class="prettyprint source"><code>kss(options, callback);</code></pre><p>The various constructors and methods can then be accessed with:</p>
+<pre class="prettyprint source"><code>const KssStyleGuide = require('kss').KssStyleGuide;
+const KssSection    = require('kss').KssSection;
+const KssModifier   = require('kss').KssModifier;
+const KssParameter  = require('kss').KssParameter;
+const KssConfig     = require('kss').KssConfig;
+
+const kss           = require('kss');
+const traverse      = require('kss').traverse();
+const parse         = require('kss').parse();</code></pre></div>
         
 
         
@@ -97,7 +99,7 @@ kss.traverse();</code></pre></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss.js.html">lib/kss.js</a>, <a href="lib_kss.js.html#line5">line 5</a>
+        <a href="lib_kss.js.html">lib/kss.js</a>, <a href="lib_kss.js.html#line3">line 3</a>
     </li></ul></dd>
     
 
@@ -166,15 +168,15 @@ kss.traverse();</code></pre></div>
 
     
 
-    <h4 class="name" id=".parse"><span class="type-signature">(static) </span>parse<span class="signature">(input, options, callback)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".parse"><span class="type-signature">(static) </span>parse<span class="signature">(input, options)</span><span class="type-signature"> &rarr; {KssStyleGuide}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Parse an array/string of documented CSS, or an object of files
-and their content.</p>
+    <p>Parse an array/string of documented CSS, or an object of files and their
+content.</p>
 <p>File object formatted as <code>{ &quot;absolute filename&quot;: content, ... }</code>.</p>
 <p>This is called automatically as part of <code>traverse</code> but is publicly
 accessible as well.</p>
@@ -219,7 +221,7 @@ accessible as well.</p>
             <td class="type">
             
                 
-<span class="param-type">Mixed</span>
+<span class="param-type">*</span>
 
 
             
@@ -253,29 +255,6 @@ accessible as well.</p>
             
 
             <td class="description last"><p>Options to alter the output content. Same as the options in <a href="module-kss.html#.traverse"><code>traverse()</code></a>.</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>callback</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Called when parsing is complete</p></td>
         </tr>
 
     
@@ -316,7 +295,7 @@ accessible as well.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_parse.js.html">lib/parse.js</a>, <a href="lib_parse.js.html#line45">line 45</a>
+        <a href="lib_parse.js.html">lib/parse.js</a>, <a href="lib_parse.js.html#line42">line 42</a>
     </li></ul></dd>
     
 
@@ -339,6 +318,28 @@ accessible as well.</p>
 
 
 
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Returns a <code>KssStyleGuide</code> object.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">KssStyleGuide</span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
@@ -347,7 +348,7 @@ accessible as well.</p>
 
     
 
-    <h4 class="name" id=".traverse"><span class="type-signature">(static) </span>traverse<span class="signature">(directory, options, callback)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".traverse"><span class="type-signature">(static) </span>traverse<span class="signature">(directories, options<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
 
     
 
@@ -359,10 +360,8 @@ accessible as well.</p>
 <p>If you want to parse anything other than css, less, sass, or stylus files
 then you'll want to use options.mask to target a different set of file
 extensions.</p>
-<pre class="prettyprint source"><code>kss.traverse('./stylesheets', { mask: '*.css' }, function(error, styleguide) {
-    if (error) throw error;
-
-    styleguide.section('2.1.1') // &lt;KssSection>
+<pre class="prettyprint source"><code>kss.traverse('./stylesheets', { mask: '*.css' }).then(function(styleGuide) {
+  styleGuide.sections('2.1.1') // &lt;KssSection>
 });</code></pre><p>There a few extra <code>options</code> you can pass to <code>kss.traverse</code> which will effect
 the output generated:</p>
 <ul>
@@ -406,6 +405,8 @@ Enabled by default.</li>
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -418,7 +419,7 @@ Enabled by default.</li>
 
         <tr>
             
-                <td class="name"><code>directory</code></td>
+                <td class="name"><code>directories</code></td>
             
 
             <td class="type">
@@ -434,10 +435,18 @@ Enabled by default.</li>
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last"><p>The directory(s) to traverse</p></td>
+            <td class="description last"><p>The directories to traverse</p></td>
         </tr>
 
     
@@ -457,33 +466,20 @@ Enabled by default.</li>
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
 
             
 
             <td class="description last"><p>Options to alter the output content (optional)</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>callback</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Called when traversal AND parsing is complete</p></td>
         </tr>
 
     
@@ -524,7 +520,7 @@ Enabled by default.</li>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_traverse.js.html">lib/traverse.js</a>, <a href="lib_traverse.js.html#line64">line 64</a>
+        <a href="lib_traverse.js.html">lib/traverse.js</a>, <a href="lib_traverse.js.html#line60">line 60</a>
     </li></ul></dd>
     
 
@@ -547,6 +543,28 @@ Enabled by default.</li>
 
 
 
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>A <code>Promise</code> object resolving to a <code>KssStyleGuide</code>.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
@@ -555,7 +573,7 @@ Enabled by default.</li>
 
     
 
-    <h4 class="name" id="~kss"><span class="type-signature">(inner) </span>kss<span class="signature">(options, done)</span><span class="type-signature"> &rarr; {*}</span></h4>
+    <h4 class="name" id="~kss"><span class="type-signature">(inner) </span>kss<span class="signature">(options<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
 
     
 
@@ -586,6 +604,8 @@ Enabled by default.</li>
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -611,33 +631,20 @@ Enabled by default.</li>
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
 
             
 
             <td class="description last"><p>A collection of configuration options.</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>done</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Callback function</p></td>
         </tr>
 
     
@@ -678,7 +685,7 @@ Enabled by default.</li>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss.js.html">lib/kss.js</a>, <a href="lib_kss.js.html#line38">line 38</a>
+        <a href="lib_kss.js.html">lib/kss.js</a>, <a href="lib_kss.js.html#line39">line 39</a>
     </li></ul></dd>
     
 
@@ -705,7 +712,7 @@ Enabled by default.</li>
 
         
 <div class="param-desc">
-    <p>null</p>
+    <p>A <code>Promise</code> object.</p>
 </div>
 
 
@@ -716,7 +723,7 @@ Enabled by default.</li>
     </dt>
     <dd>
         
-<span class="param-type">*</span>
+<span class="param-type">Promise</span>
 
 
     </dd>
@@ -742,13 +749,13 @@ Enabled by default.</li>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="KssGenerator.html">KssGenerator</a></li><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_generator-KssGenerator.html">KssGenerator</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Jan 12 2016 13:43:43 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Feb 05 2016 01:14:40 GMT+0800 (CST)
 </footer>
 
 <script> prettyPrint(); </script>

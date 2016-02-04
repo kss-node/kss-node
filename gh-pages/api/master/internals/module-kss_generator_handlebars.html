@@ -39,8 +39,8 @@
     
         
             <div class="description"><p>The <code>kss/generator/handlebars</code> module loads the kssHandlebarsGenerator
-object, a <code><a href="KssGenerator.html">KssGenerator</a></code> object using Handlebars templating.</p>
-<pre class="prettyprint source"><code>var kssHandlebarsGenerator = require('kss/generator/handlebars');</code></pre></div>
+object, a <code>KssGenerator</code> object using Handlebars templating.</p>
+<pre class="prettyprint source"><code>const kssHandlebarsGenerator = require('kss/generator/handlebars');</code></pre></div>
         
 
         
@@ -139,7 +139,7 @@ object, a <code><a href="KssGenerator.html">KssGenerator</a></code> object using
 
     
 
-    <h4 class="name" id=".generate"><span class="type-signature">(static) </span>generate<span class="signature">(styleguide)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".generate"><span class="type-signature">(static) </span>generate<span class="signature">(styleGuide)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
 
     
 
@@ -182,7 +182,7 @@ object, a <code><a href="KssGenerator.html">KssGenerator</a></code> object using
 
         <tr>
             
-                <td class="name"><code>styleguide</code></td>
+                <td class="name"><code>styleGuide</code></td>
             
 
             <td class="type">
@@ -239,7 +239,7 @@ object, a <code><a href="KssGenerator.html">KssGenerator</a></code> object using
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="generator_handlebars_kss_handlebars_generator.js.html">generator/handlebars/kss_handlebars_generator.js</a>, <a href="generator_handlebars_kss_handlebars_generator.js.html#line143">line 143</a>
+        <a href="generator_handlebars_kss_handlebars_generator.js.html">generator/handlebars/kss_handlebars_generator.js</a>, <a href="generator_handlebars_kss_handlebars_generator.js.html#line141">line 141</a>
     </li></ul></dd>
     
 
@@ -262,6 +262,28 @@ object, a <code><a href="KssGenerator.html">KssGenerator</a></code> object using
 
 
 
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>A <code>Promise</code> object.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
@@ -270,7 +292,7 @@ object, a <code><a href="KssGenerator.html">KssGenerator</a></code> object using
 
     
 
-    <h4 class="name" id=".generatePage"><span class="type-signature">(static) </span>generatePage<span class="signature">(pageReference, sections)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".generatePage"><span class="type-signature">(static) </span>generatePage<span class="signature">(pageReference, sections)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
 
     
 
@@ -329,7 +351,8 @@ object, a <code><a href="KssGenerator.html">KssGenerator</a></code> object using
 
             
 
-            <td class="description last"><p>The reference of the current page's root section.</p></td>
+            <td class="description last"><p>The reference of the current page's root
+  section.</p></td>
         </tr>
 
     
@@ -393,7 +416,7 @@ object, a <code><a href="KssGenerator.html">KssGenerator</a></code> object using
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="generator_handlebars_kss_handlebars_generator.js.html">generator/handlebars/kss_handlebars_generator.js</a>, <a href="generator_handlebars_kss_handlebars_generator.js.html#line342">line 342</a>
+        <a href="generator_handlebars_kss_handlebars_generator.js.html">generator/handlebars/kss_handlebars_generator.js</a>, <a href="generator_handlebars_kss_handlebars_generator.js.html#line340">line 340</a>
     </li></ul></dd>
     
 
@@ -416,6 +439,28 @@ object, a <code><a href="KssGenerator.html">KssGenerator</a></code> object using
 
 
 
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>A <code>Promise</code> object.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
@@ -424,7 +469,7 @@ object, a <code><a href="KssGenerator.html">KssGenerator</a></code> object using
 
     
 
-    <h4 class="name" id=".init"><span class="type-signature">(static) </span>init<span class="signature">(config, cb)</span><span class="type-signature"> &rarr; {*}</span></h4>
+    <h4 class="name" id=".init"><span class="type-signature">(static) </span>init<span class="signature">(config)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
 
     
 
@@ -490,30 +535,6 @@ any necessary tasks before the KSS parsing of the source files.</p>
         </tr>
 
     
-
-        <tr>
-            
-                <td class="name"><code>cb</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Callback that will be given an Error as its first
-                     parameter, if one occurs.</p></td>
-        </tr>
-
-    
     </tbody>
 </table>
 
@@ -551,7 +572,7 @@ any necessary tasks before the KSS parsing of the source files.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="generator_handlebars_kss_handlebars_generator.js.html">generator/handlebars/kss_handlebars_generator.js</a>, <a href="generator_handlebars_kss_handlebars_generator.js.html#line62">line 62</a>
+        <a href="generator_handlebars_kss_handlebars_generator.js.html">generator/handlebars/kss_handlebars_generator.js</a>, <a href="generator_handlebars_kss_handlebars_generator.js.html#line65">line 65</a>
     </li></ul></dd>
     
 
@@ -578,7 +599,7 @@ any necessary tasks before the KSS parsing of the source files.</p>
 
         
 <div class="param-desc">
-    <p>The callback's return value.</p>
+    <p>A <code>Promise</code> object.</p>
 </div>
 
 
@@ -589,7 +610,7 @@ any necessary tasks before the KSS parsing of the source files.</p>
     </dt>
     <dd>
         
-<span class="param-type">*</span>
+<span class="param-type">Promise</span>
 
 
     </dd>
@@ -615,13 +636,13 @@ any necessary tasks before the KSS parsing of the source files.</p>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="KssGenerator.html">KssGenerator</a></li><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_generator-KssGenerator.html">KssGenerator</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Jan 12 2016 13:43:43 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Feb 05 2016 01:14:40 GMT+0800 (CST)
 </footer>
 
 <script> prettyPrint(); </script>

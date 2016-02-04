@@ -30,116 +30,131 @@
 
 /**
  * The `kss/lib/kss_parameter` module is normally accessed via the
- * [`KssParameter()`]{@link module:kss.KssParameter} constructor of the `kss`
- * module:
+ * [`KssParameter()`]{@link module:kss.KssParameter} class of the `kss` module:
  * ```
- * var kss = require('kss');
- * var parameter = new kss.KssParameter(data);
+ * const KssParameter = require('kss').KssParameter;
  * ```
  * @private
  * @module kss/lib/kss_parameter
  */
 
-var KssParameter;
-
 /**
- * An instance of this class is returned on calling `KssSection.parameter`.
- * Exposes convenience methods for interpreting data.
+ * A KssParameter object represents a single parameter of a `KssSection`.
  *
- * @constructor
+ * This class is normally accessed via the [`kss`]{@link module:kss} module:
+ * ```
+ * const KssParameter = require('kss').KssParameter;
+ * ```
+ *
  * @alias module:kss.KssParameter
- * @param {Object} data A part of the data object passed on by `KssSection`.
  */
-KssParameter = function(data) {
-  if (!(this instanceof KssParameter)) {
-    return new KssParameter(data);
+class KssParameter {
+
+  /**
+   * Creates a KssParameter object and stores the given data.
+   *
+   * If passed an object, it will add `section`, `name`, and `description`
+   * properties.
+   *
+   * @param {Object} [data] An object of data.
+   */
+  constructor(data) {
+    data = data || {};
+
+    this.meta = {
+      section: null
+    };
+
+    this.data = {
+      name: '',
+      description: ''
+    };
+
+    // Loop through the given properties.
+    for (let name in data) {
+      // If the property is defined in this.data or this.meta, add it via our API.
+      if (data.hasOwnProperty(name) &amp;&amp; (this.data.hasOwnProperty(name) || this.meta.hasOwnProperty(name))) {
+        this[name](data[name]);
+      }
+    }
   }
 
-  data = data || {};
+  /**
+   * Gets or sets the `KssSection` object this `KssParameter` is associated with.
+   *
+   * If the `section` value is provided, the `KssSection` for this parameter is
+   * set. Otherwise, the `KssSection` of the parameter is returned.
+   *
+   * @param {KssSection} [section] Optional. The `KssSection` that owns the
+   *   `KssParameter`.
+   * @returns {KssSection|KssParameter} If section is given, the current
+   *   `KssParameter` object is returned to allow chaining of methods. Otherwise,
+   *   the `KssSection` object the parameter belongs to is returned.
+   */
+  section(section) {
+    if (typeof section === 'undefined') {
+      return this.meta.section;
+    }
 
-  this.meta = {};
-  this.meta.section = data.section || null;
-
-  this.data = {};
-  this.data.name = data.name || '';
-  this.data.description = data.description || '';
-};
-
-/**
- * Gets or sets the `KssSection` object this `KssParameter` is associated with.
- *
- * If the `section` value is provided, the `KssSection` for this parameter is
- * set. Otherwise, the `KssSection` of the parameter is returned.
- *
- * @param {KssSection} section Optional. The `KssSection` that owns the
- *   `KssParameter`.
- * @returns {KssSection|KssParameter} If section is given, the current
- *   `KssParameter` object is returned to allow chaining of methods. Otherwise,
- *   the `KssSection` object the parameter belongs to is returned.
- */
-KssParameter.prototype.section = function(section) {
-  if (typeof section !== 'undefined') {
     this.meta.section = section;
     // Allow chaining.
     return this;
-  } else {
-    return this.meta.section;
   }
-};
 
-/**
- * Gets or sets the name of the `KssParameter`.
- *
- * If the `name` value is provided, the name of this `KssParameter` is set.
- * Otherwise, the name of the `KssParameter` is returned.
- *
- * @param {string} name Optional. The name of the `KssParameter`.
- * @returns {string|KssParameter} If name is given, the current `KssParameter`
- *   object is returned to allow chaining of methods. Otherwise, the name of the
- *   `KssParameter` is returned.
- */
-KssParameter.prototype.name = function(name) {
-  if (typeof name !== 'undefined') {
+  /**
+   * Gets or sets the name of the `KssParameter`.
+   *
+   * If the `name` value is provided, the name of this `KssParameter` is set.
+   * Otherwise, the name of the `KssParameter` is returned.
+   *
+   * @param {string} [name] Optional. The name of the `KssParameter`.
+   * @returns {string|KssParameter} If name is given, the current `KssParameter`
+   *   object is returned to allow chaining of methods. Otherwise, the name of the
+   *   `KssParameter` is returned.
+   */
+  name(name) {
+    if (typeof name === 'undefined') {
+      return this.data.name;
+    }
+
     this.data.name = name;
     // Allow chaining.
     return this;
-  } else {
-    return this.data.name;
   }
-};
 
-/**
- * Gets or sets the description of the `KssParameter`.
- *
- * If the `description` is provided, the description of this `KssParameter` is set.
- * Otherwise, the description of the `KssParameter` is returned.
- *
- * @param {string} description Optional. The description of the `KssParameter`.
- * @returns {string|KssParameter} If description is given, the current
- *   `KssParameter` object is returned to allow chaining of methods. Otherwise,
- *   the description of the `KssParameter` is returned.
- */
-KssParameter.prototype.description = function(description) {
-  if (typeof description !== 'undefined') {
+  /**
+   * Gets or sets the description of the `KssParameter`.
+   *
+   * If the `description` is provided, the description of this `KssParameter` is set.
+   * Otherwise, the description of the `KssParameter` is returned.
+   *
+   * @param {string} [description] Optional. The description of the `KssParameter`.
+   * @returns {string|KssParameter} If description is given, the current
+   *   `KssParameter` object is returned to allow chaining of methods. Otherwise,
+   *   the description of the `KssParameter` is returned.
+   */
+  description(description) {
+    if (typeof description === 'undefined') {
+      return this.data.description;
+    }
+
     this.data.description = description;
     // Allow chaining.
     return this;
-  } else {
-    return this.data.description;
   }
-};
 
-/**
- * Return the `KssParameter` as a JSON object.
- *
- * @returns {Object} A JSON object representation of the `KssParameter`.
- */
-KssParameter.prototype.toJSON = function() {
-  return {
-    name: this.name(),
-    description: this.description()
-  };
-};
+  /**
+   * Return the `KssParameter` as a JSON object.
+   *
+   * @returns {Object} A JSON object representation of the `KssParameter`.
+   */
+  toJSON() {
+    return {
+      name: this.name(),
+      description: this.description()
+    };
+  }
+}
 
 module.exports = KssParameter;
 </code></pre>
@@ -152,13 +167,13 @@ module.exports = KssParameter;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="KssGenerator.html">KssGenerator</a></li><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_generator-KssGenerator.html">KssGenerator</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Jan 12 2016 13:43:43 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Feb 05 2016 01:14:40 GMT+0800 (CST)
 </footer>
 
 <script> prettyPrint(); </script>

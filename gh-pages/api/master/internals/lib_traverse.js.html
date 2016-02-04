@@ -26,26 +26,24 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/* eslint-disable max-nested-callbacks */
-
-'use strict';
+            <pre class="prettyprint source linenums"><code>'use strict';
 
 /**
  * The `kss/lib/traverse` module is normally accessed via the
  * [`traverse()`]{@link module:kss.traverse} method of the `kss` module:
  * ```
- * var kss = require('kss');
- * kss.traverse(directory, options, callback);
+ * const kss = require('kss');
+ * let styleGuide = kss.traverse(directory, options);
  * ```
  * @private
  * @module kss/lib/traverse
  */
 
-var parse = require('./parse.js'),
+const parse = require('./parse.js'),
   path = require('path'),
-  fs = require('fs');
+  Promise = require('bluebird');
 
-var traverse;
+const fs = Promise.promisifyAll(require('fs-extra'));
 
 /**
  * Traverse a directory, parse its contents, and create a KssStyleGuide.
@@ -57,10 +55,8 @@ var traverse;
  * extensions.
  *
  * ```
- * kss.traverse('./stylesheets', { mask: '*.css' }, function(error, styleguide) {
- *     if (error) throw error;
- *
- *     styleguide.section('2.1.1') // &lt;KssSection>
+ * kss.traverse('./stylesheets', { mask: '*.css' }).then(function(styleGuide) {
+ *   styleGuide.sections('2.1.1') // &lt;KssSection>
  * });
  * ```
  *
@@ -85,26 +81,12 @@ var traverse;
  *   Enabled by default.
  *
  * @alias module:kss.traverse
- * @param {String|Array} directory The directory(s) to traverse
- * @param {Object}       options   Options to alter the output content (optional)
- * @param {Function}     callback  Called when traversal AND parsing is complete
+ * @param {String|Array} directories The directories to traverse
+ * @param {Object} [options] Options to alter the output content (optional)
+ * @returns {Promise} A `Promise` object resolving to a `KssStyleGuide`.
  */
-traverse = function(directory, options, callback) {
-  var fileNames = [],
-    fileCounter = 0,
-    filesRemaining = 0,
-    loopsRemaining = 0,
-    walkFinished,
-    walk;
-
+let traverse = function(directories, options) {
   options = options || {};
-  if (typeof options === 'function') {
-    callback = options;
-    options = {};
-  }
-  if (typeof callback !== 'function') {
-    throw new Error('No callback supplied for kss.traverse()!');
-  }
 
   // Mask to search for particular file types - defaults to common precompilers.
   options.mask = options.mask || /\.css|\.less|\.sass|\.scss|\.styl|\.stylus/;
@@ -116,118 +98,77 @@ traverse = function(directory, options, callback) {
     );
   }
 
-  // Normalize all the directory paths.
-  if (!Array.isArray(directory)) {
-    directory = [directory];
-  }
-  for (var key in directory) {
-    // istanbul ignore else
-    if (directory.hasOwnProperty(key)) {
-      directory[key] = path.normalize(directory[key]);
-    }
+  if (!Array.isArray(directories)) {
+    directories = [directories];
   }
 
-  // Callback for walk() when it has finished traversing all directories.
-  walkFinished = function() {
-    /* eslint-disable no-loop-func */
-    var i, l = fileNames.length, files = [], orderedObject = {};
+  let fileNames = [];
 
-    fileNames.sort();
-    for (i = 0; i &lt; l; i += 1) {
-      (function(j) {
-        fs.readFile(fileNames[j], 'utf8', function(error, contents) {
-          // istanbul ignore if
-          if (error) { callback(error); return; }
+  let walk = function(directory) {
+    // Read the contents of the directory.
+    return fs.readdirAsync(directory).then(function(relnames) {
+      // If there are no files/folders, declare success.
+      if (relnames.length === 0) {
+        return Promise.resolve();
+      }
 
-          files[j] = contents;
-          fileCounter -= 1;
+      // Otherwise, loop through directory contents.
+      return Promise.all(
+        relnames.map(relname => {
+          let name = path.join(directory, relname);
 
-          if (fileCounter === 0) {
-            files.map(function(fileContent, index) {
-              var filename = fileNames[index];
-              orderedObject[filename] = fileContent;
-              return '';
-            });
-            parse(orderedObject, options, callback);
-          }
-        });
-      }(i));
-    }
-  };
-
-  // Courtesy of [stygstra](https://gist.github.com/514983)
-  // istanbul ignore next
-  walk = function(directories, opts, cb) {
-    opts = opts || {};
-    if (typeof cb !== 'function') { cb = function() {}; }
-
-    if (!Array.isArray(directories)) {
-      directories = [directories];
-    }
-
-    // Loop through all the given directories.
-    loopsRemaining += directories.length;
-    directories.forEach(function(dir) {
-      loopsRemaining -= 1;
-
-      // Start an asynchronous search of the file system.
-      filesRemaining += 1;
-      fs.readdir(dir, function(error, relnames) {
-        if (error) {
-          cb(error);
-          return;
-        }
-
-        // About to start looping through the directory contents.
-        loopsRemaining += relnames.length;
-        // The fs.readdir() callback has returned.
-        filesRemaining -= 1;
-
-        // If there is no more file system to search, call .finished().
-        if (filesRemaining === 0 &amp;&amp; loopsRemaining === 0) {
-          cb(null);
-        }
-
-        // Otherwise, if readdir() has results, loop through them.
-        relnames.forEach(function(relname) {
-          loopsRemaining -= 1;
-          var name = path.join(dir, relname);
-
-          // Start an asynchronous stat of this file system item.
-          filesRemaining += 1;
-          fs.stat(name, function(error, stat) {
-            if (error) {
-              cb(error);
-              return;
-            }
-
+          // Check if the directory item is a directory or file.
+          return fs.statAsync(name).then(function(stat) {
+            // Recursively search any directories.
             if (stat.isDirectory()) {
-              if (name !== '.svn' &amp;&amp; name !== '.git') {
-                walk(name, opts, cb);
+              if (relname !== '.svn' &amp;&amp; relname !== '.git') {
+                return walk(name, options);
               }
-            } else if (!opts.mask || name.match(opts.mask)) {
-              name = name.replace(/\\/g, '/');
+            // If the file matches our mask, save its path.
+            } else if (!options.mask || name.match(options.mask)) {
               fileNames.push(name);
-              fileCounter += 1;
             }
-
-            // The fs.stat() callback has returned.
-            filesRemaining -= 1;
-
-            // If there is no more file system to search, call .finished().
-            if (filesRemaining === 0 &amp;&amp; loopsRemaining === 0) {
-              cb(null);
-              return;
-            }
+            return Promise.resolve();
           });
-        });
-      });
+        })
+      );
     });
   };
 
   // Get each file in the target directory, order them alphabetically and then
   // parse their output.
-  walk(directory, options, walkFinished);
+
+  // Loop through all the given directories.
+  return Promise.all(
+    directories.map(function(directory) {
+      // Normalize the directory path and then "walk" it, collecting file names in
+      // the fileNames variable.
+      return walk(path.normalize(directory), options);
+    })
+  ).then(function() {
+    // Read the contents of all the found fileNames.
+    let files = [];
+    return Promise.all(
+      fileNames.map(function(name, index) {
+        return fs.readFileAsync(name, 'utf8').then(function(contents) {
+          files[index] = contents;
+          return Promise.resolve();
+        });
+      })
+    ).then(function() {
+      return files;
+    });
+  }).then(function(files) {
+    // Create a sorted object of file names and contents.
+    let orderedObject = {};
+    fileNames.sort();
+    fileNames.forEach((name, index) => {
+      orderedObject[name] = files[index];
+    });
+    return orderedObject;
+  }).then(result => {
+    return parse(result, options);
+  });
 };
 
 module.exports = traverse;
@@ -241,13 +182,13 @@ module.exports = traverse;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="KssGenerator.html">KssGenerator</a></li><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_generator-KssGenerator.html">KssGenerator</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Jan 12 2016 13:43:43 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Feb 05 2016 01:14:40 GMT+0800 (CST)
 </footer>
 
 <script> prettyPrint(); </script>

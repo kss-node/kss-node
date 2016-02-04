@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: kss/lib/traverse</title>
+    <title>JSDoc: Module: kss/lib/cli</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: kss/lib/traverse</h1>
+    <h1 class="page-title">Module: kss/lib/cli</h1>
 
     
 
@@ -38,10 +38,9 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>The <code>kss/lib/traverse</code> module is normally accessed via the
-<a href="module-kss.html#.traverse"><code>traverse()</code></a> method of the <code>kss</code> module:</p>
-<pre class="prettyprint source"><code>const kss = require('kss');
-let styleGuide = kss.traverse(directory, options);</code></pre></div>
+            <div class="description"><p>The <code>kss/lib/cli</code> module is a wrapper around the code used by the
+<code>bin/kss-node</code> command line utility.</p>
+<pre class="prettyprint source"><code>const cli = require('kss/lib/cli');</code></pre></div>
         
 
         
@@ -90,7 +89,7 @@ let styleGuide = kss.traverse(directory, options);</code></pre></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_traverse.js.html">lib/traverse.js</a>, <a href="lib_traverse.js.html#line3">line 3</a>
+        <a href="lib_cli.js.html">lib/cli.js</a>, <a href="lib_cli.js.html#line3">line 3</a>
     </li></ul></dd>
     
 
@@ -132,6 +131,164 @@ let styleGuide = kss.traverse(directory, options);</code></pre></div>
 
     
 
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="~cli"><span class="type-signature">(inner) </span>cli<span class="signature">(opts)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Parses command line arguments in <code>opts.argv</code> and outputs messages and errors
+on <code>opts.stdout</code> and <code>opts.stderr</code>, respectively.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>opts</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The <code>stdout</code>, <code>stderr</code> and <code>argv</code> options to use.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_cli.js.html">lib/cli.js</a>, <a href="lib_cli.js.html#line29">line 29</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>A <code>Promise</code> object.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
     
 
     

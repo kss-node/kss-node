@@ -26,39 +26,36 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/* eslint-disable camelcase */
-
-'use strict';
+            <pre class="prettyprint source linenums"><code>'use strict';
 
 /**
  * The `kss/lib/parse` module is normally accessed via the
  * [`parse()`]{@link module:kss.parse} method of the `kss` module:
  * ```
- * var kss = require('kss');
- * kss.parse(input, options, callback);
+ * const kss = require('kss');
+ * let styleGuide = kss.parse(input, options);
  * ```
  * @private
  * @module kss/lib/parse
  */
 
-var KssStyleGuide = require('./kss_styleguide.js'),
-  KssSection = require('./kss_section.js'),
+const KssStyleGuide = require('./kss_styleguide.js'),
   marked = require('marked'),
   natural = require('natural');
 
-var inlineRenderer,
-  parse, parseChunk, createModifiers, createParameters, checkReference, findBlocks, processProperty,
-  isDeprecated, isExperimental, hasPrefix;
-
 // Create a MarkDown renderer that does not output a wrapping paragraph.
-inlineRenderer = new marked.Renderer();
+const inlineRenderer = new marked.Renderer();
 inlineRenderer.paragraph = function(text) {
   return text;
 };
 
+let parse, parseChunk, findBlocks,
+  createModifiers, createParameters,
+  checkReference, processProperty, hasPrefix;
+
 /**
- * Parse an array/string of documented CSS, or an object of files
- * and their content.
+ * Parse an array/string of documented CSS, or an object of files and their
+ * content.
  *
  * File object formatted as `{ "absolute filename": content, ... }`.
  *
@@ -66,32 +63,31 @@ inlineRenderer.paragraph = function(text) {
  * accessible as well.
  *
  * @alias module:kss.parse
- * @param  {Mixed}    input    The input to parse
+ * @param  {*}        input    The input to parse
  * @param  {Object}   options  Options to alter the output content. Same as the options in [`traverse()`]{@link module:kss.traverse}.
- * @param  {Function} callback Called when parsing is complete
+ * @returns {KssStyleGuide} Returns a `KssStyleGuide` object.
  */
-parse = function(input, options, callback) {
-  var data = {}, fileName, files,
-    i, l;
-
+parse = function(input, options) {
   // If supplied a string, just make it an Array.
   if (typeof input === 'string') {
     input = [input];
   }
 
+  let styleGuide = {};
+
   // Otherwise assume the input supplied is a JSON object, as specified above.
   if (!Array.isArray(input)) {
-    files = input;
+    let files = input;
     input = [];
-    data.files = [];
-    for (fileName in files) {
+    styleGuide.files = [];
+    for (let fileName in files) {
       // istanbul ignore else
       if (files.hasOwnProperty(fileName)) {
         input.push(files[fileName]);
-        data.files.push(fileName);
+        styleGuide.files.push(fileName);
       }
     }
-    data.files.sort();
+    styleGuide.files.sort();
   }
 
   // Default parsing options
@@ -105,15 +101,12 @@ parse = function(input, options, callback) {
   options.custom = options.custom || [];
 
   // Actually parse the input (parseChunk is the key function here.)
-  l = input.length;
-  data.sections = [];
-  data.section_refs = {};
-
-  for (i = 0; i &lt; l; i += 1) {
-    data = parseChunk(data, input[i], options);
+  styleGuide.sections = [];
+  for (let i = 0; i &lt; input.length; i++) {
+    styleGuide = parseChunk(styleGuide, input[i], options);
   }
 
-  callback(null, new KssStyleGuide(data));
+  return new KssStyleGuide(styleGuide);
 };
 
 /**
@@ -122,24 +115,21 @@ parse = function(input, options, callback) {
  * instance of `KssStyleGuide`.
  *
  * @private
- * @param  {Object} styleguide    JSON object containing all of the style guide data.
+ * @param  {Object} styleGuide    JSON object containing all of the style guide data.
  * @param  {String} input   Text to be parsed, i.e. a single CSS/LESS/etc. file's content.
  * @param  {Object} options The options passed on from `traverse` or `parse`
  * @returns {Object} The raw style guide data from the newly parsed text.
  */
-parseChunk = function(styleguide, input, options) {
-  /* jshint loopfunc: true */
-
-  var currSection, i, l, blocks = [], paragraphs, j, m, hasModifiers, lastModifier;
+parseChunk = function(styleGuide, input, options) {
+  /* eslint-disable no-loop-func */
 
   // Retrieve an array of "comment block" strings, and then evaluate each one.
-  blocks = findBlocks(input);
-  l = blocks.length;
+  let blocks = findBlocks(input);
 
-  for (i = 0; i &lt; l; i += 1) {
+  for (let i = 0; i &lt; blocks.length; i++) {
     // Create a new, temporary section object with some default values.
     // "raw" is a comment block from the array above.
-    currSection = {
+    let currSection = {
       raw: blocks[i],
       header: '',
       description: '',
@@ -149,7 +139,7 @@ parseChunk = function(styleguide, input, options) {
     };
 
     // Split the comment block into paragraphs.
-    paragraphs = currSection.raw
+    let paragraphs = currSection.raw
       .replace(/\r\n/g, '\n')      // Convert Windows CRLF linebreaks.
       .replace(/\r/g, '\n')        // Convert Classic Mac CR linebreaks too.
       .replace(/\n\s+\n/g, '\n\n') // Trim whitespace-only lines.
@@ -159,17 +149,15 @@ parseChunk = function(styleguide, input, options) {
     // Before anything else, process the properties that are clearly labeled and
     // can be found right away and then removed.
     currSection = processProperty('Markup', paragraphs, options, currSection);
-    /* eslint-disable no-loop-func */
     currSection = processProperty('Weight', paragraphs, options, currSection, function(value) {
       return isNaN(value) ? 0 : parseFloat(value);
     });
     // Process custom properties.
-    options.custom.forEach(function(name) {
+    options.custom.forEach(name => {
       currSection = processProperty(name, paragraphs, options, currSection);
     });
-    /* eslint-enable no-loop-func */
 
-    // Ignore this block if a styleguide reference number is not listed.
+    // Ignore this block if a style guide reference number is not listed.
     currSection.reference = checkReference(paragraphs, options) || '';
     if (!currSection.reference) {
       continue;
@@ -188,20 +176,20 @@ parseChunk = function(styleguide, input, options) {
       // The modifiers will be split into an array of lines.
       currSection.header = paragraphs[0];
       currSection.description = paragraphs.slice(0, paragraphs.length - 2).join('\n\n');
-      currSection.modifiers = paragraphs[paragraphs.length - 2]
-        .split('\n');
+      currSection.modifiers = paragraphs[paragraphs.length - 2].split('\n');
 
       // Check the modifiers paragraph. Does it look like it's a list of
       // modifiers, or just another paragraph of the description?
-      m = currSection.modifiers.length;
-      hasModifiers = true;
-      for (j = 0; j &lt; m; j += 1) {
+      let numModifierLines = currSection.modifiers.length,
+        hasModifiers = true,
+        lastModifier = 0;
+      for (let j = 0; j &lt; numModifierLines; j += 1) {
         if (currSection.modifiers[j].match(/^\s*.+?\s+\-\s/g)) {
           lastModifier = j;
         } else if (j === 0) {
           // The paragraph doesn't start with a modifier, so bail out.
           hasModifiers = false;
-          j = m;
+          j = numModifierLines;
         } else {
           // If the current line doesn't match a modifier, it must be a
           // multi-line modifier description.
@@ -211,9 +199,7 @@ parseChunk = function(styleguide, input, options) {
         }
       }
       // Remove any blank lines added.
-      /* eslint-disable no-loop-func */
-      currSection.modifiers = currSection.modifiers.filter(function(line) { return line !== ''; });
-      /* eslint-enable no-loop-func */
+      currSection.modifiers = currSection.modifiers.filter(line => { return line !== ''; });
 
       // If it's a modifiers paragraph, turn each one into a modifiers object.
       // Otherwise, add it back to the description.
@@ -236,8 +222,8 @@ parseChunk = function(styleguide, input, options) {
     currSection.header = currSection.header.replace(/\n/g, ' ');
 
     // Check the section's status.
-    currSection.deprecated = isDeprecated(currSection.description, options);
-    currSection.experimental = isExperimental(currSection.description, options);
+    currSection.deprecated = hasPrefix(currSection.description, options, 'Deprecated');
+    currSection.experimental = hasPrefix(currSection.description, options, 'Experimental');
 
     // If a separate header is requested, remove the first paragraph from the
     // description.
@@ -255,70 +241,11 @@ parseChunk = function(styleguide, input, options) {
     }
 
     // Add the new section instance to the sections array.
-    currSection = new KssSection(currSection);
-    styleguide.sections.push(currSection);
-
-    // Store the reference for quick searching later.
-    styleguide.section_refs[currSection.reference()] = currSection;
+    styleGuide.sections.push(currSection);
   }
+  /* eslint-enable no-loop-func */
 
-  return styleguide;
-};
-
-/**
- * Takes an array of modifier lines, and turns it into instances of KssModifier.
- *
- * @private
- * @param  {Array}  lines   Modifier lines, which should all be strings.
- * @param  {Object} options Any options passed on by the functions above.
- * @returns {Array} The modifier instances created.
- */
-createModifiers = function(lines, options) {
-  return lines.map(function(entry) {
-    var modifier, description;
-
-    // Split modifier name and the description.
-    modifier = entry.split(/\s+\-\s+/, 1)[0];
-    description = entry.replace(modifier, '', 1).replace(/^\s+\-\s+/, '');
-
-    // Markdown parsing.
-    if (options.markdown) {
-      description = marked(description, {renderer: inlineRenderer});
-    }
-
-    return {
-      name: modifier,
-      description: description
-    };
-  });
-};
-
-/**
- * Takes an array of parameter lines, and turns it into instances of KssParameter.
- *
- * @private
- * @param  {Array}  lines   Parameter lines, which should all be strings.
- * @param  {Object} options Any options passed on by the functions above.
- * @returns {Array} The parameter instances created.
- */
-createParameters = function(lines, options) {
-  return lines.map(function(entry) {
-    var parameter, description;
-
-    // Split parameter name and the description.
-    parameter = entry.split(/\s+\-\s+/, 1)[0];
-    description = entry.replace(parameter, '', 1).replace(/^\s+\-\s+/, '');
-
-    // Markdown parsing.
-    if (options.markdown) {
-      description = marked(description, {renderer: inlineRenderer});
-    }
-
-    return {
-      name: parameter,
-      description: description
-    };
-  });
+  return styleGuide;
 };
 
 /**
@@ -330,25 +257,25 @@ createParameters = function(lines, options) {
  */
 findBlocks = function(input) {
   /* eslint-disable key-spacing */
-  var currentBlock = '',
-    insideSingleBlock = false, insideMultiBlock = false, insideDocblock = false,
-    indentAmount = false,
-    blocks = [],
-    lines, line, i, l,
-    commentExpressions = {
-      single:         /^\s*\/\/.*$/,
-      docblockStart:  /^\s*\/\*\*\s*$/,
-      multiStart:     /^\s*\/\*+\s*$/,
-      multiFinish:    /^\s*\*\/\s*$/
-    };
+  const commentExpressions = {
+    single:        /^\s*\/\/.*$/,
+    docblockStart: /^\s*\/\*\*\s*$/,
+    multiStart:    /^\s*\/\*+\s*$/,
+    multiFinish:   /^\s*\*\/\s*$/
+  };
   /* eslint-enable key-spacing */
 
   input = input.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-  lines = input.split(/\n|$/g);
+  const lines = input.split(/\n|$/g);
 
-  l = lines.length;
-  for (i = 0; i &lt; l; i += 1) {
-    line = lines[i];
+  let blocks = [],
+    currentBlock = '',
+    indentAmount = false,
+    insideSingleBlock = false,
+    insideMultiBlock = false,
+    insideDocblock = false;
+  for (let i = 0; i &lt; lines.length; i += 1) {
+    let line = lines[i];
 
     // Remove trailing space.
     line = line.replace(/\s*$/, '');
@@ -410,7 +337,6 @@ findBlocks = function(input) {
       currentBlock += '\n';
       // Always strip same indentation amount from each line.
       currentBlock += line.replace(new RegExp('^' + indentAmount), '', 1);
-      continue;
     }
   }
 
@@ -423,6 +349,58 @@ findBlocks = function(input) {
 };
 
 /**
+ * Takes an array of modifier lines, and turns it into a JSON equivalent of KssModifier.
+ *
+ * @private
+ * @param  {Array}  lines   Modifier lines, which should all be strings.
+ * @param  {Object} options Any options passed on by the functions above.
+ * @returns {Array} The modifier instances created.
+ */
+createModifiers = function(lines, options) {
+  return lines.map(entry => {
+    // Split modifier name and the description.
+    let modifier = entry.split(/\s+\-\s+/, 1)[0];
+    let description = entry.replace(modifier, '', 1).replace(/^\s+\-\s+/, '');
+
+    // Markdown parsing.
+    if (options.markdown) {
+      description = marked(description, {renderer: inlineRenderer});
+    }
+
+    return {
+      name: modifier,
+      description: description
+    };
+  });
+};
+
+/**
+ * Takes an array of parameter lines, and turns it into instances of KssParameter.
+ *
+ * @private
+ * @param  {Array}  lines   Parameter lines, which should all be strings.
+ * @param  {Object} options Any options passed on by the functions above.
+ * @returns {Array} The parameter instances created.
+ */
+createParameters = function(lines, options) {
+  return lines.map(entry => {
+    // Split parameter name and the description.
+    let parameter = entry.split(/\s+\-\s+/, 1)[0];
+    let description = entry.replace(parameter, '', 1).replace(/^\s+\-\s+/, '');
+
+    // Markdown parsing.
+    if (options.markdown) {
+      description = marked(description, {renderer: inlineRenderer});
+    }
+
+    return {
+      name: parameter,
+      description: description
+    };
+  });
+};
+
+/**
  * Check a section for the reference number it may or may not have.
  *
  * @private
@@ -431,20 +409,19 @@ findBlocks = function(input) {
  * @returns {Boolean|String} False if not found, otherwise returns the reference number as a string.
  */
 checkReference = function(paragraphs, options) {
-  var lastParagraph = paragraphs[paragraphs.length - 1].trim(),
-    words = lastParagraph.split(/\s+/),
-    keyword = false,
-    reference = false;
+  let lastParagraph = paragraphs[paragraphs.length - 1].trim(),
+    words = lastParagraph.split(/\s+/);
 
-  // If is only one word in the last paragraph, it can't be a styleguide ref.
+  // If is only one word in the last paragraph, it can't be a style guide ref.
   if (words.length &lt; 2) {
     return false;
   }
 
   // Search for the "styleguide" (or "style guide") keyword at the start of the paragraph.
-  [words[0], words[0] + words[1]].forEach(function(value, index) {
+  let keyword = false;
+  [words[0], words[0] + words[1]].forEach((value, index) => {
     if (!keyword) {
-      value = value.replace(/[-\:]?$/, '');
+      value = value.replace(/[-:]?$/, '');
       if (value.toLowerCase() === 'styleguide' || options.typos &amp;&amp; natural.Metaphone.compare('Styleguide', value.replace('-', ''))) {
         keyword = words.shift();
         if (index === 1) {
@@ -454,18 +431,7 @@ checkReference = function(paragraphs, options) {
     }
   });
 
-  if (keyword) {
-    reference = words.join(' ');
-
-    // @TODO: Put normalization in KssStyleGuide.
-    // Normalize any " - " delimeters.
-    reference = reference.replace(/\s+\-\s+/g, ' - ');
-
-    // Remove trailing dot-zeros and periods.
-    reference = reference.replace(/\.$|(\.0){1,}$/g, '');
-  }
-
-  return reference;
+  return keyword ? words.join(' ') : false;
 };
 
 /**
@@ -480,11 +446,11 @@ checkReference = function(paragraphs, options) {
  * @returns {Object} A new data object for the section.
  */
 processProperty = function(propertyName, paragraphs, options, sectionData, processValue) {
-  var indexToRemove = 'not found';
+  let indexToRemove = false;
 
   propertyName = propertyName.toLowerCase();
 
-  paragraphs.map(function(paragraph, index) {
+  paragraphs.map((paragraph, index) => {
     if (hasPrefix(paragraph, options, propertyName)) {
       sectionData[propertyName] = paragraph.replace(new RegExp('^\\s*' + propertyName + '\\:\\s+?', 'gmi'), '');
       if (typeof processValue === 'function') {
@@ -496,35 +462,11 @@ processProperty = function(propertyName, paragraphs, options, sectionData, proce
     return paragraph;
   });
 
-  if (indexToRemove !== 'not found') {
+  if (indexToRemove !== false) {
     paragraphs.splice(indexToRemove, 1);
   }
 
   return sectionData;
-};
-
-/**
- * Check if the description indicates that a section is deprecated.
- *
- * @private
- * @param  {String}  description The description of that section
- * @param  {Object}  options     The options passed on from previous functions
- * @returns {Boolean} Whether the description indicates the section is deprecated.
- */
-isDeprecated = function(description, options) {
-  return hasPrefix(description, options, 'Deprecated');
-};
-
-/**
- * Check if the description indicates that a section is experimental.
- *
- * @private
- * @param  {String}  description The description of that section
- * @param  {Object}  options     The options passed on from previous functions
- * @returns {Boolean} Whether the description indicates the section is experimental.
- */
-isExperimental = function(description, options) {
-  return hasPrefix(description, options, 'Experimental');
 };
 
 /**
@@ -541,12 +483,11 @@ isExperimental = function(description, options) {
  * @returns {Boolean} Whether the description contains the specified prefix.
  */
 hasPrefix = function(description, options, prefix) {
-  var words;
   if (!options.typos) {
-    return !!description.match(new RegExp('^\\s*' + prefix + '\\:', 'gmi'));
+    return (new RegExp('^\\s*' + prefix + '\\:', 'gmi')).test(description);
   }
 
-  words = description.replace(/^\s*/, '').match(/^\s*([a-z ]*)\:/gmi);
+  let words = description.replace(/^\s*/, '').match(/^\s*([a-z ]*):/gmi);
   if (!words) {
     return false;
   }
@@ -565,13 +506,13 @@ module.exports = parse;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li></ul><h3>Classes</h3><ul><li><a href="KssGenerator.html">KssGenerator</a></li><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_generator-KssGenerator.html">KssGenerator</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Jan 12 2016 13:43:42 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Feb 05 2016 01:14:39 GMT+0800 (CST)
 </footer>
 
 <script> prettyPrint(); </script>

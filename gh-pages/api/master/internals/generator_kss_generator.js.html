@@ -29,9 +29,9 @@
             <pre class="prettyprint source linenums"><code>'use strict';
 
 /**
- * The `kss/generator` module loads the {@link KssGenerator} class constructor.
+ * The `kss/generator` module loads the {@link KssGenerator} class.
  * ```
- * var KssGenerator = require('kss/generator');
+ * const KssGenerator = require('kss/generator');
  * ```
  * @module kss/generator
  */
@@ -40,231 +40,195 @@
    See kss_example_generator.js for how to implement a generator.
    ************************************************************** */
 
-var Kss = require('../lib/kss.js'),
-  wrench = require('wrench');
+const Promise = require('bluebird');
 
-var KssGenerator;
+const fs = Promise.promisifyAll(require('fs-extra'));
 
 /**
- * Create a KssGenerator object.
- *
- * This is the base object used by all kss-node generators. Implementations of
- * KssGenerator MUST pass the version parameter. kss-node will use this to
- * ensure that only compatible generators are used.
- *
- * ```
- * var KssGenerator = require('kss/generator');
- * var customGenerator = new KssGenerator('2.1');
- * ```
- *
- * @constructor
- * @alias KssGenerator
- * @param {string} version The generator API version implemented.
- * @param {object} options The Yargs-like options this generator has.
- *   See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
+ * A kss-node generator takes input files and generates a style guide.
  */
-module.exports = KssGenerator = function(version, options) {
-  if (!(this instanceof KssGenerator)) {
-    return new KssGenerator();
+class KssGenerator {
+
+  /**
+   * Create a KssGenerator object.
+   *
+   * This is the base object used by all kss-node generators. Implementations of
+   * KssGenerator MUST pass the version parameter. kss-node will use this to
+   * ensure that only compatible generators are used.
+   *
+   * ```
+   * const KssGenerator = require('kss/generator');
+   * const customGenerator = new KssGenerator('3.0');
+   * ```
+   *
+   * @param {string} version The generator API version implemented.
+   * @param {object} options The Yargs-like options this generator has.
+   *   See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
+   */
+  constructor(version, options) {
+    // Tell generators which generator API version is currently running.
+    this.API = '3.0';
+
+    // Store the version of the generator API that the generator instance is
+    // expecting; we will verify this in checkGenerator().
+    this.implementsAPI = typeof version === 'undefined' ? 'undefined' : version;
+
+    // Tell kss-node which Yargs-like options this generator has.
+    this.options = options || {};
+
+    // The log function defaults to console.log.
+    this.setLogFunction(console.log);
   }
 
-  // Tell generators which generator API version is currently running.
-  this.API = '2.1';
-
-  // Store the version of the generator API that the generator instance is
-  // expecting; we will verify this in checkGenerator().
-  this.implementsAPI = typeof version === 'undefined' ? 'undefined' : version;
-
-  // Tell kss-node which Yargs-like options this generator has.
-  this.options = options || {};
-
-  // The log function defaults to console.log.
-  this.setLogFunction(console.log);
-};
-
-/**
- * Logs a message to be reported to the user.
- *
- * Since a generator can be used in places other than the console, using
- * console.log() is inappropriate. The log() method should be used to pass
- * messages to the KSS system so it can report them to the user.
- *
- * @param {string} message The message to log.
- */
-KssGenerator.prototype.log = function() {
-  this.logFunction.apply(null, arguments);
-};
-
-/**
- * The log() method logs a message for the user. This method allows the system
- * to define the underlying function used by the log method to report the
- * message to the user. The default log function is a wrapper around
- * console.log().
- *
- * @param {Function} logFunction Function to log a message to the user.
- */
-KssGenerator.prototype.setLogFunction = function(logFunction) {
-  this.logFunction = logFunction;
-};
-
-/**
- * Checks the generator configuration.
- *
- * An instance of KssGenerator MUST NOT override this method. A process
- * controlling the generator should call this method to verify the
- * specified generator has been configured correctly.
- *
- * @alias KssGenerator.prototype.checkGenerator
- * @param {Function} cb Callback that will be given an Error as its first
- *                      parameter, if one occurs.
- * @returns {*} The callback's return value.
- */
-KssGenerator.prototype.checkGenerator = function(cb) {
-  var isCompatible = true,
-    version,
-    apiMajor,
-    apiMinor,
-    thisMajor,
-    thisMinor;
-
-  if (!(this instanceof KssGenerator)) {
-    return cb(new Error('The loaded generator is not a KssGenerator object.'));
+  /* eslint-disable no-unused-vars */
+  /**
+   * Logs a message to be reported to the user.
+   *
+   * Since a generator can be used in places other than the console, using
+   * console.log() is inappropriate. The log() method should be used to pass
+   * messages to the KSS system so it can report them to the user.
+   *
+   * @param {...string} message The message to log.
+   */
+  log(message) {
+    /* eslint-enable no-unused-vars */
+    this.logFunction.apply(null, arguments);
   }
 
-  if (this.implementsAPI === 'undefined') {
-    isCompatible = false;
-  } else {
-    version = this.API.split('.');
-    apiMajor = parseInt(version[0]);
-    apiMinor = parseInt(version[1]);
+  /**
+   * The log() method logs a message for the user. This method allows the system
+   * to define the underlying function used by the log method to report the
+   * message to the user. The default log function is a wrapper around
+   * `console.log()`.
+   *
+   * @param {Function} logFunction Function to log a message to the user.
+   */
+  setLogFunction(logFunction) {
+    this.logFunction = logFunction;
+  }
 
-    version = this.implementsAPI.split('.');
-    thisMajor = parseInt(version[0]);
-    thisMinor = parseInt(version[1]);
+  /**
+   * Checks the generator configuration.
+   *
+   * An instance of KssGenerator MUST NOT override this method. A process
+   * controlling the generator should call this method to verify the
+   * specified generator has been configured correctly.
+   *
+   * @returns {Promise} A `Promise` object resolving to `null`.
+   */
+  checkGenerator() {
+    let isCompatible = true,
+      version,
+      apiMajor,
+      apiMinor,
+      thisMajor,
+      thisMinor;
 
-    if (thisMajor !== apiMajor || thisMinor > apiMinor) {
+    if (!(this instanceof KssGenerator)) {
+      return Promise.reject(new Error('The loaded generator is not a KssGenerator object.'));
+    }
+
+    if (this.implementsAPI === 'undefined') {
       isCompatible = false;
-    }
-  }
+    } else {
+      version = this.API.split('.');
+      apiMajor = parseInt(version[0]);
+      apiMinor = parseInt(version[1]);
 
-  if (!isCompatible) {
-    return cb(new Error('kss-node expected the template\'s generator to implement KssGenerator API version ' + this.API + '; version "' + this.implementsAPI + '" is being used instead.'));
-  }
+      version = this.implementsAPI.split('.');
+      thisMajor = parseInt(version[0]);
+      thisMinor = parseInt(version[1]);
 
-  return cb(null);
-};
-
-/**
- * Clone a template's files.
- *
- * This method is fairly simple; it copies one directory to the specified
- * location. An instance of KssGenerator does not need to override this method,
- * but it can if it needs to do something more complicated.
- *
- * @alias KssGenerator.prototype.clone
- * @param {string} templatePath    Path to the template to clone.
- * @param {string} destinationPath Path to the destination of the newly cloned
- *                                 template.
- * @param {Function} cb Callback that will be given an Error as its first
- *                      parameter, if one occurs.
- * @returns {*} The callback's return value.
- */
-KssGenerator.prototype.clone = function(templatePath, destinationPath, cb) {
-  return wrench.copyDirRecursive(
-    templatePath,
-    destinationPath,
-    {
-      forceDelete: false,
-      excludeHiddenUnix: true
-    },
-    function(error) {
-      if (error) {
-        // istanbul ignore else
-        if (error.message === 'You are trying to delete a directory that already exists. Specify forceDelete in an options object to override this.') {
-          error = new Error('This folder already exists: ' + destinationPath);
-        }
-        return cb(error);
+      if (thisMajor !== apiMajor || thisMinor > apiMinor) {
+        isCompatible = false;
       }
-      return cb(null);
     }
-  );
-};
 
-/**
- * Initialize the style guide creation process.
- *
- * This method is given a configuration JSON object with the details of the
- * requested style guide generation. The generator can use this information for
- * any necessary tasks before the KSS parsing of the source files.
- *
- * @alias KssGenerator.prototype.init
- * @param {Object} config Configuration object for the requested generation.
- * @param {Function} cb Callback that will be given an Error as its first
- *                      parameter, if one occurs.
- * @returns {*} The callback's return value.
- */
-KssGenerator.prototype.init = function(config, cb) {
-  // At the very least, generators MUST save the configuration parameters.
-  this.config = config;
+    if (!isCompatible) {
+      return Promise.reject(new Error('kss-node expected the template\'s generator to implement KssGenerator API version ' + this.API + '; version "' + this.implementsAPI + '" is being used instead.'));
+    }
 
-  return cb(null);
-};
-
-/**
- * Parse the source files for KSS comments and create a KssStyleGuide object.
- *
- * When finished, it passes the completed KssStyleGuide to the given callback.
- *
- * @alias KssGenerator.prototype.parse
- * @param {Function} cb Callback that will be given an Error as its first
- *                      parameter, if one occurs, and a fully-populated
- *                      KssStyleGuide as its second parameter.
- * @returns {*} The callback's return value.
- */
-KssGenerator.prototype.parse = function(cb) {
-  if (this.config.verbose) {
-    this.log('...Parsing your style guide:');
+    return Promise.resolve();
   }
 
-  // The default parse() method looks at the paths to the source folders and
-  // uses KSS' traverse method to load, read and parse the source files. Other
-  // generators may want to use KSS' parse method if they have already loaded
-  // the source files through some other mechanism.
-  return Kss.traverse(this.config.source, {
-    header: true,
-    markdown: true,
-    markup: true,
-    mask: this.config.mask,
-    custom: this.config.custom
-  }, cb);
-};
+  /**
+   * Clone a template's files.
+   *
+   * This method is fairly simple; it copies one directory to the specified
+   * location. An instance of KssGenerator does not need to override this method,
+   * but it can if it needs to do something more complicated.
+   *
+   * @param {string} templatePath    Path to the template to clone.
+   * @param {string} destinationPath Path to the destination of the newly cloned
+   *                                 template.
+   * @returns {Promise} A `Promise` object resolving to `null`.
+   */
+  clone(templatePath, destinationPath) {
+    return fs.statAsync(destinationPath).catch(error => {
+      // Pass the error on to the next .then().
+      return error;
+    }).then(result => {
+      // If we successfully get stats, the destination exists.
+      if (!(result instanceof Error)) {
+        return Promise.reject(new Error('This folder already exists: ' + destinationPath));
+      }
 
-/**
- * Allow the template to prepare itself or modify the KssStyleGuide object.
- *
- * @alias KssGenerator.prototype.prepare
- * @param {KssStyleGuide} styleguide The KSS style guide in object format.
- * @param {Function} cb Callback that will be given an Error as its first
- *                      parameter, if one occurs, and a fully-populated
- *                      KssStyleGuide as its second parameter.
- * @returns {*} The callback's return value.
- */
-KssGenerator.prototype.prepare = function(styleguide, cb) {
-  return cb(null, styleguide);
-};
+      // If the destination path does not exist, we copy the template to it.
+      if (result.code === 'ENOENT') {
+        return fs.copyAsync(
+          templatePath,
+          destinationPath,
+          {
+            clobber: true,
+            filter: /^[^.]/
+          }
+        );
+      }
 
-/**
- * Generate the HTML files of the style guide given a KssStyleGuide object.
- *
- * @alias KssGenerator.prototype.generate
- * @param {KssStyleGuide} styleguide The KSS style guide in object format.
- * @param {Function} cb Callback that will be given an Error as its first
- *                      parameter, if one occurs.
- * @returns {*} The callback's return value.
- */
-KssGenerator.prototype.generate = function(styleguide, cb) {
-  return cb(null);
-};
+      // Otherwise, report the error.
+      return Promise.reject(result);
+    });
+  }
+
+  /**
+   * Initialize the style guide creation process.
+   *
+   * This method is given a configuration JSON object with the details of the
+   * requested style guide generation. The generator can use this information for
+   * any necessary tasks before the KSS parsing of the source files.
+   *
+   * @param {Object} config Configuration object for the requested generation.
+   * @returns {Promise} A `Promise` object resolving to `null`.
+   */
+  init(config) {
+    // At the very least, generators MUST save the configuration parameters.
+    this.config = config;
+
+    return Promise.resolve();
+  }
+
+  /**
+   * Allow the template to prepare itself or modify the KssStyleGuide object.
+   *
+   * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
+   * @returns {Promise} A `Promise` object resolving to `styleGuide`.
+   */
+  prepare(styleGuide) {
+    return Promise.resolve(styleGuide);
+  }
+
+  /**
+   * Generate the HTML files of the style guide given a KssStyleGuide object.
+   *
+   * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
+   * @returns {Promise} A `Promise` object resolving to `styleGuide`.
+   */
+  generate(styleGuide) {
+    return Promise.resolve(styleGuide);
+  }
+}
+
+module.exports = KssGenerator;
 </code></pre>
         </article>
     </section>
@@ -275,13 +239,13 @@ KssGenerator.prototype.generate = function(styleguide, cb) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="KssGenerator.html">KssGenerator</a></li><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_generator-KssGenerator.html">KssGenerator</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Jan 12 2016 13:43:43 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Feb 05 2016 01:14:40 GMT+0800 (CST)
 </footer>
 
 <script> prettyPrint(); </script>

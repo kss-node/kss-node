@@ -31,6 +31,10 @@
         <h2>
             <span class="ancestors"><a href="module-kss.html">kss</a>.</span>KssModifier</h2>
         
+            <div class="class-description"><p>A KssModifier object represents a single modifier of a <code>KssSection</code>.</p>
+<p>This class is normally accessed via the <a href="module-kss.html"><code>kss</code></a> module:</p>
+<pre class="prettyprint source"><code>const KssModifier = require('kss').KssModifier;</code></pre></div>
+        
     
 </header>
 
@@ -40,16 +44,19 @@
         
 
     
+    <h2>Constructor</h2>
+    
 
-    <h4 class="name" id="KssModifier"><span class="type-signature"></span>new KssModifier<span class="signature">(data)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="KssModifier"><span class="type-signature"></span>new KssModifier<span class="signature">(data<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    <p>An instance of this class is returned on calling <code>KssSection.modifier</code>.
-Exposes convenience methods for interpreting data.</p>
+    <p>Creates a KssModifier object and stores the given data.</p>
+<p>If passed an object, it will add <code>section</code>, <code>name</code>, <code>description</code>, and
+<code>className</code> properties.</p>
 </div>
 
 
@@ -72,6 +79,8 @@ Exposes convenience methods for interpreting data.</p>
 
         <th>Type</th>
 
+        
+        <th>Attributes</th>
         
 
         
@@ -98,10 +107,20 @@ Exposes convenience methods for interpreting data.</p>
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last"><p>A part of the data object passed on by <code>KssSection</code>.</p></td>
+            <td class="description last"><p>An object of data.</p></td>
         </tr>
 
     
@@ -142,7 +161,7 @@ Exposes convenience methods for interpreting data.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss_modifier.js.html">lib/kss_modifier.js</a>, <a href="lib_kss_modifier.js.html#line25">line 25</a>
+        <a href="lib_kss_modifier.js.html">lib/kss_modifier.js</a>, <a href="lib_kss_modifier.js.html#line23">line 23</a>
     </li></ul></dd>
     
 
@@ -191,7 +210,7 @@ Exposes convenience methods for interpreting data.</p>
 
     
 
-    <h4 class="name" id="className"><span class="type-signature"></span>className<span class="signature">(className)</span><span class="type-signature"> &rarr; {string|KssModifier}</span></h4>
+    <h4 class="name" id="className"><span class="type-signature"></span>className<span class="signature">(className<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {string|KssModifier}</span></h4>
 
     
 
@@ -232,6 +251,8 @@ is set and will later be returned as-is instead of calculated based on the
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -256,6 +277,16 @@ is set and will later be returned as-is instead of calculated based on the
             
             </td>
 
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
             
 
             
@@ -301,7 +332,7 @@ is set and will later be returned as-is instead of calculated based on the
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss_modifier.js.html">lib/kss_modifier.js</a>, <a href="lib_kss_modifier.js.html#line129">line 129</a>
+        <a href="lib_kss_modifier.js.html">lib/kss_modifier.js</a>, <a href="lib_kss_modifier.js.html#line143">line 143</a>
     </li></ul></dd>
     
 
@@ -359,7 +390,7 @@ is set and will later be returned as-is instead of calculated based on the
 
     
 
-    <h4 class="name" id="description"><span class="type-signature"></span>description<span class="signature">(description)</span><span class="type-signature"> &rarr; {string|KssModifier}</span></h4>
+    <h4 class="name" id="description"><span class="type-signature"></span>description<span class="signature">(description<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {string|KssModifier}</span></h4>
 
     
 
@@ -392,6 +423,8 @@ Otherwise, the description of the <code>KssModifier</code> is returned.</p>
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -416,6 +449,16 @@ Otherwise, the description of the <code>KssModifier</code> is returned.</p>
             
             </td>
 
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
             
 
             
@@ -461,7 +504,7 @@ Otherwise, the description of the <code>KssModifier</code> is returned.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss_modifier.js.html">lib/kss_modifier.js</a>, <a href="lib_kss_modifier.js.html#line95">line 95</a>
+        <a href="lib_kss_modifier.js.html">lib/kss_modifier.js</a>, <a href="lib_kss_modifier.js.html#line109">line 109</a>
     </li></ul></dd>
     
 
@@ -572,7 +615,7 @@ Otherwise, the description of the <code>KssModifier</code> is returned.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss_modifier.js.html">lib/kss_modifier.js</a>, <a href="lib_kss_modifier.js.html#line164">line 164</a>
+        <a href="lib_kss_modifier.js.html">lib/kss_modifier.js</a>, <a href="lib_kss_modifier.js.html#line176">line 176</a>
     </li></ul></dd>
     
 
@@ -625,7 +668,7 @@ Otherwise, the description of the <code>KssModifier</code> is returned.</p>
 
     
 
-    <h4 class="name" id="name"><span class="type-signature"></span>name<span class="signature">(name)</span><span class="type-signature"> &rarr; {string|KssModifier}</span></h4>
+    <h4 class="name" id="name"><span class="type-signature"></span>name<span class="signature">(name<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {string|KssModifier}</span></h4>
 
     
 
@@ -658,6 +701,8 @@ Otherwise, the name of the <code>KssModifier</code> is returned.</p>
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -682,6 +727,16 @@ Otherwise, the name of the <code>KssModifier</code> is returned.</p>
             
             </td>
 
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
             
 
             
@@ -727,7 +782,7 @@ Otherwise, the name of the <code>KssModifier</code> is returned.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss_modifier.js.html">lib/kss_modifier.js</a>, <a href="lib_kss_modifier.js.html#line74">line 74</a>
+        <a href="lib_kss_modifier.js.html">lib/kss_modifier.js</a>, <a href="lib_kss_modifier.js.html#line88">line 88</a>
     </li></ul></dd>
     
 
@@ -785,7 +840,7 @@ Otherwise, the name of the <code>KssModifier</code> is returned.</p>
 
     
 
-    <h4 class="name" id="section"><span class="type-signature"></span>section<span class="signature">(section)</span><span class="type-signature"> &rarr; {KssSection|KssModifier}</span></h4>
+    <h4 class="name" id="section"><span class="type-signature"></span>section<span class="signature">(section<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {KssSection|KssModifier}</span></h4>
 
     
 
@@ -818,6 +873,8 @@ set. Otherwise, the <code>KssSection</code> of the modifier is returned.</p>
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -842,6 +899,16 @@ set. Otherwise, the <code>KssSection</code> of the modifier is returned.</p>
             
             </td>
 
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
             
 
             
@@ -888,7 +955,7 @@ set. Otherwise, the <code>KssSection</code> of the modifier is returned.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss_modifier.js.html">lib/kss_modifier.js</a>, <a href="lib_kss_modifier.js.html#line53">line 53</a>
+        <a href="lib_kss_modifier.js.html">lib/kss_modifier.js</a>, <a href="lib_kss_modifier.js.html#line67">line 67</a>
     </li></ul></dd>
     
 
@@ -997,7 +1064,7 @@ set. Otherwise, the <code>KssSection</code> of the modifier is returned.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss_modifier.js.html">lib/kss_modifier.js</a>, <a href="lib_kss_modifier.js.html#line177">line 177</a>
+        <a href="lib_kss_modifier.js.html">lib/kss_modifier.js</a>, <a href="lib_kss_modifier.js.html#line189">line 189</a>
     </li></ul></dd>
     
 
@@ -1061,13 +1128,13 @@ set. Otherwise, the <code>KssSection</code> of the modifier is returned.</p>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li></ul><h3>Classes</h3><ul><li><a href="KssGenerator.html">KssGenerator</a></li><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_generator-KssGenerator.html">KssGenerator</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Jan 12 2016 13:43:42 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Feb 05 2016 01:14:39 GMT+0800 (CST)
 </footer>
 
 <script> prettyPrint(); </script>

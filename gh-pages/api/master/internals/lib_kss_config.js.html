@@ -30,24 +30,18 @@
 
 /**
  * The `kss/lib/kss_config` module is normally accessed via the
- * [`KssConfig()`]{@link module:kss.KssConfig} constructor of the `kss`
- * module:
+ * [`KssConfig()`]{@link module:kss.KssConfig} class of the `kss` module:
  * ```
- * var kss = require('kss');
- * var kssConfig = new kss.KssConfig(data);
+ * const KssConfig = require('kss').KssConfig;
  * ```
  * @private
  * @module kss/lib/kss_config
  */
 
-var path = require('path');
-
-var KssConfig,
-  coreOptions,
-  resolveArray;
+const path = require('path');
 
 /* eslint-disable key-spacing */
-coreOptions = {
+let coreOptions = {
   source: {
     group:    'File locations:',
     string:   true,
@@ -70,17 +64,9 @@ coreOptions = {
     describe: 'Use a mask for detecting files containing KSS comments',
     default:  '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
   },
-  config: {
-    group:    'File locations:',
-    alias:    'c',
-    config:   true,
-    multiple: false,
-    describe: 'Load the kss-node configuration from a json file'
-  },
 
   clone: {
     group:    'Template:',
-    alias:    ['init', 'i'],
     string:   true,
     path:     true,
     multiple: false,
@@ -120,236 +106,187 @@ coreOptions = {
 /* eslint-enable key-spacing */
 
 /**
- * A KssConfig object stores configuration settings needed when generating a KSS
- * style guide.
+ * The KssConfig class is a convenience class is used by the CLI and the kss()
+ * function to:
+ * - collect configuration settings
+ * - collect options specified by templates and generators
+ * - normalize the settings based on the options' configurations
  *
- * It also validates the settings against the known set of options for the
- * configured template and its generator. And makes it easy to load the template
- * and its generator.
+ * This class is normally accessed via the [`kss`]{@link module:kss} module:
+ * ```
+ * const KssConfig = require('kss').KssConfig;
+ * ```
  *
- * @constructor
+ * A newly-created `KssConfig` object contains the default options used by the
+ * [`kss()`]{@link module:kss.kss} function.
+ *
  * @alias module:kss.KssConfig
- * @param {Object} config An object of config settings to store.
  */
-KssConfig = function(config) {
-  if (!(this instanceof KssConfig)) {
-    return new KssConfig();
-  }
-  this.options = coreOptions;
-  this.config = {};
-  if (config) {
-    this.set(config);
-  }
-};
+class KssConfig {
 
-/**
- * Stores the given config settings.
- *
- * @param {Object} config An object of config settings to store.
- */
-KssConfig.prototype.set = function(config) {
-  var key;
-  for (key in config) {
-    // istanbul ignore else
-    if (config.hasOwnProperty(key)) {
-      this.config[key] = config[key];
+  /**
+   * Creates a KssConfig object and stores the given configuration settings.
+   *
+   * @param {Object} [config] An object of config settings to store.
+   */
+  constructor(config) {
+    this.config = {};
+    this.options = {};
+
+    if (config) {
+      this.set(config);
     }
-  }
-};
 
-/**
- * Returns the requested configuration setting or, if no key is specified, an
- * object containing all settings.
- *
- * @param {string} key Optional name of config setting to return.
- * @returns {string|Object} The specified setting or an object of all settings.
- */
-KssConfig.prototype.get = function(key) {
-  return key ? this.config[key] : this.config;
-};
-
-/**
- * Adds additional configuration options to the core kss-node options.
- *
- * Since kss-node is extendable, generators and templates can provide their own
- * options for configuration.
- *
- * @param {object} options An object of configuration options.
- */
-KssConfig.prototype.addOptions = function(options) {
-  var key;
-  for (key in options) {
-    // istanbul ignore else
-    if (options.hasOwnProperty(key)) {
-      this.options[key] = options[key];
-    }
-  }
-};
-
-/**
- * Adds the configuration settings from the given JSON file.
- *
- * @param {string} filename The path to the JSON file.
- */
-KssConfig.prototype.loadJSON = function(filename) {
-  filename = path.resolve(filename);
-  var config = require(filename);
-
-  this.set({
-    // Save the full path to the config file.
-    config: filename,
-    // Store the list of config file keys for later.
-    configFileKeys: Object.keys(config)
-  });
-  this.set(config);
-};
-
-/**
- * Normalizes the configuration object so that it is easy to use inside KSS.
- *
- * The options specified in the KssConfig object will determine how its
- * configuration will be normalized.
- *
- * If an option object has a:
- * - `multiple` property: if set to `false`, the corresponding configuration
- *   will be normalized to a single value. Otherwise, it will be normalized to
- *   an array of values.
- * - `path` property: if set to `true`, the corresponding configuration will be
- *   normalized to a path, relative to the current working directory or, if
- *   given, the location of the JSON config file.
- */
-KssConfig.prototype.normalize = function() {
-  var key;
-
-  // If some of the options were specified in a JSON config file, determine
-  // which ones by loading the keys from the config file.
-  if (typeof this.config.configFileKeys === 'undefined') {
-    if (this.config.config) {
-      // Save the full path to the config file.
-      this.config.config = path.resolve(this.config.config);
-      // Store the list of config file keys for later.
-      this.config.configFileKeys = Object.keys(require(this.config.config));
-    } else {
-      this.config.configFileKeys = [];
-    }
+    this.addOptions(coreOptions);
   }
 
-  // Allow --clone to be used without a path. We can't specify this default path
-  // in coreOptions or the clone flag would always be "on".
-  if (this.config['clone'] === '') {
-    this.config['clone'] = 'custom-template';
-  }
-
-  // Normalize all the configuration settings.
-  for (key in this.config) {
-    if (typeof this.options[key] !== 'undefined') {
-      // "multiple" defaults to true.
-      if (typeof this.options[key].multiple === 'undefined') {
-        this.options[key].multiple = true;
+  /**
+   * Stores the given configuration settings.
+   *
+   * @param {Object} config An object of config settings to store.
+   * @returns {KssConfig} The `KssConfig` object is returned to allow chaining
+   *   of methods.
+   */
+  set(config) {
+    for (let key in config) {
+      // istanbul ignore else
+      if (config.hasOwnProperty(key)) {
+        this.config[key] = config[key];
       }
-      // "path" defaults to false.
-      if (typeof this.options[key].path === 'undefined') {
-        this.options[key].path = false;
+    }
+
+    // Allow clone to be used without a path. We can't specify this default
+    // path in coreOptions or the clone flag would always be "on".
+    if (config.clone === '' || config.clone === true) {
+      this.config.clone = 'custom-template';
+    }
+
+    // Allow chaining.
+    return this.normalize(Object.keys(config));
+  }
+
+  /**
+   * Returns the requested configuration setting or, if no key is specified, an
+   * object containing all settings.
+   *
+   * @param {string} [key] Optional name of config setting to return.
+   * @returns {*} The specified setting or an object of all settings.
+   */
+  get(key) {
+    return key ? this.config[key] : this.config;
+  }
+
+  /**
+   * Adds additional configuration options to the core kss-node options.
+   *
+   * Since kss-node is extendable, generators and templates can provide their own
+   * options for configuration.
+   *
+   * Each option object is key-compatble with
+   * [yargs](https://www.npmjs.com/package/yargs), the command-line utility
+   * used by kss-node's command line tool.
+   *
+   * If an option object has a:
+   * - `multiple` property: if set to `false`, the corresponding configuration
+   *   will be normalized to a single value. Otherwise, it will be normalized to
+   *   an array of values.
+   * - `path` property: if set to `true`, the corresponding configuration will
+   *   be normalized to a path, relative to the current working directory.
+   * - `default` property: the corresponding configuration will default to this
+   *   value.
+   *
+   * @param {object} options An object of configuration options.
+   * @returns {KssConfig} The `KssConfig` object is returned to allow chaining
+   *   of methods.
+   */
+  addOptions(options) {
+    for (let key in options) {
+      // istanbul ignore else
+      if (options.hasOwnProperty(key)) {
+        // The "multiple" property defaults to true.
+        if (typeof options[key].multiple === 'undefined') {
+          options[key].multiple = true;
+        }
+        // The "path" property defaults to false.
+        if (typeof options[key].path === 'undefined') {
+          options[key].path = false;
+        }
+        this.options[key] = options[key];
       }
-      // If an option is specified multiple times, yargs will convert it into an
-      // array, but leave it as a string otherwise. This makes accessing the
-      // values of options inconsistent, so make all other options an array.
-      if (this.options[key].multiple) {
-        if (!(this.config[key] instanceof Array)) {
-          if (typeof this.config[key] === 'undefined') {
-            this.config[key] = [];
-          } else {
-            this.config[key] = [this.config[key]];
+    }
+
+    // Allow chaining.
+    return this.normalize(Object.keys(options));
+  }
+
+  /**
+   * Returns the requested configuration option or, if no key is specified, an
+   * object containing all options.
+   *
+   * @param {string} [key] Optional name of option to return.
+   * @returns {*} The specified option or an object of all options.
+   */
+  getOptions(key) {
+    return key ? this.options[key] : this.options;
+  }
+
+  /**
+   * Normalizes the configuration object so that it is easy to use inside KSS.
+   *
+   * The options specified in the KssConfig object will determine how its
+   * configuration will be normalized.
+   *
+   * @private
+   * @param {string[]} keys The keys to normalize.
+   * @returns {KssConfig} The `KssConfig` object is returned to allow chaining
+   *   of methods.
+   */
+  normalize(keys) {
+    for (let key of keys) {
+      if (typeof this.options[key] !== 'undefined') {
+        if (typeof this.config[key] === 'undefined') {
+          // Set the default setting.
+          if (typeof this.options[key].default !== 'undefined') {
+            this.config[key] = this.options[key].default;
           }
         }
-      } else {
-        // For options marked as "multiple: false", use the last value
-        // specified, ignoring the others.
-        if (this.config[key] instanceof Array) {
-          this.config[key] = this.config[key].pop();
-        }
-      }
-      // Resolve any paths relative to the config file or to the working
-      // directory.
-      if (this.options[key].path &amp;&amp; (typeof this.config[key] === 'string' || this.config[key] instanceof Array)) {
-        if (this.config.configFileKeys.indexOf(key) > -1) {
-          this.config[key] = resolveArray(path.dirname(this.config.config), this.config[key]);
+        // If an option is specified multiple times, yargs will convert it into an
+        // array, but leave it as a string otherwise. This makes accessing the
+        // values of options inconsistent, so make all other options an array.
+        if (this.options[key].multiple) {
+          if (!(this.config[key] instanceof Array)) {
+            if (typeof this.config[key] === 'undefined') {
+              this.config[key] = [];
+            } else {
+              this.config[key] = [this.config[key]];
+            }
+          }
         } else {
-          this.config[key] = resolveArray(this.config[key]);
+          // For options marked as "multiple: false", use the last value
+          // specified, ignoring the others.
+          if (this.config[key] instanceof Array) {
+            this.config[key] = this.config[key].pop();
+          }
+        }
+        // Resolve any paths relative to the working directory.
+        if (this.options[key].path) {
+          if (this.config[key] instanceof Array) {
+            /* eslint-disable no-loop-func */
+            this.config[key] = this.config[key].map(value => {
+              return path.resolve(value);
+            });
+            /* eslint-enable no-loop-func */
+          } else if (typeof this.config[key] === 'string') {
+            this.config[key] = path.resolve(this.config[key]);
+          }
         }
       }
     }
+
+    // Allow chaining.
+    return this;
   }
-};
-
-/**
- * Loads a generator object based on the previously-set configuration.
- *
- * @returns {object} The generator object
- */
-KssConfig.prototype.loadGenerator = function() {
-  var template,
-    generator,
-    self = this;
-
-  // Clean up paths and massage options to expected types.
-  this.normalize();
-
-  // Load the template's generator.
-  try {
-    template = require(this.config.template);
-    generator = template.generator;
-  } catch (e) {
-    // Templates don't have to load their own generator. If the template fails
-    // to load a generator, we assume it wanted the default generator.
-    generator = require('../generator/handlebars');
-  }
-
-  // Confirm this is a compatible generator.
-  return generator.checkGenerator(function(error) {
-    if (error) {
-      return error;
-    }
-
-    // Load the generator's and the template's CLI options.
-    // istanbul ignore else
-    if (Object.keys(generator.options).length) {
-      self.addOptions(generator.options);
-    }
-    if (template &amp;&amp; template.options &amp;&amp; Object.keys(template.options).length) {
-      self.addOptions(template.options);
-    }
-
-    return generator;
-  });
-};
-
-/**
- * Applies path.resolve() to the given path or array of paths.
- *
- * Helper function for KssConfig.normalize().
- *
- * @private
- * @param {string}        from  Optional path to resolve the "to" path
- * @param {string|array}  to    Relative path(s) to resolve.
- * @returns {string|array} The absolute path(s).
- */
-resolveArray = function(from, to) {
-  var paths = [];
-  // "from" is optional.
-  if (typeof to === 'undefined') {
-    to = from;
-    from = '';
-  }
-  if (to instanceof Array) {
-    to.forEach(function(value, index) {
-      paths[index] = path.resolve(from, value);
-    });
-  } else {
-    paths = path.resolve(from, to);
-  }
-  return paths;
-};
+}
 
 module.exports = KssConfig;
 </code></pre>
@@ -362,13 +299,13 @@ module.exports = KssConfig;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="KssGenerator.html">KssGenerator</a></li><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_generator-KssGenerator.html">KssGenerator</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Jan 12 2016 13:43:43 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Feb 05 2016 01:14:40 GMT+0800 (CST)
 </footer>
 
 <script> prettyPrint(); </script>
