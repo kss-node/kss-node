@@ -12,7 +12,9 @@
    See kss_example_generator.js for how to implement a generator.
    ************************************************************** */
 
-const fs = require('fs-extra');
+const Promise = require('bluebird');
+
+const fs = Promise.promisifyAll(require('fs-extra'));
 
 /**
  * A kss-node generator takes input files and generates a style guide.
@@ -131,32 +133,32 @@ class KssGenerator {
    * @param {string} templatePath    Path to the template to clone.
    * @param {string} destinationPath Path to the destination of the newly cloned
    *                                 template.
-   * @param {Function} cb Callback that will be given an Error as its first
-   *                      parameter, if one occurs.
-   * @returns {*} The callback's return value.
+   * @returns {Promise} A `Promise` object resolving to `null`.
    */
-  clone(templatePath, destinationPath, cb) {
-    return fs.stat(destinationPath, function(error) {
-      if (error && error.code === 'ENOENT') {
-        // If the destination path does not exist, we copy the template to it.
-        return fs.copy(
+  clone(templatePath, destinationPath) {
+    return fs.statAsync(destinationPath).catch(error => {
+      // Pass the error on to the next .then().
+      return error;
+    }).then(result => {
+      // If we successfully get stats, the destination exists.
+      if (!(result instanceof Error)) {
+        return Promise.reject(new Error('This folder already exists: ' + destinationPath));
+      }
+
+      // If the destination path does not exist, we copy the template to it.
+      if (result.code === 'ENOENT') {
+        return fs.copyAsync(
           templatePath,
           destinationPath,
           {
             clobber: true,
             filter: /^[^.]/
-          },
-          function(error) {
-            if (error) {
-              return cb(error);
-            }
-            return cb(null);
           }
         );
-      } else if (error) {
-        return cb(error);
       }
-      return cb(new Error('This folder already exists: ' + destinationPath));
+
+      // Otherwise, report the error.
+      return Promise.reject(result);
     });
   }
 

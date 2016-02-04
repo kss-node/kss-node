@@ -39,16 +39,13 @@ const kssExampleGenerator = new KssGenerator('3.0', {
  * @param {string} templatePath    Path to the template to clone.
  * @param {string} destinationPath Path to the destination of the newly cloned
  *                                 template.
- * @param {Function} cb Callback that will be given an Error as its first
- *                      parameter, if one occurs.
- * @returns {*} The callback's return value.
+ * @returns {Promise} A `Promise` object.
  */
-kssExampleGenerator.prototype.clone = function(templatePath, destinationPath, cb) {
+kssExampleGenerator.prototype.clone = function(templatePath, destinationPath) {
   // Note that, at this point, kssExampleGenerator.init() has not been called.
   this.log('Example template cloned to ' + destinationPath + '! (not really.)');
 
-  // No error has occurred.
-  return cb(null);
+  return Promise.resolve();
 };
 
 /**
