@@ -3,17 +3,18 @@
 'use strict';
 
 describe('KssStyleGuide object API', function() {
-  before(function(done) {
-    helperUtils.traverseFixtures({mask: /(sections\-queries|sections\-order|property\-styleguide\-word\-keys)\.less/}, styleGuide => {
-      this.styleGuide = styleGuide;
-      helperUtils.traverseFixtures({mask: /.*\-word\-phrases\.less/}, styleGuide => {
+  before(function() {
+    return Promise.all([
+      helperUtils.traverseFixtures({mask: /(sections\-queries|sections\-order|property\-styleguide\-word\-keys)\.less/}).then(styleGuide => {
+        this.styleGuide = styleGuide;
+      }),
+      helperUtils.traverseFixtures({mask: /.*\-word\-phrases\.less/}).then(styleGuide => {
         this.styleGuideWordPhrases = styleGuide;
-        helperUtils.traverseFixtures({mask: /sections\-queries\.less/}, styleGuide => {
-          this.styleGuideNumeric = styleGuide;
-          done();
-        });
-      });
-    });
+      }),
+      helperUtils.traverseFixtures({mask: /sections\-queries\.less/}).then(styleGuide => {
+        this.styleGuideNumeric = styleGuide;
+      })
+    ]);
   });
 
   /* eslint-disable guard-for-in,no-loop-func */

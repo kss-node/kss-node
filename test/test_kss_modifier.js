@@ -3,10 +3,9 @@
 'use strict';
 
 describe('KssModifier object API', function() {
-  before(function(done) {
-    helperUtils.traverseFixtures({mask: '*.less|*.css'}, styleGuide => {
+  before(function() {
+    return helperUtils.traverseFixtures({mask: '*.less|*.css'}).then(styleGuide => {
       this.styleGuide = styleGuide;
-      done();
     });
   });
 

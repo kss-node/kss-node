@@ -13,10 +13,12 @@
  */
 
 const KssGenerator = require('../kss_generator.js'),
-  fs = require('fs-extra'),
-  glob = require('glob'),
   marked = require('marked'),
-  path = require('path');
+  path = require('path'),
+  Promise = require('bluebird');
+
+const fs = Promise.promisifyAll(require('fs-extra')),
+  glob = Promise.promisify(require('glob'));
 
 // Pass a string to KssGenerator() to tell the system which API version is
 // implemented by kssHandlebarsGenerator.
@@ -58,13 +60,9 @@ let kssHandlebarsGenerator = new KssGenerator('3.0', {
  *
  * @alias module:kss/generator/handlebars.init
  * @param {Object} config Configuration object for the requested generation.
- * @param {Function} cb Callback that will be given an Error as its first
- *                      parameter, if one occurs.
- * @returns {*} The callback's return value.
+ * @returns {Promise} A `Promise` object.
  */
-kssHandlebarsGenerator.init = function(config, cb) {
-  cb = cb || /* istanbul ignore next */ function() {};
-
+kssHandlebarsGenerator.init = function(config) {
   // Save the configuration parameters.
   this.config = config;
   this.config.helpers = this.config.helpers || [];
@@ -89,48 +87,48 @@ kssHandlebarsGenerator.init = function(config, cb) {
   }
 
   // Create a new destination directory.
-  try {
-    fs.mkdirsSync(this.config.destination + '/kss-assets');
-  } catch (e) {
-    // empty
-  }
-
-  // Optionally, copy the contents of the template's "kss-assets" folder.
-  fs.copy(
-    this.config.template + '/kss-assets',
-    this.config.destination + '/kss-assets',
-    {
-      clobber: true,
-      filter: /^[^.]/
-    },
-    // If the template does not have a kss-assets folder, ignore the error.
-    function() {}
-  );
-
-  // Load Handlebars helpers.
-  if (this.config.helpers.length > 0) {
-    for (let i = 0; i < this.config.helpers.length; i++) {
-      if (fs.existsSync(this.config.helpers[i])) {
-        // Load custom Handlebars helpers.
-        let helperFiles = fs.readdirSync(this.config.helpers[i]);
-
-        for (let j = 0; j < helperFiles.length; j++) {
-          if (path.extname(helperFiles[j]) === '.js') {
-            let helper = require(this.config.helpers[i] + '/' + helperFiles[j]);
-            if (typeof helper.register === 'function') {
-              helper.register(this.Handlebars, this.config);
-            }
-          }
-        }
+  return fs.mkdirsAsync(this.config.destination).then(() => {
+    // Optionally, copy the contents of the template's "kss-assets" folder.
+    return fs.copyAsync(
+      this.config.template + '/kss-assets',
+      this.config.destination + '/kss-assets',
+      {
+        clobber: true,
+        filter: /^[^.]/
       }
+    ).catch(() => {
+      // If the template does not have a kss-assets folder, ignore the error.
+      return Promise.resolve();
+    });
+  }).then(() => {
+    if (this.config.helpers.length === 0) {
+      return Promise.resolve();
     }
-  }
 
-  // Compile the Handlebars template.
-  this.template = fs.readFileSync(this.config.template + '/index.html', 'utf8');
-  this.template = this.Handlebars.compile(this.template);
-
-  return cb(null);
+    // Load Handlebars helpers.
+    return Promise.all(
+      this.config.helpers.map(directory => {
+        return fs.readdirAsync(directory).then(helperFiles => {
+          /* eslint-disable max-nested-callbacks */
+          helperFiles.forEach(fileName => {
+            if (path.extname(fileName) === '.js') {
+              let helper = require(path.join(directory, fileName));
+              if (typeof helper.register === 'function') {
+                helper.register(this.Handlebars, this.config);
+              }
+            }
+          });
+          /* eslint-enable max-nested-callbacks */
+        });
+      })
+    );
+  }).then(() => {
+    // Compile the Handlebars template.
+    return fs.readFileAsync(this.config.template + '/index.html', 'utf8').then(content => {
+      this.template = this.Handlebars.compile(content);
+      return Promise.resolve();
+    });
+  });
 };
 
 /**
@@ -138,15 +136,13 @@ kssHandlebarsGenerator.init = function(config, cb) {
  *
  * @alias module:kss/generator/handlebars.generate
  * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
+ * @returns {Promise} A `Promise` object.
  */
-kssHandlebarsGenerator.generate = function(styleGuide, cb) {
+kssHandlebarsGenerator.generate = function(styleGuide) {
   this.styleGuide = styleGuide;
   this.partials = {};
 
-  let sections = this.styleGuide.sections(),
-    sectionRoots = [];
-
-  cb = cb || /* istanbul ignore next */ function() {};
+  let sections = this.styleGuide.sections();
 
   if (this.config.verbose && this.styleGuide.meta.files) {
     this.log(this.styleGuide.meta.files.map(file => {
@@ -155,119 +151,135 @@ kssHandlebarsGenerator.generate = function(styleGuide, cb) {
   }
 
   // Return an error if no KSS sections are found in the source files.
-  let sectionCount = sections.length;
-  if (sectionCount === 0) {
-    return cb(Error('No KSS documentation discovered in source files.'));
+  if (sections.length === 0) {
+    return Promise.reject(new Error('No KSS documentation discovered in source files.'));
   }
 
   if (this.config.verbose) {
     this.log('...Determining section markup:');
   }
 
-  for (let i = 0; i < sectionCount; i += 1) {
-    // Register all the markup blocks as Handlebars partials.
-    if (sections[i].markup()) {
-      let partial = {
-        name: sections[i].reference(),
-        reference: sections[i].reference(),
-        file: '',
-        markup: sections[i].markup(),
-        data: {}
-      };
+  let sectionRoots = [];
+  return Promise.all(
+    sections.map(section => {
+      // Accumulate an array of section references for all sections at the root
+      // of the style guide.
+      let currentRoot = section.reference().split(/(?:\.|\ \-\ )/)[0];
+      if (sectionRoots.indexOf(currentRoot) === -1) {
+        sectionRoots.push(currentRoot);
+      }
+
+      if (!section.markup()) {
+        return Promise.resolve();
+      }
+
+      // Register all the markup blocks as Handlebars partials.
+      let findPartial,
+        partial = {
+          name: section.reference(),
+          reference: section.reference(),
+          file: '',
+          markup: section.markup(),
+          data: {}
+        };
       // If the markup is a file path, attempt to load the file.
       if (partial.markup.match(/^[^\n]+\.(html|hbs)$/)) {
         partial.file = partial.markup;
         partial.name = path.basename(partial.file, path.extname(partial.file));
-        let files = [];
-        for (let key in this.config.source) {
-          if (!files.length) {
-            files = glob.sync(this.config.source[key] + '/**/' + partial.file);
+
+        findPartial = Promise.all(
+          this.config.source.map(source => {
+            return glob(source + '/**/' + partial.file);
+          })
+        ).then(globMatches => {
+          for (let files of globMatches) {
+            if (files.length) {
+              // Read the file contents from the first matched path.
+              partial.file = files[0];
+              return fs.readFileAsync(partial.file, 'utf8');
+            }
           }
-        }
-        // If the markup file is not found, note that in the style guide.
-        if (!files.length) {
+
+          // If the markup file is not found, note that in the style guide.
           partial.markup += ' NOT FOUND!';
           if (!this.config.verbose) {
             this.log('WARNING: In section ' + partial.reference + ', ' + partial.markup);
           }
-        }
-        if (this.config.verbose) {
-          this.log(' - ' + partial.reference + ': ' + partial.markup);
-        }
-        if (files.length) {
-          // Load the partial's markup from file.
-          partial.file = files[0];
-          partial.markup = fs.readFileSync(partial.file, 'utf8');
-          // Load sample data for the partial from the sample .json file.
-          if (fs.existsSync(path.dirname(partial.file) + '/' + partial.name + '.json')) {
+          return '';
+        }).then(contents => {
+          if (this.config.verbose) {
+            this.log(' - ' + partial.reference + ': ' + partial.markup);
+          }
+          if (contents) {
+            partial.markup = contents;
+            // Load sample data for the partial from the sample .json file.
             try {
-              partial.data = require(path.dirname(partial.file) + '/' + partial.name + '.json');
-            } catch (e) {
+              partial.data = require(path.join(path.dirname(partial.file), partial.name + '.json'));
+            } catch (error) {
               partial.data = {};
             }
           }
-        }
-      } else if (this.config.verbose) {
-        this.log(' - ' + partial.reference + ': inline markup');
-      }
-      // Register the partial using the filename (without extension) or using
-      // the style guide reference.
-      this.Handlebars.registerPartial(partial.name, partial.markup);
-      // Save the name of the partial and its data for retrieval in the markup
-      // helper, where we only know the reference.
-      this.partials[partial.reference] = {
-        name: partial.name,
-        data: partial.data
-      };
-    }
-
-    // Accumulate an array of section references for all sections at the root of
-    // the style guide.
-    let currentRoot = sections[i].reference().split(/(?:\.|\ \-\ )/)[0];
-    if (sectionRoots.indexOf(currentRoot) === -1) {
-      sectionRoots.push(currentRoot);
-    }
-  }
-
-  // If a root element doesn't have an actual section, build one for it.
-  // @TODO: Move this "fixing" into KssStyleGuide.
-  let rootCount = sectionRoots.length;
-  let newSection = false;
-  for (let i = 0; i < rootCount; i += 1) {
-    let currentRoot = this.styleGuide.sections(sectionRoots[i]);
-    if (currentRoot === false) {
-      // Add a section to the style guide.
-      newSection = true;
-      this.styleGuide
-        .autoInit(false)
-        .sections({
-          header: sectionRoots[i],
-          reference: sectionRoots[i]
+          return partial;
         });
+      } else {
+        if (this.config.verbose) {
+          this.log(' - ' + partial.reference + ': inline markup');
+        }
+        findPartial = Promise.resolve(partial);
+      }
+
+      return findPartial.then(partial => {
+        // Register the partial using the file name (without extension) or using
+        // the style guide reference.
+        this.Handlebars.registerPartial(partial.name, partial.markup);
+        // Save the name of the partial and its data for retrieval in the markup
+        // helper, where we only know the reference.
+        this.partials[partial.reference] = {
+          name: partial.name,
+          data: partial.data
+        };
+
+        return Promise.resolve();
+      });
+    })
+  ).then(() => {
+    // If a root element doesn't have an actual section, build one for it.
+    // @TODO: Move this "fixing" into KssStyleGuide.
+    let rootCount = sectionRoots.length;
+    let newSection = false;
+    for (let i = 0; i < rootCount; i += 1) {
+      let currentRoot = this.styleGuide.sections(sectionRoots[i]);
+      if (currentRoot === false) {
+        // Add a section to the style guide.
+        newSection = true;
+        this.styleGuide
+          .autoInit(false)
+          .sections({
+            header: sectionRoots[i],
+            reference: sectionRoots[i]
+          });
+      }
     }
-  }
-  // Re-init the style guide if we added new sections.
-  if (newSection) {
-    this.styleGuide.autoInit(true);
-  }
+    // Re-init the style guide if we added new sections.
+    if (newSection) {
+      this.styleGuide.autoInit(true);
+    }
 
-  if (this.config.verbose) {
-    this.log('...Generating style guide pages:');
-  }
+    if (this.config.verbose) {
+      this.log('...Generating style guide pages:');
+    }
 
-  // Now, group all of the sections by their root
-  // reference, and make a page for each.
-  rootCount = sectionRoots.length;
-  for (let i = 0; i < rootCount; i += 1) {
-    let childSections = this.styleGuide.sections(sectionRoots[i] + '.*');
+    // Group all of the sections by their root reference, and make a page for
+    // each.
+    let pagePromises = sectionRoots.map(rootReference => {
+      return this.generatePage(rootReference, this.styleGuide.sections(rootReference + '.*'));
+    });
 
-    this.generatePage(sectionRoots[i], childSections);
-  }
+    // Generate the homepage.
+    pagePromises.push(this.generatePage('styleGuide.homepage', []));
 
-  // Generate the homepage.
-  this.generatePage('styleGuide.homepage', []);
-
-  cb(null);
+    return Promise.all(pagePromises);
+  });
 };
 
 /**
@@ -320,42 +332,55 @@ kssHandlebarsGenerator.createMenu = function(pageReference) {
  * Renders the handlebars template for a section and saves it to a file.
  *
  * @alias module:kss/generator/handlebars.generatePage
- * @param {string} pageReference The reference of the current page's root section.
+ * @param {string} pageReference The reference of the current page's root
+ *   section.
  * @param {Array} sections An array of KssSection objects.
+ * @returns {Promise} A `Promise` object.
  */
 kssHandlebarsGenerator.generatePage = function(pageReference, sections) {
-  let filename = '',
-    homepageText = false;
+  let getFileInfo;
 
+  // Create a Promise resulting in the homepage file information.
   if (pageReference === 'styleGuide.homepage') {
-    filename = 'index.html';
+    let fileInfo = {
+      fileName: 'index.html',
+      homePageText: false
+    };
     if (this.config.verbose) {
       this.log(' - homepage');
     }
-    // Ensure homepageText is a non-false value.
-    for (let key in this.config.source) {
-      if (!homepageText) {
-        try {
-          let files = glob.sync(this.config.source[key] + '/**/' + this.config.homepage);
-          if (files.length) {
-            homepageText = ' ' + marked(fs.readFileSync(files[0], 'utf8'));
-          }
-        } catch (e) {
-          // empty
+
+    getFileInfo = Promise.all(
+      this.config.source.map(source => {
+        return glob(source + '/**/' + this.config.homepage);
+      })
+    ).then(globMatches => {
+      for (let files of globMatches) {
+        if (files.length) {
+          // Read the file contents from the first matched path.
+          return fs.readFileAsync(files[0], 'utf8');
         }
       }
-    }
-    if (!homepageText) {
-      homepageText = ' ';
+
       if (this.config.verbose) {
         this.log('   ...no homepage content found in ' + this.config.homepage + '.');
       } else {
         this.log('WARNING: no homepage content found in ' + this.config.homepage + '.');
       }
-    }
+      return '';
+    }).then(homePageText => {
+      // Ensure homePageText is a non-false value.
+      fileInfo.homePageText = homePageText ? marked(homePageText) : ' ';
+      return fileInfo;
+    });
+
+  // Create a Promise resulting in the non-homepage file information.
   } else {
-    let rootSection = this.styleGuide.sections(pageReference);
-    filename = 'section-' + rootSection.referenceURI() + '.html';
+    let rootSection = this.styleGuide.sections(pageReference),
+      fileInfo = {
+        fileName: 'section-' + rootSection.referenceURI() + '.html',
+        homePageText: false
+      };
     if (this.config.verbose) {
       this.log(
         ' - section ' + pageReference + ' [',
@@ -363,38 +388,41 @@ kssHandlebarsGenerator.generatePage = function(pageReference, sections) {
         ']'
       );
     }
+    getFileInfo = Promise.resolve(fileInfo);
   }
 
-  // Create the HTML to load the optional CSS and JS.
-  let styles = '',
-    scripts = '';
-  for (let key in this.config.css) {
-    if (this.config.css.hasOwnProperty(key)) {
-      styles = styles + '<link rel="stylesheet" href="' + this.config.css[key] + '">\n';
+  return getFileInfo.then(fileInfo => {
+    // Create the HTML to load the optional CSS and JS.
+    let styles = '',
+      scripts = '';
+    for (let key in this.config.css) {
+      if (this.config.css.hasOwnProperty(key)) {
+        styles = styles + '<link rel="stylesheet" href="' + this.config.css[key] + '">\n';
+      }
     }
-  }
-  for (let key in this.config.js) {
-    if (this.config.js.hasOwnProperty(key)) {
-      scripts = scripts + '<script src="' + this.config.js[key] + '"></script>\n';
+    for (let key in this.config.js) {
+      if (this.config.js.hasOwnProperty(key)) {
+        scripts = scripts + '<script src="' + this.config.js[key] + '"></script>\n';
+      }
     }
-  }
 
-  fs.writeFileSync(this.config.destination + '/' + filename,
-    this.template({
-      pageReference: pageReference,
-      sections: sections.map(section => {
-        return section.toJSON();
-      }),
-      menu: this.createMenu(pageReference),
-      homepage: homepageText,
-      styles: styles,
-      scripts: scripts,
-      hasNumericReferences: this.styleGuide.hasNumericReferences(),
-      partials: this.partials,
-      styleGuide: this.styleGuide,
-      options: this.config || {}
-    })
-  );
+    return fs.writeFileAsync(path.join(this.config.destination, fileInfo.fileName),
+      this.template({
+        pageReference: pageReference,
+        sections: sections.map(section => {
+          return section.toJSON();
+        }),
+        menu: this.createMenu(pageReference),
+        homepage: fileInfo.homePageText,
+        styles: styles,
+        scripts: scripts,
+        hasNumericReferences: this.styleGuide.hasNumericReferences(),
+        partials: this.partials,
+        styleGuide: this.styleGuide,
+        options: this.config || {}
+      })
+    );
+  });
 };
 
 module.exports = kssHandlebarsGenerator;

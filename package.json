@@ -30,6 +30,7 @@
   },
   "license": "(MIT OR GPL-2.0)",
   "dependencies": {
+    "bluebird": "^3.1.5",
     "fs-extra": "^0.26.4",
     "glob": "^6.0.1",
     "handlebars": "^4.0.0",

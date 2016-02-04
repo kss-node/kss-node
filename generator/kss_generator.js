@@ -12,7 +12,9 @@
    See kss_example_generator.js for how to implement a generator.
    ************************************************************** */
 
-const fs = require('fs-extra');
+const Promise = require('bluebird');
+
+const fs = Promise.promisifyAll(require('fs-extra'));
 
 /**
  * A kss-node generator takes input files and generates a style guide.
@@ -84,11 +86,9 @@ class KssGenerator {
    * controlling the generator should call this method to verify the
    * specified generator has been configured correctly.
    *
-   * @param {Function} cb Callback that will be given an Error as its first
-   *   parameter, if one occurs.
-   * @returns {*} The callback's return value.
+   * @returns {Promise} A `Promise` object resolving to `null`.
    */
-  checkGenerator(cb) {
+  checkGenerator() {
     let isCompatible = true,
       version,
       apiMajor,
@@ -97,7 +97,7 @@ class KssGenerator {
       thisMinor;
 
     if (!(this instanceof KssGenerator)) {
-      return cb(new Error('The loaded generator is not a KssGenerator object.'));
+      return Promise.reject(new Error('The loaded generator is not a KssGenerator object.'));
     }
 
     if (this.implementsAPI === 'undefined') {
@@ -117,10 +117,10 @@ class KssGenerator {
     }
 
     if (!isCompatible) {
-      return cb(new Error('kss-node expected the template\'s generator to implement KssGenerator API version ' + this.API + '; version "' + this.implementsAPI + '" is being used instead.'));
+      return Promise.reject(new Error('kss-node expected the template\'s generator to implement KssGenerator API version ' + this.API + '; version "' + this.implementsAPI + '" is being used instead.'));
     }
 
-    return cb(null);
+    return Promise.resolve();
   }
 
   /**
@@ -133,32 +133,32 @@ class KssGenerator {
    * @param {string} templatePath    Path to the template to clone.
    * @param {string} destinationPath Path to the destination of the newly cloned
    *                                 template.
-   * @param {Function} cb Callback that will be given an Error as its first
-   *                      parameter, if one occurs.
-   * @returns {*} The callback's return value.
+   * @returns {Promise} A `Promise` object resolving to `null`.
    */
-  clone(templatePath, destinationPath, cb) {
-    return fs.stat(destinationPath, function(error) {
-      if (error && error.code === 'ENOENT') {
-        // If the destination path does not exist, we copy the template to it.
-        return fs.copy(
+  clone(templatePath, destinationPath) {
+    return fs.statAsync(destinationPath).catch(error => {
+      // Pass the error on to the next .then().
+      return error;
+    }).then(result => {
+      // If we successfully get stats, the destination exists.
+      if (!(result instanceof Error)) {
+        return Promise.reject(new Error('This folder already exists: ' + destinationPath));
+      }
+
+      // If the destination path does not exist, we copy the template to it.
+      if (result.code === 'ENOENT') {
+        return fs.copyAsync(
           templatePath,
           destinationPath,
           {
             clobber: true,
             filter: /^[^.]/
-          },
-          function(error) {
-            if (error) {
-              return cb(error);
-            }
-            return cb(null);
           }
         );
-      } else if (error) {
-        return cb(error);
       }
-      return cb(new Error('This folder already exists: ' + destinationPath));
+
+      // Otherwise, report the error.
+      return Promise.reject(result);
     });
   }
 
@@ -170,40 +170,33 @@ class KssGenerator {
    * any necessary tasks before the KSS parsing of the source files.
    *
    * @param {Object} config Configuration object for the requested generation.
-   * @param {Function} cb Callback that will be given an Error as its first
-   *                      parameter, if one occurs.
-   * @returns {*} The callback's return value.
+   * @returns {Promise} A `Promise` object resolving to `null`.
    */
-  init(config, cb) {
+  init(config) {
     // At the very least, generators MUST save the configuration parameters.
     this.config = config;
 
-    return cb(null);
+    return Promise.resolve();
   }
 
   /**
    * Allow the template to prepare itself or modify the KssStyleGuide object.
    *
    * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
-   * @param {Function} cb Callback that will be given an Error as its first
-   *                      parameter, if one occurs, and a fully-populated
-   *                      KssStyleGuide as its second parameter.
-   * @returns {*} The callback's return value.
+   * @returns {Promise} A `Promise` object resolving to `styleGuide`.
    */
-  prepare(styleGuide, cb) {
-    return cb(null, styleGuide);
+  prepare(styleGuide) {
+    return Promise.resolve(styleGuide);
   }
 
   /**
    * Generate the HTML files of the style guide given a KssStyleGuide object.
    *
    * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
-   * @param {Function} cb Callback that will be given an Error as its first
-   *                      parameter, if one occurs.
-   * @returns {*} The callback's return value.
+   * @returns {Promise} A `Promise` object resolving to `styleGuide`.
    */
-  generate(styleGuide, cb) {
-    return cb(null);
+  generate(styleGuide) {
+    return Promise.resolve(styleGuide);
   }
 }
 

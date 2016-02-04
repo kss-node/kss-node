@@ -1,10 +1,11 @@
-/* global Buffer */
 /* eslint-disable max-nested-callbacks */
 
 'use strict';
 
-const fs = require('fs'),
+const Promise = require('bluebird'),
   marked = require('marked');
+
+const fs = Promise.promisifyAll(require('fs-extra'));
 
 describe('kss.parse()', function() {
   before(function(done) {
@@ -19,27 +20,22 @@ describe('kss.parse()', function() {
 
   describe('API validation checks', function() {
     it('should function with no options', function(done) {
-      kss.parse(this.files, {}, function(error, styleGuide) {
-        expect(error).to.not.exist;
-        expect(styleGuide.meta.files.length).to.equal(4);
-        done();
-      });
+      let styleGuide = kss.parse(this.files, {});
+      expect(styleGuide.meta.files.length).to.equal(4);
+      done();
     });
 
     it('should function when given a string', function(done) {
-      kss.parse('file contents', {}, function(error, styleGuide) {
-        expect(error).to.not.exist;
-        expect(styleGuide.data).to.not.have.property('files');
-        done();
-      });
+      let styleGuide = kss.parse('file contents', {});
+      expect(styleGuide.data).to.not.have.property('files');
+      done();
     });
   });
 
   describe('given different comment syntax:', function() {
-    before(function(done) {
-      helperUtils.traverseFixtures({mask: 'sections-comment-syntax.less'}, styleGuide => {
+    before(function() {
+      return helperUtils.traverseFixtures({mask: 'sections-comment-syntax.less'}).then(styleGuide => {
         this.styleGuide = styleGuide;
-        done();
       });
     });
 
@@ -86,55 +82,45 @@ describe('kss.parse()', function() {
 
   context('returns styleGuide', function() {
     describe('.meta.files:', function() {
-      it('should reflect files found', function(done) {
-        helperUtils.traverseFixtures({mask: /with\-include\/.*/g}, function(styleGuide) {
+      it('should reflect files found', function() {
+        return helperUtils.traverseFixtures({mask: /with\-include\/.*/g}).then(styleGuide => {
           expect(styleGuide.data).to.be.an.instanceOf(Object);
           expect(styleGuide.meta.files).to.be.an.instanceOf(Array);
           expect(styleGuide.meta.files.length).to.equal(5);
-          done();
         });
       });
     });
 
     describe('.sections():', function() {
       describe('.raw', function() {
-        before(function(done) {
-          let fileCounter;
-
-          helperUtils.traverseFixtures({}, styleGuide => {
+        before(function() {
+          return helperUtils.traverseFixtures({}).then(styleGuide => {
             this.styleGuide = styleGuide;
             this.fileContents = '';
-            fileCounter = styleGuide.meta.files.length;
-            styleGuide.meta.files.map(file => {
-              fs.readFile(file, 'utf8', (error, data) => {
-                if (error) {
-                  throw error;
-                }
-
-                this.fileContents += data;
-                fileCounter -= 1;
-                if (!fileCounter) {
-                  done();
-                }
-              });
-            });
+            return Promise.all(
+              styleGuide.meta.files.map(file => {
+                return fs.readFileAsync(file, 'utf8').then(data => {
+                  this.fileContents += data;
+                });
+              })
+            );
           });
         });
 
-        it('should contain a copy of comment blocks that are from the original files (disregarding whitespace and asterisks)', function() {
+        it('should contain a copy of comment blocks that are from the original files (disregarding whitespace and asterisks)', function(done) {
           let filteredFileText = this.fileContents.replace(/\/\/|\/\*+|\*\/|\s|\*/g, '');
 
-          this.styleGuide.sections().map(function(section) {
+          this.styleGuide.sections().forEach(section => {
             expect(filteredFileText).to.include(section.meta.raw.replace(/\s|\*/g, ''));
           });
+          done();
         });
       });
 
       describe('.header / .description', function() {
-        before(function(done) {
-          helperUtils.traverseFixtures({mask: 'property-header.less', markdown: false}, styleGuide => {
+        before(function() {
+          return helperUtils.traverseFixtures({mask: 'property-header.less', markdown: false}).then(styleGuide => {
             this.styleGuide = styleGuide;
-            done();
           });
         });
 
@@ -175,19 +161,16 @@ describe('kss.parse()', function() {
         });
 
         it('should do something, not sure what', function(done) {
-          kss.parse(this.files, {}, function(error, styleGuide) {
-            expect(error).to.not.exist;
-            expect(styleGuide.sections('all-by-itself').header()).to.be.string('');
-          });
+          let styleGuide = kss.parse(this.files, {});
+          expect(styleGuide.sections('all-by-itself').header()).to.be.string('');
           done();
         });
       });
 
       describe('.modifiers', function() {
-        before(function(done) {
-          helperUtils.traverseFixtures({mask: 'property-modifiers.less', markdown: false}, styleGuide => {
+        before(function() {
+          return helperUtils.traverseFixtures({mask: 'property-modifiers.less', markdown: false}).then(styleGuide => {
             this.styleGuide = styleGuide;
-            done();
           });
         });
 
@@ -283,10 +266,9 @@ describe('kss.parse()', function() {
       });
 
       describe('.deprecated/.experimental', function() {
-        before(function(done) {
-          helperUtils.traverseFixtures({mask: 'property-deprecated-experimental.less', markdown: false, header: true}, styleGuide => {
+        before(function() {
+          return helperUtils.traverseFixtures({mask: 'property-deprecated-experimental.less', markdown: false, header: true}).then(styleGuide => {
             this.styleGuide = styleGuide;
-            done();
           });
         });
 
@@ -328,20 +310,17 @@ describe('kss.parse()', function() {
       });
 
       describe('.reference', function() {
-        it('should find reference "X.0" without trailing zero', function(done) {
-          helperUtils.traverseFixtures({mask: 'sections-queries.less', header: true}, function(styleGuide) {
+        it('should find reference "X.0" without trailing zero', function() {
+          return helperUtils.traverseFixtures({mask: 'sections-queries.less', header: true}).then(styleGuide => {
             expect(styleGuide.sections(/8.*/)[0].reference()).to.equal('8');
-            done();
           });
         });
       });
 
       describe('.weight', function() {
         it('should correct an invalid weight', function(done) {
-          kss.parse(this.files, {}, function(error, styleGuide) {
-            expect(error).to.not.exist;
-            expect(styleGuide.sections('invalid-weight').weight()).to.equal(0);
-          });
+          let styleGuide = kss.parse(this.files, {});
+          expect(styleGuide.sections('invalid-weight').weight()).to.equal(0);
           done();
         });
       });
@@ -350,14 +329,13 @@ describe('kss.parse()', function() {
 
   context('given options', function() {
     describe('.custom', function() {
-      before(function(done) {
-        helperUtils.traverseFixtures({
+      before(function() {
+        return helperUtils.traverseFixtures({
           mask: 'options-custom.less',
           markdown: false,
           custom: ['custom', 'custom property', 'custom2']
-        }, styleGuide => {
+        }).then(styleGuide => {
           this.styleGuide = styleGuide;
-          done();
         });
       });
 
@@ -389,10 +367,9 @@ describe('kss.parse()', function() {
     });
 
     describe('.markup', function() {
-      before(function(done) {
-        helperUtils.traverseFixtures({mask: 'property-markup.less', markdown: false}, styleGuide => {
+      before(function() {
+        return helperUtils.traverseFixtures({mask: 'property-markup.less', markdown: false}).then(styleGuide => {
           this.styleGuide = styleGuide;
-          done();
         });
       });
 
@@ -421,45 +398,42 @@ describe('kss.parse()', function() {
     });
 
     describe('.markdown:', function() {
-      it('should be enabled by default', function(done) {
-        helperUtils.traverseFixtures({mask: 'property-header.less'}, function(styleGuide) {
+      it('should be enabled by default', function() {
+        return helperUtils.traverseFixtures({mask: 'property-header.less'}).then(styleGuide => {
           expect(styleGuide.sections('header.three-paragraphs').description()).to.equal(marked('ANOTHER PARAGRAPH\n\nAND ANOTHER'));
-          done();
         });
       });
-      it('should not add HTML when disabled', function(done) {
-        helperUtils.traverseFixtures({mask: 'property-header.less', markdown: false}, function(styleGuide) {
+      it('should not add HTML when disabled', function() {
+        return helperUtils.traverseFixtures({mask: 'property-header.less', markdown: false}).then(styleGuide => {
           expect(styleGuide.sections('header.three-paragraphs').description()).to.equal('ANOTHER PARAGRAPH\n\nAND ANOTHER');
-          done();
         });
       });
     });
 
     describe('.header:', function() {
-      it('should be enabled by default', function(done) {
-        helperUtils.traverseFixtures({mask: 'property-header.less', markdown: false}, function(styleGuide) {
+      it('should be enabled by default', function() {
+        return helperUtils.traverseFixtures({mask: 'property-header.less', markdown: false}).then(styleGuide => {
           expect(styleGuide.sections('header.three-paragraphs').description()).to.equal('ANOTHER PARAGRAPH\n\nAND ANOTHER');
-          done();
         });
       });
 
-      it('should not remove the header from description when disabled', function(done) {
-        helperUtils.traverseFixtures({mask: 'property-header.less', markdown: false, header: false}, function(styleGuide) {
+      it('should not remove the header from description when disabled', function() {
+        return helperUtils.traverseFixtures({mask: 'property-header.less', markdown: false, header: false}).then(styleGuide => {
           expect(styleGuide.sections('header.three-paragraphs').description()).to.equal('THREE PARAGRAPHS, NO MODIFIERS\n\nANOTHER PARAGRAPH\n\nAND ANOTHER');
-          done();
         });
       });
     });
 
     describe('.typos:', function() {
-      before(function(done) {
-        helperUtils.traverseFixtures({mask: 'options-typos.less', typos: true}, styleGuide => {
-          this.styleGuide = styleGuide;
-          helperUtils.traverseFixtures({mask: 'property-deprecated-experimental.less', typos: true}, styleGuide2 => {
-            this.styleGuide2 = styleGuide2;
-          });
-          done();
-        });
+      before(function() {
+        return Promise.all([
+          helperUtils.traverseFixtures({mask: 'options-typos.less', typos: true}).then(styleGuide => {
+            this.styleGuide = styleGuide;
+          }),
+          helperUtils.traverseFixtures({mask: 'property-deprecated-experimental.less', typos: true}).then(styleGuide => {
+            this.styleGuide2 = styleGuide;
+          })
+        ]);
       });
 
       describe('Misspelt style guide', function() {

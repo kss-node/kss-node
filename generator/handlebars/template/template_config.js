@@ -44,7 +44,7 @@ kssHandlebarsTemplate.options = {
 //
 // The template could also take this opportunity to do tasks like special
 // handling of "custom" properties or running Sass or Bower tasks.
-kssHandlebarsTemplate.generator.prepare = function(styleGuide, cb) {
+kssHandlebarsTemplate.generator.prepare = function(styleGuide) {
 
   // Load this template's extra Handlebars helpers.
 
@@ -92,7 +92,7 @@ kssHandlebarsTemplate.generator.prepare = function(styleGuide, cb) {
     });
   }
 
-  return cb(null, styleGuide);
+  return Promise.resolve(styleGuide);
 };
 
 module.exports = kssHandlebarsTemplate;

@@ -39,16 +39,13 @@ const kssExampleGenerator = new KssGenerator('3.0', {
  * @param {string} templatePath    Path to the template to clone.
  * @param {string} destinationPath Path to the destination of the newly cloned
  *                                 template.
- * @param {Function} cb Callback that will be given an Error as its first
- *                      parameter, if one occurs.
- * @returns {*} The callback's return value.
+ * @returns {Promise} A `Promise` object.
  */
-kssExampleGenerator.prototype.clone = function(templatePath, destinationPath, cb) {
+kssExampleGenerator.prototype.clone = function(templatePath, destinationPath) {
   // Note that, at this point, kssExampleGenerator.init() has not been called.
   this.log('Example template cloned to ' + destinationPath + '! (not really.)');
 
-  // No error has occurred.
-  return cb(null);
+  return Promise.resolve();
 };
 
 /**
@@ -59,11 +56,9 @@ kssExampleGenerator.prototype.clone = function(templatePath, destinationPath, cb
  * any necessary tasks before the KSS parsing of the source files.
  *
  * @param {Object} config Configuration object for the requested generation.
- * @param {Function} cb Callback that will be given an Error as its first
- *                      parameter, if one occurs.
- * @returns {*} The callback's return value.
+ * @returns {Promise} A `Promise` object.
  */
-kssExampleGenerator.init = function(config, cb) {
+kssExampleGenerator.init = function(config) {
   // At the very least, generators MUST save the configuration parameters.
   this.config = config;
 
@@ -75,24 +70,20 @@ kssExampleGenerator.init = function(config, cb) {
   // Handlebars templating system.
   this.warning = ' (not really.)';
 
-  // No error has occurred.
-  return cb(null);
+  return Promise.resolve();
 };
 
 /**
  * Generate the HTML files of the style guide given a KssStyleGuide object.
  *
  * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
- * @param {Function} cb Callback that will be given an Error as its first
- *                      parameter, if one occurs.
- * @returns {*} The callback's return value.
+ * @returns {Promise} A `Promise` object.
  */
-kssExampleGenerator.prototype.generate = function(styleGuide, cb) {
+kssExampleGenerator.prototype.generate = function(styleGuide) {
   styleGuide.sections();
   this.log('...Generating the demo style guide.' + this.warning);
 
-  // No error has occurred.
-  return cb(null);
+  return Promise.resolve();
 };
 
 // Export our "kssExampleGenerator" object.
