@@ -331,7 +331,7 @@ describe('kss.parse()', function() {
         return helperUtils.traverseFixtures({
           mask: 'options-custom.less',
           markdown: false,
-          custom: ['custom', 'custom property', 'custom2']
+          custom: ['custom', 'custom multi-word property', 'custom2']
         }).then(styleGuide => {
           this.styleGuide = styleGuide;
         });
@@ -353,7 +353,7 @@ describe('kss.parse()', function() {
       });
 
       it('should find a multi-word property', function(done) {
-        expect(this.styleGuide.sections('custom.multi-word').custom('custom property')).to.equal('This is a multi-word property.');
+        expect(this.styleGuide.sections('custom.multi-word').custom('custom multi-word property')).to.equal('This is a multi-word property.');
         done();
       });
 
