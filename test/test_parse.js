@@ -118,7 +118,7 @@ describe('kss.parse()', function() {
         });
 
         it('should contain a copy of comment blocks that are from the original files (disregarding whitespace and asterisks)', function(done) {
-          let filteredFileText = this.fileContents.replace(/\/\/|\/\*+|\*\/|\s|\*/g, '');
+          let filteredFileText = this.fileContents.replace(/\s|\*/g, '');
 
           this.styleGuide.sections().forEach(section => {
             expect(filteredFileText).to.include(section.meta.raw.replace(/\s|\*/g, ''));
