@@ -54,6 +54,16 @@ describe('kss.parse()', function() {
       done();
     });
 
+    it('should parse /* */ CSS comments with extra blank lines', function(done) {
+      expect(this.styleGuide.sections('comment.multi-line.extra-newlines').header()).to.equal('Comment syntax: multi-line, extra empty lines');
+      done();
+    });
+
+    it('should parse indented /* */ CSS comments with extra blank lines', function(done) {
+      expect(this.styleGuide.sections('comment.multi-line.indented-extra-newlines').header()).to.equal('Comment syntax: multi-line, indented, extra empty lines');
+      done();
+    });
+
     it('should not parse a /* inside a CSS string', function(done) {
       expect(this.styleGuide.sections('comment.multi-line.false-positive.test-1').header()).to.equal('False-positive of multi-line comment block #1');
       done();
@@ -270,18 +280,6 @@ describe('kss.parse()', function() {
           return helperUtils.traverseFixtures({mask: 'property-deprecated-experimental.less', markdown: false, header: true}).then(styleGuide => {
             this.styleGuide = styleGuide;
           });
-        });
-
-        it('should find with space above and below', function(done) {
-          expect(this.styleGuide.sections('deprecated.spacing').deprecated()).to.be.true;
-          expect(this.styleGuide.sections('experimental.spacing').experimental()).to.be.true;
-          done();
-        });
-
-        it('should find indented', function(done) {
-          expect(this.styleGuide.sections('deprecated.indented').deprecated()).to.be.true;
-          expect(this.styleGuide.sections('experimental.indented').experimental()).to.be.true;
-          done();
         });
 
         it('should find in header', function(done) {
