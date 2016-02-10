@@ -7,7 +7,7 @@ describe('kss.traverse()', function() {
     it('should function without options', function() {
       return kss.traverse(helperUtils.fixtures()).then(styleGuide => {
         expect(styleGuide.meta.files).to.have.length(23);
-      }).catch(error => {
+      }, error => {
         expect(error).to.not.exist;
       });
     });
@@ -15,7 +15,7 @@ describe('kss.traverse()', function() {
     it('should function with options', function() {
       return kss.traverse(helperUtils.fixtures(), {}).then(styleGuide => {
         expect(styleGuide.meta.files).to.have.length(23);
-      }).catch(error => {
+      }, error => {
         expect(error).to.not.exist;
       });
     });
@@ -23,7 +23,7 @@ describe('kss.traverse()', function() {
     it('should function with an array of directories given', function() {
       return kss.traverse([helperUtils.fixtures('with-include'), helperUtils.fixtures('missing-homepage')], {}).then(styleGuide => {
         expect(styleGuide.meta.files).to.have.length(2);
-      }).catch(error => {
+      }, error => {
         expect(error).to.not.exist;
       });
     });

@@ -22,7 +22,7 @@ global.helperUtils = {
     return kss.traverse(this.fixtures(), options).then(styleGuide => {
       expect(styleGuide.sections()).to.be.ok;
       return styleGuide;
-    }).catch(error => {
+    }, error => {
       expect(error).to.not.exist;
     });
   }

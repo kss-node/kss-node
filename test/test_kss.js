@@ -164,7 +164,7 @@ describe('kss object API', function() {
         return fs.readFileAsync(path.join(__dirname, 'output/custom/section-4.html'), 'utf8').then(function(data) {
           expect(data).to.include('"custom" property: This is the first custom property.');
           expect(data).to.include('"custom2" property: This is the second custom property.');
-        }).catch(function(error) {
+        }, function(error) {
           expect(error).to.not.exist;
         });
       });
