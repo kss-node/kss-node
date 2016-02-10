@@ -5,9 +5,9 @@
   "main": "template_config.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "less": "./node_modules/.bin/lessc --verbose --compress kss-assets/kss.less kss-assets/kss.css"
+    "sass": "./node_modules/.bin/node-sass --output-style compressed kss-assets/kss.scss kss-assets/kss.css"
   },
   "devDependencies": {
-    "less": "^2.1.1"
+    "node-sass": "^3.4.2"
   }
 }
