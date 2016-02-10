@@ -6,7 +6,7 @@ describe('kss.traverse()', function() {
   describe('API validation checks', function() {
     it('should function without options', function() {
       return kss.traverse(helperUtils.fixtures()).then(styleGuide => {
-        expect(styleGuide.meta.files).to.have.length(23);
+        expect(styleGuide.meta.files).to.have.length(22);
       }, error => {
         expect(error).to.not.exist;
       });
@@ -14,7 +14,7 @@ describe('kss.traverse()', function() {
 
     it('should function with options', function() {
       return kss.traverse(helperUtils.fixtures(), {}).then(styleGuide => {
-        expect(styleGuide.meta.files).to.have.length(23);
+        expect(styleGuide.meta.files).to.have.length(22);
       }, error => {
         expect(error).to.not.exist;
       });
