@@ -108,7 +108,7 @@
           Demo
         </a>
       </h1>
-
+      <!-- Source: kss-headings.less, line 27 -->
 
       <div class="kss-description">
         <p>The source files for this demo can be found in the
@@ -116,6 +116,7 @@
 GitHub.</p>
 
       </div>
+
     </div>
 
 
@@ -134,12 +135,13 @@ GitHub.</p>
           Mixins
         </a>
       </h2>
-
+      <!-- Source: styles.less, line 1 -->
 
       <div class="kss-description">
         <p>LESS mixins used in this demo.</p>
 
       </div>
+
     </div>
 
 
@@ -158,17 +160,22 @@ GitHub.</p>
           .button-colorize(@color)
         </a>
       </h3>
+      <!-- Source: components/buttons.less, line 61 -->
 
+      <div class="kss-description">
+        <p>Creates button styling with the specified color.</p>
+
+      </div>
+
+      <div class="kss-parameters__title">Parameters:</div>
       <ul class="kss-parameters">
         <li class="kss-parameters__item">
           <code class="kss-parameters__name">@color</code>
           <div class="kss-parameters__description">Button color.</div>
         </li>
       </ul>
-
-      <div class="kss-description">
-        <p>Creates button styling with the specified color.</p>
-
+      <div class="kss-source">
+        Source: <code>components/buttons.less</code>, line 61
       </div>
     </div>
 
@@ -188,7 +195,14 @@ GitHub.</p>
           .colors(@bg, @color)
         </a>
       </h3>
+      <!-- Source: mixins/example.less, line 1 -->
 
+      <div class="kss-description">
+        <p>Applies foreground and background colors.</p>
+
+      </div>
+
+      <div class="kss-parameters__title">Parameters:</div>
       <ul class="kss-parameters">
         <li class="kss-parameters__item">
           <code class="kss-parameters__name">@bg</code>
@@ -199,10 +213,8 @@ GitHub.</p>
           <div class="kss-parameters__description">Foreground color; defaults to <code>#900</code>.</div>
         </li>
       </ul>
-
-      <div class="kss-description">
-        <p>Applies foreground and background colors.</p>
-
+      <div class="kss-source">
+        Source: <code>mixins/example.less</code>, line 1
       </div>
     </div>
 
@@ -222,13 +234,14 @@ GitHub.</p>
           Components
         </a>
       </h2>
-
+      <!-- Source: styles.less, line 10 -->
 
       <div class="kss-description">
         <p>Reusable components that can be used across the site.
 So far this just includes buttons.</p>
 
       </div>
+
     </div>
 
 
@@ -247,12 +260,13 @@ So far this just includes buttons.</p>
           Buttons
         </a>
       </h3>
-
+      <!-- Source: components/buttons.less, line 1 -->
 
       <div class="kss-description">
         <p>A majority of buttons in the site are built from the same base class.</p>
 
       </div>
+
     </div>
 
       <div class="kss-modifier__wrapper">
@@ -337,6 +351,10 @@ So far this just includes buttons.</p>
 </code></pre>
       </div>
 
+      <div class="kss-source kss-style">
+        Source: <code>components/buttons.less</code>, line 1
+      </div>
+
     </section>
     <section id="kssref-demo-forms" class="kss-section kss-section--depth-2">
 
@@ -352,12 +370,13 @@ So far this just includes buttons.</p>
           Forms
         </a>
       </h2>
-
+      <!-- Source: styles.less, line 18 -->
 
       <div class="kss-description">
         <p>Covers styles used for forms, such as the <code>&lt;input&gt;</code> and <code>&lt;select&gt;</code> elements.</p>
 
       </div>
+
     </div>
 
       <div class="kss-modifier__wrapper">
@@ -397,6 +416,10 @@ So far this just includes buttons.</p>
 </code></pre>
       </div>
 
+      <div class="kss-source kss-style">
+        Source: <code>styles.less</code>, line 18
+      </div>
+
     </section>
     <section id="kssref-demo-forms-text" class="kss-section kss-section--depth-3">
 
@@ -412,12 +435,13 @@ So far this just includes buttons.</p>
           Text Input
         </a>
       </h3>
-
+      <!-- Source: forms/base.less, line 1 -->
 
       <div class="kss-description">
         <p>Below are the text-oriented form elements used on the site.</p>
 
       </div>
+
     </div>
 
 
@@ -436,12 +460,13 @@ So far this just includes buttons.</p>
           Single-Line Text Boxes
         </a>
       </h4>
-
+      <!-- Source: forms/base.less, line 8 -->
 
       <div class="kss-description">
         <p>Your standard, everyday text boxes.</p>
 
       </div>
+
     </div>
 
       <div class="kss-modifier__wrapper">
@@ -487,6 +512,10 @@ So far this just includes buttons.</p>
         <pre class="prettyprint linenums lang-html"><code data-language="html">&lt;input type&#x3D;&quot;text&quot; class&#x3D;&quot;[modifier class]&quot; value&#x3D;&quot;Text input&quot;/&gt;</code></pre>
       </div>
 
+      <div class="kss-source kss-style">
+        Source: <code>forms/base.less</code>, line 8
+      </div>
+
     </section>
     <section id="kssref-demo-forms-text-label-pairs" class="kss-section kss-section--depth-4">
 
@@ -502,13 +531,14 @@ So far this just includes buttons.</p>
           Label/Text box Pairs
         </a>
       </h4>
-
+      <!-- Source: forms/base.less, line 58 -->
 
       <div class="kss-description">
         <p>All labelled text boxes should be included in a wrapper <code>&lt;div&gt;</code> element for
 both layout convenience and specific styling.</p>
 
       </div>
+
     </div>
 
       <div class="kss-modifier__wrapper">
@@ -562,6 +592,10 @@ both layout convenience and specific styling.</p>
         <pre class="prettyprint linenums lang-html"><code data-language="html">&lt;div class&#x3D;&quot;mod-input text [modifier class]&quot;&gt;
   &lt;label&gt;Text Label&lt;/label&gt;
   &lt;input type&#x3D;&quot;text&quot; class&#x3D;&quot;&quot; value&#x3D;&quot;Text input&quot;/&gt;&lt;/div&gt;</code></pre>
+      </div>
+
+      <div class="kss-source kss-style">
+        Source: <code>forms/base.less</code>, line 58
       </div>
 
     </section>
