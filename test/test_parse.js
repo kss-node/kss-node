@@ -94,7 +94,7 @@ describe('kss.parse()', function() {
     describe('.meta.files:', function() {
       it('should reflect files found', function() {
         return helperUtils.traverseFixtures({mask: /with\-include\/.*/g}).then(styleGuide => {
-          expect(styleGuide.data).to.be.an.instanceOf(Object);
+          expect(styleGuide.meta).to.be.an.instanceOf(Object);
           expect(styleGuide.meta.files).to.be.an.instanceOf(Array);
           expect(styleGuide.meta.files.length).to.equal(5);
         });
