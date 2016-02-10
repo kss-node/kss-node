@@ -9,18 +9,18 @@ const fs = Promise.promisifyAll(require('fs-extra'));
 
 describe('kss.parse()', function() {
   before(function(done) {
-    this.files = {
-      '/tmp/example1': 'file contents',
-      '/tmp/example2': 'file contents',
-      '/tmp/example3': '// Style guide: all-by-itself',
-      '/tmp/example4': '// Invalid weight\n//\n// Weight: invalid\n//\n// Style guide: invalid-weight'
-    };
+    this.files = [
+      {path: '/tmp/example1', contents: 'file contents'},
+      {path: '/tmp/example2', contents: 'file contents'},
+      {path: '/tmp/example3', contents: '// Style guide: all-by-itself'},
+      {path: '/tmp/example4', contents: '// Invalid weight\n//\n// Weight: invalid\n//\n// Style guide: invalid-weight'}
+    ];
     done();
   });
 
   describe('API validation checks', function() {
     it('should function with no options', function(done) {
-      let styleGuide = kss.parse(this.files, {});
+      let styleGuide = kss.parse(this.files);
       expect(styleGuide.meta.files.length).to.equal(4);
       done();
     });
@@ -118,7 +118,7 @@ describe('kss.parse()', function() {
         });
 
         it('should contain a copy of comment blocks that are from the original files (disregarding whitespace and asterisks)', function(done) {
-          let filteredFileText = this.fileContents.replace(/\/\/|\/\*+|\*\/|\s|\*/g, '');
+          let filteredFileText = this.fileContents.replace(/\s|\*/g, '');
 
           this.styleGuide.sections().forEach(section => {
             expect(filteredFileText).to.include(section.meta.raw.replace(/\s|\*/g, ''));
@@ -331,7 +331,7 @@ describe('kss.parse()', function() {
         return helperUtils.traverseFixtures({
           mask: 'options-custom.less',
           markdown: false,
-          custom: ['custom', 'custom property', 'custom2']
+          custom: ['custom', 'custom multi-word property', 'custom2']
         }).then(styleGuide => {
           this.styleGuide = styleGuide;
         });
@@ -353,7 +353,7 @@ describe('kss.parse()', function() {
       });
 
       it('should find a multi-word property', function(done) {
-        expect(this.styleGuide.sections('custom.multi-word').custom('custom property')).to.equal('This is a multi-word property.');
+        expect(this.styleGuide.sections('custom.multi-word').custom('custom multi-word property')).to.equal('This is a multi-word property.');
         done();
       });
 
