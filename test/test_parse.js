@@ -9,18 +9,18 @@ const fs = Promise.promisifyAll(require('fs-extra'));
 
 describe('kss.parse()', function() {
   before(function(done) {
-    this.files = {
-      '/tmp/example1': 'file contents',
-      '/tmp/example2': 'file contents',
-      '/tmp/example3': '// Style guide: all-by-itself',
-      '/tmp/example4': '// Invalid weight\n//\n// Weight: invalid\n//\n// Style guide: invalid-weight'
-    };
+    this.files = [
+      {path: '/tmp/example1', contents: 'file contents'},
+      {path: '/tmp/example2', contents: 'file contents'},
+      {path: '/tmp/example3', contents: '// Style guide: all-by-itself'},
+      {path: '/tmp/example4', contents: '// Invalid weight\n//\n// Weight: invalid\n//\n// Style guide: invalid-weight'}
+    ];
     done();
   });
 
   describe('API validation checks', function() {
     it('should function with no options', function(done) {
-      let styleGuide = kss.parse(this.files, {});
+      let styleGuide = kss.parse(this.files);
       expect(styleGuide.meta.files.length).to.equal(4);
       done();
     });
