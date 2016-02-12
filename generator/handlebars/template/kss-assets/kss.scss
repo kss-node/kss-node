@@ -245,6 +245,28 @@ $kss-vertical-rhythm      : $kss-font-size * 1.5;
     }
   }
 
+  .kss-nav__menu-link {
+    position: relative;
+    display: inline-block;
+
+    &:before {
+      @media screen and (min-width: 769px) {
+        content: ' ';
+        position: absolute;
+        left: -20px;
+        width: 0;
+        height: 100%;
+        background-color: rgba(#000, 0);
+      }
+    }
+
+    &.is-in-viewport:before {
+      background-color: #000;
+      width: 5px;
+      transition: background-color .4s, width .6s;
+    }
+  }
+
   .kss-nav__menu-child {
     display: none;
 
