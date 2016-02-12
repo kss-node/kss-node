@@ -25,23 +25,23 @@
   <nav class="kss-nav">
     <ul class="kss-nav__menu">
       <li class="kss-nav__menu-item">
-        <a href="./">
+        <a class="kss-nav__menu-link" href="./">
           <span class="kss-nav__ref">0</span
           ><span class="kss-nav__name">Overview</span>
         </a>
       </li>
       <li class="kss-nav__menu-item">
-        <a href="section-spec.html">
+        <a class="kss-nav__menu-link" href="section-spec.html">
           <span class="kss-nav__ref">1</span><span class="kss-nav__name">KSS Spec</span>
         </a>
       </li>
       <li class="kss-nav__menu-item">
-        <a href="section-javascript-api.html">
+        <a class="kss-nav__menu-link" href="section-javascript-api.html">
           <span class="kss-nav__ref">2</span><span class="kss-nav__name">JavaScript API</span>
         </a>
       </li>
       <li class="kss-nav__menu-item">
-        <a href="section-demo.html">
+        <a class="kss-nav__menu-link" href="section-demo.html">
           <span class="kss-nav__ref">3</span><span class="kss-nav__name">Demo</span>
         </a>
       </li>
@@ -99,9 +99,14 @@ Style guide: components.button
 
 <!-- SCRIPTS -->
 <script src="kss-assets/kss.js"></script>
+<script src="kss-assets/scrollspy.js"></script>
 <script src="kss-assets/prettify.js"></script>
 <script>
   prettyPrint();
+  var spy = new ScrollSpy('#kss-node', {
+    nav: '.kss-nav__menu-child > li > a',
+    className: 'is-in-viewport'
+  });
 </script>
 
 
