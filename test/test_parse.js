@@ -30,6 +30,12 @@ describe('kss.parse()', function() {
       expect(styleGuide.data).to.not.have.property('files');
       done();
     });
+
+    it('should function when given an array of strings', function(done) {
+      let styleGuide = kss.parse(['file contents', 'file contents', '// Strings\n//\n// Style guide: strings'], {});
+      expect(styleGuide.data).to.not.have.property('files');
+      done();
+    });
   });
 
   describe('given different comment syntax:', function() {
