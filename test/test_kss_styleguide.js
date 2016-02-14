@@ -115,7 +115,35 @@ describe('KssStyleGuide object API', function() {
   });
 
   describe('.init()', function() {
-    it('should do things');
+    it('it should re-sort the style guide when new sections are added', function() {
+      let styleGuide = new kss.KssStyleGuide({
+        sections: [
+          {header: 'Section 1.3', reference: '1.3'},
+          {header: 'Section 1.1', reference: '1.1'}
+        ],
+        autoInit: false
+      });
+      styleGuide.sections({header: 'Section 1.2', reference: '1.2'});
+      expect(styleGuide.data.sections.map(section => section.reference())).to.deep.equal(['1.3', '1.1', '1.2']);
+      styleGuide.init();
+      expect(styleGuide.data.sections.map(section => section.reference())).to.deep.equal(['1.1', '1.2', '1.3']);
+    });
+
+    it('it should auto-increment sections in the style guide', function() {
+      let styleGuide = new kss.KssStyleGuide({
+        sections: [
+          {header: 'Section 1.1', reference: 'section.1'},
+          {header: 'Section 1.2', reference: 'section.2'},
+          {header: 'Section 1.3', reference: 'section.3'}
+        ],
+        autoInit: false
+      });
+      styleGuide.sections();
+      expect(styleGuide.data.sections.map(section => section.referenceNumber())).to.deep.equal(['', '', '']);
+      styleGuide.meta.needsSort = false;
+      styleGuide.init();
+      expect(styleGuide.data.sections.map(section => section.referenceNumber())).to.deep.equal(['1.1', '1.2', '1.3']);
+    });
   });
 
   describe('.customPropertyNames()', function() {
@@ -165,7 +193,30 @@ describe('KssStyleGuide object API', function() {
 
   describe('.sections()', function() {
     context('given new sections', function() {
-      it('should do things');
+      it('it should add a JSON section to the style guide', function() {
+        let styleGuide = new kss.KssStyleGuide({
+          sections: [
+            {header: 'Section 1.3', reference: '1.3'},
+            {header: 'Section 1.1', reference: '1.1'}
+          ]
+        });
+        styleGuide.sections({header: 'Section 1.2', reference: '1.2'});
+        expect(styleGuide.data.sections.map(section => section.reference())).to.deep.equal(['1.1', '1.2', '1.3']);
+        expect(styleGuide.meta.referenceMap['1.2'].header()).to.equal('Section 1.2');
+      });
+
+      it('it should add a KssSection to the style guide', function() {
+        let styleGuide = new kss.KssStyleGuide({
+          sections: [
+            {header: 'Section 1.3', reference: '1.3'},
+            {header: 'Section 1.1', reference: '1.1'}
+          ]
+        });
+        let section = new kss.KssSection({header: 'Section 1.2', reference: '1.2'});
+        styleGuide.sections(section);
+        expect(styleGuide.data.sections.map(section => section.reference())).to.deep.equal(['1.1', '1.2', '1.3']);
+        expect(styleGuide.meta.referenceMap['1.2']).to.deep.equal(section);
+      });
     });
 
     context('given no arguments', function() {
