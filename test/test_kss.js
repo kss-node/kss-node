@@ -68,8 +68,10 @@ describe('kss object API', function() {
   describe('given no options', function() {
     it('should display error', function() {
       return testKss({}).then(function(response) {
-        expect(response.error).to.exist;
         expect(response.stderr).to.include('No "source" option specified.');
+        return kss().catch(error => {
+          expect(error).to.exist;
+        });
       });
     });
   });
