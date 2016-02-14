@@ -2,6 +2,10 @@
 
 'use strict';
 
+const Promise = require('bluebird');
+
+const fs = Promise.promisifyAll(require('fs-extra'));
+
 describe('kss.traverse()', function() {
   describe('API validation checks', function() {
     it('should function without options', function() {
@@ -33,11 +37,28 @@ describe('kss.traverse()', function() {
     describe('.mask:', function() {
       describe('default mask', function() {
         before(function() {
-          return helperUtils.traverseFixtures({}).then(styleGuide => {
+          // Create an empty directory.
+          return fs.removeAsync(helperUtils.fixtures('traverse-directories/empty')).then(() => {
+            return fs.mkdirsAsync(helperUtils.fixtures('traverse-directories/empty')).then(() => {
+              // Ignore errors.
+              return Promise.resolve();
+            });
+          // Traverse all test fixtures.
+          }).then(() => {
+            return helperUtils.traverseFixtures({});
+          }).then(styleGuide => {
             this.styleGuide = styleGuide;
           });
         });
+        after(function() {
+          // Remove the empty directory.
+          return fs.removeAsync(helperUtils.fixtures('traverse-directories/empty'));
+        });
 
+        it('should ignore .svn directory', function(done) {
+          expect(this.styleGuide).to.not.containFixture('traverse-directories/.svn/to-be-ignored.scss');
+          done();
+        });
         it('should find file file-type.css', function(done) {
           expect(this.styleGuide).to.containFixture('file-type.css');
           done();
