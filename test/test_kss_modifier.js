@@ -35,6 +35,28 @@ describe('KssModifier object API', function() {
       expect(obj.data).to.have.property('className');
       done();
     });
+
+    it('should add the section, if given', function(done) {
+      let section = new kss.KssSection({header: 'Test section', reference: '1.1'});
+      let modifier = new kss.KssModifier({
+        name: 'Variant',
+        className: '.class',
+        section: section
+      });
+      expect(modifier.meta.section).to.deep.equal(section);
+      done();
+    });
+
+    it('should ignore unknown data', function(done) {
+      let modifier = new kss.KssModifier({
+        name: 'Variant',
+        className: '.class',
+        unknown: 'Unknown'
+      });
+      expect(modifier.data.unknown).to.not.exist;
+      expect(modifier.meta.unknown).to.not.exist;
+      done();
+    });
   });
 
   describe('.section()', function() {
