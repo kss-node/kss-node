@@ -96,10 +96,6 @@ class KssGenerator {
       thisMajor,
       thisMinor;
 
-    if (!(this instanceof KssGenerator)) {
-      return Promise.reject(new Error('The loaded generator is not a KssGenerator object.'));
-    }
-
     if (this.implementsAPI === 'undefined') {
       isCompatible = false;
     } else {
@@ -146,6 +142,7 @@ class KssGenerator {
       }
 
       // If the destination path does not exist, we copy the template to it.
+      // istanbul ignore else
       if (result.code === 'ENOENT') {
         return fs.copyAsync(
           templatePath,
@@ -155,10 +152,10 @@ class KssGenerator {
             filter: /^[^.]/
           }
         );
+      } else {
+        // Otherwise, report the error.
+        return Promise.reject(result);
       }
-
-      // Otherwise, report the error.
-      return Promise.reject(result);
     });
   }
 
