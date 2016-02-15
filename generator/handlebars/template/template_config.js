@@ -78,7 +78,7 @@ kssHandlebarsTemplate.generator.prepare = function(styleGuide) {
         query = query + '.*';
       }
       let sections = styleGuide.sections(query);
-      if (!sections) {
+      if (!sections.length) {
         return options.inverse('');
       }
 
