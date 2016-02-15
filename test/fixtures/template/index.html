@@ -54,5 +54,13 @@
 {{/section}}
 </div>
 
+<div id="kss-test--non-existant">
+  {{#eachSection "does.not.exist.*"}}
+    <h2>{{header}}</h2>
+  {{else}}
+    <h2>Does not exist</h2>
+  {{/eachSection}}
+</div>
+
 </body>
 </html>
