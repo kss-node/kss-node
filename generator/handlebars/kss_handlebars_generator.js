@@ -86,43 +86,43 @@ kssHandlebarsGenerator.init = function(config) {
     this.log('');
   }
 
-  // Create a new destination directory.
-  return fs.mkdirsAsync(this.config.destination).then(() => {
-    // Optionally, copy the contents of the template's "kss-assets" folder.
-    return fs.copyAsync(
-      this.config.template + '/kss-assets',
-      this.config.destination + '/kss-assets',
-      {
-        clobber: true,
-        filter: /^[^.]/
-      }
-    ).catch(() => {
-      // If the template does not have a kss-assets folder, ignore the error.
-      return Promise.resolve();
-    });
-  }).then(() => {
-    if (this.config.helpers.length === 0) {
-      return Promise.resolve();
-    }
+  let initTasks = [];
 
-    // Load Handlebars helpers.
-    return Promise.all(
-      this.config.helpers.map(directory => {
-        return fs.readdirAsync(directory).then(helperFiles => {
-          /* eslint-disable max-nested-callbacks */
-          helperFiles.forEach(fileName => {
-            if (path.extname(fileName) === '.js') {
-              let helper = require(path.join(directory, fileName));
-              if (typeof helper.register === 'function') {
-                helper.register(this.Handlebars, this.config);
-              }
+  // Create a new destination directory.
+  initTasks.push(
+    fs.mkdirsAsync(this.config.destination).then(() => {
+      // Optionally, copy the contents of the template's "kss-assets" folder.
+      return fs.copyAsync(
+        this.config.template + '/kss-assets',
+        this.config.destination + '/kss-assets',
+        {
+          clobber: true,
+          filter: /^[^.]/
+        }
+      ).catch(() => {
+        // If the template does not have a kss-assets folder, ignore the error.
+        return Promise.resolve();
+      });
+    })
+  );
+
+  // Load Handlebars helpers.
+  this.config.helpers.forEach(directory => {
+    initTasks.push(
+      fs.readdirAsync(directory).then(helperFiles => {
+        helperFiles.forEach(fileName => {
+          if (path.extname(fileName) === '.js') {
+            let helper = require(path.join(directory, fileName));
+            if (typeof helper.register === 'function') {
+              helper.register(this.Handlebars, this.config);
             }
-          });
-          /* eslint-enable max-nested-callbacks */
+          }
         });
       })
     );
-  }).then(() => {
+  });
+
+  return Promise.all(initTasks).then(() => {
     // Compile the Handlebars template.
     return fs.readFileAsync(this.config.template + '/index.html', 'utf8').then(content => {
       this.template = this.Handlebars.compile(content);
