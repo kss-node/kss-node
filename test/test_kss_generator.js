@@ -1,3 +1,5 @@
+/* eslint-disable max-nested-callbacks */
+
 'use strict';
 
 const KssGenerator = require('../generator'),
@@ -131,6 +133,22 @@ describe('KssGenerator object API', function() {
         expect(result).to.not.be.undefined;
       }).catch(error => {
         expect(error.message).to.equal('This folder already exists: ' + helperUtils.fixtures('includes'));
+      });
+    });
+
+    it('should skip node_modules and dot-hidden paths', function() {
+      let destination = helperUtils.fixtures('../output/clone-skip'),
+        generator = new KssGenerator();
+      return generator.clone(helperUtils.fixtures('template'), destination).then(() => {
+        return fs.readdirAsync(destination);
+      }).then(files => {
+        // Check for node_modules folder.
+        expect(files.find(value => { return value === 'node_modules'; })).to.be.undefined;
+        // Check for .svn folder.
+        expect(files.find(value => { return value === '.svn'; })).to.be.undefined;
+        return fs.removeAsync(destination);
+      }).catch(error => {
+        expect(error).to.not.exist;
       });
     });
   });

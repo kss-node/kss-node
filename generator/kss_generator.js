@@ -12,7 +12,8 @@
    See kss_example_generator.js for how to implement a generator.
    ************************************************************** */
 
-const Promise = require('bluebird');
+const path = require('path'),
+  Promise = require('bluebird');
 
 const fs = Promise.promisifyAll(require('fs-extra'));
 
@@ -144,12 +145,18 @@ class KssGenerator {
       // If the destination path does not exist, we copy the template to it.
       // istanbul ignore else
       if (result.code === 'ENOENT') {
+        let notHidden = new RegExp('^(?!.*' + path.sep + '(node_modules$|\\.))');
         return fs.copyAsync(
           templatePath,
           destinationPath,
           {
             clobber: true,
-            filter: /^[^.]/
+            filter: filePath => {
+              // Only look at the part of the path inside the template.
+              let relativePath = path.sep + path.relative(templatePath, filePath);
+              // Skip any files with a path matching: /node_modules or /.
+              return notHidden.test(relativePath);
+            }
           }
         );
       } else {

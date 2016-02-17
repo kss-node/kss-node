@@ -97,7 +97,12 @@ kssHandlebarsGenerator.init = function(config) {
         this.config.destination + '/kss-assets',
         {
           clobber: true,
-          filter: /^[^.]/
+          filter: filePath => {
+            // Only look at the part of the path inside the template.
+            let relativePath = path.sep + path.relative(this.config.template, filePath);
+            // Skip any files with a path matching: /node_modules or /.
+            return (new RegExp('^(?!.*' + path.sep + '(node_modules$|\\.))')).test(relativePath);
+          }
         }
       ).catch(() => {
         // If the template does not have a kss-assets folder, ignore the error.
