@@ -93,8 +93,8 @@ kssHandlebarsGenerator.init = function(config) {
     fs.mkdirsAsync(this.config.destination).then(() => {
       // Optionally, copy the contents of the template's "kss-assets" folder.
       return fs.copyAsync(
-        this.config.template + '/kss-assets',
-        this.config.destination + '/kss-assets',
+        path.join(this.config.template, 'kss-assets'),
+        path.join(this.config.destination, 'kss-assets'),
         {
           clobber: true,
           filter: filePath => {
@@ -129,7 +129,7 @@ kssHandlebarsGenerator.init = function(config) {
 
   return Promise.all(initTasks).then(() => {
     // Compile the Handlebars template.
-    return fs.readFileAsync(this.config.template + '/index.html', 'utf8').then(content => {
+    return fs.readFileAsync(path.resolve(this.config.template, 'index.html'), 'utf8').then(content => {
       this.template = this.Handlebars.compile(content);
       return Promise.resolve();
     });

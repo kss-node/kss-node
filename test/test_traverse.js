@@ -38,8 +38,8 @@ describe('kss.traverse()', function() {
       describe('default mask', function() {
         before(function() {
           // Create an empty directory.
-          return fs.removeAsync(helperUtils.fixtures('traverse-directories/empty')).then(() => {
-            return fs.mkdirsAsync(helperUtils.fixtures('traverse-directories/empty')).then(() => {
+          return fs.removeAsync(helperUtils.fixtures('traverse-directories', 'empty')).then(() => {
+            return fs.mkdirsAsync(helperUtils.fixtures('traverse-directories', 'empty')).then(() => {
               // Ignore errors.
               return Promise.resolve();
             });
@@ -52,7 +52,7 @@ describe('kss.traverse()', function() {
         });
         after(function() {
           // Remove the empty directory.
-          return fs.removeAsync(helperUtils.fixtures('traverse-directories/empty'));
+          return fs.removeAsync(helperUtils.fixtures('traverse-directories', 'empty'));
         });
 
         it('should ignore .svn directory', function(done) {

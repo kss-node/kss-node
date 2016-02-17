@@ -133,7 +133,7 @@ describe('kss object API', function() {
   describe('given "destination" option', function() {
     it('should read destination directory', function() {
       let source = helperUtils.fixtures('with-include'),
-        destination = helperUtils.fixtures('../output/nested');
+        destination = helperUtils.fixtures('..', 'output', 'nested');
       return testKss({
         verbose: true,
         source: source,
@@ -163,7 +163,7 @@ describe('kss object API', function() {
         custom: ['custom', 'custom2']
       }).then(function(result) {
         expect(result.error).to.not.exist;
-        return fs.readFileAsync(path.join(__dirname, 'output/custom/section-4.html'), 'utf8').then(function(data) {
+        return fs.readFileAsync(path.join(__dirname, 'output', 'custom', 'section-4.html'), 'utf8').then(function(data) {
           expect(data).to.include('"custom" property: This is the first custom property.');
           expect(data).to.include('"custom2" property: This is the second custom property.');
         }, function(error) {
@@ -182,7 +182,7 @@ describe('kss object API', function() {
       }).then(function(result) {
         expect(result.error).to.not.exist;
         expect(result.stderr).to.be.string('');
-        expect(result.stdout).to.include('Creating a new style guide template in ' + path.resolve('test/output/template') + '...');
+        expect(result.stdout).to.include('Creating a new style guide template in ' + path.resolve('test', 'output', 'template') + '...');
       });
     });
 
@@ -201,7 +201,7 @@ describe('kss object API', function() {
     });
 
     it('should error if the destination folder exists', function() {
-      let existingFolder = path.resolve('test/fixtures/template');
+      let existingFolder = path.resolve('test', 'fixtures', 'template');
       return testKss({
         clone: existingFolder
       }).then(function(result) {

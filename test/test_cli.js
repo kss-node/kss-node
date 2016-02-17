@@ -42,7 +42,7 @@ describe('Command Line Interface', function() {
   let successMessage = 'Style guide generation completed successfully';
 
   after(function() {
-    return fs.removeAsync(path.resolve('test/output'));
+    return fs.removeAsync(path.resolve('test', 'output'));
   });
 
   describe('given no arguments', function() {
@@ -58,7 +58,7 @@ describe('Command Line Interface', function() {
   describe('given unnamed option', function() {
     it('should use the first unnamed as the source directory', function() {
       let source = helperUtils.fixtures('with-include'),
-        destination = helperUtils.fixtures('../output/nested');
+        destination = helperUtils.fixtures('..', 'output', 'nested');
       return kssNode('--verbose ' + source + ' --destination ' + destination).then(function(result) {
         expect(result.error).to.not.exist;
         expect(result.stdout).to.include('* KSS Source  : ' + source);
@@ -68,7 +68,7 @@ describe('Command Line Interface', function() {
 
     it('should use the second unnamed as the destination directory', function() {
       let source = helperUtils.fixtures('with-include'),
-        destination = helperUtils.fixtures('../output/nested');
+        destination = helperUtils.fixtures('..', 'output', 'nested');
       return kssNode('--verbose ' + source + ' ' + destination).then(function(result) {
         expect(result.error).to.not.exist;
         expect(result.stdout).to.include('* Destination : ' + destination);
@@ -103,7 +103,7 @@ describe('Command Line Interface', function() {
 
   describe('given --demo option', function() {
     it('should create a demo style guide', function() {
-      return kssNode('--demo --destination ' + helperUtils.fixtures('../output/nested')).then(function(result) {
+      return kssNode('--demo --destination ' + helperUtils.fixtures('..', 'output', 'nested')).then(function(result) {
         expect(result.error).to.not.exist;
         expect(result.stdout).to.include(successMessage);
         expect(result.stdout).to.include('WELCOME to the kss-node demo! We\'ve turned on the --verbose flag so you can see what kss-node is doing.');

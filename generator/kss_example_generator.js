@@ -63,7 +63,7 @@ kssExampleGenerator.init = function(config) {
   this.config = config;
 
   // This example generator hard-codes the demo source.
-  this.config.source = [path.resolve('../demo')];
+  this.config.source = [path.resolve('..', 'demo')];
 
   // A real generator should initialize the template system being used by this
   // generator. For example, kssHandlebarsGenerator loads and initializes the

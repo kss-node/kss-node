@@ -49,7 +49,7 @@ describe('Handlebars template', function() {
       ];
       fileCounter = files.length;
       files.forEach(function(file) {
-        fs.readFile(path.join(__dirname, 'output/nested', file + '.html'), 'utf8', fileReader(file));
+        fs.readFile(path.join(__dirname, 'output', 'nested', file + '.html'), 'utf8', fileReader(file));
       });
     });
   });

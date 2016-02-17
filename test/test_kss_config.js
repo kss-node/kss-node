@@ -58,8 +58,8 @@ describe('KssConfig object API', function() {
       let kssConfig = new kss.KssConfig();
       kssConfig.set({destination: 'test/output/nested'});
       kssConfig.set({source: 'test/output/nested'});
-      expect(kssConfig.config.destination).to.equal(path.resolve('test/output/nested'));
-      expect(kssConfig.config.source).to.deep.equal([path.resolve('test/output/nested')]);
+      expect(kssConfig.config.destination).to.equal(path.resolve('test', 'output', 'nested'));
+      expect(kssConfig.config.source).to.deep.equal([path.resolve('test', 'output', 'nested')]);
       done();
     });
   });
@@ -111,7 +111,7 @@ describe('KssConfig object API', function() {
           path: true
         }
       });
-      expect(kssConfig.config.aSetting).to.equal(path.resolve('test/output/nested'));
+      expect(kssConfig.config.aSetting).to.equal(path.resolve('test', 'output', 'nested'));
       done();
     });
   });
@@ -186,7 +186,7 @@ describe('KssConfig object API', function() {
         source: [],
         destination: path.resolve('styleguide'),
         mask: '*.css|*.less|*.sass|*.scss|*.styl|*.stylus',
-        template: path.resolve('generator/handlebars/template'),
+        template: path.resolve('generator', 'handlebars', 'template'),
         css: [],
         js: [],
         custom: []

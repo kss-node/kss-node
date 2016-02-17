@@ -117,7 +117,7 @@ describe('KssGenerator object API', function() {
 
   describe('.clone()', function() {
     it('should clone the given directory to the given destination', function() {
-      let destination = helperUtils.fixtures('../output/clone'),
+      let destination = helperUtils.fixtures('..', 'output', 'clone'),
         generator = new KssGenerator();
       return generator.clone(helperUtils.fixtures('template'), destination).catch(error => {
         expect(error).to.not.exist;
@@ -137,7 +137,7 @@ describe('KssGenerator object API', function() {
     });
 
     it('should skip node_modules and dot-hidden paths', function() {
-      let destination = helperUtils.fixtures('../output/clone-skip'),
+      let destination = helperUtils.fixtures('..', 'output', 'clone-skip'),
         generator = new KssGenerator();
       return generator.clone(helperUtils.fixtures('template'), destination).then(() => {
         return fs.readdirAsync(destination);
