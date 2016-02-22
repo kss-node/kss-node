@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>kss-node JavaScript API: Module: kss/generator/handlebars</title>
+    <title>kss-node JavaScript API: Module: kss/builder/handlebars</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: kss/generator/handlebars</h1>
+    <h1 class="page-title">Module: kss/builder/handlebars</h1>
 
     
 
@@ -38,9 +38,9 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>The <code>kss/generator/handlebars</code> module loads the kssHandlebarsGenerator
-object, a <code>KssGenerator</code> object using Handlebars templating.</p>
-<pre class="prettyprint source"><code>const kssHandlebarsGenerator = require('kss/generator/handlebars');</code></pre></div>
+            <div class="description"><p>The <code>kss/builder/handlebars</code> module loads the kssBuilderHandlebars
+object, a <code>KssBuilder</code> object using Handlebars templating.</p>
+<pre class="prettyprint source"><code>const kssBuilderHandlebars = require('kss/builder/handlebars');</code></pre></div>
         
 
         
@@ -89,7 +89,7 @@ object, a <code>KssGenerator</code> object using Handlebars templating.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="generator_handlebars_kss_handlebars_generator.js.html">generator/handlebars/kss_handlebars_generator.js</a>, <a href="generator_handlebars_kss_handlebars_generator.js.html#line6">line 6</a>
+        <a href="builder_handlebars_kss_builder_handlebars.js.html">builder/handlebars/kss_builder_handlebars.js</a>, <a href="builder_handlebars_kss_builder_handlebars.js.html#line6">line 6</a>
     </li></ul></dd>
     
 
@@ -139,14 +139,14 @@ object, a <code>KssGenerator</code> object using Handlebars templating.</p>
 
     
 
-    <h4 class="name" id=".generate"><span class="type-signature">(static) </span>generate<span class="signature">(styleGuide)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id=".build"><span class="type-signature">(static) </span>build<span class="signature">(styleGuide)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Generate the HTML files of the style guide given a KssStyleGuide object.</p>
+    <p>Build the HTML files of the style guide given a KssStyleGuide object.</p>
 </div>
 
 
@@ -239,7 +239,7 @@ object, a <code>KssGenerator</code> object using Handlebars templating.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="generator_handlebars_kss_handlebars_generator.js.html">generator/handlebars/kss_handlebars_generator.js</a>, <a href="generator_handlebars_kss_handlebars_generator.js.html#line141">line 141</a>
+        <a href="builder_handlebars_kss_builder_handlebars.js.html">builder/handlebars/kss_builder_handlebars.js</a>, <a href="builder_handlebars_kss_builder_handlebars.js.html#line147">line 147</a>
     </li></ul></dd>
     
 
@@ -292,7 +292,7 @@ object, a <code>KssGenerator</code> object using Handlebars templating.</p>
 
     
 
-    <h4 class="name" id=".generatePage"><span class="type-signature">(static) </span>generatePage<span class="signature">(pageReference, sections)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id=".buildPage"><span class="type-signature">(static) </span>buildPage<span class="signature">(pageReference, sections)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
 
     
 
@@ -416,7 +416,7 @@ object, a <code>KssGenerator</code> object using Handlebars templating.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="generator_handlebars_kss_handlebars_generator.js.html">generator/handlebars/kss_handlebars_generator.js</a>, <a href="generator_handlebars_kss_handlebars_generator.js.html#line340">line 340</a>
+        <a href="builder_handlebars_kss_builder_handlebars.js.html">builder/handlebars/kss_builder_handlebars.js</a>, <a href="builder_handlebars_kss_builder_handlebars.js.html#line346">line 346</a>
     </li></ul></dd>
     
 
@@ -478,8 +478,8 @@ object, a <code>KssGenerator</code> object using Handlebars templating.</p>
 <div class="description">
     <p>Initialize the style guide creation process.</p>
 <p>This method is given a configuration JSON object with the details of the
-requested style guide generation. The generator can use this information for
-any necessary tasks before the KSS parsing of the source files.</p>
+requested style guide build. The builder can use this information for any
+necessary tasks before the KSS parsing of the source files.</p>
 </div>
 
 
@@ -531,7 +531,7 @@ any necessary tasks before the KSS parsing of the source files.</p>
 
             
 
-            <td class="description last"><p>Configuration object for the requested generation.</p></td>
+            <td class="description last"><p>Configuration object for the requested build.</p></td>
         </tr>
 
     
@@ -572,7 +572,7 @@ any necessary tasks before the KSS parsing of the source files.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="generator_handlebars_kss_handlebars_generator.js.html">generator/handlebars/kss_handlebars_generator.js</a>, <a href="generator_handlebars_kss_handlebars_generator.js.html#line65">line 65</a>
+        <a href="builder_handlebars_kss_builder_handlebars.js.html">builder/handlebars/kss_builder_handlebars.js</a>, <a href="builder_handlebars_kss_builder_handlebars.js.html#line65">line 65</a>
     </li></ul></dd>
     
 
@@ -636,13 +636,13 @@ any necessary tasks before the KSS parsing of the source files.</p>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_generator-KssGenerator.html">KssGenerator</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder.html">kss/builder</a></li><li><a href="module-kss_builder_handlebars.html">kss/builder/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder-KssBuilder.html">KssBuilder</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Wed Feb 10 2016 16:53:05 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
 </footer>
 
 <script> prettyPrint(); </script>

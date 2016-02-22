@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: lib/kss_modifier.js</title>
+    <title>kss-node JavaScript API: Source: lib/kss_modifier.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -73,7 +73,8 @@ class KssModifier {
 
     // Loop through the given properties.
     for (let name in data) {
-      // If the property is defined in this.data or this.meta, add it via our API.
+      // If the property is defined in this.data or this.meta, add it via our
+      // API.
       if (data.hasOwnProperty(name) &amp;&amp; (this.data.hasOwnProperty(name) || this.meta.hasOwnProperty(name))) {
         this[name](data[name]);
       }
@@ -110,8 +111,8 @@ class KssModifier {
    *
    * @param {string} [name] Optional. The name of the `KssModifier`.
    * @returns {string|KssModifier} If name is given, the current `KssModifier`
-   *   object is returned to allow chaining of methods. Otherwise, the name of the
-   *   `KssModifier` is returned.
+   *   object is returned to allow chaining of methods. Otherwise, the name of
+   *   the `KssModifier` is returned.
    */
   name(name) {
     if (typeof name === 'undefined') {
@@ -126,10 +127,11 @@ class KssModifier {
   /**
    * Gets or sets the description of the `KssModifier`.
    *
-   * If the `description` is provided, the description of this `KssModifier` is set.
-   * Otherwise, the description of the `KssModifier` is returned.
+   * If the `description` is provided, the description of this `KssModifier` is
+   * set. Otherwise, the description of the `KssModifier` is returned.
    *
-   * @param {string} [description] Optional. The description of the `KssModifier`.
+   * @param {string} [description] Optional. The description of the
+   *   `KssModifier`.
    * @returns {string|KssModifier} If description is given, the current
    *   `KssModifier` object is returned to allow chaining of methods. Otherwise,
    *   the description of the `KssModifier` is returned.
@@ -145,23 +147,24 @@ class KssModifier {
   }
 
   /**
-   * Gets or sets CSS class(es) suitable to insert into a markup sample to display
-   * the modifier's design.
+   * Gets or sets CSS class(es) suitable to insert into a markup sample to
+   * display the modifier's design.
    *
    * By default, the CSS classes the className() method returns are based on the
    * modifier's name. If the modifier's name includes a pseudo-class, e.g.
    * `:hover`, this method will replace the ":" with "pseudo-class-", which
-   * matches the selector expected by the kss.js script and its KssStateGenerator.
+   * matches the selector expected by the kss.js script and its
+   * KssStateGenerator.
    *
    * ```
    * modifier.name('.primary:hover');
    * modifier.className(); // Returns "primary pseudo-class-hover"
    * ```
    *
-   * To override, the default behavior the class(es) can also be set manually; if
-   * the `className` parameter is provided, the className of this `KssModifier`
-   * is set and will later be returned as-is instead of calculated based on the
-   * `name()`.
+   * To override, the default behavior the class(es) can also be set manually;
+   * if the `className` parameter is provided, the className of this
+   * `KssModifier` is set and will later be returned as-is instead of calculated
+   * based on the `name()`.
    *
    * @param {string} [className] Optional. The class(es) of the `KssModifier`.
    * @returns {string|KssModifier} If the className parameter is given, the
@@ -234,13 +237,13 @@ module.exports = KssModifier;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_generator-KssGenerator.html">KssGenerator</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder.html">kss/builder</a></li><li><a href="module-kss_builder_handlebars.html">kss/builder/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder-KssBuilder.html">KssBuilder</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Wed Feb 10 2016 16:53:06 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
 </footer>
 
 <script> prettyPrint(); </script>

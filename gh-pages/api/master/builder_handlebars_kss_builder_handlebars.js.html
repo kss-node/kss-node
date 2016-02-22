@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>kss-node JavaScript API: Source: generator/handlebars/kss_handlebars_generator.js</title>
+    <title>kss-node JavaScript API: Source: builder/handlebars/kss_builder_handlebars.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: generator/handlebars/kss_handlebars_generator.js</h1>
+    <h1 class="page-title">Source: builder/handlebars/kss_builder_handlebars.js</h1>
 
     
 
@@ -32,15 +32,15 @@
 'use strict';
 
 /**
- * The `kss/generator/handlebars` module loads the kssHandlebarsGenerator
- * object, a `{@link KssGenerator}` object using Handlebars templating.
+ * The `kss/builder/handlebars` module loads the kssBuilderHandlebars
+ * object, a `{@link KssBuilder}` object using Handlebars templating.
  * ```
- * const kssHandlebarsGenerator = require('kss/generator/handlebars');
+ * const kssBuilderHandlebars = require('kss/builder/handlebars');
  * ```
- * @module kss/generator/handlebars
+ * @module kss/builder/handlebars
  */
 
-const KssGenerator = require('../kss_generator.js'),
+const KssBuilder = require('../kss_builder.js'),
   marked = require('marked'),
   path = require('path'),
   Promise = require('bluebird');
@@ -48,9 +48,9 @@ const KssGenerator = require('../kss_generator.js'),
 const fs = Promise.promisifyAll(require('fs-extra')),
   glob = Promise.promisify(require('glob'));
 
-// Pass a string to KssGenerator() to tell the system which API version is
-// implemented by kssHandlebarsGenerator.
-let kssHandlebarsGenerator = new KssGenerator('3.0', {
+// Pass a string to KssBuilder() to tell the system which API version is
+// implemented by kssBuilderHandlebars.
+let kssBuilderHandlebars = new KssBuilder('3.0', {
   'helpers': {
     group: 'Style guide:',
     string: true,
@@ -83,14 +83,14 @@ let kssHandlebarsGenerator = new KssGenerator('3.0', {
  * Initialize the style guide creation process.
  *
  * This method is given a configuration JSON object with the details of the
- * requested style guide generation. The generator can use this information for
- * any necessary tasks before the KSS parsing of the source files.
+ * requested style guide build. The builder can use this information for any
+ * necessary tasks before the KSS parsing of the source files.
  *
- * @alias module:kss/generator/handlebars.init
- * @param {Object} config Configuration object for the requested generation.
+ * @alias module:kss/builder/handlebars.init
+ * @param {Object} config Configuration object for the requested build.
  * @returns {Promise} A `Promise` object.
  */
-kssHandlebarsGenerator.init = function(config) {
+kssBuilderHandlebars.init = function(config) {
   // Save the configuration parameters.
   this.config = config;
   this.config.helpers = this.config.helpers || [];
@@ -103,7 +103,7 @@ kssHandlebarsGenerator.init = function(config) {
 
   if (this.config.verbose) {
     this.log('');
-    this.log('Generating your KSS style guide!');
+    this.log('Building your KSS style guide!');
     this.log('');
     this.log(' * KSS Source  : ' + this.config.source.join(', '));
     this.log(' * Destination : ' + this.config.destination);
@@ -114,45 +114,51 @@ kssHandlebarsGenerator.init = function(config) {
     this.log('');
   }
 
-  // Create a new destination directory.
-  return fs.mkdirsAsync(this.config.destination).then(() => {
-    // Optionally, copy the contents of the template's "kss-assets" folder.
-    return fs.copyAsync(
-      this.config.template + '/kss-assets',
-      this.config.destination + '/kss-assets',
-      {
-        clobber: true,
-        filter: /^[^.]/
-      }
-    ).catch(() => {
-      // If the template does not have a kss-assets folder, ignore the error.
-      return Promise.resolve();
-    });
-  }).then(() => {
-    if (this.config.helpers.length === 0) {
-      return Promise.resolve();
-    }
+  let initTasks = [];
 
-    // Load Handlebars helpers.
-    return Promise.all(
-      this.config.helpers.map(directory => {
-        return fs.readdirAsync(directory).then(helperFiles => {
-          /* eslint-disable max-nested-callbacks */
-          helperFiles.forEach(fileName => {
-            if (path.extname(fileName) === '.js') {
-              let helper = require(path.join(directory, fileName));
-              if (typeof helper.register === 'function') {
-                helper.register(this.Handlebars, this.config);
-              }
+  // Create a new destination directory.
+  initTasks.push(
+    fs.mkdirsAsync(this.config.destination).then(() => {
+      // Optionally, copy the contents of the template's "kss-assets" folder.
+      return fs.copyAsync(
+        path.join(this.config.template, 'kss-assets'),
+        path.join(this.config.destination, 'kss-assets'),
+        {
+          clobber: true,
+          filter: filePath => {
+            // Only look at the part of the path inside the template.
+            let relativePath = path.sep + path.relative(this.config.template, filePath);
+            // Skip any files with a path matching: /node_modules or /.
+            return (new RegExp('^(?!.*' + path.sep + '(node_modules$|\\.))')).test(relativePath);
+          }
+        }
+      ).catch(() => {
+        // If the template does not have a kss-assets folder, ignore the error.
+        return Promise.resolve();
+      });
+    })
+  );
+
+  // Load Handlebars helpers.
+  this.config.helpers.forEach(directory => {
+    initTasks.push(
+      fs.readdirAsync(directory).then(helperFiles => {
+        helperFiles.forEach(fileName => {
+          if (path.extname(fileName) === '.js') {
+            let helper = require(path.join(directory, fileName));
+            // istanbul ignore else
+            if (typeof helper.register === 'function') {
+              helper.register(this.Handlebars, this.config);
             }
-          });
-          /* eslint-enable max-nested-callbacks */
+          }
         });
       })
     );
-  }).then(() => {
+  });
+
+  return Promise.all(initTasks).then(() => {
     // Compile the Handlebars template.
-    return fs.readFileAsync(this.config.template + '/index.html', 'utf8').then(content => {
+    return fs.readFileAsync(path.resolve(this.config.template, 'index.html'), 'utf8').then(content => {
       this.template = this.Handlebars.compile(content);
       return Promise.resolve();
     });
@@ -160,13 +166,13 @@ kssHandlebarsGenerator.init = function(config) {
 };
 
 /**
- * Generate the HTML files of the style guide given a KssStyleGuide object.
+ * Build the HTML files of the style guide given a KssStyleGuide object.
  *
- * @alias module:kss/generator/handlebars.generate
+ * @alias module:kss/builder/handlebars.build
  * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
  * @returns {Promise} A `Promise` object.
  */
-kssHandlebarsGenerator.generate = function(styleGuide) {
+kssBuilderHandlebars.build = function(styleGuide) {
   this.styleGuide = styleGuide;
   this.partials = {};
 
@@ -294,17 +300,17 @@ kssHandlebarsGenerator.generate = function(styleGuide) {
     }
 
     if (this.config.verbose) {
-      this.log('...Generating style guide pages:');
+      this.log('...Building style guide pages:');
     }
 
     // Group all of the sections by their root reference, and make a page for
     // each.
     let pagePromises = sectionRoots.map(rootReference => {
-      return this.generatePage(rootReference, this.styleGuide.sections(rootReference + '.*'));
+      return this.buildPage(rootReference, this.styleGuide.sections(rootReference + '.*'));
     });
 
-    // Generate the homepage.
-    pagePromises.push(this.generatePage('styleGuide.homepage', []));
+    // Build the homepage.
+    pagePromises.push(this.buildPage('styleGuide.homepage', []));
 
     return Promise.all(pagePromises);
   });
@@ -314,11 +320,11 @@ kssHandlebarsGenerator.generate = function(styleGuide) {
  * Creates a 2-level hierarchal menu from the style guide.
  *
  * @param {string} pageReference The reference of the root section of the page
- *   being generated.
+ *   being built.
  * @returns {Array} An array of menu items that can be used as a Handlebars
  *   variable.
  */
-kssHandlebarsGenerator.createMenu = function(pageReference) {
+kssBuilderHandlebars.createMenu = function(pageReference) {
   // Helper function that converts a section to a menu item.
   const toMenuItem = function(section) {
     // @TODO: Add an option to "include" the specific properties returned.
@@ -359,13 +365,13 @@ kssHandlebarsGenerator.createMenu = function(pageReference) {
 /**
  * Renders the handlebars template for a section and saves it to a file.
  *
- * @alias module:kss/generator/handlebars.generatePage
+ * @alias module:kss/builder/handlebars.buildPage
  * @param {string} pageReference The reference of the current page's root
  *   section.
  * @param {Array} sections An array of KssSection objects.
  * @returns {Promise} A `Promise` object.
  */
-kssHandlebarsGenerator.generatePage = function(pageReference, sections) {
+kssBuilderHandlebars.buildPage = function(pageReference, sections) {
   let getFileInfo;
 
   // Create a Promise resulting in the homepage file information.
@@ -412,7 +418,7 @@ kssHandlebarsGenerator.generatePage = function(pageReference, sections) {
     if (this.config.verbose) {
       this.log(
         ' - section ' + pageReference + ' [',
-        rootSection.header() ? rootSection.header() : 'Unnamed',
+        rootSection.header() ? rootSection.header() : /* istanbul ignore next */ 'Unnamed',
         ']'
       );
     }
@@ -447,13 +453,13 @@ kssHandlebarsGenerator.generatePage = function(pageReference, sections) {
         hasNumericReferences: this.styleGuide.hasNumericReferences(),
         partials: this.partials,
         styleGuide: this.styleGuide,
-        options: this.config || {}
+        options: this.config || /* istanbul ignore next */ {}
       })
     );
   });
 };
 
-module.exports = kssHandlebarsGenerator;
+module.exports = kssBuilderHandlebars;
 </code></pre>
         </article>
     </section>
@@ -464,13 +470,13 @@ module.exports = kssHandlebarsGenerator;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_generator-KssGenerator.html">KssGenerator</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder.html">kss/builder</a></li><li><a href="module-kss_builder_handlebars.html">kss/builder/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder-KssBuilder.html">KssBuilder</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Wed Feb 10 2016 16:53:04 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
 </footer>
 
 <script> prettyPrint(); </script>
