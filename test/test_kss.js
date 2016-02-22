@@ -31,7 +31,7 @@ const testKss = function(options) {
 
 describe('kss object API', function() {
   let noHomepageWarning = 'no homepage content found',
-    successMessage = 'Style guide generation completed successfully';
+    successMessage = 'Style guide build completed successfully';
 
   it('should be a function taking 1 argument', function(done) {
     expect(kss).to.exist;
@@ -146,10 +146,10 @@ describe('kss object API', function() {
   });
 
   describe('given "template" option', function() {
-    it('should provide an error if generator\'s checkGenerator method fails', function() {
+    it('should provide an error if builder\'s checkBuilder method fails', function() {
       return testKss({template: helperUtils.fixtures('old-template')}).then(function(response) {
         expect(response.error).to.exist;
-        expect(response.stderr).to.include('kss-node expected the template\'s generator to implement KssGenerator API version 3.0; version "1.0" is being used instead.');
+        expect(response.stderr).to.include('kss-node expected the template\'s builder to implement KssBuilder API version 3.0; version "1.0" is being used instead.');
       });
     });
   });

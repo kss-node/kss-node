@@ -1,15 +1,15 @@
 'use strict';
 
 /**
- * The `kss/generator` module loads the {@link KssGenerator} class.
+ * The `kss/builder` module loads the {@link KssBuilder} class.
  * ```
- * const KssGenerator = require('kss/generator');
+ * const KssBuilder = require('kss/builder');
  * ```
- * @module kss/generator
+ * @module kss/builder
  */
 
 /* **************************************************************
-   See kss_example_generator.js for how to implement a generator.
+   See kss_builder_example.js for how to implement a builder.
    ************************************************************** */
 
 const path = require('path'),
@@ -18,35 +18,35 @@ const path = require('path'),
 const fs = Promise.promisifyAll(require('fs-extra'));
 
 /**
- * A kss-node generator takes input files and generates a style guide.
+ * A kss-node builder takes input files and builds a style guide.
  */
-class KssGenerator {
+class KssBuilder {
 
   /**
-   * Create a KssGenerator object.
+   * Create a KssBuilder object.
    *
-   * This is the base object used by all kss-node generators. Implementations of
-   * KssGenerator MUST pass the version parameter. kss-node will use this to
-   * ensure that only compatible generators are used.
+   * This is the base object used by all kss-node builders. Implementations of
+   * KssBuilder MUST pass the version parameter. kss-node will use this to
+   * ensure that only compatible builders are used.
    *
    * ```
-   * const KssGenerator = require('kss/generator');
-   * const customGenerator = new KssGenerator('3.0');
+   * const KssBuilder = require('kss/builder');
+   * const customBuilder = new KssBuilder('3.0');
    * ```
    *
-   * @param {string} version The generator API version implemented.
-   * @param {object} options The Yargs-like options this generator has.
+   * @param {string} version The builder API version implemented.
+   * @param {object} options The Yargs-like options this builder has.
    *   See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
    */
   constructor(version, options) {
-    // Tell generators which generator API version is currently running.
+    // Tell builders which builder API version is currently running.
     this.API = '3.0';
 
-    // Store the version of the generator API that the generator instance is
-    // expecting; we will verify this in checkGenerator().
+    // Store the version of the builder API that the builder instance is
+    // expecting; we will verify this in checkBuilder().
     this.implementsAPI = typeof version === 'undefined' ? 'undefined' : version;
 
-    // Tell kss-node which Yargs-like options this generator has.
+    // Tell kss-node which Yargs-like options this builder has.
     this.options = options || {};
 
     // The log function defaults to console.log.
@@ -57,7 +57,7 @@ class KssGenerator {
   /**
    * Logs a message to be reported to the user.
    *
-   * Since a generator can be used in places other than the console, using
+   * Since a builder can be used in places other than the console, using
    * console.log() is inappropriate. The log() method should be used to pass
    * messages to the KSS system so it can report them to the user.
    *
@@ -81,15 +81,15 @@ class KssGenerator {
   }
 
   /**
-   * Checks the generator configuration.
+   * Checks the builder configuration.
    *
-   * An instance of KssGenerator MUST NOT override this method. A process
-   * controlling the generator should call this method to verify the
-   * specified generator has been configured correctly.
+   * An instance of KssBuilder MUST NOT override this method. A process
+   * controlling the builder should call this method to verify the specified
+   * builder has been configured correctly.
    *
    * @returns {Promise} A `Promise` object resolving to `null`.
    */
-  checkGenerator() {
+  checkBuilder() {
     let isCompatible = true,
       version,
       apiMajor,
@@ -114,7 +114,7 @@ class KssGenerator {
     }
 
     if (!isCompatible) {
-      return Promise.reject(new Error('kss-node expected the template\'s generator to implement KssGenerator API version ' + this.API + '; version "' + this.implementsAPI + '" is being used instead.'));
+      return Promise.reject(new Error('kss-node expected the template\'s builder to implement KssBuilder API version ' + this.API + '; version "' + this.implementsAPI + '" is being used instead.'));
     }
 
     return Promise.resolve();
@@ -124,7 +124,7 @@ class KssGenerator {
    * Clone a template's files.
    *
    * This method is fairly simple; it copies one directory to the specified
-   * location. An instance of KssGenerator does not need to override this method,
+   * location. An instance of KssBuilder does not need to override this method,
    * but it can if it needs to do something more complicated.
    *
    * @param {string} templatePath    Path to the template to clone.
@@ -170,14 +170,14 @@ class KssGenerator {
    * Initialize the style guide creation process.
    *
    * This method is given a configuration JSON object with the details of the
-   * requested style guide generation. The generator can use this information for
-   * any necessary tasks before the KSS parsing of the source files.
+   * requested style guide build. The builder can use this information for any
+   * necessary tasks before the KSS parsing of the source files.
    *
-   * @param {Object} config Configuration object for the requested generation.
+   * @param {Object} config Configuration object for the requested build.
    * @returns {Promise} A `Promise` object resolving to `null`.
    */
   init(config) {
-    // At the very least, generators MUST save the configuration parameters.
+    // At the very least, builders MUST save the configuration parameters.
     this.config = config;
 
     return Promise.resolve();
@@ -194,14 +194,14 @@ class KssGenerator {
   }
 
   /**
-   * Generate the HTML files of the style guide given a KssStyleGuide object.
+   * Build the HTML files of the style guide given a KssStyleGuide object.
    *
    * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
    * @returns {Promise} A `Promise` object resolving to `styleGuide`.
    */
-  generate(styleGuide) {
+  build(styleGuide) {
     return Promise.resolve(styleGuide);
   }
 }
 
-module.exports = KssGenerator;
+module.exports = KssBuilder;

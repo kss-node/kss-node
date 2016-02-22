@@ -1,8 +1,8 @@
 docs:
-	if [[ ! -e ./generator/handlebars/template/node_modules/.bin/node-sass ]]; then cd generator/handlebars/template && npm install; fi
-	cd generator/handlebars/template && npm run-script sass
+	if [[ ! -e ./builder/handlebars/template/node_modules/.bin/node-sass ]]; then cd builder/handlebars/template && npm install; fi
+	cd builder/handlebars/template && npm run-script sass
 	./bin/kss-node --destination gh-pages --demo
-	echo && echo "Generating JavaScript documentation with jsdoc…" && echo
+	echo && echo "Building JavaScript documentation with jsdoc…" && echo
 	rm -r ./gh-pages/api/master
 	./node_modules/.bin/jsdoc --configure ./gh-pages/api-jsdoc-conf.json
 	echo

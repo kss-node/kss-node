@@ -4,15 +4,15 @@
 'use strict';
 
 /**
- * The `kss/generator/handlebars` module loads the kssHandlebarsGenerator
- * object, a `{@link KssGenerator}` object using Handlebars templating.
+ * The `kss/builder/handlebars` module loads the kssBuilderHandlebars
+ * object, a `{@link KssBuilder}` object using Handlebars templating.
  * ```
- * const kssHandlebarsGenerator = require('kss/generator/handlebars');
+ * const kssBuilderHandlebars = require('kss/builder/handlebars');
  * ```
- * @module kss/generator/handlebars
+ * @module kss/builder/handlebars
  */
 
-const KssGenerator = require('../kss_generator.js'),
+const KssBuilder = require('../kss_builder.js'),
   marked = require('marked'),
   path = require('path'),
   Promise = require('bluebird');
@@ -20,9 +20,9 @@ const KssGenerator = require('../kss_generator.js'),
 const fs = Promise.promisifyAll(require('fs-extra')),
   glob = Promise.promisify(require('glob'));
 
-// Pass a string to KssGenerator() to tell the system which API version is
-// implemented by kssHandlebarsGenerator.
-let kssHandlebarsGenerator = new KssGenerator('3.0', {
+// Pass a string to KssBuilder() to tell the system which API version is
+// implemented by kssBuilderHandlebars.
+let kssBuilderHandlebars = new KssBuilder('3.0', {
   'helpers': {
     group: 'Style guide:',
     string: true,
@@ -55,14 +55,14 @@ let kssHandlebarsGenerator = new KssGenerator('3.0', {
  * Initialize the style guide creation process.
  *
  * This method is given a configuration JSON object with the details of the
- * requested style guide generation. The generator can use this information for
- * any necessary tasks before the KSS parsing of the source files.
+ * requested style guide build. The builder can use this information for any
+ * necessary tasks before the KSS parsing of the source files.
  *
- * @alias module:kss/generator/handlebars.init
- * @param {Object} config Configuration object for the requested generation.
+ * @alias module:kss/builder/handlebars.init
+ * @param {Object} config Configuration object for the requested build.
  * @returns {Promise} A `Promise` object.
  */
-kssHandlebarsGenerator.init = function(config) {
+kssBuilderHandlebars.init = function(config) {
   // Save the configuration parameters.
   this.config = config;
   this.config.helpers = this.config.helpers || [];
@@ -75,7 +75,7 @@ kssHandlebarsGenerator.init = function(config) {
 
   if (this.config.verbose) {
     this.log('');
-    this.log('Generating your KSS style guide!');
+    this.log('Building your KSS style guide!');
     this.log('');
     this.log(' * KSS Source  : ' + this.config.source.join(', '));
     this.log(' * Destination : ' + this.config.destination);
@@ -138,13 +138,13 @@ kssHandlebarsGenerator.init = function(config) {
 };
 
 /**
- * Generate the HTML files of the style guide given a KssStyleGuide object.
+ * Build the HTML files of the style guide given a KssStyleGuide object.
  *
- * @alias module:kss/generator/handlebars.generate
+ * @alias module:kss/builder/handlebars.build
  * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
  * @returns {Promise} A `Promise` object.
  */
-kssHandlebarsGenerator.generate = function(styleGuide) {
+kssBuilderHandlebars.build = function(styleGuide) {
   this.styleGuide = styleGuide;
   this.partials = {};
 
@@ -272,17 +272,17 @@ kssHandlebarsGenerator.generate = function(styleGuide) {
     }
 
     if (this.config.verbose) {
-      this.log('...Generating style guide pages:');
+      this.log('...Building style guide pages:');
     }
 
     // Group all of the sections by their root reference, and make a page for
     // each.
     let pagePromises = sectionRoots.map(rootReference => {
-      return this.generatePage(rootReference, this.styleGuide.sections(rootReference + '.*'));
+      return this.buildPage(rootReference, this.styleGuide.sections(rootReference + '.*'));
     });
 
-    // Generate the homepage.
-    pagePromises.push(this.generatePage('styleGuide.homepage', []));
+    // Build the homepage.
+    pagePromises.push(this.buildPage('styleGuide.homepage', []));
 
     return Promise.all(pagePromises);
   });
@@ -292,11 +292,11 @@ kssHandlebarsGenerator.generate = function(styleGuide) {
  * Creates a 2-level hierarchal menu from the style guide.
  *
  * @param {string} pageReference The reference of the root section of the page
- *   being generated.
+ *   being built.
  * @returns {Array} An array of menu items that can be used as a Handlebars
  *   variable.
  */
-kssHandlebarsGenerator.createMenu = function(pageReference) {
+kssBuilderHandlebars.createMenu = function(pageReference) {
   // Helper function that converts a section to a menu item.
   const toMenuItem = function(section) {
     // @TODO: Add an option to "include" the specific properties returned.
@@ -337,13 +337,13 @@ kssHandlebarsGenerator.createMenu = function(pageReference) {
 /**
  * Renders the handlebars template for a section and saves it to a file.
  *
- * @alias module:kss/generator/handlebars.generatePage
+ * @alias module:kss/builder/handlebars.buildPage
  * @param {string} pageReference The reference of the current page's root
  *   section.
  * @param {Array} sections An array of KssSection objects.
  * @returns {Promise} A `Promise` object.
  */
-kssHandlebarsGenerator.generatePage = function(pageReference, sections) {
+kssBuilderHandlebars.buildPage = function(pageReference, sections) {
   let getFileInfo;
 
   // Create a Promise resulting in the homepage file information.
@@ -431,4 +431,4 @@ kssHandlebarsGenerator.generatePage = function(pageReference, sections) {
   });
 };
 
-module.exports = kssHandlebarsGenerator;
+module.exports = kssBuilderHandlebars;

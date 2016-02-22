@@ -1,9 +1,9 @@
 'use strict';
 
-const KssGenerator = require('../../../generator/kss_generator.js');
+const KssBuilder = require('../../../builder');
 
 const kssOldTemplate = {
-  generator: new KssGenerator('1.0')
+  builder: new KssBuilder('1.0')
 };
 
 module.exports = kssOldTemplate;

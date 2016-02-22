@@ -1,6 +1,6 @@
 'use strict';
 
-// This optional file is used to load the CLI options and KSS generator needed
+// This optional file is used to load the CLI options and KSS builder needed
 // by this template.
 //
 // The filename should follow standard node.js require() conventions. See
@@ -8,24 +8,24 @@
 // either be named index.js or have its name set in the "main" property of the
 // template's package.json.
 
-const kssHandlebarsTemplate = {};
+const kssTemplateHandlebars = {};
 
-// Tell kss-node which generator this template uses.
+// Tell kss-node which builder this template uses.
 try {
   // In order for a template to be "kss-node clone"-able, it must use the
-  // require('kss/generator/path') syntax.
-  kssHandlebarsTemplate.generator = require('kss/generator/handlebars');
+  // require('kss/builder/path') syntax.
+  kssTemplateHandlebars.builder = require('kss/builder/handlebars');
 } catch (e) {
   // The above require() line will always fail while testing a git clone of this
   // module because this code is not inside a "node_modules/kss" folder which
   // would allow node.js to find it with require('kss/anything'). So we catch
   // the error and use a relative path.
-  kssHandlebarsTemplate.generator = require('../kss_handlebars_generator.js');
+  kssTemplateHandlebars.builder = require('../kss_builder_handlebars.js');
 }
 
 // Tell kss-node which Yargs-like options this template has.
 // See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
-kssHandlebarsTemplate.options = {
+kssTemplateHandlebars.options = {
   title: {
     group: 'Style guide:',
     string: true,
@@ -36,15 +36,15 @@ kssHandlebarsTemplate.options = {
 };
 
 // If this template needs to do preparation work before the HTML style guide is
-// generated, the template can do its work inside the `prepare()` method. The
+// built, the template can do its work inside the `prepare()` method. The
 // template has access to the KssStyleGuide object (as the `styleGuide`
 // parameter), an object containing the configuration settings for the requested
-// generation (as `this.config`), and the global Handlebars object (as
+// build (as `this.config`), and the global Handlebars object (as
 // `this.Handlebars`).
 //
 // The template could also take this opportunity to do tasks like special
 // handling of "custom" properties or running Sass or Bower tasks.
-kssHandlebarsTemplate.generator.prepare = function(styleGuide) {
+kssTemplateHandlebars.builder.prepare = function(styleGuide) {
 
   // Load this template's extra Handlebars helpers.
 
@@ -67,8 +67,8 @@ kssHandlebarsTemplate.generator.prepare = function(styleGuide) {
   // the --helpers setting.
   if (!this.Handlebars.helpers['eachSection']) {
     /**
-     * Loop over a section query. If a number is supplied, will convert into
-     * a query for all children and descendants of that reference.
+     * Loop over a section query. If a number is supplied, will convert into a
+     * query for all children and descendants of that reference.
      * @param  {Mixed} query The section query
      */
     this.Handlebars.registerHelper('eachSection', function(query, options) {
@@ -95,4 +95,4 @@ kssHandlebarsTemplate.generator.prepare = function(styleGuide) {
   return Promise.resolve(styleGuide);
 };
 
-module.exports = kssHandlebarsTemplate;
+module.exports = kssTemplateHandlebars;

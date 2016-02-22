@@ -2,50 +2,50 @@
 
 'use strict';
 
-const KssGenerator = require('../generator'),
+const KssBuilder = require('../builder'),
   Promise = require('bluebird');
 
 const fs = Promise.promisifyAll(require('fs-extra'));
 
-describe('KssGenerator object API', function() {
+describe('KssBuilder object API', function() {
   /* eslint-disable guard-for-in,no-loop-func */
   ['log',
     'setLogFunction',
-    'checkGenerator',
+    'checkBuilder',
     'clone',
     'init',
     'prepare',
-    'generate'
+    'build'
   ].forEach(function(method) {
     it('has ' + method + '() method', function(done) {
-      expect(new KssGenerator({})).to.respondTo(method);
+      expect(new KssBuilder({})).to.respondTo(method);
       done();
     });
   });
   /* eslint-enable guard-for-in,no-loop-func */
 
-  describe('KssGenerator constructor', function() {
+  describe('KssBuilder constructor', function() {
     it('should set the current API version', function() {
-      let generator = new KssGenerator();
-      expect(generator.API).to.equal('3.0');
+      let builder = new KssBuilder();
+      expect(builder.API).to.equal('3.0');
     });
 
     it('should set the given implementsAPI version', function() {
-      let generator = new KssGenerator('VALUE');
-      expect(generator.implementsAPI).to.equal('VALUE');
+      let builder = new KssBuilder('VALUE');
+      expect(builder.implementsAPI).to.equal('VALUE');
     });
 
     it('should set the given options', function() {
       let options = {
         options: 'custom'
       };
-      let generator = new KssGenerator('3.0', options);
-      expect(generator.options).to.deep.equal(options);
+      let builder = new KssBuilder('3.0', options);
+      expect(builder.options).to.deep.equal(options);
     });
 
     it('should set the default log function', function() {
-      let generator = new KssGenerator('3.0');
-      expect(generator.logFunction).to.deep.equal(console.log);
+      let builder = new KssBuilder('3.0');
+      expect(builder.logFunction).to.deep.equal(console.log);
     });
   });
 
@@ -57,9 +57,9 @@ describe('KssGenerator object API', function() {
             loggedMessages.push(arguments[i]);
           }
         };
-      let generator = new KssGenerator('3.0');
-      generator.setLogFunction(logFunction);
-      generator.log('test', 'message');
+      let builder = new KssBuilder('3.0');
+      builder.setLogFunction(logFunction);
+      builder.log('test', 'message');
       expect(loggedMessages).to.deep.equal(['test', 'message']);
     });
   });
@@ -72,45 +72,45 @@ describe('KssGenerator object API', function() {
             loggedMessages.push(arguments[i]);
           }
         };
-      let generator = new KssGenerator('3.0');
-      generator.setLogFunction(logFunction);
-      expect(generator.logFunction).to.deep.equal(logFunction);
+      let builder = new KssBuilder('3.0');
+      builder.setLogFunction(logFunction);
+      expect(builder.logFunction).to.deep.equal(logFunction);
     });
   });
 
-  describe('.checkGenerator()', function() {
+  describe('.checkBuilder()', function() {
     it('should return a Promise', function() {
-      let generator = new KssGenerator();
-      let obj = generator.checkGenerator();
+      let builder = new KssBuilder();
+      let obj = builder.checkBuilder();
       return obj.catch(() => {
         expect(obj instanceof Promise).to.be.true;
       });
     });
 
     it('should fail if the API is not given to the constructor', function() {
-      let generator = new KssGenerator();
-      return generator.checkGenerator().then(result => {
+      let builder = new KssBuilder();
+      return builder.checkBuilder().then(result => {
         expect(result).to.not.exist;
       }).catch(error => {
-        expect(error.message).to.equal('kss-node expected the template\'s generator to implement KssGenerator API version ' + generator.API + '; version "undefined" is being used instead.');
+        expect(error.message).to.equal('kss-node expected the template\'s builder to implement KssBuilder API version ' + builder.API + '; version "undefined" is being used instead.');
       });
     });
 
     it('should fail if the given API is not equal to the current API', function() {
-      let generator = new KssGenerator('2.0');
-      return generator.checkGenerator().then(result => {
+      let builder = new KssBuilder('2.0');
+      return builder.checkBuilder().then(result => {
         expect(result).to.not.exist;
       }).catch(error => {
-        expect(error.message).to.equal('kss-node expected the template\'s generator to implement KssGenerator API version ' + generator.API + '; version "2.0" is being used instead.');
+        expect(error.message).to.equal('kss-node expected the template\'s builder to implement KssBuilder API version ' + builder.API + '; version "2.0" is being used instead.');
       });
     });
 
     it('should fail if the given API is newer than the current API', function() {
-      let generator = new KssGenerator('3.1000');
-      return generator.checkGenerator().then(result => {
+      let builder = new KssBuilder('3.1000');
+      return builder.checkBuilder().then(result => {
         expect(result).to.not.exist;
       }).catch(error => {
-        expect(error.message).to.equal('kss-node expected the template\'s generator to implement KssGenerator API version ' + generator.API + '; version "3.1000" is being used instead.');
+        expect(error.message).to.equal('kss-node expected the template\'s builder to implement KssBuilder API version ' + builder.API + '; version "3.1000" is being used instead.');
       });
     });
   });
@@ -118,8 +118,8 @@ describe('KssGenerator object API', function() {
   describe('.clone()', function() {
     it('should clone the given directory to the given destination', function() {
       let destination = helperUtils.fixtures('..', 'output', 'clone'),
-        generator = new KssGenerator();
-      return generator.clone(helperUtils.fixtures('template'), destination).catch(error => {
+        builder = new KssBuilder();
+      return builder.clone(helperUtils.fixtures('template'), destination).catch(error => {
         expect(error).to.not.exist;
       }).then(result => {
         expect(result).to.be.undefined;
@@ -128,8 +128,8 @@ describe('KssGenerator object API', function() {
     });
 
     it('should fail to clone if the given destination exists', function() {
-      let generator = new KssGenerator();
-      return generator.clone(helperUtils.fixtures('template'), helperUtils.fixtures('includes')).then(result => {
+      let builder = new KssBuilder();
+      return builder.clone(helperUtils.fixtures('template'), helperUtils.fixtures('includes')).then(result => {
         expect(result).to.not.be.undefined;
       }).catch(error => {
         expect(error.message).to.equal('This folder already exists: ' + helperUtils.fixtures('includes'));
@@ -138,8 +138,8 @@ describe('KssGenerator object API', function() {
 
     it('should skip node_modules and dot-hidden paths', function() {
       let destination = helperUtils.fixtures('..', 'output', 'clone-skip'),
-        generator = new KssGenerator();
-      return generator.clone(helperUtils.fixtures('template'), destination).then(() => {
+        builder = new KssBuilder();
+      return builder.clone(helperUtils.fixtures('template'), destination).then(() => {
         return fs.readdirAsync(destination);
       }).then(files => {
         // Check for node_modules folder.
@@ -155,29 +155,29 @@ describe('KssGenerator object API', function() {
 
   describe('.init()', function() {
     it('should set the given config', function() {
-      let generator = new KssGenerator(),
+      let builder = new KssBuilder(),
         config = {test: 'config'};
-      return generator.init(config).then(() => {
-        expect(generator.config).to.deep.equal(config);
+      return builder.init(config).then(() => {
+        expect(builder.config).to.deep.equal(config);
       });
     });
   });
 
   describe('.prepare()', function() {
     it('should return the style guide given to it', function() {
-      let generator = new KssGenerator(),
+      let builder = new KssBuilder(),
         styleGuide = new kss.KssStyleGuide({sections: [{header: 'Section', reference: '1.1'}]});
-      return generator.prepare(styleGuide).then((result) => {
+      return builder.prepare(styleGuide).then((result) => {
         expect(result).to.deep.equal(styleGuide);
       });
     });
   });
 
-  describe('.generate()', function() {
+  describe('.build()', function() {
     it('should return the style guide given to it', function() {
-      let generator = new KssGenerator(),
+      let builder = new KssBuilder(),
         styleGuide = new kss.KssStyleGuide({sections: [{header: 'Section', reference: '1.1'}]});
-      return generator.generate(styleGuide).then((result) => {
+      return builder.build(styleGuide).then((result) => {
         expect(result).to.deep.equal(styleGuide);
       });
     });

@@ -1,8 +1,8 @@
 # Ignore any installed node modules.
 **/node_modules/**
 
-# Ignore any generator templates.
-generators/*/*/*/*.js
+# Ignore any builder templates.
+builder/*/*/*/*.js
 
 # Ignore the demo pages.
 demo/**

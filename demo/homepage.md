@@ -3,7 +3,7 @@
 This software is a Node.js implementation of [Knyle Style Sheets](https://github.com/kneath/kss) (KSS), "a documentation syntax for CSS" that's intended to have syntax readable by humans *and* machines. Hence, the kss-node software can be used to create a "living style guide".
 
 1. Write human-readable documentation using "KSS syntax" comments. Can be added to CSS, Sass, LESS, or any other CSS Preprocessor files.
-2. Have `kss-node` auto-generate a style guide from your stylesheets.
+2. Have `kss-node` automatically build a style guide from your stylesheets.
 
 Here's an example KSS comment:
 <pre class="prettyprint linenums lang-css"><code data-language="css">/*
@@ -30,9 +30,9 @@ Style guide: components.button
 
 ## kss-node demo
 
-This site is generated with the `kss-node` command-line tool and parses the KSS documentation found in this [demo project](https://github.com/kss-node/kss-node/tree/master/demo).
+This site is built with the `kss-node` command-line tool and parses the KSS documentation found in this [demo project](https://github.com/kss-node/kss-node/tree/master/demo).
 
-The styling of this site is a demo of [kss-node](https://github.com/kss-node/kss-node)'s default style guide generator. By using the site navigation to the left (or above), you can see how your documentation would look with the default generator. Note that alternate generators are available.
+The styling of this site is a demo of [kss-node](https://github.com/kss-node/kss-node)'s default style guide builder. By using the site navigation to the left (or above), you can see how your documentation would look with the default builder. Note that alternate builders are available.
 
 ## Quick start guide
 
@@ -41,8 +41,8 @@ Documentation on how to get started with kss-node (and with Node.js' npm) is ava
 ## JavaScript API
 
 If you don't wish to use the default style guide template, you can either:
-* write your own template that uses the default kssHandlebarsGenerator style guide generator, or
-* write your own style guide generator, or
+* write your own template that uses the default kssBuilderHandlebars style guide builder, or
+* write your own style guide builder, or
 * use the JavaScript object representation of the style guide, KssStyleGuide.
 
 **For more information on how to integrate kss-node with your own JavaScript, see the [JavaScript API documentation](./section-javascript-api.html).**

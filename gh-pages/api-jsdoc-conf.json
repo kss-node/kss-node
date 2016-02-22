@@ -2,11 +2,11 @@
   "source": {
     "include": [
       "lib",
-      "generator"
+      "builder"
     ],
     "exclude": [
-      "generator/kss_example_generator.js",
-      "generator/handlebars/template"
+      "builder/kss_builder_example.js",
+      "builder/handlebars/template"
     ]
   },
   "opts": {

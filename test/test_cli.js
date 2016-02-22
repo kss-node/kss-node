@@ -39,7 +39,7 @@ const kssNode = function(args) {
 };
 
 describe('Command Line Interface', function() {
-  let successMessage = 'Style guide generation completed successfully';
+  let successMessage = 'Style guide build completed successfully';
 
   after(function() {
     return fs.removeAsync(path.resolve('test', 'output'));

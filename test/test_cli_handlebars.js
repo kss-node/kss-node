@@ -61,7 +61,7 @@ describe('Handlebars template', function() {
     });
   });
 
-  describe('generator\'s Handlebars helpers', function() {
+  describe('builder\'s Handlebars helpers', function() {
     it('should load Handlerbars helper: {{{markup}}}', function(done) {
       expect(this.files['section-2']).to.include('Handlebars markup Helper: pseudo-class-hover');
       expect(this.files['section-2']).to.include('Handlebars markup Helper: stars-given<');

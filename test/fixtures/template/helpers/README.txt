@@ -1,1 +1,1 @@
-This file should be ignored by kssHandlebarsGenerator.
+This file should be ignored by kssBuilderHandlebars.

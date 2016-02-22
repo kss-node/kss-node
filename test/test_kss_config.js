@@ -186,7 +186,7 @@ describe('KssConfig object API', function() {
         source: [],
         destination: path.resolve('styleguide'),
         mask: '*.css|*.less|*.sass|*.scss|*.styl|*.stylus',
-        template: path.resolve('generator', 'handlebars', 'template'),
+        template: path.resolve('builder', 'handlebars', 'template'),
         css: [],
         js: [],
         custom: []
