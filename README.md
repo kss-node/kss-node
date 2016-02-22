@@ -54,7 +54,7 @@ File locations:
 Template:
   --clone        Clone a style guide template to customize
   --template, -t  Use a custom template to build your style guide
-                                        [default: "builder/handlebars/template"]
+                                                 [default: "builder/handlebars"]
 
 Style guide:
   --css          URL of a CSS file to include in the style guide

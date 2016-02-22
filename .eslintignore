@@ -2,7 +2,7 @@
 **/node_modules/**
 
 # Ignore any builder templates.
-builder/*/*/*/*.js
+builder/*/kss-assets/*.js
 
 # Ignore the demo pages.
 demo/**

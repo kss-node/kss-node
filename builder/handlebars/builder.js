@@ -20,7 +20,7 @@ try {
   // module because this code is not inside a "node_modules/kss" folder which
   // would allow node.js to find it with require('kss/anything'). So we catch
   // the error and use a relative path.
-  kssTemplateHandlebars.builder = require('../../class/handlebars');
+  kssTemplateHandlebars.builder = require('../class/handlebars');
 }
 
 // Tell kss-node which Yargs-like options this template has.

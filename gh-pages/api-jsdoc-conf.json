@@ -6,7 +6,7 @@
     ],
     "exclude": [
       "builder/class/example",
-      "builder/handlebars/template"
+      "builder/handlebars"
     ]
   },
   "opts": {
