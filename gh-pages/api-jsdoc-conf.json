@@ -5,7 +5,7 @@
       "builder"
     ],
     "exclude": [
-      "builder/kss_builder_example.js",
+      "builder/class/example",
       "builder/handlebars/template"
     ]
   },
