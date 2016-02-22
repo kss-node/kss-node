@@ -4,12 +4,12 @@
 'use strict';
 
 /**
- * The `kss/builder/handlebars` module loads the kssBuilderHandlebars
+ * The `kss/builder/class/handlebars` module loads the kssBuilderHandlebars
  * object, a `{@link KssBuilder}` object using Handlebars templating.
  * ```
- * const kssBuilderHandlebars = require('kss/builder/handlebars');
+ * const kssBuilderHandlebars = require('kss/builder/class/handlebars');
  * ```
- * @module kss/builder/handlebars
+ * @module kss/builder/class/handlebars
  */
 
 const KssBuilder = require('../kss_builder.js'),

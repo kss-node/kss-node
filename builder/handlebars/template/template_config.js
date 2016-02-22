@@ -14,13 +14,13 @@ const kssTemplateHandlebars = {};
 try {
   // In order for a template to be "kss-node clone"-able, it must use the
   // require('kss/builder/path') syntax.
-  kssTemplateHandlebars.builder = require('kss/builder/handlebars');
+  kssTemplateHandlebars.builder = require('kss/builder/class/handlebars');
 } catch (e) {
   // The above require() line will always fail while testing a git clone of this
   // module because this code is not inside a "node_modules/kss" folder which
   // would allow node.js to find it with require('kss/anything'). So we catch
   // the error and use a relative path.
-  kssTemplateHandlebars.builder = require('../kss_builder_handlebars.js');
+  kssTemplateHandlebars.builder = require('../../class/handlebars');
 }
 
 // Tell kss-node which Yargs-like options this template has.

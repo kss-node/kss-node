@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = require('./kss_builder.js');
+module.exports = require('./class/kss_builder.js');

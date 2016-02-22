@@ -1,7 +1,7 @@
 'use strict';
 
 const KssBuilder = require('../builder'),
-  kssBuilderHandlebars = require('../builder/handlebars');
+  kssBuilderHandlebars = require('../builder/class/handlebars');
 
 describe('kssBuilderHandlebars object', function() {
   it('should be an instance of KssBuilder', function() {
