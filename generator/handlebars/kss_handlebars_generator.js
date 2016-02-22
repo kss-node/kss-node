@@ -118,6 +118,7 @@ kssHandlebarsGenerator.init = function(config) {
         helperFiles.forEach(fileName => {
           if (path.extname(fileName) === '.js') {
             let helper = require(path.join(directory, fileName));
+            // istanbul ignore else
             if (typeof helper.register === 'function') {
               helper.register(this.Handlebars, this.config);
             }
@@ -389,7 +390,7 @@ kssHandlebarsGenerator.generatePage = function(pageReference, sections) {
     if (this.config.verbose) {
       this.log(
         ' - section ' + pageReference + ' [',
-        rootSection.header() ? rootSection.header() : 'Unnamed',
+        rootSection.header() ? rootSection.header() : /* istanbul ignore next */ 'Unnamed',
         ']'
       );
     }
@@ -424,7 +425,7 @@ kssHandlebarsGenerator.generatePage = function(pageReference, sections) {
         hasNumericReferences: this.styleGuide.hasNumericReferences(),
         partials: this.partials,
         styleGuide: this.styleGuide,
-        options: this.config || {}
+        options: this.config || /* istanbul ignore next */ {}
       })
     );
   });
