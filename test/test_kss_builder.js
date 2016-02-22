@@ -5,7 +5,8 @@
 const KssBuilder = require('../builder'),
   Promise = require('bluebird');
 
-const fs = Promise.promisifyAll(require('fs-extra'));
+const fs = Promise.promisifyAll(require('fs-extra')),
+  API = '3.0';
 
 describe('KssBuilder object API', function() {
   /* eslint-disable guard-for-in,no-loop-func */
@@ -25,14 +26,9 @@ describe('KssBuilder object API', function() {
   /* eslint-enable guard-for-in,no-loop-func */
 
   describe('KssBuilder constructor', function() {
-    it('should set the current API version', function() {
-      let builder = new KssBuilder();
-      expect(builder.API).to.equal('3.0');
-    });
-
-    it('should set the given implementsAPI version', function() {
+    it('should set the given API version', function() {
       let builder = new KssBuilder('VALUE');
-      expect(builder.implementsAPI).to.equal('VALUE');
+      expect(builder.API).to.equal('VALUE');
     });
 
     it('should set the given options', function() {
@@ -92,7 +88,7 @@ describe('KssBuilder object API', function() {
       return builder.checkBuilder().then(result => {
         expect(result).to.not.exist;
       }).catch(error => {
-        expect(error.message).to.equal('kss-node expected the template\'s builder to implement KssBuilder API version ' + builder.API + '; version "undefined" is being used instead.');
+        expect(error.message).to.equal('kss-node expected the template\'s builder to implement KssBuilder API version ' + API + '; version "undefined" is being used instead.');
       });
     });
 
@@ -101,16 +97,16 @@ describe('KssBuilder object API', function() {
       return builder.checkBuilder().then(result => {
         expect(result).to.not.exist;
       }).catch(error => {
-        expect(error.message).to.equal('kss-node expected the template\'s builder to implement KssBuilder API version ' + builder.API + '; version "2.0" is being used instead.');
+        expect(error.message).to.equal('kss-node expected the template\'s builder to implement KssBuilder API version ' + API + '; version "2.0" is being used instead.');
       });
     });
 
     it('should fail if the given API is newer than the current API', function() {
-      let builder = new KssBuilder('3.1000');
+      let builder = new KssBuilder('3.999');
       return builder.checkBuilder().then(result => {
         expect(result).to.not.exist;
       }).catch(error => {
-        expect(error.message).to.equal('kss-node expected the template\'s builder to implement KssBuilder API version ' + builder.API + '; version "3.1000" is being used instead.');
+        expect(error.message).to.equal('kss-node expected the template\'s builder to implement KssBuilder API version ' + API + '; version "3.999" is being used instead.');
       });
     });
   });

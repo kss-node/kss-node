@@ -15,7 +15,8 @@
 const path = require('path'),
   Promise = require('bluebird');
 
-const fs = Promise.promisifyAll(require('fs-extra'));
+const fs = Promise.promisifyAll(require('fs-extra')),
+  kssBuilderAPI = '3.0';
 
 /**
  * A kss-node builder takes input files and builds a style guide.
@@ -39,12 +40,9 @@ class KssBuilder {
    *   See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
    */
   constructor(version, options) {
-    // Tell builders which builder API version is currently running.
-    this.API = '3.0';
-
     // Store the version of the builder API that the builder instance is
     // expecting; we will verify this in checkBuilder().
-    this.implementsAPI = typeof version === 'undefined' ? 'undefined' : version;
+    this.API = typeof version === 'undefined' ? 'undefined' : version;
 
     // Tell kss-node which Yargs-like options this builder has.
     this.options = options || {};
@@ -97,14 +95,14 @@ class KssBuilder {
       thisMajor,
       thisMinor;
 
-    if (this.implementsAPI === 'undefined') {
+    if (this.API === 'undefined') {
       isCompatible = false;
     } else {
-      version = this.API.split('.');
+      version = kssBuilderAPI.split('.');
       apiMajor = parseInt(version[0]);
       apiMinor = parseInt(version[1]);
 
-      version = this.implementsAPI.split('.');
+      version = this.API.split('.');
       thisMajor = parseInt(version[0]);
       thisMinor = parseInt(version[1]);
 
@@ -114,7 +112,7 @@ class KssBuilder {
     }
 
     if (!isCompatible) {
-      return Promise.reject(new Error('kss-node expected the template\'s builder to implement KssBuilder API version ' + this.API + '; version "' + this.implementsAPI + '" is being used instead.'));
+      return Promise.reject(new Error('kss-node expected the template\'s builder to implement KssBuilder API version ' + kssBuilderAPI + '; version "' + this.API + '" is being used instead.'));
     }
 
     return Promise.resolve();

@@ -9,7 +9,7 @@ describe('kssBuilderHandlebars object', function() {
   });
 
   it('should implement the correct API', function() {
-    expect(kssBuilderHandlebars.implementsAPI).to.equal(kssBuilderHandlebars.API);
+    expect(kssBuilderHandlebars.API).to.equal('3.0');
   });
 
   it('should implement 4 helpers', function() {
