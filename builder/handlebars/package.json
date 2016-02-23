@@ -1,8 +1,8 @@
 {
-  "name": "kss-node-handlebars-template",
+  "name": "kss-node-handlebars-builder",
   "version": "3.0.0",
-  "description": "The default template for kss-node.",
-  "main": "template_config.js",
+  "description": "The default builder for kss-node.",
+  "main": "builder.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "sass": "./node_modules/.bin/node-sass --output-style compressed kss-assets/kss.scss kss-assets/kss.css"

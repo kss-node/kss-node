@@ -5,8 +5,8 @@
       "builder"
     ],
     "exclude": [
-      "builder/kss_builder_example.js",
-      "builder/handlebars/template"
+      "builder/class/example",
+      "builder/handlebars"
     ]
   },
   "opts": {

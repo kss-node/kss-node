@@ -1,8 +1,8 @@
 # Ignore any installed node modules.
 **/node_modules/**
 
-# Ignore any builder templates.
-builder/*/*/*/*.js
+# Ignore any builders.
+builder/*/kss-assets/*.js
 
 # Ignore the demo pages.
 demo/**

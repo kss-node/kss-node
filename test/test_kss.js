@@ -145,11 +145,18 @@ describe('kss object API', function() {
     });
   });
 
-  describe('given "template" option', function() {
-    it('should provide an error if builder\'s checkBuilder method fails', function() {
-      return testKss({template: helperUtils.fixtures('old-template')}).then(function(response) {
+  describe('given "builder" option', function() {
+    it('should provide an error if KssBuilder.checkBuilder() method fails', function() {
+      return testKss({builder: helperUtils.fixtures('old-builder')}).then(function(response) {
         expect(response.error).to.exist;
-        expect(response.stderr).to.include('kss-node expected the template\'s builder to implement KssBuilder API version 3.0; version "1.0" is being used instead.');
+        expect(response.stderr).to.include('kss-node expected the builder to implement KssBuilder API version 3.0; version "1.0" is being used instead.');
+      });
+    });
+
+    it('should provide an error if given a KssGenerator 2.0', function() {
+      return testKss({builder: helperUtils.fixtures('old-generator')}).then(function(response) {
+        expect(response.error).to.exist;
+        expect(response.stderr).to.include('kss-node expected the builder to implement KssBuilder API version 3.0; version "2.0" is being used instead.');
       });
     });
   });
@@ -159,7 +166,7 @@ describe('kss object API', function() {
       return testKss({
         source: 'test/fixtures/with-include',
         destination: 'test/output/custom',
-        template: 'test/fixtures/template',
+        builder: 'test/fixtures/builder',
         custom: ['custom', 'custom2']
       }).then(function(result) {
         expect(result.error).to.not.exist;
@@ -174,20 +181,20 @@ describe('kss object API', function() {
   });
 
   describe('given "clone" option', function() {
-    it('should copy the template', function() {
+    it('should copy the builder', function() {
       // This test is long.
       this.timeout(4000);
       return testKss({
-        clone: 'test/output/template'
+        clone: 'test/output/builder'
       }).then(function(result) {
         expect(result.error).to.not.exist;
         expect(result.stderr).to.be.string('');
-        expect(result.stdout).to.include('Creating a new style guide template in ' + path.resolve('test', 'output', 'template') + '...');
+        expect(result.stdout).to.include('Creating a new style guide builder in ' + path.resolve('test', 'output', 'builder') + '...');
       });
     });
 
     it('should use a default path', function() {
-      let defaultPath = path.resolve('custom-template');
+      let defaultPath = path.resolve('custom-builder');
       // This test is long.
       this.timeout(4000);
       return testKss({
@@ -196,12 +203,12 @@ describe('kss object API', function() {
         fs.removeSync(defaultPath);
         expect(result.error).to.not.exist;
         expect(result.stderr).to.be.string('');
-        expect(result.stdout).to.include('Creating a new style guide template in ' + defaultPath + '...');
+        expect(result.stdout).to.include('Creating a new style guide builder in ' + defaultPath + '...');
       });
     });
 
     it('should error if the destination folder exists', function() {
-      let existingFolder = path.resolve('test', 'fixtures', 'template');
+      let existingFolder = path.resolve('test', 'fixtures', 'builder');
       return testKss({
         clone: existingFolder
       }).then(function(result) {

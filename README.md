@@ -51,10 +51,10 @@ File locations:
                          [default: "*.css|*.less|*.sass|*.scss|*.styl|*.stylus"]
   --config, -c   Load the kss-node configuration from a json file
 
-Template:
-  --clone        Clone a style guide template to customize
-  --template, -t  Use a custom template to build your style guide
-                                        [default: "builder/handlebars/template"]
+Builder:
+  --clone        Clone a style guide builder to customize
+  --builder, -b  Use the specified builder when building your style guide
+                                                 [default: "builder/handlebars"]
 
 Style guide:
   --css          URL of a CSS file to include in the style guide
@@ -80,20 +80,20 @@ In order to parse your stylesheets containing KSS docs, you need to either speci
 
 The style guide will be built in the `styleguide` directory unless you specify the second argument or use a `--destination [directory]` flag.
 
-Even though kss-node parses your CSS source, your CSS won't be included in the style guide unless you use the `--css` option or create a custom template with `--clone`.
+Even though kss-node parses your CSS source, your CSS won't be included in the style guide unless you use the `--css` option or create a custom builder with `--clone`.
 
 You can build a copy of the demo style guide like so:
 
     $ kss-node --demo
 
-If you want to change the HTML of the style guide being built, you can create your own template, i.e. skin, theme. Use the `kss-node --clone` command to initialize a copy of the default template so you can edit it and use it when building your style guide with the `--template` flag.
+If you want to change the HTML of the style guide being built, you can create your own builder, i.e. skin, theme. Use the `kss-node --clone` command to initialize a copy of the default builder so you can edit it and use it when building your style guide with the `--builder` flag.
 
-    $ kss-node --clone custom-template
-    $ kss-node path/to/sass styleguide --template custom-template
+    $ kss-node --clone custom-builder
+    $ kss-node path/to/sass styleguide --builder custom-builder
 
-The default template should look something like this:
+The default builder should look something like this:
 
-![CLI Template Preview](https://raw.github.com/kss-node/kss-node/master/demo/preview.png)
+![Handlebars Builder Preview](https://raw.github.com/kss-node/kss-node/master/demo/preview.png)
 
 ## Differences from kneath/kss
 

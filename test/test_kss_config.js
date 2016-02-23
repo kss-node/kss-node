@@ -2,6 +2,8 @@
 
 'use strict';
 
+const KssBuilder = require('../builder');
+
 let pathToJSON = helperUtils.fixtures('cli-option-config.json');
 
 describe('KssConfig object API', function() {
@@ -24,17 +26,13 @@ describe('KssConfig object API', function() {
       let kssConfig = new kss.KssConfig();
       expect(kssConfig).to.have.property('config');
       expect(kssConfig).to.have.property('options');
-      expect(kssConfig.options).to.have.property('css');
-      expect(kssConfig.options).to.have.property('js');
-      expect(kssConfig.options).to.have.property('custom');
-      expect(kssConfig.options).to.have.property('verbose');
       done();
     });
 
     it('should set config when given an object', function(done) {
       let opts = require(pathToJSON);
       let kssConfig = new kss.KssConfig(opts);
-      expect(kssConfig.config.source).to.deep.equal([path.resolve('with-include')]);
+      expect(kssConfig.config.source).to.deep.equal('with-include');
       done();
     });
   });
@@ -56,6 +54,7 @@ describe('KssConfig object API', function() {
 
     it('should automatically normalize known settings', function(done) {
       let kssConfig = new kss.KssConfig();
+      kssConfig.addOptions((new KssBuilder()).options);
       kssConfig.set({destination: 'test/output/nested'});
       kssConfig.set({source: 'test/output/nested'});
       expect(kssConfig.config.destination).to.equal(path.resolve('test', 'output', 'nested'));
@@ -119,6 +118,7 @@ describe('KssConfig object API', function() {
   describe('.getOptions()', function() {
     it('should return this.options', function(done) {
       let kssConfig = new kss.KssConfig();
+      kssConfig.addOptions((new KssBuilder()).options);
       let options = kssConfig.getOptions();
       for (let key in options) {
         if (options.hasOwnProperty(key)) {
@@ -130,6 +130,7 @@ describe('KssConfig object API', function() {
 
     it('should return this.options.key given key', function(done) {
       let kssConfig = new kss.KssConfig();
+      kssConfig.addOptions((new KssBuilder()).options);
       for (let key in kssConfig.options) {
         if (kssConfig.options.hasOwnProperty(key)) {
           expect(kssConfig.getOptions(key)).to.equal(kssConfig.options[key]);
@@ -142,6 +143,7 @@ describe('KssConfig object API', function() {
   describe('.normalize()', function() {
     it('should normalize a "multiple" option to an array of values', function(done) {
       let kssConfig = new kss.KssConfig();
+      kssConfig.addOptions((new KssBuilder()).options);
       kssConfig.set({source: 'with-include'});
       kssConfig.normalize(['source']);
       expect(kssConfig.config.source).to.be.an.instanceOf(Array);
@@ -159,14 +161,16 @@ describe('KssConfig object API', function() {
 
     it('should normalize a non-"multiple" option to a single value', function(done) {
       let kssConfig = new kss.KssConfig();
-      kssConfig.set({template: ['empty-source', 'with-include', 'template']});
-      kssConfig.normalize(['template']);
-      expect(kssConfig.config.template).to.be.a('string');
+      kssConfig.addOptions((new KssBuilder()).options);
+      kssConfig.set({builder: ['empty-source', 'with-include', 'builder']});
+      kssConfig.normalize(['builder']);
+      expect(kssConfig.config.builder).to.be.a('string');
       done();
     });
 
     it('should resolve paths relative to the current working directory', function(done) {
       let kssConfig = new kss.KssConfig(require(pathToJSON));
+      kssConfig.addOptions((new KssBuilder()).options);
       kssConfig.normalize(['source']);
       expect(kssConfig.config.source[0]).to.equal(path.resolve('with-include'));
       done();
@@ -177,20 +181,6 @@ describe('KssConfig object API', function() {
       kssConfig.set({destination: null});
       kssConfig.normalize(['destination']);
       expect(kssConfig.config.destination).to.equal(null);
-      done();
-    });
-
-    it('should set default values', function(done) {
-      let kssConfig = new kss.KssConfig();
-      expect(kssConfig.config).to.deep.equal({
-        source: [],
-        destination: path.resolve('styleguide'),
-        mask: '*.css|*.less|*.sass|*.scss|*.styl|*.stylus',
-        template: path.resolve('builder', 'handlebars', 'template'),
-        css: [],
-        js: [],
-        custom: []
-      });
       done();
     });
   });

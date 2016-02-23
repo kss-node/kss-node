@@ -7,7 +7,7 @@ const cli = require('../lib/cli'),
   mockStream = require('mock-utf8-stream'),
   path = require('path');
 
-describe('Handlebars template', function() {
+describe('Handlebars builder', function() {
   before(function(done) {
     let stdout = new mockStream.MockWritableStream(),
       stderr = new mockStream.MockWritableStream();
@@ -35,7 +35,7 @@ describe('Handlebars template', function() {
     cli({
       stdout: stdout,
       stderr: stderr,
-      argv: ['node', 'bin/kss-node', 'test/fixtures/with-include', 'test/output/nested', '--template', 'test/fixtures/template', '--helpers', 'test/fixtures/template/helpers']
+      argv: ['node', 'bin/kss-node', 'test/fixtures/with-include', 'test/output/nested', '--builder', 'test/fixtures/builder', '--helpers', 'test/fixtures/builder/helpers']
     }).catch(function(error) {
       // Pass the error on to the next .then().
       return error;
@@ -73,7 +73,7 @@ describe('Handlebars template', function() {
     });
   });
 
-  describe('template\'s Handlebars helpers', function() {
+  describe('builder\'s Handlebars helpers', function() {
     it('should load Handlerbars helper: {{section [arg]}}', function(done) {
       expect(this.files['section-3']).to.include('Handlebars Section Helper Test 3');
       expect(this.files['section-3']).to.include('Section 3 has been successfully loaded.');
