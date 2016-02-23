@@ -40,76 +40,11 @@
 
 const path = require('path');
 
-/* eslint-disable key-spacing */
-let coreOptions = {
-  source: {
-    group:    'File locations:',
-    string:   true,
-    path:     true,
-    describe: 'Source directory to parse for KSS comments'
-  },
-  destination: {
-    group:    'File locations:',
-    string:   true,
-    path:     true,
-    multiple: false,
-    describe: 'Destination directory of style guide',
-    default:  'styleguide'
-  },
-  mask: {
-    group:    'File locations:',
-    alias:    'm',
-    string:   true,
-    multiple: false,
-    describe: 'Use a mask for detecting files containing KSS comments',
-    default:  '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
-  },
-
-  clone: {
-    group:    'Template:',
-    string:   true,
-    path:     true,
-    multiple: false,
-    describe: 'Clone a style guide template to customize'
-  },
-  template: {
-    group:    'Template:',
-    alias:    't',
-    string:   true,
-    path:     true,
-    multiple: false,
-    describe: 'Use a custom template to build your style guide',
-    default:  path.relative(process.cwd(), path.join(__dirname, '..', 'builder', 'handlebars', 'template'))
-  },
-  css: {
-    group:    'Style guide:',
-    string:   true,
-    describe: 'URL of a CSS file to include in the style guide'
-  },
-  js: {
-    group:    'Style guide:',
-    string:   true,
-    describe: 'URL of a JavaScript file to include in the style guide'
-  },
-  custom: {
-    group:    'Style guide:',
-    string:   true,
-    describe: 'Process a custom property name when parsing KSS comments'
-  },
-
-  verbose: {
-    count:    true,
-    multiple: false,
-    describe: 'Display verbose details while building'
-  }
-};
-/* eslint-enable key-spacing */
-
 /**
  * The KssConfig class is a convenience class is used by the CLI and the kss()
  * function to:
  * - collect configuration settings
- * - collect options specified by templates and builders
+ * - collect options specified by builders
  * - normalize the settings based on the options' configurations
  *
  * This class is normally accessed via the [`kss`]{@link module:kss} module:
@@ -136,8 +71,6 @@ class KssConfig {
     if (config) {
       this.set(config);
     }
-
-    this.addOptions(coreOptions);
   }
 
   /**
@@ -158,7 +91,7 @@ class KssConfig {
     // Allow clone to be used without a path. We can't specify this default
     // path in coreOptions or the clone flag would always be "on".
     if (config.clone === '' || config.clone === true) {
-      this.config.clone = 'custom-template';
+      this.config.clone = 'custom-builder';
     }
 
     // Allow chaining.
@@ -179,8 +112,8 @@ class KssConfig {
   /**
    * Adds additional configuration options to the core kss-node options.
    *
-   * Since kss-node is extendable, builders and templates can provide their own
-   * options for configuration.
+   * Since kss-node is extendable, builders can provide their own options for
+   * configuration.
    *
    * Each option object is key-compatble with
    * [yargs](https://www.npmjs.com/package/yargs), the command-line utility
@@ -299,7 +232,7 @@ module.exports = KssConfig;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder.html">kss/builder</a></li><li><a href="module-kss_builder_handlebars.html">kss/builder/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder-KssBuilder.html">KssBuilder</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder.html">kss/builder</a></li><li><a href="module-kss_builder_class_handlebars.html">kss/builder/class/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder_class_handlebars-KssBuilderHandlebars.html">KssBuilderHandlebars</a></li><li><a href="module-kss_builder-KssBuilder.html">KssBuilder</a></li></ul>
 </nav>
 
 <br class="clear">

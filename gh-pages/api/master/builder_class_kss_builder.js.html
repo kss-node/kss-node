@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>kss-node JavaScript API: Source: builder/kss_builder.js</title>
+    <title>kss-node JavaScript API: Source: builder/class/kss_builder.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: builder/kss_builder.js</h1>
+    <h1 class="page-title">Source: builder/class/kss_builder.js</h1>
 
     
 
@@ -43,7 +43,71 @@
 const path = require('path'),
   Promise = require('bluebird');
 
-const fs = Promise.promisifyAll(require('fs-extra'));
+const fs = Promise.promisifyAll(require('fs-extra')),
+  kssBuilderAPI = '3.0';
+
+const coreOptions = {
+  source: {
+    group: 'File locations:',
+    string: true,
+    path: true,
+    describe: 'Source directory to parse for KSS comments'
+  },
+  destination: {
+    group: 'File locations:',
+    string: true,
+    path: true,
+    multiple: false,
+    describe: 'Destination directory of style guide',
+    default: 'styleguide'
+  },
+  mask: {
+    group: 'File locations:',
+    alias: 'm',
+    string: true,
+    multiple: false,
+    describe: 'Use a mask for detecting files containing KSS comments',
+    default: '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
+  },
+
+  clone: {
+    group: 'Builder:',
+    string: true,
+    path: true,
+    multiple: false,
+    describe: 'Clone a style guide builder to customize'
+  },
+  builder: {
+    group: 'Builder:',
+    alias: 'b',
+    string: true,
+    path: true,
+    multiple: false,
+    describe: 'Use the specified builder when building your style guide',
+    default: path.relative(process.cwd(), path.join(__dirname, '..', 'handlebars'))
+  },
+  css: {
+    group: 'Style guide:',
+    string: true,
+    describe: 'URL of a CSS file to include in the style guide'
+  },
+  js: {
+    group: 'Style guide:',
+    string: true,
+    describe: 'URL of a JavaScript file to include in the style guide'
+  },
+  custom: {
+    group: 'Style guide:',
+    string: true,
+    describe: 'Process a custom property name when parsing KSS comments'
+  },
+
+  verbose: {
+    count: true,
+    multiple: false,
+    describe: 'Display verbose details while building'
+  }
+};
 
 /**
  * A kss-node builder takes input files and builds a style guide.
@@ -53,32 +117,62 @@ class KssBuilder {
   /**
    * Create a KssBuilder object.
    *
-   * This is the base object used by all kss-node builders. Implementations of
-   * KssBuilder MUST pass the version parameter. kss-node will use this to
-   * ensure that only compatible builders are used.
+   * This is the base object used by all kss-node builders.
    *
    * ```
    * const KssBuilder = require('kss/builder');
-   * const customBuilder = new KssBuilder('3.0');
+   * class KssBuilderCustom extends KssBuilder {
+   *   // Override methods of KssBuilder.
+   * }
    * ```
    *
-   * @param {string} version The builder API version implemented.
    * @param {object} options The Yargs-like options this builder has.
    *   See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
    */
-  constructor(version, options) {
-    // Tell builders which builder API version is currently running.
-    this.API = '3.0';
+  constructor(options) {
+    options = options || {};
 
     // Store the version of the builder API that the builder instance is
     // expecting; we will verify this in checkBuilder().
-    this.implementsAPI = typeof version === 'undefined' ? 'undefined' : version;
+    this.API = 'undefined';
 
     // Tell kss-node which Yargs-like options this builder has.
-    this.options = options || {};
+    this.options = {};
+    this.addOptions(coreOptions);
+    this.addOptions(options);
 
     // The log function defaults to console.log.
     this.setLogFunction(console.log);
+  }
+
+  /**
+   * Adds configuration options to the builder.
+   *
+   * Since kss-node is extendable, builders can provide their own options for
+   * configuration.
+   *
+   * Each option object is key-compatble with
+   * [yargs](https://www.npmjs.com/package/yargs), the command-line utility
+   * used by kss-node's command line tool.
+   *
+   * If an option object has a:
+   * - `multiple` property: if set to `false`, the corresponding configuration
+   *   will be normalized to a single value. Otherwise, it will be normalized to
+   *   an array of values.
+   * - `path` property: if set to `true`, the corresponding configuration will
+   *   be normalized to a path, relative to the current working directory.
+   * - `default` property: the corresponding configuration will default to this
+   *   value.
+   *
+   * @param {object} options An object of configuration options.
+   */
+  addOptions(options) {
+    for (let key in options) {
+      // istanbul ignore else
+      if (options.hasOwnProperty(key)) {
+        this.options[key] = options[key];
+      }
+    }
   }
 
   /* eslint-disable no-unused-vars */
@@ -115,52 +209,57 @@ class KssBuilder {
    * controlling the builder should call this method to verify the specified
    * builder has been configured correctly.
    *
+   * @param {Object} builder The builder to check.
    * @returns {Promise} A `Promise` object resolving to `null`.
    */
-  checkBuilder() {
+  static checkBuilder(builder) {
     let isCompatible = true,
-      version,
-      apiMajor,
-      apiMinor,
-      thisMajor,
-      thisMinor;
+      builderAPI = (typeof builder.API === 'string') ? builder.API : 'undefined';
 
-    if (this.implementsAPI === 'undefined') {
+    // Ensure KssBuilder is the base class.
+    if (!(builder instanceof KssBuilder)) {
+      isCompatible = false;
+      // kss-node 2.0 template's provided the builder as a property.
+      // istanbul ignore else
+      if (builder.builder &amp;&amp; builder.builder.API) {
+        builderAPI = builder.builder.API;
+      }
+    } else if (builderAPI.indexOf('.') === -1) {
       isCompatible = false;
     } else {
-      version = this.API.split('.');
-      apiMajor = parseInt(version[0]);
-      apiMinor = parseInt(version[1]);
+      let version = kssBuilderAPI.split('.');
+      let apiMajor = parseInt(version[0]);
+      let apiMinor = parseInt(version[1]);
 
-      version = this.implementsAPI.split('.');
-      thisMajor = parseInt(version[0]);
-      thisMinor = parseInt(version[1]);
+      version = builderAPI.split('.');
+      let builderMajor = parseInt(version[0]);
+      let builderMinor = parseInt(version[1]);
 
-      if (thisMajor !== apiMajor || thisMinor > apiMinor) {
+      if (builderMajor !== apiMajor || builderMinor > apiMinor) {
         isCompatible = false;
       }
     }
 
     if (!isCompatible) {
-      return Promise.reject(new Error('kss-node expected the template\'s builder to implement KssBuilder API version ' + this.API + '; version "' + this.implementsAPI + '" is being used instead.'));
+      return Promise.reject(new Error('kss-node expected the builder to implement KssBuilder API version ' + kssBuilderAPI + '; version "' + builderAPI + '" is being used instead.'));
     }
 
     return Promise.resolve();
   }
 
   /**
-   * Clone a template's files.
+   * Clone a builder's files.
    *
    * This method is fairly simple; it copies one directory to the specified
    * location. An instance of KssBuilder does not need to override this method,
    * but it can if it needs to do something more complicated.
    *
-   * @param {string} templatePath    Path to the template to clone.
+   * @param {string} builderPath Path to the builder to clone.
    * @param {string} destinationPath Path to the destination of the newly cloned
-   *                                 template.
+   *   builder.
    * @returns {Promise} A `Promise` object resolving to `null`.
    */
-  clone(templatePath, destinationPath) {
+  clone(builderPath, destinationPath) {
     return fs.statAsync(destinationPath).catch(error => {
       // Pass the error on to the next .then().
       return error;
@@ -170,18 +269,18 @@ class KssBuilder {
         return Promise.reject(new Error('This folder already exists: ' + destinationPath));
       }
 
-      // If the destination path does not exist, we copy the template to it.
+      // If the destination path does not exist, we copy the builder to it.
       // istanbul ignore else
       if (result.code === 'ENOENT') {
         let notHidden = new RegExp('^(?!.*' + path.sep + '(node_modules$|\\.))');
         return fs.copyAsync(
-          templatePath,
+          builderPath,
           destinationPath,
           {
             clobber: true,
             filter: filePath => {
-              // Only look at the part of the path inside the template.
-              let relativePath = path.sep + path.relative(templatePath, filePath);
+              // Only look at the part of the path inside the builder.
+              let relativePath = path.sep + path.relative(builderPath, filePath);
               // Skip any files with a path matching: /node_modules or /.
               return notHidden.test(relativePath);
             }
@@ -212,7 +311,7 @@ class KssBuilder {
   }
 
   /**
-   * Allow the template to prepare itself or modify the KssStyleGuide object.
+   * Allow the builder to prepare itself or modify the KssStyleGuide object.
    *
    * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
    * @returns {Promise} A `Promise` object resolving to `styleGuide`.
@@ -243,7 +342,7 @@ module.exports = KssBuilder;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder.html">kss/builder</a></li><li><a href="module-kss_builder_handlebars.html">kss/builder/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder-KssBuilder.html">KssBuilder</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder.html">kss/builder</a></li><li><a href="module-kss_builder_class_handlebars.html">kss/builder/class/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder_class_handlebars-KssBuilderHandlebars.html">KssBuilderHandlebars</a></li><li><a href="module-kss_builder-KssBuilder.html">KssBuilder</a></li></ul>
 </nav>
 
 <br class="clear">

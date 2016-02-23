@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>kss-node JavaScript API: Module: kss/lib/cli</title>
+    <title>kss-node JavaScript API: Class: KssBuilderHandlebars</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: kss/lib/cli</h1>
+    <h1 class="page-title">Class: KssBuilderHandlebars</h1>
 
     
 
@@ -28,8 +28,11 @@
 
 <header>
     
+        <h2>
+            <span class="ancestors"><a href="module-kss_builder_class_handlebars.html">kss/builder/class/handlebars</a>~</span>KssBuilderHandlebars</h2>
         
-            
+            <div class="class-description"><p>A kss-node builder takes input files and builds a style guide using
+Handlebars templates.</p></div>
         
     
 </header>
@@ -38,116 +41,21 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>The <code>kss/lib/cli</code> module is a wrapper around the code used by the
-<code>bin/kss-node</code> command line utility.</p>
-<pre class="prettyprint source"><code>const cli = require('kss/lib/cli');</code></pre></div>
-        
-
-        
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
 
     
-
+    <h2>Constructor</h2>
     
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_cli.js.html">lib/cli.js</a>, <a href="lib_cli.js.html#line3">line 3</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    <h4 class="name" id="~cli"><span class="type-signature">(inner) </span>cli<span class="signature">(opts)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="KssBuilderHandlebars"><span class="type-signature"></span>new KssBuilderHandlebars<span class="signature">(options)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Parses command line arguments in <code>opts.argv</code> and outputs messages and errors
-on <code>opts.stdout</code> and <code>opts.stderr</code>, respectively.</p>
+    <p>Create a KssBuilderHandlebars object.</p>
+<pre class="prettyprint source"><code>const KssBuilderHandlebars = require('kss/builder/class/handlebars');
+const builder = new KssBuilderHandlebars();</code></pre>
 </div>
 
 
@@ -183,13 +91,13 @@ on <code>opts.stdout</code> and <code>opts.stderr</code>, respectively.</p>
 
         <tr>
             
-                <td class="name"><code>opts</code></td>
+                <td class="name"><code>options</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">object</span>
 
 
             
@@ -199,7 +107,8 @@ on <code>opts.stdout</code> and <code>opts.stderr</code>, respectively.</p>
 
             
 
-            <td class="description last"><p>The <code>stdout</code>, <code>stderr</code> and <code>argv</code> options to use.</p></td>
+            <td class="description last"><p>The Yargs-like options this builder has.
+  See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt</p></td>
         </tr>
 
     
@@ -240,7 +149,157 @@ on <code>opts.stdout</code> and <code>opts.stderr</code>, respectively.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_cli.js.html">lib/cli.js</a>, <a href="lib_cli.js.html#line29">line 29</a>
+        <a href="builder_class_handlebars_kss_builder_handlebars.js.html">builder/class/handlebars/kss_builder_handlebars.js</a>, <a href="builder_class_handlebars_kss_builder_handlebars.js.html#line56">line 56</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="createMenu"><span class="type-signature"></span>createMenu<span class="signature">(pageReference)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Creates a 2-level hierarchal menu from the style guide.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>pageReference</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The reference of the root section of the page
+  being built.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="builder_class_handlebars_kss_builder_handlebars.js.html">builder/class/handlebars/kss_builder_handlebars.js</a>, <a href="builder_class_handlebars_kss_builder_handlebars.js.html#line326">line 326</a>
     </li></ul></dd>
     
 
@@ -267,7 +326,8 @@ on <code>opts.stdout</code> and <code>opts.stderr</code>, respectively.</p>
 
         
 <div class="param-desc">
-    <p>A <code>Promise</code> object.</p>
+    <p>An array of menu items that can be used as a Handlebars
+  variable.</p>
 </div>
 
 
@@ -278,7 +338,7 @@ on <code>opts.stdout</code> and <code>opts.stderr</code>, respectively.</p>
     </dt>
     <dd>
         
-<span class="param-type">Promise</span>
+<span class="param-type">Array</span>
 
 
     </dd>

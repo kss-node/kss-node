@@ -98,7 +98,7 @@ const cli = function(opts) {
     stdout.write('WELCOME to the kss-node demo! We\'ve turned on the --verbose flag so you can see what kss-node is doing.' + '\n');
   }
 
-  // We need to know which template to use, so we do a quick first parse of the
+  // We need to know which builder to use, so we do a quick first parse of the
   // arguments using yargs.
   let settings = yargs(args).options(kssConfig.getOptions()).argv;
 
@@ -109,28 +109,24 @@ const cli = function(opts) {
     let configPath = path.resolve(settings.config);
     configFile = require(configPath);
     configFileDir = path.dirname(configPath);
-    if (configFile.template) {
-      settings.template = path.resolve(configFileDir, configFile.template);
+    if (configFile.builder) {
+      settings.builder = path.resolve(configFileDir, configFile.builder);
     }
   }
 
-  // Load the options of template and of its builder.
-  let template,
-    builder;
+  // Load the options of the builder.
+  let builder;
   try {
-    template = require(path.resolve(settings.template));
-    builder = template.builder;
+    builder = require(path.resolve(settings.builder));
   } catch (e) {
-    // Templates don't have to load their own builder. If the template fails
-    // to load a builder, we assume it wanted the default builder.
+    // Builders don't have to export their own builder objects. If the builder
+    // fails to export a builder object, we assume it wanted the default
+    // builder.
     builder = require('../builder/handlebars');
   }
   // istanbul ignore else
   if (builder.options) {
     kssConfig.addOptions(builder.options);
-  }
-  if (template &amp;&amp; template.options) {
-    kssConfig.addOptions(template.options);
   }
 
   // After the builder is loaded, we finally know all the options. So we
@@ -242,7 +238,7 @@ module.exports = cli;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder.html">kss/builder</a></li><li><a href="module-kss_builder_handlebars.html">kss/builder/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder-KssBuilder.html">KssBuilder</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder.html">kss/builder</a></li><li><a href="module-kss_builder_class_handlebars.html">kss/builder/class/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder_class_handlebars-KssBuilderHandlebars.html">KssBuilderHandlebars</a></li><li><a href="module-kss_builder-KssBuilder.html">KssBuilder</a></li></ul>
 </nav>
 
 <br class="clear">
