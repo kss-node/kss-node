@@ -40,7 +40,7 @@ describe('KssBuilder object API', function() {
 
     it('should implement the default options', function() {
       let builder = new KssBuilder();
-      expect(Object.getOwnPropertyNames(builder.options)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'template', 'css', 'js', 'custom', 'verbose']);
+      expect(Object.getOwnPropertyNames(builder.options)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'verbose']);
     });
 
     it('should set the given options', function() {
@@ -102,7 +102,7 @@ describe('KssBuilder object API', function() {
       return KssBuilder.checkBuilder(builder).then(result => {
         expect(result).to.not.exist;
       }).catch(error => {
-        expect(error.message).to.equal('kss-node expected the template\'s builder to implement KssBuilder API version ' + API + '; version "undefined" is being used instead.');
+        expect(error.message).to.equal('kss-node expected the builder to implement KssBuilder API version ' + API + '; version "undefined" is being used instead.');
       });
     });
 
@@ -112,7 +112,7 @@ describe('KssBuilder object API', function() {
       return KssBuilder.checkBuilder(builder).then(result => {
         expect(result).to.not.exist;
       }).catch(error => {
-        expect(error.message).to.equal('kss-node expected the template\'s builder to implement KssBuilder API version ' + API + '; version "2.0" is being used instead.');
+        expect(error.message).to.equal('kss-node expected the builder to implement KssBuilder API version ' + API + '; version "2.0" is being used instead.');
       });
     });
 
@@ -122,7 +122,7 @@ describe('KssBuilder object API', function() {
       return KssBuilder.checkBuilder(builder).then(result => {
         expect(result).to.not.exist;
       }).catch(error => {
-        expect(error.message).to.equal('kss-node expected the template\'s builder to implement KssBuilder API version ' + API + '; version "3.999" is being used instead.');
+        expect(error.message).to.equal('kss-node expected the builder to implement KssBuilder API version ' + API + '; version "3.999" is being used instead.');
       });
     });
   });
@@ -131,7 +131,7 @@ describe('KssBuilder object API', function() {
     it('should clone the given directory to the given destination', function() {
       let destination = helperUtils.fixtures('..', 'output', 'clone'),
         builder = new KssBuilder();
-      return builder.clone(helperUtils.fixtures('template'), destination).catch(error => {
+      return builder.clone(helperUtils.fixtures('builder'), destination).catch(error => {
         expect(error).to.not.exist;
       }).then(result => {
         expect(result).to.be.undefined;
@@ -141,7 +141,7 @@ describe('KssBuilder object API', function() {
 
     it('should fail to clone if the given destination exists', function() {
       let builder = new KssBuilder();
-      return builder.clone(helperUtils.fixtures('template'), helperUtils.fixtures('includes')).then(result => {
+      return builder.clone(helperUtils.fixtures('builder'), helperUtils.fixtures('includes')).then(result => {
         expect(result).to.not.be.undefined;
       }).catch(error => {
         expect(error.message).to.equal('This folder already exists: ' + helperUtils.fixtures('includes'));
@@ -151,7 +151,7 @@ describe('KssBuilder object API', function() {
     it('should skip node_modules and dot-hidden paths', function() {
       let destination = helperUtils.fixtures('..', 'output', 'clone-skip'),
         builder = new KssBuilder();
-      return builder.clone(helperUtils.fixtures('template'), destination).then(() => {
+      return builder.clone(helperUtils.fixtures('builder'), destination).then(() => {
         return fs.readdirAsync(destination);
       }).then(files => {
         // Check for node_modules folder.

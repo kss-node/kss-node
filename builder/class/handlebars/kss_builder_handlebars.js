@@ -106,7 +106,7 @@ class KssBuilderHandlebars extends KssBuilder {
       this.log('');
       this.log(' * KSS Source  : ' + this.config.source.join(', '));
       this.log(' * Destination : ' + this.config.destination);
-      this.log(' * Template    : ' + this.config.template);
+      this.log(' * Builder     : ' + this.config.builder);
       if (this.config.helpers.length) {
         this.log(' * Helpers     : ' + this.config.helpers.join(', '));
       }
@@ -118,21 +118,21 @@ class KssBuilderHandlebars extends KssBuilder {
     // Create a new destination directory.
     initTasks.push(
       fs.mkdirsAsync(this.config.destination).then(() => {
-        // Optionally, copy the contents of the template's "kss-assets" folder.
+        // Optionally, copy the contents of the builder's "kss-assets" folder.
         return fs.copyAsync(
-          path.join(this.config.template, 'kss-assets'),
+          path.join(this.config.builder, 'kss-assets'),
           path.join(this.config.destination, 'kss-assets'),
           {
             clobber: true,
             filter: filePath => {
-              // Only look at the part of the path inside the template.
-              let relativePath = path.sep + path.relative(this.config.template, filePath);
+              // Only look at the part of the path inside the builder.
+              let relativePath = path.sep + path.relative(this.config.builder, filePath);
               // Skip any files with a path matching: /node_modules or /.
               return (new RegExp('^(?!.*' + path.sep + '(node_modules$|\\.))')).test(relativePath);
             }
           }
         ).catch(() => {
-          // If the template does not have a kss-assets folder, ignore the error.
+          // If the builder does not have a kss-assets folder, ignore the error.
           return Promise.resolve();
         });
       })
@@ -157,7 +157,7 @@ class KssBuilderHandlebars extends KssBuilder {
 
     return Promise.all(initTasks).then(() => {
       // Compile the Handlebars template.
-      return fs.readFileAsync(path.resolve(this.config.template, 'index.html'), 'utf8').then(content => {
+      return fs.readFileAsync(path.resolve(this.config.builder, 'index.html'), 'utf8').then(content => {
         this.template = this.Handlebars.compile(content);
         return Promise.resolve();
       });

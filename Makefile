@@ -1,5 +1,5 @@
 docs:
-	# Build the default template's Sass.
+	# Build the default builder's Sass.
 	if [[ ! -e ./builder/handlebars/node_modules/.bin/node-sass ]]; then cd builder/handlebars && npm install; fi
 	cd builder/handlebars && npm run-script sass
 	# Build the kss-node demo.

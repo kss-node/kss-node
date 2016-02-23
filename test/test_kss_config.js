@@ -162,9 +162,9 @@ describe('KssConfig object API', function() {
     it('should normalize a non-"multiple" option to a single value', function(done) {
       let kssConfig = new kss.KssConfig();
       kssConfig.addOptions((new KssBuilder()).options);
-      kssConfig.set({template: ['empty-source', 'with-include', 'template']});
-      kssConfig.normalize(['template']);
-      expect(kssConfig.config.template).to.be.a('string');
+      kssConfig.set({builder: ['empty-source', 'with-include', 'builder']});
+      kssConfig.normalize(['builder']);
+      expect(kssConfig.config.builder).to.be.a('string');
       done();
     });
 

@@ -43,19 +43,19 @@ const coreOptions = {
   },
 
   clone: {
-    group: 'Template:',
+    group: 'Builder:',
     string: true,
     path: true,
     multiple: false,
-    describe: 'Clone a style guide template to customize'
+    describe: 'Clone a style guide builder to customize'
   },
-  template: {
-    group: 'Template:',
-    alias: 't',
+  builder: {
+    group: 'Builder:',
+    alias: 'b',
     string: true,
     path: true,
     multiple: false,
-    describe: 'Use a custom template to build your style guide',
+    describe: 'Use the specified builder when building your style guide',
     default: path.relative(process.cwd(), path.join(__dirname, '..', 'handlebars'))
   },
   css: {
@@ -213,25 +213,25 @@ class KssBuilder {
     }
 
     if (!isCompatible) {
-      return Promise.reject(new Error('kss-node expected the template\'s builder to implement KssBuilder API version ' + kssBuilderAPI + '; version "' + builderAPI + '" is being used instead.'));
+      return Promise.reject(new Error('kss-node expected the builder to implement KssBuilder API version ' + kssBuilderAPI + '; version "' + builderAPI + '" is being used instead.'));
     }
 
     return Promise.resolve();
   }
 
   /**
-   * Clone a template's files.
+   * Clone a builder's files.
    *
    * This method is fairly simple; it copies one directory to the specified
    * location. An instance of KssBuilder does not need to override this method,
    * but it can if it needs to do something more complicated.
    *
-   * @param {string} templatePath    Path to the template to clone.
+   * @param {string} builderPath Path to the builder to clone.
    * @param {string} destinationPath Path to the destination of the newly cloned
-   *                                 template.
+   *   builder.
    * @returns {Promise} A `Promise` object resolving to `null`.
    */
-  clone(templatePath, destinationPath) {
+  clone(builderPath, destinationPath) {
     return fs.statAsync(destinationPath).catch(error => {
       // Pass the error on to the next .then().
       return error;
@@ -241,18 +241,18 @@ class KssBuilder {
         return Promise.reject(new Error('This folder already exists: ' + destinationPath));
       }
 
-      // If the destination path does not exist, we copy the template to it.
+      // If the destination path does not exist, we copy the builder to it.
       // istanbul ignore else
       if (result.code === 'ENOENT') {
         let notHidden = new RegExp('^(?!.*' + path.sep + '(node_modules$|\\.))');
         return fs.copyAsync(
-          templatePath,
+          builderPath,
           destinationPath,
           {
             clobber: true,
             filter: filePath => {
-              // Only look at the part of the path inside the template.
-              let relativePath = path.sep + path.relative(templatePath, filePath);
+              // Only look at the part of the path inside the builder.
+              let relativePath = path.sep + path.relative(builderPath, filePath);
               // Skip any files with a path matching: /node_modules or /.
               return notHidden.test(relativePath);
             }
@@ -283,7 +283,7 @@ class KssBuilder {
   }
 
   /**
-   * Allow the template to prepare itself or modify the KssStyleGuide object.
+   * Allow the builder to prepare itself or modify the KssStyleGuide object.
    *
    * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
    * @returns {Promise} A `Promise` object resolving to `styleGuide`.

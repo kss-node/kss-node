@@ -13,10 +13,10 @@
 const KssBuilder = require('kss/builder'),
   path = require('path');
 
-// Define "kssBuilderExample" as the name of our example template engine.
+// Define "KssBuilderExample" as the name of our example builder class.
 //
-// Our builder is an instance of the KssBuilder object with
-// additional functionality added by overriding the parent methods.
+// Our builder is an instance of the KssBuilder object with additional
+// functionality added by overriding the parent methods.
 //
 // See the docs for KssBuilder() for info about its parameters.
 class KssBuilderExample extends KssBuilder {
@@ -47,21 +47,21 @@ class KssBuilderExample extends KssBuilder {
   }
 
   /**
-   * Clone a template's files.
+   * Clone a builder's files.
    *
    * The KssBuilder.clone() method is a simple and functional implementation; it
    * copies one directory to the specified location. An instance of KssBuilder
    * does not need to override this method, but it can if it needs to do something
    * more complicated.
    *
-   * @param {string} templatePath    Path to the template to clone.
+   * @param {string} builderPath Path to the builder to clone.
    * @param {string} destinationPath Path to the destination of the newly cloned
-   *                                 template.
+   *   builder.
    * @returns {Promise} A `Promise` object.
    */
-  clone(templatePath, destinationPath) {
+  clone(builderPath, destinationPath) {
     // Note that, at this point, kssBuilderExample.init() has not been called.
-    this.log('Example template cloned to ' + destinationPath + '! (not really.)');
+    this.log('Example builder cloned to ' + destinationPath + '! (not really.)');
 
     return Promise.resolve();
   }
@@ -83,7 +83,7 @@ class KssBuilderExample extends KssBuilder {
     // This example builder hard-codes the demo source.
     this.config.source = [path.resolve('..', 'demo')];
 
-    // A real builder should initialize the template system being used by this
+    // A real builder should initialize the templating system being used by this
     // builder. For example, kssBuilderHandlebars loads and initializes the
     // Handlebars templating system.
     this.warning = ' (not really.)';
