@@ -12,7 +12,6 @@ describe('KssBuilder object API', function() {
   /* eslint-disable guard-for-in,no-loop-func */
   ['log',
     'setLogFunction',
-    'checkBuilder',
     'clone',
     'init',
     'prepare',
@@ -23,24 +22,39 @@ describe('KssBuilder object API', function() {
       done();
     });
   });
+
+  ['checkBuilder'
+  ].forEach(function(method) {
+    it('has ' + method + '() static method', function(done) {
+      expect(KssBuilder).itself.to.respondTo(method);
+      done();
+    });
+  });
   /* eslint-enable guard-for-in,no-loop-func */
 
   describe('KssBuilder constructor', function() {
-    it('should set the given API version', function() {
-      let builder = new KssBuilder('VALUE');
-      expect(builder.API).to.equal('VALUE');
+    it('should set the "undefined" API version', function() {
+      let builder = new KssBuilder();
+      expect(builder.API).to.equal('undefined');
+    });
+
+    it('should implement the default options', function() {
+      let builder = new KssBuilder();
+      expect(Object.getOwnPropertyNames(builder.options)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'template', 'css', 'js', 'custom', 'verbose']);
     });
 
     it('should set the given options', function() {
       let options = {
-        options: 'custom'
+        custom: {option: 1},
+        custom2: {option: 2}
       };
-      let builder = new KssBuilder('3.0', options);
-      expect(builder.options).to.deep.equal(options);
+      let builder = new KssBuilder(options);
+      expect(builder.options.custom).to.deep.equal(options.custom);
+      expect(builder.options.custom2).to.deep.equal(options.custom2);
     });
 
     it('should set the default log function', function() {
-      let builder = new KssBuilder('3.0');
+      let builder = new KssBuilder();
       expect(builder.logFunction).to.deep.equal(console.log);
     });
   });
@@ -53,7 +67,7 @@ describe('KssBuilder object API', function() {
             loggedMessages.push(arguments[i]);
           }
         };
-      let builder = new KssBuilder('3.0');
+      let builder = new KssBuilder();
       builder.setLogFunction(logFunction);
       builder.log('test', 'message');
       expect(loggedMessages).to.deep.equal(['test', 'message']);
@@ -68,7 +82,7 @@ describe('KssBuilder object API', function() {
             loggedMessages.push(arguments[i]);
           }
         };
-      let builder = new KssBuilder('3.0');
+      let builder = new KssBuilder();
       builder.setLogFunction(logFunction);
       expect(builder.logFunction).to.deep.equal(logFunction);
     });
@@ -77,7 +91,7 @@ describe('KssBuilder object API', function() {
   describe('.checkBuilder()', function() {
     it('should return a Promise', function() {
       let builder = new KssBuilder();
-      let obj = builder.checkBuilder();
+      let obj = KssBuilder.checkBuilder(builder);
       return obj.catch(() => {
         expect(obj instanceof Promise).to.be.true;
       });
@@ -85,7 +99,7 @@ describe('KssBuilder object API', function() {
 
     it('should fail if the API is not given to the constructor', function() {
       let builder = new KssBuilder();
-      return builder.checkBuilder().then(result => {
+      return KssBuilder.checkBuilder(builder).then(result => {
         expect(result).to.not.exist;
       }).catch(error => {
         expect(error.message).to.equal('kss-node expected the template\'s builder to implement KssBuilder API version ' + API + '; version "undefined" is being used instead.');
@@ -93,8 +107,9 @@ describe('KssBuilder object API', function() {
     });
 
     it('should fail if the given API is not equal to the current API', function() {
-      let builder = new KssBuilder('2.0');
-      return builder.checkBuilder().then(result => {
+      let builder = new KssBuilder();
+      builder.API = '2.0';
+      return KssBuilder.checkBuilder(builder).then(result => {
         expect(result).to.not.exist;
       }).catch(error => {
         expect(error.message).to.equal('kss-node expected the template\'s builder to implement KssBuilder API version ' + API + '; version "2.0" is being used instead.');
@@ -102,8 +117,9 @@ describe('KssBuilder object API', function() {
     });
 
     it('should fail if the given API is newer than the current API', function() {
-      let builder = new KssBuilder('3.999');
-      return builder.checkBuilder().then(result => {
+      let builder = new KssBuilder();
+      builder.API = '3.999';
+      return KssBuilder.checkBuilder(builder).then(result => {
         expect(result).to.not.exist;
       }).catch(error => {
         expect(error.message).to.equal('kss-node expected the template\'s builder to implement KssBuilder API version ' + API + '; version "3.999" is being used instead.');

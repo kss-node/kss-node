@@ -1,30 +1,43 @@
 'use strict';
 
 const KssBuilder = require('../builder'),
-  kssBuilderHandlebars = require('../builder/class/handlebars');
+  KssBuilderHandlebars = require('../builder/class/handlebars');
 
-describe('kssBuilderHandlebars object', function() {
-  it('should be an instance of KssBuilder', function() {
-    expect(kssBuilderHandlebars).to.be.instanceOf(KssBuilder);
-  });
+describe('KssBuilderHandlebars object API', function() {
 
-  it('should implement the correct API', function() {
-    expect(kssBuilderHandlebars.API).to.equal('3.0');
-  });
+  describe('KssBuilderHandlebars constructor', function() {
+    it('should create an instance of KssBuilder', function() {
+      const builder = new KssBuilderHandlebars();
+      expect(builder).to.be.instanceOf(KssBuilder);
+    });
 
-  it('should implement 4 helpers', function() {
-    expect(Object.getOwnPropertyNames(kssBuilderHandlebars.options)).to.deep.equal(['helpers', 'homepage', 'placeholder', 'nav-depth']);
+    it('should set the proper API version', function() {
+      let builder = new KssBuilderHandlebars();
+      expect(builder.API).to.equal('3.0');
+    });
+
+    it('should set the given options', function() {
+      let options = {
+        custom: {option: 1},
+        custom2: {option: 2}
+      };
+      let builder = new KssBuilderHandlebars(options);
+      expect(builder.options.custom).to.deep.equal(options.custom);
+      expect(builder.options.custom2).to.deep.equal(options.custom2);
+    });
+
+    it('should implement the default options', function() {
+      let builder = new KssBuilderHandlebars();
+      expect(Object.getOwnPropertyNames(builder.options)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'template', 'css', 'js', 'custom', 'verbose', 'helpers', 'homepage', 'placeholder', 'nav-depth']);
+    });
   });
 
   /* eslint-disable guard-for-in,no-loop-func */
-  ['init',
-    'build',
-    'createMenu',
+  ['createMenu',
     'buildPage'
   ].forEach(function(method) {
     it('implements ' + method + '() method', function() {
-      expect(kssBuilderHandlebars).to.respondTo(method);
-      expect(kssBuilderHandlebars.hasOwnProperty(method)).to.be.true;
+      expect((new KssBuilderHandlebars())).to.respondTo(method);
     });
   });
   /* eslint-enable guard-for-in,no-loop-func */

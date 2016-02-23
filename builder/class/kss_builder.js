@@ -18,6 +18,69 @@ const path = require('path'),
 const fs = Promise.promisifyAll(require('fs-extra')),
   kssBuilderAPI = '3.0';
 
+const coreOptions = {
+  source: {
+    group: 'File locations:',
+    string: true,
+    path: true,
+    describe: 'Source directory to parse for KSS comments'
+  },
+  destination: {
+    group: 'File locations:',
+    string: true,
+    path: true,
+    multiple: false,
+    describe: 'Destination directory of style guide',
+    default: 'styleguide'
+  },
+  mask: {
+    group: 'File locations:',
+    alias: 'm',
+    string: true,
+    multiple: false,
+    describe: 'Use a mask for detecting files containing KSS comments',
+    default: '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
+  },
+
+  clone: {
+    group: 'Template:',
+    string: true,
+    path: true,
+    multiple: false,
+    describe: 'Clone a style guide template to customize'
+  },
+  template: {
+    group: 'Template:',
+    alias: 't',
+    string: true,
+    path: true,
+    multiple: false,
+    describe: 'Use a custom template to build your style guide',
+    default: path.relative(process.cwd(), path.join(__dirname, '..', 'handlebars'))
+  },
+  css: {
+    group: 'Style guide:',
+    string: true,
+    describe: 'URL of a CSS file to include in the style guide'
+  },
+  js: {
+    group: 'Style guide:',
+    string: true,
+    describe: 'URL of a JavaScript file to include in the style guide'
+  },
+  custom: {
+    group: 'Style guide:',
+    string: true,
+    describe: 'Process a custom property name when parsing KSS comments'
+  },
+
+  verbose: {
+    count: true,
+    multiple: false,
+    describe: 'Display verbose details while building'
+  }
+};
+
 /**
  * A kss-node builder takes input files and builds a style guide.
  */
@@ -26,29 +89,62 @@ class KssBuilder {
   /**
    * Create a KssBuilder object.
    *
-   * This is the base object used by all kss-node builders. Implementations of
-   * KssBuilder MUST pass the version parameter. kss-node will use this to
-   * ensure that only compatible builders are used.
+   * This is the base object used by all kss-node builders.
    *
    * ```
    * const KssBuilder = require('kss/builder');
-   * const customBuilder = new KssBuilder('3.0');
+   * class KssBuilderCustom extends KssBuilder {
+   *   // Override methods of KssBuilder.
+   * }
    * ```
    *
-   * @param {string} version The builder API version implemented.
    * @param {object} options The Yargs-like options this builder has.
    *   See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
    */
-  constructor(version, options) {
+  constructor(options) {
+    options = options || {};
+
     // Store the version of the builder API that the builder instance is
     // expecting; we will verify this in checkBuilder().
-    this.API = typeof version === 'undefined' ? 'undefined' : version;
+    this.API = 'undefined';
 
     // Tell kss-node which Yargs-like options this builder has.
-    this.options = options || {};
+    this.options = {};
+    this.addOptions(coreOptions);
+    this.addOptions(options);
 
     // The log function defaults to console.log.
     this.setLogFunction(console.log);
+  }
+
+  /**
+   * Adds configuration options to the builder.
+   *
+   * Since kss-node is extendable, builders can provide their own options for
+   * configuration.
+   *
+   * Each option object is key-compatble with
+   * [yargs](https://www.npmjs.com/package/yargs), the command-line utility
+   * used by kss-node's command line tool.
+   *
+   * If an option object has a:
+   * - `multiple` property: if set to `false`, the corresponding configuration
+   *   will be normalized to a single value. Otherwise, it will be normalized to
+   *   an array of values.
+   * - `path` property: if set to `true`, the corresponding configuration will
+   *   be normalized to a path, relative to the current working directory.
+   * - `default` property: the corresponding configuration will default to this
+   *   value.
+   *
+   * @param {object} options An object of configuration options.
+   */
+  addOptions(options) {
+    for (let key in options) {
+      // istanbul ignore else
+      if (options.hasOwnProperty(key)) {
+        this.options[key] = options[key];
+      }
+    }
   }
 
   /* eslint-disable no-unused-vars */
@@ -85,34 +181,39 @@ class KssBuilder {
    * controlling the builder should call this method to verify the specified
    * builder has been configured correctly.
    *
+   * @param {Object} builder The builder to check.
    * @returns {Promise} A `Promise` object resolving to `null`.
    */
-  checkBuilder() {
+  static checkBuilder(builder) {
     let isCompatible = true,
-      version,
-      apiMajor,
-      apiMinor,
-      thisMajor,
-      thisMinor;
+      builderAPI = (typeof builder.API === 'string') ? builder.API : 'undefined';
 
-    if (this.API === 'undefined') {
+    // Ensure KssBuilder is the base class.
+    if (!(builder instanceof KssBuilder)) {
+      isCompatible = false;
+      // kss-node 2.0 template's provided the builder as a property.
+      // istanbul ignore else
+      if (builder.builder && builder.builder.API) {
+        builderAPI = builder.builder.API;
+      }
+    } else if (builderAPI.indexOf('.') === -1) {
       isCompatible = false;
     } else {
-      version = kssBuilderAPI.split('.');
-      apiMajor = parseInt(version[0]);
-      apiMinor = parseInt(version[1]);
+      let version = kssBuilderAPI.split('.');
+      let apiMajor = parseInt(version[0]);
+      let apiMinor = parseInt(version[1]);
 
-      version = this.API.split('.');
-      thisMajor = parseInt(version[0]);
-      thisMinor = parseInt(version[1]);
+      version = builderAPI.split('.');
+      let builderMajor = parseInt(version[0]);
+      let builderMinor = parseInt(version[1]);
 
-      if (thisMajor !== apiMajor || thisMinor > apiMinor) {
+      if (builderMajor !== apiMajor || builderMinor > apiMinor) {
         isCompatible = false;
       }
     }
 
     if (!isCompatible) {
-      return Promise.reject(new Error('kss-node expected the template\'s builder to implement KssBuilder API version ' + kssBuilderAPI + '; version "' + this.API + '" is being used instead.'));
+      return Promise.reject(new Error('kss-node expected the template\'s builder to implement KssBuilder API version ' + kssBuilderAPI + '; version "' + builderAPI + '" is being used instead.'));
     }
 
     return Promise.resolve();

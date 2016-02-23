@@ -2,8 +2,11 @@
 
 const KssBuilder = require('../../../builder');
 
-const kssOldTemplate = {
-  builder: new KssBuilder('1.0')
-};
+class KssOldTemplate extends KssBuilder {
+  constructor(options) {
+    super(options);
+    this.API = '1.0';
+  }
+}
 
-module.exports = kssOldTemplate;
+module.exports = new KssOldTemplate();

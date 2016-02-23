@@ -146,10 +146,17 @@ describe('kss object API', function() {
   });
 
   describe('given "template" option', function() {
-    it('should provide an error if builder\'s checkBuilder method fails', function() {
+    it('should provide an error if KssBuilder.checkBuilder() method fails', function() {
       return testKss({template: helperUtils.fixtures('old-template')}).then(function(response) {
         expect(response.error).to.exist;
         expect(response.stderr).to.include('kss-node expected the template\'s builder to implement KssBuilder API version 3.0; version "1.0" is being used instead.');
+      });
+    });
+
+    it('should provide an error if given a KssGenerator 2.0', function() {
+      return testKss({template: helperUtils.fixtures('old-generator')}).then(function(response) {
+        expect(response.error).to.exist;
+        expect(response.stderr).to.include('kss-node expected the template\'s builder to implement KssBuilder API version 3.0; version "2.0" is being used instead.');
       });
     });
   });
