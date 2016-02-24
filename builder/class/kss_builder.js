@@ -98,18 +98,20 @@ class KssBuilder {
    * }
    * ```
    *
-   * @param {object} options The Yargs-like options this builder has.
+   * @param {object} [options] The Yargs-like options this builder has.
    *   See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
    */
   constructor(options) {
     options = options || {};
+
+    this.options = {};
+    this.config = {};
 
     // Store the version of the builder API that the builder instance is
     // expecting; we will verify this in checkBuilder().
     this.API = 'undefined';
 
     // Tell kss-node which Yargs-like options this builder has.
-    this.options = {};
     this.addOptions(coreOptions);
     this.addOptions(options);
 
@@ -163,6 +165,42 @@ class KssBuilder {
   }
 
   /**
+   * Stores the given configuration settings.
+   *
+   * @param {Object} config An object of config settings to store.
+   * @returns {KssBuilder} The `KssBuilder` object is returned to allow chaining
+   *   of methods.
+   */
+  addConfig(config) {
+    for (let key in config) {
+      // istanbul ignore else
+      if (config.hasOwnProperty(key)) {
+        this.config[key] = config[key];
+      }
+    }
+
+    // Allow clone to be used without a path. We can't specify this default
+    // path in coreOptions or the clone flag would always be "on".
+    if (config.clone === '' || config.clone === true) {
+      this.config.clone = 'custom-builder';
+    }
+
+    // Allow chaining.
+    return this.normalizeConfig(Object.keys(config));
+  }
+
+  /**
+   * Returns the requested configuration setting or, if no key is specified, an
+   * object containing all settings.
+   *
+   * @param {string} [key] Optional name of config setting to return.
+   * @returns {*} The specified setting or an object of all settings.
+   */
+  getConfig(key) {
+    return key ? this.config[key] : this.config;
+  }
+
+  /**
    * Adds configuration options to the builder.
    *
    * Since kss-node is extendable, builders can provide their own options for
@@ -182,14 +220,95 @@ class KssBuilder {
    *   value.
    *
    * @param {object} options An object of configuration options.
+   * @returns {KssBuilder} The `KssBuilder` object is returned to allow chaining
+   *   of methods.
    */
   addOptions(options) {
     for (let key in options) {
       // istanbul ignore else
       if (options.hasOwnProperty(key)) {
+        // The "multiple" property defaults to true.
+        if (typeof options[key].multiple === 'undefined') {
+          options[key].multiple = true;
+        }
+        // The "path" property defaults to false.
+        if (typeof options[key].path === 'undefined') {
+          options[key].path = false;
+        }
         this.options[key] = options[key];
       }
     }
+
+    // Allow chaining.
+    return this.normalizeConfig(Object.keys(options));
+  }
+
+  /**
+   * Returns the requested configuration option or, if no key is specified, an
+   * object containing all options.
+   *
+   * @param {string} [key] Optional name of option to return.
+   * @returns {*} The specified option or an object of all options.
+   */
+  getOptions(key) {
+    return key ? this.options[key] : this.options;
+  }
+
+  /**
+   * Normalizes the configuration so that it is easy to use inside KSS.
+   *
+   * The options specified with `addOptions()` determine how the configuration
+   * will be normalized.
+   *
+   * @private
+   * @param {string[]} keys The keys to normalize.
+   * @returns {KssBuilder} The `KssBuilder` object is returned to allow chaining
+   *   of methods.
+   */
+  normalizeConfig(keys) {
+    for (let key of keys) {
+      if (typeof this.options[key] !== 'undefined') {
+        if (typeof this.config[key] === 'undefined') {
+          // Set the default setting.
+          if (typeof this.options[key].default !== 'undefined') {
+            this.config[key] = this.options[key].default;
+          }
+        }
+        // If an option is specified multiple times, yargs will convert it into an
+        // array, but leave it as a string otherwise. This makes accessing the
+        // values of options inconsistent, so make all other options an array.
+        if (this.options[key].multiple) {
+          if (!(this.config[key] instanceof Array)) {
+            if (typeof this.config[key] === 'undefined') {
+              this.config[key] = [];
+            } else {
+              this.config[key] = [this.config[key]];
+            }
+          }
+        } else {
+          // For options marked as "multiple: false", use the last value
+          // specified, ignoring the others.
+          if (this.config[key] instanceof Array) {
+            this.config[key] = this.config[key].pop();
+          }
+        }
+        // Resolve any paths relative to the working directory.
+        if (this.options[key].path) {
+          if (this.config[key] instanceof Array) {
+            /* eslint-disable no-loop-func */
+            this.config[key] = this.config[key].map(value => {
+              return path.resolve(value);
+            });
+            /* eslint-enable no-loop-func */
+          } else if (typeof this.config[key] === 'string') {
+            this.config[key] = path.resolve(this.config[key]);
+          }
+        }
+      }
+    }
+
+    // Allow chaining.
+    return this;
   }
 
   /* eslint-disable no-unused-vars */
@@ -201,10 +320,15 @@ class KssBuilder {
    * messages to the KSS system so it can report them to the user.
    *
    * @param {...string} message The message to log.
+   * @returns {KssBuilder} The `KssBuilder` object is returned to allow chaining
+   *   of methods.
    */
   log(message) {
     /* eslint-enable no-unused-vars */
     this.logFunction.apply(null, arguments);
+
+    // Allow chaining.
+    return this;
   }
 
   /**
@@ -214,9 +338,14 @@ class KssBuilder {
    * `console.log()`.
    *
    * @param {Function} logFunction Function to log a message to the user.
+   * @returns {KssBuilder} The `KssBuilder` object is returned to allow chaining
+   *   of methods.
    */
   setLogFunction(logFunction) {
     this.logFunction = logFunction;
+
+    // Allow chaining.
+    return this;
   }
 
   /**
@@ -268,22 +397,21 @@ class KssBuilder {
   /**
    * Initialize the style guide creation process.
    *
-   * This method is given a configuration JSON object with the details of the
-   * requested style guide build. The builder can use this information for any
-   * necessary tasks before the KSS parsing of the source files.
+   * This method can be set by any KssBuilder sub-class to do any custom tasks
+   * before the style guide is built.
    *
-   * @param {Object} config Configuration object for the requested build.
    * @returns {Promise} A `Promise` object resolving to `null`.
    */
-  init(config) {
-    // At the very least, builders MUST save the configuration parameters.
-    this.config = config;
-
+  init() {
     return Promise.resolve();
   }
 
   /**
    * Allow the builder to prepare itself or modify the KssStyleGuide object.
+   *
+   * The method is designed to be implemented by a KssBuilder object so it can
+   * do custom tasks before the style guide is built. This method should not be
+   * set by any KssBuilder sub-class; see `init()` instead.
    *
    * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
    * @returns {Promise} A `Promise` object resolving to `styleGuide`.

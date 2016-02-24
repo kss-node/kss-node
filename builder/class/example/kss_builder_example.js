@@ -69,17 +69,12 @@ class KssBuilderExample extends KssBuilder {
   /**
    * Initialize the style guide creation process.
    *
-   * This method is given a configuration JSON object with the details of the
-   * requested style guide build. The builder can use this information for any
-   * necessary tasks before the KSS parsing of the source files.
+   * This method can be set by any KssBuilder sub-class to do any custom tasks
+   * before the style guide is built.
    *
-   * @param {Object} config Configuration object for the requested build.
-   * @returns {Promise} A `Promise` object.
+   * @returns {Promise} A `Promise` object resolving to `null`.
    */
-  init(config) {
-    // At the very least, builders MUST save the configuration parameters.
-    this.config = config;
-
+  init() {
     // This example builder hard-codes the demo source.
     this.config.source = [path.resolve('..', 'demo')];
 

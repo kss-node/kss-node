@@ -63,10 +63,12 @@ class KssBuilderHandlebars extends KssBuilder {
    * const builder = new KssBuilderHandlebars();
    * ```
    *
-   * @param {object} options The Yargs-like options this builder has.
+   * @param {object} [options] The Yargs-like options this builder has.
    *   See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
    */
   constructor(options) {
+    options = options || {};
+
     super();
 
     // Store the version of the builder API that the builder instance is
@@ -81,17 +83,13 @@ class KssBuilderHandlebars extends KssBuilder {
   /**
    * Initialize the style guide creation process.
    *
-   * This method is given a configuration JSON object with the details of the
-   * requested style guide build. The builder can use this information for any
-   * necessary tasks before the KSS parsing of the source files.
+   * This method can be set by any KssBuilder sub-class to do any custom tasks
+   * before the style guide is built.
    *
    * @alias module:kss/builder/handlebars.init
-   * @param {Object} config Configuration object for the requested build.
-   * @returns {Promise} A `Promise` object.
+   * @returns {Promise} A `Promise` object resolving to `null`.
    */
-  init(config) {
-    // Save the configuration parameters.
-    this.config = config;
+  init() {
     this.config.helpers = this.config.helpers || [];
 
     // Store the global Handlebars object.

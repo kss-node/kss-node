@@ -8,6 +8,7 @@ describe('KssBuilderHandlebars object API', function() {
   describe('KssBuilderHandlebars constructor', function() {
     it('should create an instance of KssBuilder', function() {
       const builder = new KssBuilderHandlebars();
+      expect(builder).to.be.instanceOf(KssBuilderHandlebars);
       expect(builder).to.be.instanceOf(KssBuilder);
     });
 
