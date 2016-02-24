@@ -277,7 +277,7 @@ class KssBuilderHandlebars extends KssBuilder {
       })
     ).then(() => {
       // If a root element doesn't have an actual section, build one for it.
-      // @TODO: Move this "fixing" into KssStyleGuide.
+      // @TODO: Move this "fixing" into KssBuilder.prepare().
       let rootCount = sectionRoots.length;
       let newSection = false;
       for (let i = 0; i < rootCount; i += 1) {
@@ -316,7 +316,7 @@ class KssBuilderHandlebars extends KssBuilder {
   }
 
   /**
-   * Creates a 2-level hierarchal menu from the style guide.
+   * Creates a 2-level hierarchical menu from the style guide.
    *
    * @param {string} pageReference The reference of the root section of the page
    *   being built.
