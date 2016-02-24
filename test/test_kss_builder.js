@@ -59,35 +59,6 @@ describe('KssBuilder object API', function() {
     });
   });
 
-  describe('.log()', function() {
-    it('should log the given message', function() {
-      let loggedMessages = [],
-        logFunction = function() {
-          for (let i = 0; i < arguments.length; i++) {
-            loggedMessages.push(arguments[i]);
-          }
-        };
-      let builder = new KssBuilder();
-      builder.setLogFunction(logFunction);
-      builder.log('test', 'message');
-      expect(loggedMessages).to.deep.equal(['test', 'message']);
-    });
-  });
-
-  describe('.setLogFunction()', function() {
-    it('should set the log function to use', function() {
-      let loggedMessages = [],
-        logFunction = function() {
-          for (let i = 0; i < arguments.length; i++) {
-            loggedMessages.push(arguments[i]);
-          }
-        };
-      let builder = new KssBuilder();
-      builder.setLogFunction(logFunction);
-      expect(builder.logFunction).to.deep.equal(logFunction);
-    });
-  });
-
   describe('.checkBuilder()', function() {
     it('should return a Promise', function() {
       let builder = new KssBuilder();
@@ -124,6 +95,35 @@ describe('KssBuilder object API', function() {
       }).catch(error => {
         expect(error.message).to.equal('kss-node expected the builder to implement KssBuilder API version ' + API + '; version "3.999" is being used instead.');
       });
+    });
+  });
+
+  describe('.log()', function() {
+    it('should log the given message', function() {
+      let loggedMessages = [],
+        logFunction = function() {
+          for (let i = 0; i < arguments.length; i++) {
+            loggedMessages.push(arguments[i]);
+          }
+        };
+      let builder = new KssBuilder();
+      builder.setLogFunction(logFunction);
+      builder.log('test', 'message');
+      expect(loggedMessages).to.deep.equal(['test', 'message']);
+    });
+  });
+
+  describe('.setLogFunction()', function() {
+    it('should set the log function to use', function() {
+      let loggedMessages = [],
+        logFunction = function() {
+          for (let i = 0; i < arguments.length; i++) {
+            loggedMessages.push(arguments[i]);
+          }
+        };
+      let builder = new KssBuilder();
+      builder.setLogFunction(logFunction);
+      expect(builder.logFunction).to.deep.equal(logFunction);
     });
   });
 

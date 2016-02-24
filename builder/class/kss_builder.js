@@ -118,6 +118,51 @@ class KssBuilder {
   }
 
   /**
+   * Checks the builder configuration.
+   *
+   * An instance of KssBuilder MUST NOT override this method. A process
+   * controlling the builder should call this method to verify the specified
+   * builder has been configured correctly.
+   *
+   * @param {Object} builder The builder to check.
+   * @returns {Promise} A `Promise` object resolving to `null`.
+   */
+  static checkBuilder(builder) {
+    let isCompatible = true,
+      builderAPI = (typeof builder.API === 'string') ? builder.API : 'undefined';
+
+    // Ensure KssBuilder is the base class.
+    if (!(builder instanceof KssBuilder)) {
+      isCompatible = false;
+      // kss-node 2.0 template's provided the builder as a property.
+      // istanbul ignore else
+      if (builder.builder && builder.builder.API) {
+        builderAPI = builder.builder.API;
+      }
+    } else if (builderAPI.indexOf('.') === -1) {
+      isCompatible = false;
+    } else {
+      let version = kssBuilderAPI.split('.');
+      let apiMajor = parseInt(version[0]);
+      let apiMinor = parseInt(version[1]);
+
+      version = builderAPI.split('.');
+      let builderMajor = parseInt(version[0]);
+      let builderMinor = parseInt(version[1]);
+
+      if (builderMajor !== apiMajor || builderMinor > apiMinor) {
+        isCompatible = false;
+      }
+    }
+
+    if (!isCompatible) {
+      return Promise.reject(new Error('kss-node expected the builder to implement KssBuilder API version ' + kssBuilderAPI + '; version "' + builderAPI + '" is being used instead.'));
+    }
+
+    return Promise.resolve();
+  }
+
+  /**
    * Adds configuration options to the builder.
    *
    * Since kss-node is extendable, builders can provide their own options for
@@ -172,51 +217,6 @@ class KssBuilder {
    */
   setLogFunction(logFunction) {
     this.logFunction = logFunction;
-  }
-
-  /**
-   * Checks the builder configuration.
-   *
-   * An instance of KssBuilder MUST NOT override this method. A process
-   * controlling the builder should call this method to verify the specified
-   * builder has been configured correctly.
-   *
-   * @param {Object} builder The builder to check.
-   * @returns {Promise} A `Promise` object resolving to `null`.
-   */
-  static checkBuilder(builder) {
-    let isCompatible = true,
-      builderAPI = (typeof builder.API === 'string') ? builder.API : 'undefined';
-
-    // Ensure KssBuilder is the base class.
-    if (!(builder instanceof KssBuilder)) {
-      isCompatible = false;
-      // kss-node 2.0 template's provided the builder as a property.
-      // istanbul ignore else
-      if (builder.builder && builder.builder.API) {
-        builderAPI = builder.builder.API;
-      }
-    } else if (builderAPI.indexOf('.') === -1) {
-      isCompatible = false;
-    } else {
-      let version = kssBuilderAPI.split('.');
-      let apiMajor = parseInt(version[0]);
-      let apiMinor = parseInt(version[1]);
-
-      version = builderAPI.split('.');
-      let builderMajor = parseInt(version[0]);
-      let builderMinor = parseInt(version[1]);
-
-      if (builderMajor !== apiMajor || builderMinor > apiMinor) {
-        isCompatible = false;
-      }
-    }
-
-    if (!isCompatible) {
-      return Promise.reject(new Error('kss-node expected the builder to implement KssBuilder API version ' + kssBuilderAPI + '; version "' + builderAPI + '" is being used instead.'));
-    }
-
-    return Promise.resolve();
   }
 
   /**
