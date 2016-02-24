@@ -8,8 +8,8 @@ let pathToJSON = helperUtils.fixtures('cli-option-config.json');
 
 describe('KssConfig object API', function() {
   /* eslint-disable guard-for-in,no-loop-func */
-  ['set',
-    'get',
+  ['addConfig',
+    'getConfig',
     'addOptions',
     'getOptions',
     'normalizeConfig'
@@ -37,17 +37,17 @@ describe('KssConfig object API', function() {
     });
   });
 
-  describe('.set()', function() {
+  describe('.addConfig()', function() {
     it('should set this.config', function(done) {
       let kssConfig = new kss.KssConfig();
-      kssConfig.set({aSetting: 'isSet'});
+      kssConfig.addConfig({aSetting: 'isSet'});
       expect(kssConfig.config.aSetting).to.equal('isSet');
       done();
     });
 
     it('should not unset this.config', function(done) {
       let kssConfig = new kss.KssConfig({newSetting: '../output/nested'});
-      kssConfig.set({aSetting: 'isSet'});
+      kssConfig.addConfig({aSetting: 'isSet'});
       expect(kssConfig.config.newSetting).to.equal('../output/nested');
       done();
     });
@@ -55,18 +55,18 @@ describe('KssConfig object API', function() {
     it('should automatically normalize known settings', function(done) {
       let kssConfig = new kss.KssConfig();
       kssConfig.addOptions((new KssBuilder()).options);
-      kssConfig.set({destination: 'test/output/nested'});
-      kssConfig.set({source: 'test/output/nested'});
+      kssConfig.addConfig({destination: 'test/output/nested'});
+      kssConfig.addConfig({source: 'test/output/nested'});
       expect(kssConfig.config.destination).to.equal(path.resolve('test', 'output', 'nested'));
       expect(kssConfig.config.source).to.deep.equal([path.resolve('test', 'output', 'nested')]);
       done();
     });
   });
 
-  describe('.get()', function() {
+  describe('.getConfig()', function() {
     it('should return this.config', function(done) {
       let kssConfig = new kss.KssConfig(require(pathToJSON));
-      let config = kssConfig.get();
+      let config = kssConfig.getConfig();
       for (let key in config) {
         if (config.hasOwnProperty(key)) {
           expect(config[key]).to.equal(kssConfig.config[key]);
@@ -79,7 +79,7 @@ describe('KssConfig object API', function() {
       let kssConfig = new kss.KssConfig(require(pathToJSON));
       for (let key in kssConfig.config) {
         if (kssConfig.config.hasOwnProperty(key)) {
-          expect(kssConfig.get(key)).to.equal(kssConfig.config[key]);
+          expect(kssConfig.getConfig(key)).to.equal(kssConfig.config[key]);
         }
       }
       done();
@@ -144,15 +144,15 @@ describe('KssConfig object API', function() {
     it('should normalize a "multiple" option to an array of values', function(done) {
       let kssConfig = new kss.KssConfig();
       kssConfig.addOptions((new KssBuilder()).options);
-      kssConfig.set({source: 'with-include'});
+      kssConfig.addConfig({source: 'with-include'});
       kssConfig.normalizeConfig(['source']);
       expect(kssConfig.config.source).to.be.an.instanceOf(Array);
-      kssConfig.set({source: ['with-include', 'missing-homepage']});
+      kssConfig.addConfig({source: ['with-include', 'missing-homepage']});
       kssConfig.normalizeConfig(['source']);
       expect(kssConfig.config.source).to.be.an.instanceOf(Array);
       // Yargs will set any option without a default to undefined.
       /* eslint-disable no-undefined */
-      kssConfig.set({source: undefined});
+      kssConfig.addConfig({source: undefined});
       kssConfig.normalizeConfig(['source']);
       expect(kssConfig.config.source).to.be.an.instanceOf(Array);
       expect(kssConfig.config.source.length).to.equal(0);
@@ -162,7 +162,7 @@ describe('KssConfig object API', function() {
     it('should normalize a non-"multiple" option to a single value', function(done) {
       let kssConfig = new kss.KssConfig();
       kssConfig.addOptions((new KssBuilder()).options);
-      kssConfig.set({builder: ['empty-source', 'with-include', 'builder']});
+      kssConfig.addConfig({builder: ['empty-source', 'with-include', 'builder']});
       kssConfig.normalizeConfig(['builder']);
       expect(kssConfig.config.builder).to.be.a('string');
       done();
@@ -178,7 +178,7 @@ describe('KssConfig object API', function() {
 
     it('should not try to resolve a null path', function(done) {
       let kssConfig = new kss.KssConfig(require(pathToJSON));
-      kssConfig.set({destination: null});
+      kssConfig.addConfig({destination: null});
       kssConfig.normalizeConfig(['destination']);
       expect(kssConfig.config.destination).to.equal(null);
       done();
