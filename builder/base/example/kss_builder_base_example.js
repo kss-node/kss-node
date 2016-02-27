@@ -1,32 +1,30 @@
 'use strict';
 
 /**
- * The `kss/builder/class/example` module loads the kssBuilderExample
- * class, a `{@link KssBuilder}` using no templating.
+ * The `kss/builder/base/example` module loads the KssBuilderBaseExample
+ * class, a `{@link KssBuilderBase}` using no templating.
  * ```
- * const kssBuilderExample = require('kss/builder/class/example');
+ * const KssBuilderBaseExample = require('kss/builder/base/example');
  * ```
- * @module kss/builder/class/example
+ * @module kss/builder/base/example
  */
 
-// Import the KssBuilder class. We will extend it to scaffold our builder.
-const KssBuilder = require('kss/builder'),
+// Import the KssBuilderBase class. We will extend it to scaffold our builder.
+const KssBuilderBase = require('kss/builder/base'),
   path = require('path');
 
-// Define "KssBuilderExample" as the name of our example builder class.
+// Define "KssBuilderBaseExample" as the name of our example builder class.
 //
-// Our builder is an instance of the KssBuilder object with additional
+// Our builder is a sub-class of the KssBuilderBase class with additional
 // functionality added by overriding the parent methods.
-//
-// See the docs for KssBuilder() for info about its parameters.
-class KssBuilderExample extends KssBuilder {
+class KssBuilderBaseExample extends KssBuilderBase {
 
   /**
-   * Create a KssBuilderExample object.
+   * Create a KssBuilderBaseExample object.
    *
    * ```
-   * const KssBuilderExample = require('kss/builder/class/example');
-   * const builder = new KssBuilderExample();
+   * const KssBuilderBaseExample = require('kss/builder/base/example');
+   * const builder = new KssBuilderBaseExample();
    * ```
    *
    * @param {object} options The Yargs-like options this builder has.
@@ -49,8 +47,8 @@ class KssBuilderExample extends KssBuilder {
   /**
    * Clone a builder's files.
    *
-   * The KssBuilder.clone() method is a simple and functional implementation; it
-   * copies one directory to the specified location. An instance of KssBuilder
+   * The KssBuilderBase.clone() method is a simple and functional implementation; it
+   * copies one directory to the specified location. An instance of KssBuilderBase
    * does not need to override this method, but it can if it needs to do something
    * more complicated.
    *
@@ -60,7 +58,8 @@ class KssBuilderExample extends KssBuilder {
    * @returns {Promise} A `Promise` object.
    */
   clone(builderPath, destinationPath) {
-    // Note that, at this point, kssBuilderExample.init() has not been called.
+    // Note that, at this point, KssBuilderBaseExample.init() method has not
+    // been called.
     this.log('Example builder cloned to ' + destinationPath + '! (not really.)');
 
     return Promise.resolve();
@@ -69,7 +68,7 @@ class KssBuilderExample extends KssBuilder {
   /**
    * Initialize the style guide creation process.
    *
-   * This method can be set by any KssBuilder sub-class to do any custom tasks
+   * This method can be set by any KssBuilderBase sub-class to do any custom tasks
    * before the style guide is built.
    *
    * @returns {Promise} A `Promise` object resolving to `null`.
@@ -79,7 +78,7 @@ class KssBuilderExample extends KssBuilder {
     this.config.source = [path.resolve('..', 'demo')];
 
     // A real builder should initialize the templating system being used by this
-    // builder. For example, kssBuilderHandlebars loads and initializes the
+    // builder. For example, KssBuilderBaseHandlebars loads and initializes the
     // Handlebars templating system.
     this.warning = ' (not really.)';
 
@@ -100,5 +99,5 @@ class KssBuilderExample extends KssBuilder {
   }
 }
 
-// Export our "kssBuilderExample" object.
-module.exports = KssBuilderExample;
+// Export our "KssBuilderBaseExample" class.
+module.exports = KssBuilderBaseExample;

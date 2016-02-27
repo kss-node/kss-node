@@ -41,8 +41,8 @@ Documentation on how to get started with kss-node (and with Node.js' npm) is ava
 ## JavaScript API
 
 If you don't wish to use the default style guide builder, you can either:
-* write your own builder that uses the KssBuilderHandlebars class, or
-* write your own builder and class that extends KssBuilder, or
+* write your own builder that uses the KssBuilderBaseHandlebars class, or
+* write your own builder and class that extends KssBuilderBase, or
 * use the JavaScript object representation of the style guide, KssStyleGuide.
 
 **For more information on how to integrate kss-node with your own JavaScript, see the [JavaScript API documentation](./section-javascript-api.html).**

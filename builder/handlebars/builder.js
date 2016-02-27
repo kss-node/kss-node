@@ -9,22 +9,22 @@
 // builder's package.json.
 
 let builder,
-  KssBuilderHandlebars;
+  KssBuilderBaseHandlebars;
 
 // Tell kss-node which builder this builder uses.
 try {
   // In order for a builder to be "kss-node clone"-able, it must use the
   // require('kss/builder/path') syntax.
-  KssBuilderHandlebars = require('kss/builder/class/handlebars');
+  KssBuilderBaseHandlebars = require('kss/builder/base/handlebars');
 } catch (e) {
   // The above require() line will always fail while testing a git clone of this
   // module because this code is not inside a "node_modules/kss" folder which
   // would allow node.js to find it with require('kss/anything'). So we catch
   // the error and use a relative path.
-  KssBuilderHandlebars = require('../class/handlebars');
+  KssBuilderBaseHandlebars = require('../base/handlebars');
 }
 
-builder = new KssBuilderHandlebars({
+builder = new KssBuilderBaseHandlebars({
   // Tell kss-node which Yargs-like options this builder has.
   // See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
   title: {

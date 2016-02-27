@@ -4,15 +4,15 @@
 'use strict';
 
 /**
- * The `kss/builder/class/handlebars` module loads the kssBuilderHandlebars
- * object, a `{@link KssBuilder}` object using Handlebars templating.
+ * The `kss/builder/base/handlebars` module loads the KssBuilderBaseHandlebars
+ * class, a `{@link KssBuilderBase}` sub-class using Handlebars templating.
  * ```
- * const kssBuilderHandlebars = require('kss/builder/class/handlebars');
+ * const KssBuilderBaseHandlebars = require('kss/builder/base/handlebars');
  * ```
- * @module kss/builder/class/handlebars
+ * @module kss/builder/base/handlebars
  */
 
-const KssBuilder = require('../kss_builder.js'),
+const KssBuilderBase = require('../kss_builder_base.js'),
   marked = require('marked'),
   path = require('path'),
   Promise = require('bluebird');
@@ -53,14 +53,14 @@ const builderOptions = {
  * A kss-node builder takes input files and builds a style guide using
  * Handlebars templates.
  */
-class KssBuilderHandlebars extends KssBuilder {
+class KssBuilderBaseHandlebars extends KssBuilderBase {
 
   /**
-   * Create a KssBuilderHandlebars object.
+   * Create a KssBuilderBaseHandlebars object.
    *
    * ```
-   * const KssBuilderHandlebars = require('kss/builder/class/handlebars');
-   * const builder = new KssBuilderHandlebars();
+   * const KssBuilderBaseHandlebars = require('kss/builder/base/handlebars');
+   * const builder = new KssBuilderBaseHandlebars();
    * ```
    *
    * @param {object} [options] The Yargs-like options this builder has.
@@ -83,7 +83,7 @@ class KssBuilderHandlebars extends KssBuilder {
   /**
    * Initialize the style guide creation process.
    *
-   * This method can be set by any KssBuilder sub-class to do any custom tasks
+   * This method can be set by any KssBuilderBase sub-class to do any custom tasks
    * before the style guide is built.
    *
    * @alias module:kss/builder/handlebars.init
@@ -275,7 +275,7 @@ class KssBuilderHandlebars extends KssBuilder {
       })
     ).then(() => {
       // If a root element doesn't have an actual section, build one for it.
-      // @TODO: Move this "fixing" into KssBuilder.prepare().
+      // @TODO: Move this "fixing" into KssBuilderBase.prepare().
       let rootCount = sectionRoots.length;
       let newSection = false;
       for (let i = 0; i < rootCount; i += 1) {
@@ -457,4 +457,4 @@ class KssBuilderHandlebars extends KssBuilder {
   }
 }
 
-module.exports = KssBuilderHandlebars;
+module.exports = KssBuilderBaseHandlebars;

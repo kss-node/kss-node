@@ -1,16 +1,16 @@
 'use strict';
 
 /**
- * The `kss/builder` module loads the {@link KssBuilder} class.
+ * The `kss/builder/base` module loads the {@link KssBuilderBase} class.
  * ```
- * const KssBuilder = require('kss/builder');
+ * const KssBuilderBase = require('kss/builder/base');
  * ```
- * @module kss/builder
+ * @module kss/builder/base
  */
 
-/* **************************************************************
-   See kss_builder_example.js for how to implement a builder.
-   ************************************************************** */
+/* ***************************************************************
+   See kss_builder_base_example.js for how to implement a builder.
+   *************************************************************** */
 
 const path = require('path'),
   Promise = require('bluebird');
@@ -84,17 +84,17 @@ const coreOptions = {
 /**
  * A kss-node builder takes input files and builds a style guide.
  */
-class KssBuilder {
+class KssBuilderBase {
 
   /**
-   * Create a KssBuilder object.
+   * Create a KssBuilderBase object.
    *
    * This is the base object used by all kss-node builders.
    *
    * ```
-   * const KssBuilder = require('kss/builder');
-   * class KssBuilderCustom extends KssBuilder {
-   *   // Override methods of KssBuilder.
+   * const KssBuilderBase = require('kss/builder/base');
+   * class KssBuilderCustom extends KssBuilderBase {
+   *   // Override methods of KssBuilderBase.
    * }
    * ```
    *
@@ -122,7 +122,7 @@ class KssBuilder {
   /**
    * Checks the builder configuration.
    *
-   * An instance of KssBuilder MUST NOT override this method. A process
+   * An instance of KssBuilderBase MUST NOT override this method. A process
    * controlling the builder should call this method to verify the specified
    * builder has been configured correctly.
    *
@@ -133,8 +133,8 @@ class KssBuilder {
     let isCompatible = true,
       builderAPI = (typeof builder.API === 'string') ? builder.API : 'undefined';
 
-    // Ensure KssBuilder is the base class.
-    if (!(builder instanceof KssBuilder)) {
+    // Ensure KssBuilderBase is the base class.
+    if (!(builder instanceof KssBuilderBase)) {
       isCompatible = false;
       // kss-node 2.0 template's provided the builder as a property.
       // istanbul ignore else
@@ -158,7 +158,7 @@ class KssBuilder {
     }
 
     if (!isCompatible) {
-      return Promise.reject(new Error('kss-node expected the builder to implement KssBuilder API version ' + kssBuilderAPI + '; version "' + builderAPI + '" is being used instead.'));
+      return Promise.reject(new Error('kss-node expected the builder to implement KssBuilderBase API version ' + kssBuilderAPI + '; version "' + builderAPI + '" is being used instead.'));
     }
 
     return Promise.resolve();
@@ -168,7 +168,7 @@ class KssBuilder {
    * Stores the given configuration settings.
    *
    * @param {Object} config An object of config settings to store.
-   * @returns {KssBuilder} The `KssBuilder` object is returned to allow chaining
+   * @returns {KssBuilderBase} The `KssBuilderBase` object is returned to allow chaining
    *   of methods.
    */
   addConfig(config) {
@@ -220,7 +220,7 @@ class KssBuilder {
    *   value.
    *
    * @param {object} options An object of configuration options.
-   * @returns {KssBuilder} The `KssBuilder` object is returned to allow chaining
+   * @returns {KssBuilderBase} The `KssBuilderBase` object is returned to allow chaining
    *   of methods.
    */
   addOptions(options) {
@@ -262,7 +262,7 @@ class KssBuilder {
    *
    * @private
    * @param {string[]} keys The keys to normalize.
-   * @returns {KssBuilder} The `KssBuilder` object is returned to allow chaining
+   * @returns {KssBuilderBase} The `KssBuilderBase` object is returned to allow chaining
    *   of methods.
    */
   normalizeConfig(keys) {
@@ -320,7 +320,7 @@ class KssBuilder {
    * messages to the KSS system so it can report them to the user.
    *
    * @param {...string} message The message to log.
-   * @returns {KssBuilder} The `KssBuilder` object is returned to allow chaining
+   * @returns {KssBuilderBase} The `KssBuilderBase` object is returned to allow chaining
    *   of methods.
    */
   log(message) {
@@ -338,7 +338,7 @@ class KssBuilder {
    * `console.log()`.
    *
    * @param {Function} logFunction Function to log a message to the user.
-   * @returns {KssBuilder} The `KssBuilder` object is returned to allow chaining
+   * @returns {KssBuilderBase} The `KssBuilderBase` object is returned to allow chaining
    *   of methods.
    */
   setLogFunction(logFunction) {
@@ -352,7 +352,7 @@ class KssBuilder {
    * Clone a builder's files.
    *
    * This method is fairly simple; it copies one directory to the specified
-   * location. An instance of KssBuilder does not need to override this method,
+   * location. An instance of KssBuilderBase does not need to override this method,
    * but it can if it needs to do something more complicated.
    *
    * @param {string} builderPath Path to the builder to clone.
@@ -397,7 +397,7 @@ class KssBuilder {
   /**
    * Initialize the style guide creation process.
    *
-   * This method can be set by any KssBuilder sub-class to do any custom tasks
+   * This method can be set by any KssBuilderBase sub-class to do any custom tasks
    * before the style guide is built.
    *
    * @returns {Promise} A `Promise` object resolving to `null`.
@@ -409,9 +409,9 @@ class KssBuilder {
   /**
    * Allow the builder to prepare itself or modify the KssStyleGuide object.
    *
-   * The method is designed to be implemented by a KssBuilder object so it can
-   * do custom tasks before the style guide is built. This method should not be
-   * set by any KssBuilder sub-class; see `init()` instead.
+   * The method can be set by any KssBuilderBase sub-class to do any custom tasks
+   * after the KssStyleGuide object is created and before the HTML style guide
+   * is built.
    *
    * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
    * @returns {Promise} A `Promise` object resolving to `styleGuide`.
@@ -431,4 +431,4 @@ class KssBuilder {
   }
 }
 
-module.exports = KssBuilder;
+module.exports = KssBuilderBase;

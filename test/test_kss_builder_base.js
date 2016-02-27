@@ -2,7 +2,7 @@
 
 'use strict';
 
-const KssBuilder = require('../builder'),
+const KssBuilderBase = require('../builder'),
   Promise = require('bluebird');
 
 const fs = Promise.promisifyAll(require('fs-extra'));
@@ -10,7 +10,7 @@ const fs = Promise.promisifyAll(require('fs-extra'));
 const pathToJSON = helperUtils.fixtures('cli-option-config.json'),
   API = '3.0';
 
-describe('KssBuilder object API', function() {
+describe('KssBuilderBase object API', function() {
   /* eslint-disable guard-for-in,no-loop-func */
   ['addConfig',
     'getConfig',
@@ -25,7 +25,7 @@ describe('KssBuilder object API', function() {
     'build'
   ].forEach(function(method) {
     it('has ' + method + '() method', function(done) {
-      expect(new KssBuilder({})).to.respondTo(method);
+      expect(new KssBuilderBase({})).to.respondTo(method);
       done();
     });
   });
@@ -33,15 +33,15 @@ describe('KssBuilder object API', function() {
   ['checkBuilder'
   ].forEach(function(method) {
     it('has ' + method + '() static method', function(done) {
-      expect(KssBuilder).itself.to.respondTo(method);
+      expect(KssBuilderBase).itself.to.respondTo(method);
       done();
     });
   });
   /* eslint-enable guard-for-in,no-loop-func */
 
-  describe('KssBuilder constructor', function() {
+  describe('KssBuilderBase constructor', function() {
     it('should initialize the data', function(done) {
-      let builder = new KssBuilder();
+      let builder = new KssBuilderBase();
       expect(builder).to.have.property('config');
       expect(builder).to.have.property('options');
       expect(builder.API).to.equal('undefined');
@@ -49,7 +49,7 @@ describe('KssBuilder object API', function() {
     });
 
     it('should implement the default options', function() {
-      let builder = new KssBuilder();
+      let builder = new KssBuilderBase();
       expect(Object.getOwnPropertyNames(builder.options)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'verbose']);
     });
 
@@ -58,66 +58,66 @@ describe('KssBuilder object API', function() {
         custom: {option: 1},
         custom2: {option: 2}
       };
-      let builder = new KssBuilder(options);
+      let builder = new KssBuilderBase(options);
       expect(builder.options.custom).to.deep.equal(options.custom);
       expect(builder.options.custom2).to.deep.equal(options.custom2);
     });
 
     it('should set the default log function', function() {
-      let builder = new KssBuilder();
+      let builder = new KssBuilderBase();
       expect(builder.logFunction).to.deep.equal(console.log);
     });
   });
 
   describe('.checkBuilder()', function() {
     it('should return a Promise', function() {
-      let builder = new KssBuilder();
-      let obj = KssBuilder.checkBuilder(builder);
+      let builder = new KssBuilderBase();
+      let obj = KssBuilderBase.checkBuilder(builder);
       return obj.catch(() => {
         expect(obj instanceof Promise).to.be.true;
       });
     });
 
     it('should fail if the API is not given to the constructor', function() {
-      let builder = new KssBuilder();
-      return KssBuilder.checkBuilder(builder).then(result => {
+      let builder = new KssBuilderBase();
+      return KssBuilderBase.checkBuilder(builder).then(result => {
         expect(result).to.not.exist;
       }).catch(error => {
-        expect(error.message).to.equal('kss-node expected the builder to implement KssBuilder API version ' + API + '; version "undefined" is being used instead.');
+        expect(error.message).to.equal('kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "undefined" is being used instead.');
       });
     });
 
     it('should fail if the given API is not equal to the current API', function() {
-      let builder = new KssBuilder();
+      let builder = new KssBuilderBase();
       builder.API = '2.0';
-      return KssBuilder.checkBuilder(builder).then(result => {
+      return KssBuilderBase.checkBuilder(builder).then(result => {
         expect(result).to.not.exist;
       }).catch(error => {
-        expect(error.message).to.equal('kss-node expected the builder to implement KssBuilder API version ' + API + '; version "2.0" is being used instead.');
+        expect(error.message).to.equal('kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "2.0" is being used instead.');
       });
     });
 
     it('should fail if the given API is newer than the current API', function() {
-      let builder = new KssBuilder();
+      let builder = new KssBuilderBase();
       builder.API = '3.999';
-      return KssBuilder.checkBuilder(builder).then(result => {
+      return KssBuilderBase.checkBuilder(builder).then(result => {
         expect(result).to.not.exist;
       }).catch(error => {
-        expect(error.message).to.equal('kss-node expected the builder to implement KssBuilder API version ' + API + '; version "3.999" is being used instead.');
+        expect(error.message).to.equal('kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "3.999" is being used instead.');
       });
     });
   });
 
   describe('.addConfig()', function() {
     it('should set this.config', function(done) {
-      let builder = new KssBuilder();
+      let builder = new KssBuilderBase();
       builder.addConfig({aSetting: 'isSet'});
       expect(builder.config.aSetting).to.equal('isSet');
       done();
     });
 
     it('should not unset this.config', function(done) {
-      let builder = new KssBuilder();
+      let builder = new KssBuilderBase();
       builder.addConfig({newSetting: '../output/nested'});
       builder.addConfig({aSetting: 'isSet'});
       expect(builder.config.newSetting).to.equal('../output/nested');
@@ -125,8 +125,8 @@ describe('KssBuilder object API', function() {
     });
 
     it('should automatically normalize known settings', function(done) {
-      let builder = new KssBuilder();
-      builder.addOptions((new KssBuilder()).options);
+      let builder = new KssBuilderBase();
+      builder.addOptions((new KssBuilderBase()).options);
       builder.addConfig({destination: 'test/output/nested'});
       builder.addConfig({source: 'test/output/nested'});
       expect(builder.config.destination).to.equal(path.resolve('test', 'output', 'nested'));
@@ -137,7 +137,7 @@ describe('KssBuilder object API', function() {
 
   describe('.getConfig()', function() {
     it('should return this.config', function(done) {
-      let builder = new KssBuilder();
+      let builder = new KssBuilderBase();
       builder.addConfig(require(pathToJSON));
       let config = builder.getConfig();
       for (let key in config) {
@@ -149,7 +149,7 @@ describe('KssBuilder object API', function() {
     });
 
     it('should return this.config.key given key', function(done) {
-      let builder = new KssBuilder();
+      let builder = new KssBuilderBase();
       builder.addConfig(require(pathToJSON));
       for (let key in builder.config) {
         if (builder.config.hasOwnProperty(key)) {
@@ -162,7 +162,7 @@ describe('KssBuilder object API', function() {
 
   describe('.addOptions()', function() {
     it('should add to this.options', function(done) {
-      let builder = new KssBuilder();
+      let builder = new KssBuilderBase();
       builder.addConfig(require(pathToJSON));
       builder.addOptions({
         candy: {
@@ -177,7 +177,7 @@ describe('KssBuilder object API', function() {
     });
 
     it('should automatically normalize corresponding settings', function(done) {
-      let builder = new KssBuilder();
+      let builder = new KssBuilderBase();
       builder.addConfig({aSetting: 'test/output/nested'});
       expect(builder.config.aSetting).to.equal('test/output/nested');
       builder.addOptions({
@@ -193,8 +193,8 @@ describe('KssBuilder object API', function() {
 
   describe('.getOptions()', function() {
     it('should return this.options', function(done) {
-      let builder = new KssBuilder();
-      builder.addOptions((new KssBuilder()).options);
+      let builder = new KssBuilderBase();
+      builder.addOptions((new KssBuilderBase()).options);
       let options = builder.getOptions();
       for (let key in options) {
         if (options.hasOwnProperty(key)) {
@@ -205,8 +205,8 @@ describe('KssBuilder object API', function() {
     });
 
     it('should return this.options.key given key', function(done) {
-      let builder = new KssBuilder();
-      builder.addOptions((new KssBuilder()).options);
+      let builder = new KssBuilderBase();
+      builder.addOptions((new KssBuilderBase()).options);
       for (let key in builder.options) {
         if (builder.options.hasOwnProperty(key)) {
           expect(builder.getOptions(key)).to.equal(builder.options[key]);
@@ -218,8 +218,8 @@ describe('KssBuilder object API', function() {
 
   describe('.normalizeConfig()', function() {
     it('should normalize a "multiple" option to an array of values', function(done) {
-      let builder = new KssBuilder();
-      builder.addOptions((new KssBuilder()).options);
+      let builder = new KssBuilderBase();
+      builder.addOptions((new KssBuilderBase()).options);
       builder.addConfig({source: 'with-include'});
       builder.normalizeConfig(['source']);
       expect(builder.config.source).to.be.an.instanceOf(Array);
@@ -236,8 +236,8 @@ describe('KssBuilder object API', function() {
     });
 
     it('should normalize a non-"multiple" option to a single value', function(done) {
-      let builder = new KssBuilder();
-      builder.addOptions((new KssBuilder()).options);
+      let builder = new KssBuilderBase();
+      builder.addOptions((new KssBuilderBase()).options);
       builder.addConfig({builder: ['empty-source', 'with-include', 'builder']});
       builder.normalizeConfig(['builder']);
       expect(builder.config.builder).to.be.a('string');
@@ -245,16 +245,16 @@ describe('KssBuilder object API', function() {
     });
 
     it('should resolve paths relative to the current working directory', function(done) {
-      let builder = new KssBuilder();
+      let builder = new KssBuilderBase();
       builder.addConfig(require(pathToJSON));
-      builder.addOptions((new KssBuilder()).options);
+      builder.addOptions((new KssBuilderBase()).options);
       builder.normalizeConfig(['source']);
       expect(builder.config.source[0]).to.equal(path.resolve('with-include'));
       done();
     });
 
     it('should not try to resolve a null path', function(done) {
-      let builder = new KssBuilder();
+      let builder = new KssBuilderBase();
       builder.addConfig(require(pathToJSON));
       builder.addConfig({destination: null});
       builder.normalizeConfig(['destination']);
@@ -271,7 +271,7 @@ describe('KssBuilder object API', function() {
             loggedMessages.push(arguments[i]);
           }
         };
-      let builder = new KssBuilder();
+      let builder = new KssBuilderBase();
       builder.setLogFunction(logFunction);
       builder.log('test', 'message');
       expect(loggedMessages).to.deep.equal(['test', 'message']);
@@ -286,7 +286,7 @@ describe('KssBuilder object API', function() {
             loggedMessages.push(arguments[i]);
           }
         };
-      let builder = new KssBuilder();
+      let builder = new KssBuilderBase();
       builder.setLogFunction(logFunction);
       expect(builder.logFunction).to.deep.equal(logFunction);
     });
@@ -295,7 +295,7 @@ describe('KssBuilder object API', function() {
   describe('.clone()', function() {
     it('should clone the given directory to the given destination', function() {
       let destination = helperUtils.fixtures('..', 'output', 'clone'),
-        builder = new KssBuilder();
+        builder = new KssBuilderBase();
       return builder.clone(helperUtils.fixtures('builder'), destination).catch(error => {
         expect(error).to.not.exist;
       }).then(result => {
@@ -305,7 +305,7 @@ describe('KssBuilder object API', function() {
     });
 
     it('should fail to clone if the given destination exists', function() {
-      let builder = new KssBuilder();
+      let builder = new KssBuilderBase();
       return builder.clone(helperUtils.fixtures('builder'), helperUtils.fixtures('includes')).then(result => {
         expect(result).to.not.be.undefined;
       }).catch(error => {
@@ -315,7 +315,7 @@ describe('KssBuilder object API', function() {
 
     it('should skip node_modules and dot-hidden paths', function() {
       let destination = helperUtils.fixtures('..', 'output', 'clone-skip'),
-        builder = new KssBuilder();
+        builder = new KssBuilderBase();
       return builder.clone(helperUtils.fixtures('builder'), destination).then(() => {
         return fs.readdirAsync(destination);
       }).then(files => {
@@ -332,7 +332,7 @@ describe('KssBuilder object API', function() {
 
   describe('.init()', function() {
     it('should return a Promise', function() {
-      let obj = (new KssBuilder()).init();
+      let obj = (new KssBuilderBase()).init();
       return obj.then(() => {
         expect(obj instanceof Promise).to.be.true;
       });
@@ -341,7 +341,7 @@ describe('KssBuilder object API', function() {
 
   describe('.prepare()', function() {
     it('should return the style guide given to it', function() {
-      let builder = new KssBuilder(),
+      let builder = new KssBuilderBase(),
         styleGuide = new kss.KssStyleGuide({sections: [{header: 'Section', reference: '1.1'}]});
       return builder.prepare(styleGuide).then((result) => {
         expect(result).to.deep.equal(styleGuide);
@@ -351,7 +351,7 @@ describe('KssBuilder object API', function() {
 
   describe('.build()', function() {
     it('should return the style guide given to it', function() {
-      let builder = new KssBuilder(),
+      let builder = new KssBuilderBase(),
         styleGuide = new kss.KssStyleGuide({sections: [{header: 'Section', reference: '1.1'}]});
       return builder.build(styleGuide).then((result) => {
         expect(result).to.deep.equal(styleGuide);

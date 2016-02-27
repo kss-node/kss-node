@@ -1,8 +1,8 @@
 'use strict';
 
-const KssBuilder = require('../../../builder');
+const KssBuilderBase = require('../../../builder/base');
 
-class KssBuilderOld extends KssBuilder {
+class KssBuilderOld extends KssBuilderBase {
   constructor(options) {
     super(options);
     this.API = '1.0';

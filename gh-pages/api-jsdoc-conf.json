@@ -5,7 +5,7 @@
       "builder"
     ],
     "exclude": [
-      "builder/class/example",
+      "builder/base/example",
       "builder/handlebars"
     ]
   },
