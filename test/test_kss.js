@@ -65,11 +65,15 @@ describe('kss object API', function() {
   /* eslint-enable no-loop-func */
 
   describe('given no options', function() {
-    it.skip('should display error', function() {
+    it('should display error', function() {
       return testKss({}).then(function(response) {
+        expect(response.error).to.exist;
         expect(response.stderr).to.include('No "source" option specified.');
-        return kss().catch(error => {
+        return kss().then(() => {
+          return Promise.reject(new Error('kss() should fail, but does not'));
+        }).catch(error => {
           expect(error).to.exist;
+          expect(error.message).to.equal('No "source" option specified.');
         });
       });
     });
@@ -145,7 +149,7 @@ describe('kss object API', function() {
   });
 
   describe('given "builder" option', function() {
-    it('should provide an error if KssBuilderBase.checkBuilder() method fails', function() {
+    it('should provide an error if KssBuilderBase.loadBuilder() method fails', function() {
       return testKss({builder: helperUtils.fixtures('old-builder')}).then(function(response) {
         expect(response.error).to.exist;
         expect(response.stderr).to.include('kss-node expected the builder to implement KssBuilderBase API version 3.0; version "1.0" is being used instead.');

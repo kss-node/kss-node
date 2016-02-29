@@ -34,18 +34,13 @@ class KssBuilderBase {
    *   // Override methods of KssBuilderBase.
    * }
    * ```
-   *
-   * @param {object} [options] The Yargs-like options this builder has.
-   *   See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
    */
-  constructor(options) {
-    options = options || {};
-
+  constructor() {
     this.options = {};
     this.config = {};
 
     // Store the version of the builder API that the builder instance is
-    // expecting; we will verify this in checkBuilder().
+    // expecting; we will verify this in loadBuilder().
     this.API = 'undefined';
 
     // The log function defaults to console.log.
@@ -114,52 +109,91 @@ class KssBuilderBase {
         describe: 'Display verbose details while building'
       }
     });
-    this.addOptions(options);
   }
 
   /**
-   * Checks the builder configuration.
+   * Loads the builder from the given file path or class.
    *
-   * An instance of KssBuilderBase MUST NOT override this method. A process
-   * controlling the builder should call this method to verify the specified
-   * builder has been configured correctly.
+   * Call this static method to load the builder and verify the builder
+   * implements the correct builder API version.
    *
-   * @param {Object} builder The builder to check.
-   * @returns {Promise} A `Promise` object resolving to `null`.
+   * @param {string|function} builderClass The path to a builder or a builder
+   *   class to load.
+   * @returns {Promise.<KssBuilder>} A `Promise` object resolving to a
+   *   `KssBuilder` object, or one of its sub-classes.
    */
-  static checkBuilder(builder) {
-    let isCompatible = true,
-      builderAPI = (typeof builder.API === 'string') ? builder.API : 'undefined';
+  static loadBuilder(builderClass) {
+    return new Promise((resolve, reject) => {
+      let newBuilder = {},
+        SomeBuilder,
+        isCompatible = true,
+        builderAPI = 'undefined';
 
-    // Ensure KssBuilderBase is the base class.
-    if (!(builder instanceof KssBuilderBase)) {
-      isCompatible = false;
-      // kss-node 2.0 template's provided the builder as a property.
-      // istanbul ignore else
-      if (builder.builder && builder.builder.API) {
-        builderAPI = builder.builder.API;
+      try {
+        // The parameter can be a class or constructor function.
+        if (typeof builderClass === 'function') {
+          SomeBuilder = builderClass;
+
+        // If the parameter is a path, try to load the module.
+        } else if (typeof builderClass === 'string') {
+          SomeBuilder = require(path.resolve(builderClass));
+
+        // Unexpected parameter.
+        } else {
+          return reject(new Error('Unexpected value for "builder"; should be a path to a module or a JavaScript Class.'));
+        }
+
+        // Check for a kss-node 2.0 template and KssGenenerator. Template's were
+        // objects that provided the builder (generator) as a property.
+        if (typeof SomeBuilder === 'object'
+          && SomeBuilder.hasOwnProperty('generator')
+          && SomeBuilder.generator.hasOwnProperty('implementsAPI')) {
+          isCompatible = false;
+          builderAPI = SomeBuilder.generator.implementsAPI;
+
+        // Try to create a new builder.
+        } else {
+          newBuilder = new SomeBuilder();
+        }
+
+      } catch (e) {
+        // Builders don't have to export their own builder class. If the builder
+        // fails to export a builder class, we assume it wanted the default
+        // builder.
+        let KssBuilderHandlebars = require('../handlebars');
+        newBuilder = new KssBuilderHandlebars();
       }
-    } else if (builderAPI.indexOf('.') === -1) {
-      isCompatible = false;
-    } else {
-      let version = kssBuilderAPI.split('.');
-      let apiMajor = parseInt(version[0]);
-      let apiMinor = parseInt(version[1]);
 
-      version = builderAPI.split('.');
-      let builderMajor = parseInt(version[0]);
-      let builderMinor = parseInt(version[1]);
+      // Grab the builder API version.
+      if (newBuilder.hasOwnProperty('API')) {
+        builderAPI = newBuilder.API;
+      }
 
-      if (builderMajor !== apiMajor || builderMinor > apiMinor) {
+      // Ensure KssBuilderBase is the base class.
+      if (!(newBuilder instanceof KssBuilderBase)) {
         isCompatible = false;
+      } else if (builderAPI.indexOf('.') === -1) {
+        isCompatible = false;
+      } else {
+        let version = kssBuilderAPI.split('.');
+        let apiMajor = parseInt(version[0]);
+        let apiMinor = parseInt(version[1]);
+
+        version = builderAPI.split('.');
+        let builderMajor = parseInt(version[0]);
+        let builderMinor = parseInt(version[1]);
+
+        if (builderMajor !== apiMajor || builderMinor > apiMinor) {
+          isCompatible = false;
+        }
       }
-    }
 
-    if (!isCompatible) {
-      return Promise.reject(new Error('kss-node expected the builder to implement KssBuilderBase API version ' + kssBuilderAPI + '; version "' + builderAPI + '" is being used instead.'));
-    }
+      if (!isCompatible) {
+        return reject(new Error('kss-node expected the builder to implement KssBuilderBase API version ' + kssBuilderAPI + '; version "' + builderAPI + '" is being used instead.'));
+      }
 
-    return Promise.resolve();
+      return resolve(newBuilder);
+    });
   }
 
   /**

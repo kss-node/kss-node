@@ -33,17 +33,12 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
    * const KssBuilderBaseHandlebars = require('kss/builder/base/handlebars');
    * const builder = new KssBuilderBaseHandlebars();
    * ```
-   *
-   * @param {object} [options] The Yargs-like options this builder has.
-   *   See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
    */
-  constructor(options) {
-    options = options || {};
-
+  constructor() {
     super();
 
     // Store the version of the builder API that the builder instance is
-    // expecting; we will verify this in checkBuilder().
+    // expecting; we will verify this in loadBuilder().
     this.API = '3.0';
 
     // Tell kss-node which Yargs-like options this builder has.
@@ -75,7 +70,6 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
         default: 3
       }
     });
-    this.addOptions(options);
   }
 
   /**
@@ -425,11 +419,13 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
       let styles = '',
         scripts = '';
       for (let key in this.config.css) {
+        // istanbul ignore else
         if (this.config.css.hasOwnProperty(key)) {
           styles = styles + '<link rel="stylesheet" href="' + this.config.css[key] + '">\n';
         }
       }
       for (let key in this.config.js) {
+        // istanbul ignore else
         if (this.config.js.hasOwnProperty(key)) {
           scripts = scripts + '<script src="' + this.config.js[key] + '"></script>\n';
         }

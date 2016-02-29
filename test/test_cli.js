@@ -9,6 +9,8 @@ const Promise = require('bluebird'),
 
 const fs = Promise.promisifyAll(require('fs-extra'));
 
+const API = '3.0';
+
 // Instead of child_process.exec, we use the lib/cli.js module and feed it mock
 // stdout, stderr and argv.
 const kssNode = function(args) {
@@ -107,6 +109,24 @@ describe('Command Line Interface', function() {
         expect(result.error).to.not.exist;
         expect(result.stdout).to.include(successMessage);
         expect(result.stdout).to.include('WELCOME to the kss-node demo! We\'ve turned on the --verbose flag so you can see what kss-node is doing.');
+      });
+    });
+  });
+
+  describe('given --builder option', function() {
+    it('should catch a failure when the builder API is not equal to the current API', function() {
+      return kssNode('--builder ' + helperUtils.fixtures('old-builder')).then(result => {
+        expect(result.error).to.exist;
+        expect(result.stderr).to.include('kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "1.0" is being used instead.');
+      });
+    });
+  });
+
+  describe('given --verbose option', function() {
+    it('should catch a failure when the builder API is not equal to the current API', function() {
+      return kssNode('--verbose --builder ' + helperUtils.fixtures('old-builder')).then(result => {
+        expect(result.error).to.exist;
+        expect(result.stderr).to.include('kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "1.0" is being used instead.');
       });
     });
   });

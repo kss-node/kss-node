@@ -30,11 +30,11 @@ class KssBuilderBaseExample extends KssBuilderBase {
    * @param {object} options The Yargs-like options this builder has.
    *   See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
    */
-  constructor(options) {
-    super(options);
+  constructor() {
+    super();
 
     // Store the version of the builder API that the builder instance is
-    // expecting; we will verify this in checkBuilder().
+    // expecting; we will verify this in loadBuilder().
     this.API = '3.0';
 
     this.addOptions({

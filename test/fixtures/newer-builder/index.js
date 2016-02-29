@@ -2,11 +2,11 @@
 
 const KssBuilderBase = require('../../../builder/base');
 
-class KssBuilderOld extends KssBuilderBase {
+class KssBuilderNewer extends KssBuilderBase {
   constructor() {
     super();
-    this.API = '1.0';
+    this.API = '10.0';
   }
 }
 
-module.exports = KssBuilderOld;
+module.exports = KssBuilderNewer;

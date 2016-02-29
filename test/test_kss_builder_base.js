@@ -25,12 +25,12 @@ describe('KssBuilderBase object API', function() {
     'build'
   ].forEach(function(method) {
     it('has ' + method + '() method', function(done) {
-      expect(new KssBuilderBase({})).to.respondTo(method);
+      expect(new KssBuilderBase()).to.respondTo(method);
       done();
     });
   });
 
-  ['checkBuilder'
+  ['loadBuilder'
   ].forEach(function(method) {
     it('has ' + method + '() static method', function(done) {
       expect(KssBuilderBase).itself.to.respondTo(method);
@@ -53,34 +53,30 @@ describe('KssBuilderBase object API', function() {
       expect(Object.getOwnPropertyNames(builder.options)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'verbose']);
     });
 
-    it('should set the given options', function() {
-      let options = {
-        custom: {option: 1},
-        custom2: {option: 2}
-      };
-      let builder = new KssBuilderBase(options);
-      expect(builder.options.custom).to.deep.equal(options.custom);
-      expect(builder.options.custom2).to.deep.equal(options.custom2);
-    });
-
     it('should set the default log function', function() {
       let builder = new KssBuilderBase();
       expect(builder.logFunction).to.deep.equal(console.log);
     });
   });
 
-  describe('.checkBuilder()', function() {
+  describe('.loadBuilder()', function() {
     it('should return a Promise', function() {
-      let builder = new KssBuilderBase();
-      let obj = KssBuilderBase.checkBuilder(builder);
+      let obj = KssBuilderBase.loadBuilder(KssBuilderBase);
       return obj.catch(() => {
         expect(obj instanceof Promise).to.be.true;
       });
     });
 
-    it('should fail if the API is not given to the constructor', function() {
-      let builder = new KssBuilderBase();
-      return KssBuilderBase.checkBuilder(builder).then(result => {
+    it('should fail if not given a KssBuilderBase class or sub-class', function() {
+      return KssBuilderBase.loadBuilder({}).catch(error => {
+        expect(error.message).to.equal('Unexpected value for "builder"; should be a path to a module or a JavaScript Class.');
+      }).then(result => {
+        expect(result).to.not.exist;
+      });
+    });
+
+    it('should fail if the builder class constructor does not set the API version', function() {
+      return KssBuilderBase.loadBuilder(KssBuilderBase).then(result => {
         expect(result).to.not.exist;
       }).catch(error => {
         expect(error.message).to.equal('kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "undefined" is being used instead.');
@@ -88,22 +84,18 @@ describe('KssBuilderBase object API', function() {
     });
 
     it('should fail if the given API is not equal to the current API', function() {
-      let builder = new KssBuilderBase();
-      builder.API = '2.0';
-      return KssBuilderBase.checkBuilder(builder).then(result => {
+      return KssBuilderBase.loadBuilder(helperUtils.fixtures('old-builder')).then(result => {
         expect(result).to.not.exist;
       }).catch(error => {
-        expect(error.message).to.equal('kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "2.0" is being used instead.');
+        expect(error.message).to.equal('kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "1.0" is being used instead.');
       });
     });
 
     it('should fail if the given API is newer than the current API', function() {
-      let builder = new KssBuilderBase();
-      builder.API = '3.999';
-      return KssBuilderBase.checkBuilder(builder).then(result => {
+      return KssBuilderBase.loadBuilder(helperUtils.fixtures('newer-builder')).then(result => {
         expect(result).to.not.exist;
       }).catch(error => {
-        expect(error.message).to.equal('kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "3.999" is being used instead.');
+        expect(error.message).to.equal('kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "10.0" is being used instead.');
       });
     });
   });

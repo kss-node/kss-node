@@ -17,16 +17,6 @@ describe('KssBuilderBaseHandlebars object API', function() {
       expect(builder.API).to.equal('3.0');
     });
 
-    it('should set the given options', function() {
-      let options = {
-        custom: {option: 1},
-        custom2: {option: 2}
-      };
-      let builder = new KssBuilderBaseHandlebars(options);
-      expect(builder.options.custom).to.deep.equal(options.custom);
-      expect(builder.options.custom2).to.deep.equal(options.custom2);
-    });
-
     it('should implement the default options', function() {
       let builder = new KssBuilderBaseHandlebars();
       expect(Object.getOwnPropertyNames(builder.options)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'verbose', 'helpers', 'homepage', 'placeholder', 'nav-depth']);
