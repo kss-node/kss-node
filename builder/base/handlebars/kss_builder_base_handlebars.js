@@ -85,7 +85,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
    * before the style guide is built.
    *
    * @alias module:kss/builder/handlebars.init
-   * @returns {Promise} A `Promise` object resolving to `null`.
+   * @returns {Promise.<null>} A `Promise` object resolving to `null`.
    */
   init() {
     this.config.helpers = this.config.helpers || [];

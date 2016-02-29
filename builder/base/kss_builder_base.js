@@ -356,7 +356,7 @@ class KssBuilderBase {
    * @param {string} builderPath Path to the builder to clone.
    * @param {string} destinationPath Path to the destination of the newly cloned
    *   builder.
-   * @returns {Promise} A `Promise` object resolving to `null`.
+   * @returns {Promise.<null>} A `Promise` object resolving to `null`.
    */
   clone(builderPath, destinationPath) {
     return fs.statAsync(destinationPath).catch(error => {
@@ -396,23 +396,25 @@ class KssBuilderBase {
    * Initialize the style guide creation process.
    *
    * This method can be set by any KssBuilderBase sub-class to do any custom tasks
-   * before the style guide is built.
+   * before the style sheets are parsed and the KssStyleGuide object is created.
    *
-   * @returns {Promise} A `Promise` object resolving to `null`.
+   * @returns {Promise.<null>} A `Promise` object resolving to `null`.
    */
   init() {
     return Promise.resolve();
   }
 
   /**
-   * Allow the builder to prepare itself or modify the KssStyleGuide object.
+   * Allow the builder to preform pre-build tasks or modify the KssStyleGuide
+   * object.
    *
    * The method can be set by any KssBuilderBase sub-class to do any custom tasks
    * after the KssStyleGuide object is created and before the HTML style guide
    * is built.
    *
    * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
-   * @returns {Promise} A `Promise` object resolving to `styleGuide`.
+   * @returns {Promise.<KssStyleGuide>} A `Promise` object resolving to
+   *   `styleGuide`.
    */
   prepare(styleGuide) {
     return Promise.resolve(styleGuide);
@@ -422,7 +424,7 @@ class KssBuilderBase {
    * Build the HTML files of the style guide given a KssStyleGuide object.
    *
    * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
-   * @returns {Promise} A `Promise` object resolving to `styleGuide`.
+   * @returns {Promise.<KssStyleGuide>} A `Promise` object resolving to `styleGuide`.
    */
   build(styleGuide) {
     return Promise.resolve(styleGuide);
