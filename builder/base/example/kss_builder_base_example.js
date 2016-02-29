@@ -37,11 +37,13 @@ class KssBuilderBaseExample extends KssBuilderBase {
     // expecting; we will verify this in checkBuilder().
     this.API = '3.0';
 
-    this.options['example-option'] = {
-      alias: 'u',
-      string: true,
-      description: 'This is a custom command-line option used by this Builder.'
-    };
+    this.addOptions({
+      'example-option': {
+        alias: 'u',
+        string: true,
+        description: 'This is a custom command-line option used by this Builder.'
+      }
+    });
   }
 
   /**
