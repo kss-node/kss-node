@@ -18,69 +18,6 @@ const path = require('path'),
 const fs = Promise.promisifyAll(require('fs-extra')),
   kssBuilderAPI = '3.0';
 
-const coreOptions = {
-  source: {
-    group: 'File locations:',
-    string: true,
-    path: true,
-    describe: 'Source directory to parse for KSS comments'
-  },
-  destination: {
-    group: 'File locations:',
-    string: true,
-    path: true,
-    multiple: false,
-    describe: 'Destination directory of style guide',
-    default: 'styleguide'
-  },
-  mask: {
-    group: 'File locations:',
-    alias: 'm',
-    string: true,
-    multiple: false,
-    describe: 'Use a mask for detecting files containing KSS comments',
-    default: '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
-  },
-
-  clone: {
-    group: 'Builder:',
-    string: true,
-    path: true,
-    multiple: false,
-    describe: 'Clone a style guide builder to customize'
-  },
-  builder: {
-    group: 'Builder:',
-    alias: 'b',
-    string: true,
-    path: true,
-    multiple: false,
-    describe: 'Use the specified builder when building your style guide',
-    default: path.relative(process.cwd(), path.join(__dirname, '..', 'handlebars'))
-  },
-  css: {
-    group: 'Style guide:',
-    string: true,
-    describe: 'URL of a CSS file to include in the style guide'
-  },
-  js: {
-    group: 'Style guide:',
-    string: true,
-    describe: 'URL of a JavaScript file to include in the style guide'
-  },
-  custom: {
-    group: 'Style guide:',
-    string: true,
-    describe: 'Process a custom property name when parsing KSS comments'
-  },
-
-  verbose: {
-    count: true,
-    multiple: false,
-    describe: 'Display verbose details while building'
-  }
-};
-
 /**
  * A kss-node builder takes input files and builds a style guide.
  */
@@ -111,12 +48,73 @@ class KssBuilderBase {
     // expecting; we will verify this in checkBuilder().
     this.API = 'undefined';
 
-    // Tell kss-node which Yargs-like options this builder has.
-    this.addOptions(coreOptions);
-    this.addOptions(options);
-
     // The log function defaults to console.log.
     this.setLogFunction(console.log);
+
+    // Tell kss-node which Yargs-like options this builder has.
+    this.addOptions({
+      source: {
+        group: 'File locations:',
+        string: true,
+        path: true,
+        describe: 'Source directory to parse for KSS comments'
+      },
+      destination: {
+        group: 'File locations:',
+        string: true,
+        path: true,
+        multiple: false,
+        describe: 'Destination directory of style guide',
+        default: 'styleguide'
+      },
+      mask: {
+        group: 'File locations:',
+        alias: 'm',
+        string: true,
+        multiple: false,
+        describe: 'Use a mask for detecting files containing KSS comments',
+        default: '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
+      },
+
+      clone: {
+        group: 'Builder:',
+        string: true,
+        path: true,
+        multiple: false,
+        describe: 'Clone a style guide builder to customize'
+      },
+      builder: {
+        group: 'Builder:',
+        alias: 'b',
+        string: true,
+        path: true,
+        multiple: false,
+        describe: 'Use the specified builder when building your style guide',
+        default: path.relative(process.cwd(), path.join(__dirname, '..', 'handlebars'))
+      },
+      css: {
+        group: 'Style guide:',
+        string: true,
+        describe: 'URL of a CSS file to include in the style guide'
+      },
+      js: {
+        group: 'Style guide:',
+        string: true,
+        describe: 'URL of a JavaScript file to include in the style guide'
+      },
+      custom: {
+        group: 'Style guide:',
+        string: true,
+        describe: 'Process a custom property name when parsing KSS comments'
+      },
+
+      verbose: {
+        count: true,
+        multiple: false,
+        describe: 'Display verbose details while building'
+      }
+    });
+    this.addOptions(options);
   }
 
   /**

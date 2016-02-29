@@ -20,35 +20,6 @@ const KssBuilderBase = require('../kss_builder_base.js'),
 const fs = Promise.promisifyAll(require('fs-extra')),
   glob = Promise.promisify(require('glob'));
 
-const builderOptions = {
-  'helpers': {
-    group: 'Style guide:',
-    string: true,
-    path: true,
-    describe: 'Location of custom handlebars helpers; see http://bit.ly/kss-wiki'
-  },
-  'homepage': {
-    group: 'Style guide:',
-    string: true,
-    multiple: false,
-    describe: 'File name of the homepage\'s Markdown file',
-    default: 'homepage.md'
-  },
-  'placeholder': {
-    group: 'Style guide:',
-    string: true,
-    multiple: false,
-    describe: 'Placeholder text to use for modifier classes',
-    default: '[modifier class]'
-  },
-  'nav-depth': {
-    group: 'Style guide:',
-    multiple: false,
-    describe: 'Limit the navigation to the depth specified',
-    default: 3
-  }
-};
-
 /**
  * A kss-node builder takes input files and builds a style guide using
  * Handlebars templates.
@@ -76,7 +47,34 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
     this.API = '3.0';
 
     // Tell kss-node which Yargs-like options this builder has.
-    this.addOptions(builderOptions);
+    this.addOptions({
+      'helpers': {
+        group: 'Style guide:',
+        string: true,
+        path: true,
+        describe: 'Location of custom handlebars helpers; see http://bit.ly/kss-wiki'
+      },
+      'homepage': {
+        group: 'Style guide:',
+        string: true,
+        multiple: false,
+        describe: 'File name of the homepage\'s Markdown file',
+        default: 'homepage.md'
+      },
+      'placeholder': {
+        group: 'Style guide:',
+        string: true,
+        multiple: false,
+        describe: 'Placeholder text to use for modifier classes',
+        default: '[modifier class]'
+      },
+      'nav-depth': {
+        group: 'Style guide:',
+        multiple: false,
+        describe: 'Limit the navigation to the depth specified',
+        default: 3
+      }
+    });
     this.addOptions(options);
   }
 
