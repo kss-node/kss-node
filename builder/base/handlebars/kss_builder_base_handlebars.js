@@ -4,15 +4,15 @@
 'use strict';
 
 /**
- * The `kss/builder/class/handlebars` module loads the kssBuilderHandlebars
- * object, a `{@link KssBuilder}` object using Handlebars templating.
+ * The `kss/builder/base/handlebars` module loads the KssBuilderBaseHandlebars
+ * class, a `{@link KssBuilderBase}` sub-class using Handlebars templating.
  * ```
- * const kssBuilderHandlebars = require('kss/builder/class/handlebars');
+ * const KssBuilderBaseHandlebars = require('kss/builder/base/handlebars');
  * ```
- * @module kss/builder/class/handlebars
+ * @module kss/builder/base/handlebars
  */
 
-const KssBuilder = require('../kss_builder.js'),
+const KssBuilderBase = require('../kss_builder_base.js'),
   marked = require('marked'),
   path = require('path'),
   Promise = require('bluebird');
@@ -20,78 +20,68 @@ const KssBuilder = require('../kss_builder.js'),
 const fs = Promise.promisifyAll(require('fs-extra')),
   glob = Promise.promisify(require('glob'));
 
-const builderOptions = {
-  'helpers': {
-    group: 'Style guide:',
-    string: true,
-    path: true,
-    describe: 'Location of custom handlebars helpers; see http://bit.ly/kss-wiki'
-  },
-  'homepage': {
-    group: 'Style guide:',
-    string: true,
-    multiple: false,
-    describe: 'File name of the homepage\'s Markdown file',
-    default: 'homepage.md'
-  },
-  'placeholder': {
-    group: 'Style guide:',
-    string: true,
-    multiple: false,
-    describe: 'Placeholder text to use for modifier classes',
-    default: '[modifier class]'
-  },
-  'nav-depth': {
-    group: 'Style guide:',
-    multiple: false,
-    describe: 'Limit the navigation to the depth specified',
-    default: 3
-  }
-};
-
 /**
  * A kss-node builder takes input files and builds a style guide using
  * Handlebars templates.
  */
-class KssBuilderHandlebars extends KssBuilder {
+class KssBuilderBaseHandlebars extends KssBuilderBase {
 
   /**
-   * Create a KssBuilderHandlebars object.
+   * Create a KssBuilderBaseHandlebars object.
    *
    * ```
-   * const KssBuilderHandlebars = require('kss/builder/class/handlebars');
-   * const builder = new KssBuilderHandlebars();
+   * const KssBuilderBaseHandlebars = require('kss/builder/base/handlebars');
+   * const builder = new KssBuilderBaseHandlebars();
    * ```
-   *
-   * @param {object} options The Yargs-like options this builder has.
-   *   See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
    */
-  constructor(options) {
+  constructor() {
     super();
 
     // Store the version of the builder API that the builder instance is
-    // expecting; we will verify this in checkBuilder().
+    // expecting; we will verify this in loadBuilder().
     this.API = '3.0';
 
     // Tell kss-node which Yargs-like options this builder has.
-    this.addOptions(builderOptions);
-    this.addOptions(options);
+    this.addOptions({
+      'helpers': {
+        group: 'Style guide:',
+        string: true,
+        path: true,
+        describe: 'Location of custom handlebars helpers; see http://bit.ly/kss-wiki'
+      },
+      'homepage': {
+        group: 'Style guide:',
+        string: true,
+        multiple: false,
+        describe: 'File name of the homepage\'s Markdown file',
+        default: 'homepage.md'
+      },
+      'placeholder': {
+        group: 'Style guide:',
+        string: true,
+        multiple: false,
+        describe: 'Placeholder text to use for modifier classes',
+        default: '[modifier class]'
+      },
+      'nav-depth': {
+        group: 'Style guide:',
+        multiple: false,
+        describe: 'Limit the navigation to the depth specified',
+        default: 3
+      }
+    });
   }
 
   /**
    * Initialize the style guide creation process.
    *
-   * This method is given a configuration JSON object with the details of the
-   * requested style guide build. The builder can use this information for any
-   * necessary tasks before the KSS parsing of the source files.
+   * This method can be set by any KssBuilderBase sub-class to do any custom tasks
+   * before the style guide is built.
    *
    * @alias module:kss/builder/handlebars.init
-   * @param {Object} config Configuration object for the requested build.
-   * @returns {Promise} A `Promise` object.
+   * @returns {Promise.<null>} A `Promise` object resolving to `null`.
    */
-  init(config) {
-    // Save the configuration parameters.
-    this.config = config;
+  init() {
     this.config.helpers = this.config.helpers || [];
 
     // Store the global Handlebars object.
@@ -277,7 +267,7 @@ class KssBuilderHandlebars extends KssBuilder {
       })
     ).then(() => {
       // If a root element doesn't have an actual section, build one for it.
-      // @TODO: Move this "fixing" into KssBuilder.prepare().
+      // @TODO: Move this "fixing" into KssBuilderBase.prepare().
       let rootCount = sectionRoots.length;
       let newSection = false;
       for (let i = 0; i < rootCount; i += 1) {
@@ -429,11 +419,13 @@ class KssBuilderHandlebars extends KssBuilder {
       let styles = '',
         scripts = '';
       for (let key in this.config.css) {
+        // istanbul ignore else
         if (this.config.css.hasOwnProperty(key)) {
           styles = styles + '<link rel="stylesheet" href="' + this.config.css[key] + '">\n';
         }
       }
       for (let key in this.config.js) {
+        // istanbul ignore else
         if (this.config.js.hasOwnProperty(key)) {
           scripts = scripts + '<script src="' + this.config.js[key] + '"></script>\n';
         }
@@ -459,4 +451,4 @@ class KssBuilderHandlebars extends KssBuilder {
   }
 }
 
-module.exports = KssBuilderHandlebars;
+module.exports = KssBuilderBaseHandlebars;

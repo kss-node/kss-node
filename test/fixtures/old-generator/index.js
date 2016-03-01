@@ -1,15 +1,15 @@
 'use strict';
 
 // Emulate a kss-node 2.0 generator.
-class KssGenerator {
-  constructor() {
-    this.API = '2.0';
-  }
-}
+let KssGenerator = function(version, options) {
+  this.API = '2.1';
+  this.implementsAPI = typeof version === 'undefined' ? 'undefined' : version;
+  this.options = options || {};
+};
 
 // Emulate a kss-node 2.0 template.
 const template = {
-  builder: new KssGenerator()
+  generator: new KssGenerator('2.0')
 };
 
 module.exports = template;
