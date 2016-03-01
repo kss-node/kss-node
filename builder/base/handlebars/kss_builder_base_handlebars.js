@@ -116,7 +116,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
                 // Only look at the part of the path inside the builder.
                 let relativePath = path.sep + path.relative(this.options.builder, filePath);
                 // Skip any files with a path matching: /node_modules or /.
-                return (new RegExp('^(?!.*' + path.sep + '(node_modules$|\\.))')).test(relativePath);
+                return (new RegExp('^(?!.*\\' + path.sep + '(node_modules$|\\.))')).test(relativePath);
               }
             }
           ).catch(() => {
