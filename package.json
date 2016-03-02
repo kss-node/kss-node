@@ -30,20 +30,20 @@
   },
   "license": "(MIT OR GPL-2.0)",
   "dependencies": {
-    "bluebird": "^3.1.5",
-    "fs-extra": "^0.26.4",
+    "bluebird": "^3.3.3",
+    "fs-extra": "^0.26.5",
     "glob": "^6.0.1",
     "handlebars": "^4.0.0",
     "marked": "^0.3.5",
     "yargs": "^3.30.0"
   },
   "devDependencies": {
-    "chai": "^3.4.1",
-    "coveralls": "^2.11.4",
+    "chai": "^3.5.0",
+    "coveralls": "^2.11.8",
     "eslint": "^2.2.0",
-    "istanbul": "^0.4.0",
+    "istanbul": "^0.4.2",
     "jsdoc": "^3.4.0",
-    "mocha": "^2.3.4",
+    "mocha": "^2.4.5",
     "mock-utf8-stream": "^0.1.1"
   },
   "bin": {
