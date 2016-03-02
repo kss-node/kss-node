@@ -3,9 +3,7 @@
 'use strict';
 
 const cli = require('../lib/cli'),
-  fs = require('fs'),
-  mockStream = require('mock-utf8-stream'),
-  path = require('path');
+  mockStream = require('mock-utf8-stream');
 
 describe('Handlebars builder', function() {
   before(function(done) {

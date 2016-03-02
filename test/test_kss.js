@@ -2,10 +2,7 @@
 
 'use strict';
 
-const mockStream = require('mock-utf8-stream'),
-  Promise = require('bluebird');
-
-const fs = Promise.promisifyAll(require('fs-extra'));
+const mockStream = require('mock-utf8-stream');
 
 const testKss = function(options) {
   options.pipes = options.pipes || {};

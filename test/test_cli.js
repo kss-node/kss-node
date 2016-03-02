@@ -2,12 +2,8 @@
 
 'use strict';
 
-const Promise = require('bluebird'),
-  cli = require('../lib/cli'),
-  mockStream = require('mock-utf8-stream'),
-  path = require('path');
-
-const fs = Promise.promisifyAll(require('fs-extra'));
+const cli = require('../lib/cli'),
+  mockStream = require('mock-utf8-stream');
 
 const API = '3.0';
 

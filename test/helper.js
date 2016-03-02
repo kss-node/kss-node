@@ -4,7 +4,10 @@
 global.chai = require('chai');
 global.kss = require('../index.js');
 global.path = require('path');
-global.expect = global.chai.expect;
+global.Promise = require('bluebird');
+global.expect = chai.expect;
+global.fs = Promise.promisifyAll(require('fs-extra'));
+
 
 // Create a helper utility object.
 global.helperUtils = {
@@ -46,4 +49,8 @@ before(function() {
       );
     });
   });
+});
+
+after(function() {
+  return fs.removeAsync(path.resolve(__dirname, 'output'));
 });

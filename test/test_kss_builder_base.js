@@ -2,10 +2,7 @@
 
 'use strict';
 
-const KssBuilderBase = require('../builder'),
-  Promise = require('bluebird');
-
-const fs = Promise.promisifyAll(require('fs-extra'));
+const KssBuilderBase = require('../builder');
 
 const pathToJSON = helperUtils.fixtures('cli-option-config.json'),
   API = '3.0';

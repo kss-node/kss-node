@@ -6,9 +6,11 @@
   "globals": {
     "chai": true,
     "expect": true,
+    "fs": true,
     "helperUtils": true,
     "kss": true,
-    "path": true
+    "path": true,
+    "Promise": true
   },
   "rules": {
     // Disabled.

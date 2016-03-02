@@ -2,10 +2,7 @@
 
 'use strict';
 
-const Promise = require('bluebird'),
-  marked = require('marked');
-
-const fs = Promise.promisifyAll(require('fs-extra'));
+const marked = require('marked');
 
 describe('kss.parse()', function() {
   before(function(done) {

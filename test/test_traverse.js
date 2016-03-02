@@ -2,10 +2,6 @@
 
 'use strict';
 
-const Promise = require('bluebird');
-
-const fs = Promise.promisifyAll(require('fs-extra'));
-
 describe('kss.traverse()', function() {
   describe('API validation checks', function() {
     it('should function without options', function() {
