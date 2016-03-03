@@ -82,8 +82,6 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
    * @returns {Promise.<null>} A `Promise` object resolving to `null`.
    */
   init() {
-    this.config.helpers = this.config.helpers || [];
-
     // Store the global Handlebars object.
     this.Handlebars = require('handlebars');
 
