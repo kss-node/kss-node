@@ -1,8 +1,8 @@
 'use strict';
 
 /**
- * This module is used to load the CLI options and the base KSS builder class
- * needed by this builder.
+ * This module is used to load the base KSS builder class needed by this builder
+ * and to define any custom CLI options or extend any base class methods.
  *
  * Note: this module is optional. If a builder does not export a KssBuilderBase
  * sub-class as a module, then kss-node will assume the builder wants to use
@@ -72,14 +72,14 @@ class KssBuilderHandlebars extends KssBuilderBaseHandlebars {
    * @returns {Promise.<null>} A `Promise` object.
    */
   init() {
-    // First call the init() of the parent KssBuilderBaseHandlebars class. Since it
-    // returns a Promise, we do our init work in a then().
+    // First call the init() of the parent KssBuilderBaseHandlebars class. Since
+    // it returns a Promise, we do our init work in a then().
     return super.init().then(() => {
       // Load this builder's extra Handlebars helpers.
 
-      // Allow a builder user to override the {{section [reference]}} helper with
-      // the --helpers setting. Since a user's handlebars helpers are loaded first,
-      // we need to check if this helper already exists.
+      // Allow a builder user to override the {{section [reference]}} helper
+      // with the --helpers setting. Since a user's handlebars helpers are
+      // loaded first, we need to check if this helper already exists.
       if (!this.Handlebars.helpers['section']) {
         /**
          * Returns a single section, found by its reference
@@ -92,12 +92,12 @@ class KssBuilderHandlebars extends KssBuilderBaseHandlebars {
         });
       }
 
-      // Allow a builder user to override the {{eachSection [query]}} helper with
-      // the --helpers setting.
+      // Allow a builder user to override the {{eachSection [query]}} helper
+      // with the --helpers setting.
       if (!this.Handlebars.helpers['eachSection']) {
         /**
-         * Loop over a section query. If a number is supplied, will convert into a
-         * query for all children and descendants of that reference.
+         * Loop over a section query. If a number is supplied, will convert into
+         * a query for all children and descendants of that reference.
          * @param  {Mixed} query The section query
          */
         this.Handlebars.registerHelper('eachSection', function(query, options) {

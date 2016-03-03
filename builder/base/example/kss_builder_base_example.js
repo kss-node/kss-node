@@ -26,9 +26,6 @@ class KssBuilderBaseExample extends KssBuilderBase {
    * const KssBuilderBaseExample = require('kss/builder/base/example');
    * const builder = new KssBuilderBaseExample();
    * ```
-   *
-   * @param {object} options The Yargs-like options this builder has.
-   *   See https://github.com/bcoe/yargs/blob/master/README.md#optionskey-opt
    */
   constructor() {
     super();

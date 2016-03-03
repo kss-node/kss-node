@@ -200,8 +200,8 @@ class KssBuilderBase {
    * Stores the given configuration settings.
    *
    * @param {Object} config An object of config settings to store.
-   * @returns {KssBuilderBase} The `KssBuilderBase` object is returned to allow chaining
-   *   of methods.
+   * @returns {KssBuilderBase} The `KssBuilderBase` object is returned to allow
+   *   chaining of methods.
    */
   addConfig(config) {
     for (let key in config) {
@@ -211,8 +211,8 @@ class KssBuilderBase {
       }
     }
 
-    // Allow clone to be used without a path. We can't specify this default
-    // path in coreOptions or the clone flag would always be "on".
+    // Allow clone to be used without a path. We can't specify this default path
+    // in the option definition or the clone flag would always be "on".
     if (config.clone === '' || config.clone === true) {
       this.config.clone = 'custom-builder';
     }
@@ -235,8 +235,8 @@ class KssBuilderBase {
   /**
    * Adds configuration options to the builder.
    *
-   * Since kss-node is extendable, builders can provide their own options for
-   * configuration.
+   * Since kss-node is extensible, builders can define their own options that
+   * users can configure.
    *
    * Each option object is key-compatble with
    * [yargs](https://www.npmjs.com/package/yargs), the command-line utility
@@ -294,8 +294,8 @@ class KssBuilderBase {
    *
    * @private
    * @param {string[]} keys The keys to normalize.
-   * @returns {KssBuilderBase} The `KssBuilderBase` object is returned to allow chaining
-   *   of methods.
+   * @returns {KssBuilderBase} The `KssBuilderBase` object is returned to allow
+   *   chaining of methods.
    */
   normalizeConfig(keys) {
     for (let key of keys) {
@@ -306,10 +306,10 @@ class KssBuilderBase {
             this.config[key] = this.options[key].default;
           }
         }
-        // If an option is specified multiple times, yargs will convert it into an
-        // array, but leave it as a string otherwise. This makes accessing the
-        // values of options inconsistent, so make all other options an array.
-        if (this.options[key].multiple) {
+        // If an option is specified multiple times, yargs will convert it into
+        // an array, but leave it as a string otherwise. This makes accessing
+        // the options inconsistent, so we make these options an array.
+        if (this.optionDefinitions[key].multiple) {
           if (!(this.config[key] instanceof Array)) {
             if (typeof this.config[key] === 'undefined') {
               this.config[key] = [];
