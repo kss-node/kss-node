@@ -1,7 +1,7 @@
 'use strict';
 
-module.exports.register = function(handlebars, config) {
-  config = config || {};
+module.exports.register = function(handlebars, options) {
+  options = options || {};
 
   /**
    * Outputs the current section's or modifier's markup.
@@ -42,7 +42,7 @@ module.exports.register = function(handlebars, config) {
     } else if (this.className) {
       data.modifier_class += this.className;
     } else if (section.modifiers.length !== 0) {
-      data.modifier_class += config.placeholder;
+      data.modifier_class += options.placeholder;
     }
     /* eslint-enable camelcase */
 

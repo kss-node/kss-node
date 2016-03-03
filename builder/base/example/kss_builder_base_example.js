@@ -34,7 +34,7 @@ class KssBuilderBaseExample extends KssBuilderBase {
     // expecting; we will verify this in loadBuilder().
     this.API = '3.0';
 
-    this.addOptions({
+    this.addOptionDefinitions({
       'example-option': {
         alias: 'u',
         string: true,
@@ -74,7 +74,7 @@ class KssBuilderBaseExample extends KssBuilderBase {
    */
   init() {
     // This example builder hard-codes the demo source.
-    this.config.source = [path.resolve('..', 'demo')];
+    this.options.source = [path.resolve('..', 'demo')];
 
     // A real builder should initialize the templating system being used by this
     // builder. For example, KssBuilderBaseHandlebars loads and initializes the

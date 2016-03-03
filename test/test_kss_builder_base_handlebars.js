@@ -19,7 +19,7 @@ const testBuilder = function(options) {
 
   let builder = new KssBuilderBaseHandlebars();
 
-  builder.addConfig(options);
+  builder.addOptions(options);
 
   builder.setLogFunction(function() {
     let message = '';
@@ -33,7 +33,7 @@ const testBuilder = function(options) {
 };
 
 const getBuilderOutput = function(builder, pipe) {
-  let pipes = builder.getConfig('pipes');
+  let pipes = builder.getOptions('pipes');
 
   if (typeof pipe === 'undefined') {
     return {
@@ -59,9 +59,9 @@ describe('KssBuilderBaseHandlebars object API', function() {
       expect(builder.API).to.equal('3.0');
     });
 
-    it('should implement the default options', function() {
+    it('should implement the default option definitions', function() {
       let builder = new KssBuilderBaseHandlebars();
-      expect(Object.getOwnPropertyNames(builder.options)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'verbose', 'helpers', 'homepage', 'placeholder', 'nav-depth']);
+      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'verbose', 'helpers', 'homepage', 'placeholder', 'nav-depth']);
     });
   });
 

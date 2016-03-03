@@ -36,8 +36,8 @@ class KssBuilderBase {
    * ```
    */
   constructor() {
+    this.optionDefinitions = {};
     this.options = {};
-    this.config = {};
 
     // Store the version of the builder API that the builder instance is
     // expecting; we will verify this in loadBuilder().
@@ -47,7 +47,7 @@ class KssBuilderBase {
     this.setLogFunction(console.log);
 
     // Tell kss-node which Yargs-like options this builder has.
-    this.addOptions({
+    this.addOptionDefinitions({
       source: {
         group: 'File locations:',
         string: true,
@@ -197,89 +197,35 @@ class KssBuilderBase {
   }
 
   /**
-   * Stores the given configuration settings.
+   * Stores the given options.
    *
-   * @param {Object} config An object of config settings to store.
+   * @param {Object} options An object of options to store.
    * @returns {KssBuilderBase} The `KssBuilderBase` object is returned to allow
    *   chaining of methods.
-   */
-  addConfig(config) {
-    for (let key in config) {
-      // istanbul ignore else
-      if (config.hasOwnProperty(key)) {
-        this.config[key] = config[key];
-      }
-    }
-
-    // Allow clone to be used without a path. We can't specify this default path
-    // in the option definition or the clone flag would always be "on".
-    if (config.clone === '' || config.clone === true) {
-      this.config.clone = 'custom-builder';
-    }
-
-    // Allow chaining.
-    return this.normalizeConfig(Object.keys(config));
-  }
-
-  /**
-   * Returns the requested configuration setting or, if no key is specified, an
-   * object containing all settings.
-   *
-   * @param {string} [key] Optional name of config setting to return.
-   * @returns {*} The specified setting or an object of all settings.
-   */
-  getConfig(key) {
-    return key ? this.config[key] : this.config;
-  }
-
-  /**
-   * Adds configuration options to the builder.
-   *
-   * Since kss-node is extensible, builders can define their own options that
-   * users can configure.
-   *
-   * Each option object is key-compatble with
-   * [yargs](https://www.npmjs.com/package/yargs), the command-line utility
-   * used by kss-node's command line tool.
-   *
-   * If an option object has a:
-   * - `multiple` property: if set to `false`, the corresponding configuration
-   *   will be normalized to a single value. Otherwise, it will be normalized to
-   *   an array of values.
-   * - `path` property: if set to `true`, the corresponding configuration will
-   *   be normalized to a path, relative to the current working directory.
-   * - `default` property: the corresponding configuration will default to this
-   *   value.
-   *
-   * @param {object} options An object of configuration options.
-   * @returns {KssBuilderBase} The `KssBuilderBase` object is returned to allow chaining
-   *   of methods.
    */
   addOptions(options) {
     for (let key in options) {
       // istanbul ignore else
       if (options.hasOwnProperty(key)) {
-        // The "multiple" property defaults to true.
-        if (typeof options[key].multiple === 'undefined') {
-          options[key].multiple = true;
-        }
-        // The "path" property defaults to false.
-        if (typeof options[key].path === 'undefined') {
-          options[key].path = false;
-        }
         this.options[key] = options[key];
       }
     }
 
+    // Allow clone to be used without a path. We can't specify this default path
+    // in the option definition or the clone flag would always be "on".
+    if (options.clone === '' || options.clone === true) {
+      this.options.clone = 'custom-builder';
+    }
+
     // Allow chaining.
-    return this.normalizeConfig(Object.keys(options));
+    return this.normalizeOptions(Object.keys(options));
   }
 
   /**
-   * Returns the requested configuration option or, if no key is specified, an
-   * object containing all options.
+   * Returns the requested option or, if no key is specified, an object
+   * containing all options.
    *
-   * @param {string} [key] Optional name of option to return.
+   * @param {string} [key] Optional name of the option to return.
    * @returns {*} The specified option or an object of all options.
    */
   getOptions(key) {
@@ -287,53 +233,107 @@ class KssBuilderBase {
   }
 
   /**
-   * Normalizes the configuration so that it is easy to use inside KSS.
+   * Adds option definitions to the builder.
    *
-   * The options specified with `addOptions()` determine how the configuration
-   * will be normalized.
+   * Since kss-node is extensible, builders can define their own options that
+   * users can configure.
+   *
+   * Each option definition object is key-compatble with
+   * [yargs](https://www.npmjs.com/package/yargs), the command-line utility
+   * used by kss-node's command line tool.
+   *
+   * If an option definition object has a:
+   * - `multiple` property: if set to `false`, the corresponding option will be
+   *   normalized to a single value. Otherwise, it will be normalized to an
+   *   array of values.
+   * - `path` property: if set to `true`, the corresponding option will be
+   *   normalized to a path, relative to the current working directory.
+   * - `default` property: the corresponding option will default to this value.
+   *
+   * @param {object} optionDefinitions An object of option definitions.
+   * @returns {KssBuilderBase} The `KssBuilderBase` object is returned to allow
+   *   chaining of methods.
+   */
+  addOptionDefinitions(optionDefinitions) {
+    for (let key in optionDefinitions) {
+      // istanbul ignore else
+      if (optionDefinitions.hasOwnProperty(key)) {
+        // The "multiple" property defaults to true.
+        if (typeof optionDefinitions[key].multiple === 'undefined') {
+          optionDefinitions[key].multiple = true;
+        }
+        // The "path" property defaults to false.
+        if (typeof optionDefinitions[key].path === 'undefined') {
+          optionDefinitions[key].path = false;
+        }
+        this.optionDefinitions[key] = optionDefinitions[key];
+      }
+    }
+
+    // Allow chaining.
+    return this.normalizeOptions(Object.keys(optionDefinitions));
+  }
+
+  /**
+   * Returns the requested option definition or, if no key is specified, an
+   * object containing all option definitions.
+   *
+   * @param {string} [key] Optional name of option to return.
+   * @returns {*} The specified option definition or an object of all option
+   *   definitions.
+   */
+  getOptionDefinitions(key) {
+    return key ? this.optionDefinitions[key] : this.optionDefinitions;
+  }
+
+  /**
+   * Normalizes the options so that they are easy to use inside KSS.
+   *
+   * The option definitions specified with `addOptionDefinitions()` determine
+   * how the options will be normalized.
    *
    * @private
    * @param {string[]} keys The keys to normalize.
    * @returns {KssBuilderBase} The `KssBuilderBase` object is returned to allow
    *   chaining of methods.
    */
-  normalizeConfig(keys) {
+  normalizeOptions(keys) {
     for (let key of keys) {
-      if (typeof this.options[key] !== 'undefined') {
-        if (typeof this.config[key] === 'undefined') {
+      if (typeof this.optionDefinitions[key] !== 'undefined') {
+        if (typeof this.options[key] === 'undefined') {
           // Set the default setting.
-          if (typeof this.options[key].default !== 'undefined') {
-            this.config[key] = this.options[key].default;
+          if (typeof this.optionDefinitions[key].default !== 'undefined') {
+            this.options[key] = this.optionDefinitions[key].default;
           }
         }
         // If an option is specified multiple times, yargs will convert it into
         // an array, but leave it as a string otherwise. This makes accessing
         // the options inconsistent, so we make these options an array.
         if (this.optionDefinitions[key].multiple) {
-          if (!(this.config[key] instanceof Array)) {
-            if (typeof this.config[key] === 'undefined') {
-              this.config[key] = [];
+          if (!(this.options[key] instanceof Array)) {
+            if (typeof this.options[key] === 'undefined') {
+              this.options[key] = [];
             } else {
-              this.config[key] = [this.config[key]];
+              this.options[key] = [this.options[key]];
             }
           }
         } else {
           // For options marked as "multiple: false", use the last value
           // specified, ignoring the others.
-          if (this.config[key] instanceof Array) {
-            this.config[key] = this.config[key].pop();
+          if (this.options[key] instanceof Array) {
+            this.options[key] = this.options[key].pop();
           }
         }
         // Resolve any paths relative to the working directory.
-        if (this.options[key].path) {
-          if (this.config[key] instanceof Array) {
+        if (this.optionDefinitions[key].path) {
+          if (this.options[key] instanceof Array) {
             /* eslint-disable no-loop-func */
-            this.config[key] = this.config[key].map(value => {
+            this.options[key] = this.options[key].map(value => {
               return path.resolve(value);
             });
             /* eslint-enable no-loop-func */
-          } else if (typeof this.config[key] === 'string') {
-            this.config[key] = path.resolve(this.config[key]);
+          } else if (typeof this.options[key] === 'string') {
+            this.options[key] = path.resolve(this.options[key]);
           }
         }
       }
