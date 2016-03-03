@@ -218,7 +218,7 @@ class KssBuilderBase {
     }
 
     // Allow chaining.
-    return this.normalizeConfig(Object.keys(config));
+    return this.normalizeOptions(Object.keys(config));
   }
 
   /**
@@ -272,7 +272,7 @@ class KssBuilderBase {
     }
 
     // Allow chaining.
-    return this.normalizeConfig(Object.keys(optionDefinitions));
+    return this.normalizeOptions(Object.keys(optionDefinitions));
   }
 
   /**
@@ -298,7 +298,7 @@ class KssBuilderBase {
    * @returns {KssBuilderBase} The `KssBuilderBase` object is returned to allow
    *   chaining of methods.
    */
-  normalizeConfig(keys) {
+  normalizeOptions(keys) {
     for (let key of keys) {
       if (typeof this.optionDefinitions[key] !== 'undefined') {
         if (typeof this.config[key] === 'undefined') {

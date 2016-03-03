@@ -13,7 +13,7 @@ describe('KssBuilderBase object API', function() {
     'getConfig',
     'addOptionDefinitions',
     'getOptionDefinitions',
-    'normalizeConfig',
+    'normalizeOptions',
     'log',
     'setLogFunction',
     'clone',
@@ -205,20 +205,20 @@ describe('KssBuilderBase object API', function() {
     });
   });
 
-  describe('.normalizeConfig()', function() {
+  describe('.normalizeOptions()', function() {
     it('should normalize a "multiple" option to an array of values', function(done) {
       let builder = new KssBuilderBase();
       builder.addOptionDefinitions((new KssBuilderBase()).optionDefinitions);
       builder.addConfig({source: 'with-include'});
-      builder.normalizeConfig(['source']);
+      builder.normalizeOptions(['source']);
       expect(builder.config.source).to.be.an.instanceOf(Array);
       builder.addConfig({source: ['with-include', 'missing-homepage']});
-      builder.normalizeConfig(['source']);
+      builder.normalizeOptions(['source']);
       expect(builder.config.source).to.be.an.instanceOf(Array);
       // Yargs will set any option without a default to undefined.
       /* eslint-disable no-undefined */
       builder.addConfig({source: undefined});
-      builder.normalizeConfig(['source']);
+      builder.normalizeOptions(['source']);
       expect(builder.config.source).to.be.an.instanceOf(Array);
       expect(builder.config.source.length).to.equal(0);
       done();
@@ -228,7 +228,7 @@ describe('KssBuilderBase object API', function() {
       let builder = new KssBuilderBase();
       builder.addOptionDefinitions((new KssBuilderBase()).optionDefinitions);
       builder.addConfig({builder: ['empty-source', 'with-include', 'builder']});
-      builder.normalizeConfig(['builder']);
+      builder.normalizeOptions(['builder']);
       expect(builder.config.builder).to.be.a('string');
       done();
     });
@@ -237,7 +237,7 @@ describe('KssBuilderBase object API', function() {
       let builder = new KssBuilderBase();
       builder.addConfig(require(pathToJSON));
       builder.addOptionDefinitions((new KssBuilderBase()).optionDefinitions);
-      builder.normalizeConfig(['source']);
+      builder.normalizeOptions(['source']);
       expect(builder.config.source[0]).to.equal(path.resolve('with-include'));
       done();
     });
@@ -246,7 +246,7 @@ describe('KssBuilderBase object API', function() {
       let builder = new KssBuilderBase();
       builder.addConfig(require(pathToJSON));
       builder.addConfig({destination: null});
-      builder.normalizeConfig(['destination']);
+      builder.normalizeOptions(['destination']);
       expect(builder.config.destination).to.equal(null);
       done();
     });
