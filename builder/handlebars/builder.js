@@ -46,7 +46,7 @@ class KssBuilderHandlebars extends KssBuilderBaseHandlebars {
     super();
 
     // Then tell kss-node which Yargs-like options this builder adds.
-    this.addOptions({
+    this.addOptionDefinitions({
       title: {
         group: 'Style guide:',
         string: true,

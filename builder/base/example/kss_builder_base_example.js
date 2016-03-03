@@ -34,7 +34,7 @@ class KssBuilderBaseExample extends KssBuilderBase {
     // expecting; we will verify this in loadBuilder().
     this.API = '3.0';
 
-    this.addOptions({
+    this.addOptionDefinitions({
       'example-option': {
         alias: 'u',
         string: true,

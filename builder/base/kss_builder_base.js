@@ -36,7 +36,7 @@ class KssBuilderBase {
    * ```
    */
   constructor() {
-    this.options = {};
+    this.optionDefinitions = {};
     this.config = {};
 
     // Store the version of the builder API that the builder instance is
@@ -47,7 +47,7 @@ class KssBuilderBase {
     this.setLogFunction(console.log);
 
     // Tell kss-node which Yargs-like options this builder has.
-    this.addOptions({
+    this.addOptionDefinitions({
       source: {
         group: 'File locations:',
         string: true,
@@ -233,7 +233,7 @@ class KssBuilderBase {
   }
 
   /**
-   * Adds configuration options to the builder.
+   * Adds option definitions to the builder.
    *
    * Since kss-node is extensible, builders can define their own options that
    * users can configure.
@@ -251,46 +251,47 @@ class KssBuilderBase {
    * - `default` property: the corresponding configuration will default to this
    *   value.
    *
-   * @param {object} options An object of configuration options.
+   * @param {object} optionDefinitions An object of option definitions.
    * @returns {KssBuilderBase} The `KssBuilderBase` object is returned to allow chaining
    *   of methods.
    */
-  addOptions(options) {
-    for (let key in options) {
+  addOptionDefinitions(optionDefinitions) {
+    for (let key in optionDefinitions) {
       // istanbul ignore else
-      if (options.hasOwnProperty(key)) {
+      if (optionDefinitions.hasOwnProperty(key)) {
         // The "multiple" property defaults to true.
-        if (typeof options[key].multiple === 'undefined') {
-          options[key].multiple = true;
+        if (typeof optionDefinitions[key].multiple === 'undefined') {
+          optionDefinitions[key].multiple = true;
         }
         // The "path" property defaults to false.
-        if (typeof options[key].path === 'undefined') {
-          options[key].path = false;
+        if (typeof optionDefinitions[key].path === 'undefined') {
+          optionDefinitions[key].path = false;
         }
-        this.options[key] = options[key];
+        this.optionDefinitions[key] = optionDefinitions[key];
       }
     }
 
     // Allow chaining.
-    return this.normalizeConfig(Object.keys(options));
+    return this.normalizeConfig(Object.keys(optionDefinitions));
   }
 
   /**
-   * Returns the requested configuration option or, if no key is specified, an
-   * object containing all options.
+   * Returns the requested option definition or, if no key is specified, an
+   * object containing all option definitions.
    *
    * @param {string} [key] Optional name of option to return.
-   * @returns {*} The specified option or an object of all options.
+   * @returns {*} The specified option definition or an object of all option
+   *   definitions.
    */
-  getOptions(key) {
-    return key ? this.options[key] : this.options;
+  getOptionDefinitions(key) {
+    return key ? this.optionDefinitions[key] : this.optionDefinitions;
   }
 
   /**
-   * Normalizes the configuration so that it is easy to use inside KSS.
+   * Normalizes the options so that they are easy to use inside KSS.
    *
-   * The options specified with `addOptions()` determine how the configuration
-   * will be normalized.
+   * The option definitions specified with `addOptionDefinitions()` determine
+   * how the options will be normalized.
    *
    * @private
    * @param {string[]} keys The keys to normalize.
@@ -299,11 +300,11 @@ class KssBuilderBase {
    */
   normalizeConfig(keys) {
     for (let key of keys) {
-      if (typeof this.options[key] !== 'undefined') {
+      if (typeof this.optionDefinitions[key] !== 'undefined') {
         if (typeof this.config[key] === 'undefined') {
           // Set the default setting.
-          if (typeof this.options[key].default !== 'undefined') {
-            this.config[key] = this.options[key].default;
+          if (typeof this.optionDefinitions[key].default !== 'undefined') {
+            this.config[key] = this.optionDefinitions[key].default;
           }
         }
         // If an option is specified multiple times, yargs will convert it into
@@ -325,7 +326,7 @@ class KssBuilderBase {
           }
         }
         // Resolve any paths relative to the working directory.
-        if (this.options[key].path) {
+        if (this.optionDefinitions[key].path) {
           if (this.config[key] instanceof Array) {
             /* eslint-disable no-loop-func */
             this.config[key] = this.config[key].map(value => {

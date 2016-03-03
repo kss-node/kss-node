@@ -42,7 +42,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
     this.API = '3.0';
 
     // Tell kss-node which Yargs-like options this builder has.
-    this.addOptions({
+    this.addOptionDefinitions({
       'helpers': {
         group: 'Style guide:',
         string: true,

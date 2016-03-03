@@ -11,8 +11,8 @@ describe('KssBuilderBase object API', function() {
   /* eslint-disable guard-for-in,no-loop-func */
   ['addConfig',
     'getConfig',
-    'addOptions',
-    'getOptions',
+    'addOptionDefinitions',
+    'getOptionDefinitions',
     'normalizeConfig',
     'log',
     'setLogFunction',
@@ -40,14 +40,14 @@ describe('KssBuilderBase object API', function() {
     it('should initialize the data', function(done) {
       let builder = new KssBuilderBase();
       expect(builder).to.have.property('config');
-      expect(builder).to.have.property('options');
+      expect(builder).to.have.property('optionDefinitions');
       expect(builder.API).to.equal('undefined');
       done();
     });
 
-    it('should implement the default options', function() {
+    it('should implement the default option definitions', function() {
       let builder = new KssBuilderBase();
-      expect(Object.getOwnPropertyNames(builder.options)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'verbose']);
+      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'verbose']);
     });
 
     it('should set the default log function', function() {
@@ -115,7 +115,7 @@ describe('KssBuilderBase object API', function() {
 
     it('should automatically normalize known settings', function(done) {
       let builder = new KssBuilderBase();
-      builder.addOptions((new KssBuilderBase()).options);
+      builder.addOptionDefinitions((new KssBuilderBase()).optionDefinitions);
       builder.addConfig({destination: 'test/output/nested'});
       builder.addConfig({source: 'test/output/nested'});
       expect(builder.config.destination).to.equal(path.resolve('test', 'output', 'nested'));
@@ -149,19 +149,19 @@ describe('KssBuilderBase object API', function() {
     });
   });
 
-  describe('.addOptions()', function() {
-    it('should add to this.options', function(done) {
+  describe('.addOptionDefinitions()', function() {
+    it('should add to this.optionDefinitions', function(done) {
       let builder = new KssBuilderBase();
       builder.addConfig(require(pathToJSON));
-      builder.addOptions({
+      builder.addOptionDefinitions({
         candy: {
           description: 'I want candy.'
         }
       });
-      expect(builder.options.candy).to.exist;
-      expect(builder.options.candy.description).to.exist;
-      expect(builder.options.candy.multiple).to.be.true;
-      expect(builder.options.candy.path).to.false;
+      expect(builder.optionDefinitions.candy).to.exist;
+      expect(builder.optionDefinitions.candy.description).to.exist;
+      expect(builder.optionDefinitions.candy.multiple).to.be.true;
+      expect(builder.optionDefinitions.candy.path).to.false;
       done();
     });
 
@@ -169,7 +169,7 @@ describe('KssBuilderBase object API', function() {
       let builder = new KssBuilderBase();
       builder.addConfig({aSetting: 'test/output/nested'});
       expect(builder.config.aSetting).to.equal('test/output/nested');
-      builder.addOptions({
+      builder.addOptionDefinitions({
         aSetting: {
           multiple: false,
           path: true
@@ -180,25 +180,25 @@ describe('KssBuilderBase object API', function() {
     });
   });
 
-  describe('.getOptions()', function() {
-    it('should return this.options', function(done) {
+  describe('.getOptionDefinitions()', function() {
+    it('should return this.optionDefinitions', function(done) {
       let builder = new KssBuilderBase();
-      builder.addOptions((new KssBuilderBase()).options);
-      let options = builder.getOptions();
-      for (let key in options) {
-        if (options.hasOwnProperty(key)) {
-          expect(options[key]).to.equal(builder.options[key]);
+      builder.addOptionDefinitions((new KssBuilderBase()).optionDefinitions);
+      let optionDefinitions = builder.getOptionDefinitions();
+      for (let key in optionDefinitions) {
+        if (optionDefinitions.hasOwnProperty(key)) {
+          expect(optionDefinitions[key]).to.equal(builder.optionDefinitions[key]);
         }
       }
       done();
     });
 
-    it('should return this.options.key given key', function(done) {
+    it('should return this.optionDefinitions.key given key', function(done) {
       let builder = new KssBuilderBase();
-      builder.addOptions((new KssBuilderBase()).options);
-      for (let key in builder.options) {
-        if (builder.options.hasOwnProperty(key)) {
-          expect(builder.getOptions(key)).to.equal(builder.options[key]);
+      builder.addOptionDefinitions((new KssBuilderBase()).optionDefinitions);
+      for (let key in builder.optionDefinitions) {
+        if (builder.optionDefinitions.hasOwnProperty(key)) {
+          expect(builder.getOptionDefinitions(key)).to.equal(builder.optionDefinitions[key]);
         }
       }
       done();
@@ -208,7 +208,7 @@ describe('KssBuilderBase object API', function() {
   describe('.normalizeConfig()', function() {
     it('should normalize a "multiple" option to an array of values', function(done) {
       let builder = new KssBuilderBase();
-      builder.addOptions((new KssBuilderBase()).options);
+      builder.addOptionDefinitions((new KssBuilderBase()).optionDefinitions);
       builder.addConfig({source: 'with-include'});
       builder.normalizeConfig(['source']);
       expect(builder.config.source).to.be.an.instanceOf(Array);
@@ -226,7 +226,7 @@ describe('KssBuilderBase object API', function() {
 
     it('should normalize a non-"multiple" option to a single value', function(done) {
       let builder = new KssBuilderBase();
-      builder.addOptions((new KssBuilderBase()).options);
+      builder.addOptionDefinitions((new KssBuilderBase()).optionDefinitions);
       builder.addConfig({builder: ['empty-source', 'with-include', 'builder']});
       builder.normalizeConfig(['builder']);
       expect(builder.config.builder).to.be.a('string');
@@ -236,7 +236,7 @@ describe('KssBuilderBase object API', function() {
     it('should resolve paths relative to the current working directory', function(done) {
       let builder = new KssBuilderBase();
       builder.addConfig(require(pathToJSON));
-      builder.addOptions((new KssBuilderBase()).options);
+      builder.addOptionDefinitions((new KssBuilderBase()).optionDefinitions);
       builder.normalizeConfig(['source']);
       expect(builder.config.source[0]).to.equal(path.resolve('with-include'));
       done();

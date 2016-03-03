@@ -59,9 +59,9 @@ describe('KssBuilderBaseHandlebars object API', function() {
       expect(builder.API).to.equal('3.0');
     });
 
-    it('should implement the default options', function() {
+    it('should implement the default option definitions', function() {
       let builder = new KssBuilderBaseHandlebars();
-      expect(Object.getOwnPropertyNames(builder.options)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'verbose', 'helpers', 'homepage', 'placeholder', 'nav-depth']);
+      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'verbose', 'helpers', 'homepage', 'placeholder', 'nav-depth']);
     });
   });
 
