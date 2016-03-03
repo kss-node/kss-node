@@ -336,6 +336,26 @@ describe('KssBuilderBase object API', function() {
         expect(result).to.deep.equal(styleGuide);
       });
     });
+
+    it('should add missing sections to the style guide', function() {
+      let builder = new KssBuilderBase(),
+        styleGuide1 = new kss.KssStyleGuide({sections: [
+          {header: 'Section C', reference: 'a.b.c'}
+        ]}),
+        styleGuide2 = new kss.KssStyleGuide({sections: [
+          {header: 'Section C', reference: 'a - b - c'}
+        ]});
+      return builder.prepare(styleGuide1).then((result) => {
+        expect(result).to.deep.equal(styleGuide1);
+        expect(result.sections().length).to.equal(3);
+        expect(result.sections().map(section => { return section.reference(); })).to.deep.equal(['a', 'a.b', 'a.b.c']);
+        return builder.prepare(styleGuide2).then((result) => {
+          expect(result).to.deep.equal(styleGuide2);
+          expect(result.sections().length).to.equal(3);
+          expect(result.sections().map(section => { return section.reference(); })).to.deep.equal(['a', 'a - b', 'a - b - c']);
+        });
+      });
+    });
   });
 
   describe('.build()', function() {

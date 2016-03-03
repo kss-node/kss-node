@@ -266,28 +266,6 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
         });
       })
     ).then(() => {
-      // If a root element doesn't have an actual section, build one for it.
-      // @TODO: Move this "fixing" into KssBuilderBase.prepare().
-      let rootCount = sectionRoots.length;
-      let newSection = false;
-      for (let i = 0; i < rootCount; i += 1) {
-        let currentRoot = this.styleGuide.sections(sectionRoots[i]);
-        if (currentRoot === false) {
-          // Add a section to the style guide.
-          newSection = true;
-          this.styleGuide
-            .autoInit(false)
-            .sections({
-              header: sectionRoots[i],
-              reference: sectionRoots[i]
-            });
-        }
-      }
-      // Re-init the style guide if we added new sections.
-      if (newSection) {
-        this.styleGuide.autoInit(true);
-      }
-
       if (this.config.verbose) {
         this.log('...Building style guide pages:');
       }

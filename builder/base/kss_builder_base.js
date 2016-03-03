@@ -451,6 +451,41 @@ class KssBuilderBase {
    *   `styleGuide`.
    */
   prepare(styleGuide) {
+    let sectionReferences,
+      newSections = [],
+      delim = styleGuide.referenceDelimiter();
+
+    // Create a list of references in the style guide.
+    sectionReferences = styleGuide.sections().map(section => {
+      return section.reference();
+    });
+
+    sectionReferences.forEach(reference => {
+      let refParts = reference.split(delim),
+        checkReference = '';
+      // Split the reference into parts and ensure there are existing sections
+      // for each level of the reference. e.g. For "a.b.c", check for existing
+      // sections for "a" and "a.b".
+      for (let i = 0; i < refParts.length - 1; i++) {
+        checkReference += (checkReference ? delim : '') + refParts[i];
+        if (sectionReferences.indexOf(checkReference) === -1 && newSections.indexOf(checkReference) === -1) {
+          newSections.push(checkReference);
+          // Add the missing section to the style guide.
+          styleGuide
+            .autoInit(false)
+            .sections({
+              header: checkReference,
+              reference: checkReference
+            });
+        }
+      }
+    });
+
+    // Re-init the style guide if we added new sections.
+    if (newSections.length) {
+      styleGuide.autoInit(true);
+    }
+
     return Promise.resolve(styleGuide);
   }
 
