@@ -75,7 +75,7 @@ describe('Command Line Interface', function() {
   });
 
   describe('given --config option', function() {
-    it('should load configuration from JSON file', function() {
+    it('should load options from a JSON file', function() {
       return kssNode('--config test/fixtures/cli-option-config-source-array.json').then(function(result) {
         expect(result.error).to.not.exist;
         expect(result.stdout).to.include(successMessage);

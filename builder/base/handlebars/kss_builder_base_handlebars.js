@@ -86,17 +86,17 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
     this.Handlebars = require('handlebars');
 
     // Load the standard Handlebars helpers.
-    require('./helpers.js').register(this.Handlebars, this.config);
+    require('./helpers.js').register(this.Handlebars, this.options);
 
-    if (this.config.verbose) {
+    if (this.options.verbose) {
       this.log('');
       this.log('Building your KSS style guide!');
       this.log('');
-      this.log(' * KSS Source  : ' + this.config.source.join(', '));
-      this.log(' * Destination : ' + this.config.destination);
-      this.log(' * Builder     : ' + this.config.builder);
-      if (this.config.helpers.length) {
-        this.log(' * Helpers     : ' + this.config.helpers.join(', '));
+      this.log(' * KSS Source  : ' + this.options.source.join(', '));
+      this.log(' * Destination : ' + this.options.destination);
+      this.log(' * Builder     : ' + this.options.builder);
+      if (this.options.helpers.length) {
+        this.log(' * Helpers     : ' + this.options.helpers.join(', '));
       }
       this.log('');
     }
@@ -105,16 +105,16 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
 
     // Create a new destination directory.
     initTasks.push(
-      fs.mkdirsAsync(this.config.destination).then(() => {
+      fs.mkdirsAsync(this.options.destination).then(() => {
         // Optionally, copy the contents of the builder's "kss-assets" folder.
         return fs.copyAsync(
-          path.join(this.config.builder, 'kss-assets'),
-          path.join(this.config.destination, 'kss-assets'),
+          path.join(this.options.builder, 'kss-assets'),
+          path.join(this.options.destination, 'kss-assets'),
           {
             clobber: true,
             filter: filePath => {
               // Only look at the part of the path inside the builder.
-              let relativePath = path.sep + path.relative(this.config.builder, filePath);
+              let relativePath = path.sep + path.relative(this.options.builder, filePath);
               // Skip any files with a path matching: /node_modules or /.
               return (new RegExp('^(?!.*' + path.sep + '(node_modules$|\\.))')).test(relativePath);
             }
@@ -127,7 +127,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
     );
 
     // Load Handlebars helpers.
-    this.config.helpers.forEach(directory => {
+    this.options.helpers.forEach(directory => {
       initTasks.push(
         fs.readdirAsync(directory).then(helperFiles => {
           helperFiles.forEach(fileName => {
@@ -135,7 +135,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
               let helper = require(path.join(directory, fileName));
               // istanbul ignore else
               if (typeof helper.register === 'function') {
-                helper.register(this.Handlebars, this.config);
+                helper.register(this.Handlebars, this.options);
               }
             }
           });
@@ -145,7 +145,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
 
     return Promise.all(initTasks).then(() => {
       // Compile the Handlebars template.
-      return fs.readFileAsync(path.resolve(this.config.builder, 'index.html'), 'utf8').then(content => {
+      return fs.readFileAsync(path.resolve(this.options.builder, 'index.html'), 'utf8').then(content => {
         this.template = this.Handlebars.compile(content);
         return Promise.resolve();
       });
@@ -165,7 +165,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
 
     let sections = this.styleGuide.sections();
 
-    if (this.config.verbose && this.styleGuide.meta.files) {
+    if (this.options.verbose && this.styleGuide.meta.files) {
       this.log(this.styleGuide.meta.files.map(file => {
         return ' - ' + file;
       }).join('\n'));
@@ -176,7 +176,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
       return Promise.reject(new Error('No KSS documentation discovered in source files.'));
     }
 
-    if (this.config.verbose) {
+    if (this.options.verbose) {
       this.log('...Determining section markup:');
     }
 
@@ -209,7 +209,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
           partial.name = path.basename(partial.file, path.extname(partial.file));
 
           findPartial = Promise.all(
-            this.config.source.map(source => {
+            this.options.source.map(source => {
               return glob(source + '/**/' + partial.file);
             })
           ).then(globMatches => {
@@ -223,12 +223,12 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
 
             // If the markup file is not found, note that in the style guide.
             partial.markup += ' NOT FOUND!';
-            if (!this.config.verbose) {
+            if (!this.options.verbose) {
               this.log('WARNING: In section ' + partial.reference + ', ' + partial.markup);
             }
             return '';
           }).then(contents => {
-            if (this.config.verbose) {
+            if (this.options.verbose) {
               this.log(' - ' + partial.reference + ': ' + partial.markup);
             }
             if (contents) {
@@ -243,7 +243,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
             return partial;
           });
         } else {
-          if (this.config.verbose) {
+          if (this.options.verbose) {
             this.log(' - ' + partial.reference + ': inline markup');
           }
           findPartial = Promise.resolve(partial);
@@ -264,7 +264,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
         });
       })
     ).then(() => {
-      if (this.config.verbose) {
+      if (this.options.verbose) {
         this.log('...Building style guide pages:');
       }
 
@@ -316,9 +316,9 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
       // Retrieve the child sections for each of the root sections.
       menuItem.children = this.styleGuide.sections(rootSection.reference() + '.*').slice(1).map(toMenuItem);
 
-      // Remove menu items that are deeper than the nav-depth config setting.
+      // Remove menu items that are deeper than the nav-depth option.
       for (let i = 0; i < menuItem.children.length; i++) {
-        if (menuItem.children[i].depth > this.config['nav-depth']) {
+        if (menuItem.children[i].depth > this.options['nav-depth']) {
           delete menuItem.children[i];
         }
       }
@@ -345,13 +345,13 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
         fileName: 'index.html',
         homePageText: false
       };
-      if (this.config.verbose) {
+      if (this.options.verbose) {
         this.log(' - homepage');
       }
 
       getFileInfo = Promise.all(
-        this.config.source.map(source => {
-          return glob(source + '/**/' + this.config.homepage);
+        this.options.source.map(source => {
+          return glob(source + '/**/' + this.options.homepage);
         })
       ).then(globMatches => {
         for (let files of globMatches) {
@@ -361,10 +361,10 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
           }
         }
 
-        if (this.config.verbose) {
-          this.log('   ...no homepage content found in ' + this.config.homepage + '.');
+        if (this.options.verbose) {
+          this.log('   ...no homepage content found in ' + this.options.homepage + '.');
         } else {
-          this.log('WARNING: no homepage content found in ' + this.config.homepage + '.');
+          this.log('WARNING: no homepage content found in ' + this.options.homepage + '.');
         }
         return '';
       }).then(homePageText => {
@@ -380,7 +380,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
           fileName: 'section-' + rootSection.referenceURI() + '.html',
           homePageText: false
         };
-      if (this.config.verbose) {
+      if (this.options.verbose) {
         this.log(
           ' - section ' + pageReference + ' [',
           rootSection.header() ? rootSection.header() : /* istanbul ignore next */ 'Unnamed',
@@ -394,20 +394,20 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
       // Create the HTML to load the optional CSS and JS.
       let styles = '',
         scripts = '';
-      for (let key in this.config.css) {
+      for (let key in this.options.css) {
         // istanbul ignore else
-        if (this.config.css.hasOwnProperty(key)) {
-          styles = styles + '<link rel="stylesheet" href="' + this.config.css[key] + '">\n';
+        if (this.options.css.hasOwnProperty(key)) {
+          styles = styles + '<link rel="stylesheet" href="' + this.options.css[key] + '">\n';
         }
       }
-      for (let key in this.config.js) {
+      for (let key in this.options.js) {
         // istanbul ignore else
-        if (this.config.js.hasOwnProperty(key)) {
-          scripts = scripts + '<script src="' + this.config.js[key] + '"></script>\n';
+        if (this.options.js.hasOwnProperty(key)) {
+          scripts = scripts + '<script src="' + this.options.js[key] + '"></script>\n';
         }
       }
 
-      return fs.writeFileAsync(path.join(this.config.destination, fileInfo.fileName),
+      return fs.writeFileAsync(path.join(this.options.destination, fileInfo.fileName),
         this.template({
           pageReference: pageReference,
           sections: sections.map(section => {
@@ -420,7 +420,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
           hasNumericReferences: this.styleGuide.hasNumericReferences(),
           partials: this.partials,
           styleGuide: this.styleGuide,
-          options: this.config || /* istanbul ignore next */ {}
+          options: this.options || /* istanbul ignore next */ {}
         })
       );
     });

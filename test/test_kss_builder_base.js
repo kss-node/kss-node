@@ -9,8 +9,8 @@ const pathToJSON = helperUtils.fixtures('cli-option-config.json'),
 
 describe('KssBuilderBase object API', function() {
   /* eslint-disable guard-for-in,no-loop-func */
-  ['addConfig',
-    'getConfig',
+  ['addOptions',
+    'getOptions',
     'addOptionDefinitions',
     'getOptionDefinitions',
     'normalizeOptions',
@@ -39,7 +39,7 @@ describe('KssBuilderBase object API', function() {
   describe('KssBuilderBase constructor', function() {
     it('should initialize the data', function(done) {
       let builder = new KssBuilderBase();
-      expect(builder).to.have.property('config');
+      expect(builder).to.have.property('options');
       expect(builder).to.have.property('optionDefinitions');
       expect(builder.API).to.equal('undefined');
       done();
@@ -97,52 +97,52 @@ describe('KssBuilderBase object API', function() {
     });
   });
 
-  describe('.addConfig()', function() {
-    it('should set this.config', function(done) {
+  describe('.addOptions()', function() {
+    it('should set this.options', function(done) {
       let builder = new KssBuilderBase();
-      builder.addConfig({aSetting: 'isSet'});
-      expect(builder.config.aSetting).to.equal('isSet');
+      builder.addOptions({aSetting: 'isSet'});
+      expect(builder.options.aSetting).to.equal('isSet');
       done();
     });
 
-    it('should not unset this.config', function(done) {
+    it('should not unset this.options', function(done) {
       let builder = new KssBuilderBase();
-      builder.addConfig({newSetting: '../output/nested'});
-      builder.addConfig({aSetting: 'isSet'});
-      expect(builder.config.newSetting).to.equal('../output/nested');
+      builder.addOptions({newSetting: '../output/nested'});
+      builder.addOptions({aSetting: 'isSet'});
+      expect(builder.options.newSetting).to.equal('../output/nested');
       done();
     });
 
     it('should automatically normalize known settings', function(done) {
       let builder = new KssBuilderBase();
       builder.addOptionDefinitions((new KssBuilderBase()).optionDefinitions);
-      builder.addConfig({destination: 'test/output/nested'});
-      builder.addConfig({source: 'test/output/nested'});
-      expect(builder.config.destination).to.equal(path.resolve('test', 'output', 'nested'));
-      expect(builder.config.source).to.deep.equal([path.resolve('test', 'output', 'nested')]);
+      builder.addOptions({destination: 'test/output/nested'});
+      builder.addOptions({source: 'test/output/nested'});
+      expect(builder.options.destination).to.equal(path.resolve('test', 'output', 'nested'));
+      expect(builder.options.source).to.deep.equal([path.resolve('test', 'output', 'nested')]);
       done();
     });
   });
 
-  describe('.getConfig()', function() {
-    it('should return this.config', function(done) {
+  describe('.getOptions()', function() {
+    it('should return this.options', function(done) {
       let builder = new KssBuilderBase();
-      builder.addConfig(require(pathToJSON));
-      let config = builder.getConfig();
-      for (let key in config) {
-        if (config.hasOwnProperty(key)) {
-          expect(config[key]).to.equal(builder.config[key]);
+      builder.addOptions(require(pathToJSON));
+      let options = builder.getOptions();
+      for (let key in options) {
+        if (options.hasOwnProperty(key)) {
+          expect(options[key]).to.equal(builder.options[key]);
         }
       }
       done();
     });
 
-    it('should return this.config.key given key', function(done) {
+    it('should return this.options.key given key', function(done) {
       let builder = new KssBuilderBase();
-      builder.addConfig(require(pathToJSON));
-      for (let key in builder.config) {
-        if (builder.config.hasOwnProperty(key)) {
-          expect(builder.getConfig(key)).to.equal(builder.config[key]);
+      builder.addOptions(require(pathToJSON));
+      for (let key in builder.options) {
+        if (builder.options.hasOwnProperty(key)) {
+          expect(builder.getOptions(key)).to.equal(builder.options[key]);
         }
       }
       done();
@@ -152,7 +152,7 @@ describe('KssBuilderBase object API', function() {
   describe('.addOptionDefinitions()', function() {
     it('should add to this.optionDefinitions', function(done) {
       let builder = new KssBuilderBase();
-      builder.addConfig(require(pathToJSON));
+      builder.addOptions(require(pathToJSON));
       builder.addOptionDefinitions({
         candy: {
           description: 'I want candy.'
@@ -167,15 +167,15 @@ describe('KssBuilderBase object API', function() {
 
     it('should automatically normalize corresponding settings', function(done) {
       let builder = new KssBuilderBase();
-      builder.addConfig({aSetting: 'test/output/nested'});
-      expect(builder.config.aSetting).to.equal('test/output/nested');
+      builder.addOptions({aSetting: 'test/output/nested'});
+      expect(builder.options.aSetting).to.equal('test/output/nested');
       builder.addOptionDefinitions({
         aSetting: {
           multiple: false,
           path: true
         }
       });
-      expect(builder.config.aSetting).to.equal(path.resolve('test', 'output', 'nested'));
+      expect(builder.options.aSetting).to.equal(path.resolve('test', 'output', 'nested'));
       done();
     });
   });
@@ -209,45 +209,45 @@ describe('KssBuilderBase object API', function() {
     it('should normalize a "multiple" option to an array of values', function(done) {
       let builder = new KssBuilderBase();
       builder.addOptionDefinitions((new KssBuilderBase()).optionDefinitions);
-      builder.addConfig({source: 'with-include'});
+      builder.addOptions({source: 'with-include'});
       builder.normalizeOptions(['source']);
-      expect(builder.config.source).to.be.an.instanceOf(Array);
-      builder.addConfig({source: ['with-include', 'missing-homepage']});
+      expect(builder.options.source).to.be.an.instanceOf(Array);
+      builder.addOptions({source: ['with-include', 'missing-homepage']});
       builder.normalizeOptions(['source']);
-      expect(builder.config.source).to.be.an.instanceOf(Array);
+      expect(builder.options.source).to.be.an.instanceOf(Array);
       // Yargs will set any option without a default to undefined.
       /* eslint-disable no-undefined */
-      builder.addConfig({source: undefined});
+      builder.addOptions({source: undefined});
       builder.normalizeOptions(['source']);
-      expect(builder.config.source).to.be.an.instanceOf(Array);
-      expect(builder.config.source.length).to.equal(0);
+      expect(builder.options.source).to.be.an.instanceOf(Array);
+      expect(builder.options.source.length).to.equal(0);
       done();
     });
 
     it('should normalize a non-"multiple" option to a single value', function(done) {
       let builder = new KssBuilderBase();
       builder.addOptionDefinitions((new KssBuilderBase()).optionDefinitions);
-      builder.addConfig({builder: ['empty-source', 'with-include', 'builder']});
+      builder.addOptions({builder: ['empty-source', 'with-include', 'builder']});
       builder.normalizeOptions(['builder']);
-      expect(builder.config.builder).to.be.a('string');
+      expect(builder.options.builder).to.be.a('string');
       done();
     });
 
     it('should resolve paths relative to the current working directory', function(done) {
       let builder = new KssBuilderBase();
-      builder.addConfig(require(pathToJSON));
+      builder.addOptions(require(pathToJSON));
       builder.addOptionDefinitions((new KssBuilderBase()).optionDefinitions);
       builder.normalizeOptions(['source']);
-      expect(builder.config.source[0]).to.equal(path.resolve('with-include'));
+      expect(builder.options.source[0]).to.equal(path.resolve('with-include'));
       done();
     });
 
     it('should not try to resolve a null path', function(done) {
       let builder = new KssBuilderBase();
-      builder.addConfig(require(pathToJSON));
-      builder.addConfig({destination: null});
+      builder.addOptions(require(pathToJSON));
+      builder.addOptions({destination: null});
       builder.normalizeOptions(['destination']);
-      expect(builder.config.destination).to.equal(null);
+      expect(builder.options.destination).to.equal(null);
       done();
     });
   });

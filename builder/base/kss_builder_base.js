@@ -37,7 +37,7 @@ class KssBuilderBase {
    */
   constructor() {
     this.optionDefinitions = {};
-    this.config = {};
+    this.options = {};
 
     // Store the version of the builder API that the builder instance is
     // expecting; we will verify this in loadBuilder().
@@ -197,39 +197,39 @@ class KssBuilderBase {
   }
 
   /**
-   * Stores the given configuration settings.
+   * Stores the given options.
    *
-   * @param {Object} config An object of config settings to store.
+   * @param {Object} options An object of options to store.
    * @returns {KssBuilderBase} The `KssBuilderBase` object is returned to allow
    *   chaining of methods.
    */
-  addConfig(config) {
-    for (let key in config) {
+  addOptions(options) {
+    for (let key in options) {
       // istanbul ignore else
-      if (config.hasOwnProperty(key)) {
-        this.config[key] = config[key];
+      if (options.hasOwnProperty(key)) {
+        this.options[key] = options[key];
       }
     }
 
     // Allow clone to be used without a path. We can't specify this default path
     // in the option definition or the clone flag would always be "on".
-    if (config.clone === '' || config.clone === true) {
-      this.config.clone = 'custom-builder';
+    if (options.clone === '' || options.clone === true) {
+      this.options.clone = 'custom-builder';
     }
 
     // Allow chaining.
-    return this.normalizeOptions(Object.keys(config));
+    return this.normalizeOptions(Object.keys(options));
   }
 
   /**
-   * Returns the requested configuration setting or, if no key is specified, an
-   * object containing all settings.
+   * Returns the requested option or, if no key is specified, an object
+   * containing all options.
    *
-   * @param {string} [key] Optional name of config setting to return.
-   * @returns {*} The specified setting or an object of all settings.
+   * @param {string} [key] Optional name of the option to return.
+   * @returns {*} The specified option or an object of all options.
    */
-  getConfig(key) {
-    return key ? this.config[key] : this.config;
+  getOptions(key) {
+    return key ? this.options[key] : this.options;
   }
 
   /**
@@ -238,22 +238,21 @@ class KssBuilderBase {
    * Since kss-node is extensible, builders can define their own options that
    * users can configure.
    *
-   * Each option object is key-compatble with
+   * Each option definition object is key-compatble with
    * [yargs](https://www.npmjs.com/package/yargs), the command-line utility
    * used by kss-node's command line tool.
    *
-   * If an option object has a:
-   * - `multiple` property: if set to `false`, the corresponding configuration
-   *   will be normalized to a single value. Otherwise, it will be normalized to
-   *   an array of values.
-   * - `path` property: if set to `true`, the corresponding configuration will
-   *   be normalized to a path, relative to the current working directory.
-   * - `default` property: the corresponding configuration will default to this
-   *   value.
+   * If an option definition object has a:
+   * - `multiple` property: if set to `false`, the corresponding option will be
+   *   normalized to a single value. Otherwise, it will be normalized to an
+   *   array of values.
+   * - `path` property: if set to `true`, the corresponding option will be
+   *   normalized to a path, relative to the current working directory.
+   * - `default` property: the corresponding option will default to this value.
    *
    * @param {object} optionDefinitions An object of option definitions.
-   * @returns {KssBuilderBase} The `KssBuilderBase` object is returned to allow chaining
-   *   of methods.
+   * @returns {KssBuilderBase} The `KssBuilderBase` object is returned to allow
+   *   chaining of methods.
    */
   addOptionDefinitions(optionDefinitions) {
     for (let key in optionDefinitions) {
@@ -301,40 +300,40 @@ class KssBuilderBase {
   normalizeOptions(keys) {
     for (let key of keys) {
       if (typeof this.optionDefinitions[key] !== 'undefined') {
-        if (typeof this.config[key] === 'undefined') {
+        if (typeof this.options[key] === 'undefined') {
           // Set the default setting.
           if (typeof this.optionDefinitions[key].default !== 'undefined') {
-            this.config[key] = this.optionDefinitions[key].default;
+            this.options[key] = this.optionDefinitions[key].default;
           }
         }
         // If an option is specified multiple times, yargs will convert it into
         // an array, but leave it as a string otherwise. This makes accessing
         // the options inconsistent, so we make these options an array.
         if (this.optionDefinitions[key].multiple) {
-          if (!(this.config[key] instanceof Array)) {
-            if (typeof this.config[key] === 'undefined') {
-              this.config[key] = [];
+          if (!(this.options[key] instanceof Array)) {
+            if (typeof this.options[key] === 'undefined') {
+              this.options[key] = [];
             } else {
-              this.config[key] = [this.config[key]];
+              this.options[key] = [this.options[key]];
             }
           }
         } else {
           // For options marked as "multiple: false", use the last value
           // specified, ignoring the others.
-          if (this.config[key] instanceof Array) {
-            this.config[key] = this.config[key].pop();
+          if (this.options[key] instanceof Array) {
+            this.options[key] = this.options[key].pop();
           }
         }
         // Resolve any paths relative to the working directory.
         if (this.optionDefinitions[key].path) {
-          if (this.config[key] instanceof Array) {
+          if (this.options[key] instanceof Array) {
             /* eslint-disable no-loop-func */
-            this.config[key] = this.config[key].map(value => {
+            this.options[key] = this.options[key].map(value => {
               return path.resolve(value);
             });
             /* eslint-enable no-loop-func */
-          } else if (typeof this.config[key] === 'string') {
-            this.config[key] = path.resolve(this.config[key]);
+          } else if (typeof this.options[key] === 'string') {
+            this.options[key] = path.resolve(this.options[key]);
           }
         }
       }

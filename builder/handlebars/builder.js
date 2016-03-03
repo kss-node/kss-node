@@ -62,9 +62,9 @@ class KssBuilderHandlebars extends KssBuilderBaseHandlebars {
    *
    * If this builder needs to do initialization work before the style guide is
    * built, the builder can do its work inside the `init()` method. The parent
-   * class sets up access for this builder to an object containing the
-   * configuration settings of the requested build (as `this.config`), and the
-   * global Handlebars object (as `this.Handlebars`).
+   * class sets up access for this builder to an object containing the options
+   * of the requested build (as `this.options`), and the global Handlebars
+   * object (as `this.Handlebars`).
    *
    * The builder could also take this opportunity to do tasks like special
    * handling of "custom" properties or running Sass or Bower tasks.

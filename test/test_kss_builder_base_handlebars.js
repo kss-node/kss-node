@@ -19,7 +19,7 @@ const testBuilder = function(options) {
 
   let builder = new KssBuilderBaseHandlebars();
 
-  builder.addConfig(options);
+  builder.addOptions(options);
 
   builder.setLogFunction(function() {
     let message = '';
@@ -33,7 +33,7 @@ const testBuilder = function(options) {
 };
 
 const getBuilderOutput = function(builder, pipe) {
-  let pipes = builder.getConfig('pipes');
+  let pipes = builder.getOptions('pipes');
 
   if (typeof pipe === 'undefined') {
     return {

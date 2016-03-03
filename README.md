@@ -49,7 +49,7 @@ File locations:
   --destination  Destination directory of style guide    [default: "styleguide"]
   --mask, -m     Use a mask for detecting files containing KSS comments
                          [default: "*.css|*.less|*.sass|*.scss|*.styl|*.stylus"]
-  --config, -c   Load the kss-node configuration from a json file
+  --config, -c   Load the kss-node options from a json file
 
 Builder:
   --clone        Clone a style guide builder to customize
