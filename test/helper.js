@@ -51,6 +51,19 @@ before(function() {
   });
 });
 
+// We want to clean-up the test/output directory unless we are testing a single
+// it.only() test.
+let cleanup = false;
+
+// This test is skipped if another test is set to .only().
+describe('Ensure test suite cleans up after itself', function() {
+  it('should remove test/output directory', function() {
+    cleanup = true;
+  });
+});
+
 after(function() {
-  return fs.removeAsync(path.resolve(__dirname, 'output'));
+  if (cleanup) {
+    return fs.removeAsync(path.resolve(__dirname, 'output'));
+  }
 });
