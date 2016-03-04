@@ -95,6 +95,13 @@ describe('KssBuilderBase object API', function() {
         expect(error.message).to.equal('kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "10.0" is being used instead.');
       });
     });
+
+    it('should return an instance of the loaded KssBuilderBase sub-class', function() {
+      let KssBuilderBaseExample = require('../builder/base/example');
+      return KssBuilderBase.loadBuilder(KssBuilderBaseExample).then(result => {
+        expect(result).to.be.instanceof(KssBuilderBaseExample);
+      });
+    });
   });
 
   describe('.addOptions()', function() {

@@ -10,7 +10,9 @@
  */
 
 // Import the KssBuilderBase class. We will extend it to scaffold our builder.
-const KssBuilderBase = require('kss/builder/base'),
+// Note: Since you will be building a sub-class outside of the kss module, this
+// next line will be: const KssBuilderBase = require('kss/builder/base');
+const KssBuilderBase = require('../'),
   path = require('path');
 
 // Define "KssBuilderBaseExample" as the name of our example builder class.
@@ -82,6 +84,26 @@ class KssBuilderBaseExample extends KssBuilderBase {
     this.warning = ' (not really.)';
 
     return Promise.resolve();
+  }
+
+  /**
+   * Allow the builder to preform pre-build tasks or modify the KssStyleGuide
+   * object.
+   *
+   * The method can be set by any KssBuilderBase sub-class to do any custom tasks
+   * after the KssStyleGuide object is created and before the HTML style guide
+   * is built.
+   *
+   * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
+   * @returns {Promise.<KssStyleGuide>} A `Promise` object resolving to
+   *   `styleGuide`.
+   */
+  prepare(styleGuide) {
+    // First we let KssBuilderBase.prepare() clean-up the style guide object.
+    return super.prepare(styleGuide).then(styleGuide => {
+      // Then we do our own prep work inside this Promise's .then() method.
+      return Promise.resolve(styleGuide);
+    });
   }
 
   /**
