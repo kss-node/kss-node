@@ -279,6 +279,9 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
       pagePromises.push(this.buildPage('styleGuide.homepage', []));
 
       return Promise.all(pagePromises);
+    }).then(() => {
+      // We return the KssStyleGuide, just like KssBuilderBase.build() does.
+      return Promise.resolve(styleGuide);
     });
   }
 

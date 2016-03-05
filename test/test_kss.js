@@ -14,12 +14,13 @@ const testKss = function(options) {
   options.pipes.stdout.startCapture();
   options.pipes.stderr.startCapture();
 
-  return kss(options).catch(function(error) {
+  return kss(options).catch(error => {
     // Pass the error on to the next .then() method.
     return error;
-  }).then(function(result) {
+  }).then(result => {
     return {
       error: (result instanceof Error) ? result : null,
+      result: (result instanceof Error) ? null : result,
       stdout: options.pipes.stdout.capturedData,
       stderr: options.pipes.stderr.capturedData
     };
@@ -35,6 +36,21 @@ describe('kss object API', function() {
     expect(kss).to.be.a('Function');
     expect(kss.length).to.equal(1);
     done();
+  });
+
+  it('should return a promise resolving to a KssStyleGuide', function() {
+    let source = helperUtils.fixtures('with-include');
+    let obj = testKss({
+      verbose: true,
+      source: source,
+      destination: 'test/output/kss-result'
+    });
+    return obj.then(function(result) {
+      expect(obj).to.be.instanceof(Promise);
+      expect(result.result).to.be.instanceof(kss.KssStyleGuide);
+      expect(result.error).to.not.exist;
+      expect(result.stdout).to.include(successMessage);
+    });
   });
 
   /* eslint-disable no-loop-func */
@@ -131,7 +147,7 @@ describe('kss object API', function() {
   });
 
   describe('given "destination" option', function() {
-    it('should read destination directory', function() {
+    it('should write to destination directory', function() {
       let source = helperUtils.fixtures('with-include'),
         destination = helperUtils.fixtures('..', 'output', 'nested');
       return testKss({
