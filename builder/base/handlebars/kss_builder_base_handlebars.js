@@ -1,6 +1,3 @@
-// Remove after https://github.com/Constellation/doctrine/issues/100 is fixed.
-/* eslint-disable valid-jsdoc */
-
 'use strict';
 
 /**
