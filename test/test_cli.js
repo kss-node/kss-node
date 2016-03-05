@@ -125,5 +125,13 @@ describe('Command Line Interface', function() {
         expect(result.stderr).to.include('kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "1.0" is being used instead.');
       });
     });
+
+    it('should display error with stack if given --verbose --verbose', function() {
+      return kssNode('--verbose --verbose --builder ' + helperUtils.fixtures('old-builder')).then(response => {
+        let kssBuilderBase = path.resolve(__dirname, '..', 'builder', 'base', 'kss_builder_base.js');
+        expect(response.error).to.exist;
+        expect(response.stderr).to.include('Error: kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "1.0" is being used instead.\n    at ' + kssBuilderBase);
+      });
+    });
   });
 });
