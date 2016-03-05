@@ -121,7 +121,7 @@ describe('KssBuilderBaseHandlebars object API', function() {
       expect(this.builder.Handlebars.helpers.test).to.exist;
     });
 
-    it('compiles the Handlesbars template', function() {
+    it('compiles the Handlebars template', function() {
       expect(this.builder.template).to.be.function;
     });
   });
