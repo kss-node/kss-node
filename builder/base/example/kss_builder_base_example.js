@@ -2,7 +2,7 @@
 
 /**
  * The `kss/builder/base/example` module loads the KssBuilderBaseExample
- * class, a `{@link KssBuilderBase}` using no templating.
+ * class, a `{@link KssBuilderBase}` sub-class using no templating.
  * ```
  * const KssBuilderBaseExample = require('kss/builder/base/example');
  * ```
@@ -48,15 +48,15 @@ class KssBuilderBaseExample extends KssBuilderBase {
   /**
    * Clone a builder's files.
    *
-   * The KssBuilderBase.clone() method is a simple and functional implementation; it
-   * copies one directory to the specified location. An instance of KssBuilderBase
-   * does not need to override this method, but it can if it needs to do something
-   * more complicated.
+   * The KssBuilderBase.clone() method is fairly simple; it copies one directory
+   * to the specified location. A sub-class of KssBuilderBase does not need to
+   * override this method, but it can if it needs to do something more
+   * complicated.
    *
    * @param {string} builderPath Path to the builder to clone.
    * @param {string} destinationPath Path to the destination of the newly cloned
    *   builder.
-   * @returns {Promise} A `Promise` object.
+   * @returns {Promise.<null>} A `Promise` object resolving to `null`.
    */
   clone(builderPath, destinationPath) {
     // Note that, at this point, KssBuilderBaseExample.init() method has not
@@ -76,12 +76,12 @@ class KssBuilderBaseExample extends KssBuilderBase {
    */
   init() {
     // This example builder hard-codes the demo source.
-    this.options.source = [path.resolve('..', 'demo')];
+    this.options.source = [path.resolve(__dirname, '..', '..', '..', 'demo')];
 
     // A real builder should initialize the templating system being used by this
     // builder. For example, KssBuilderBaseHandlebars loads and initializes the
     // Handlebars templating system.
-    this.warning = ' (not really.)';
+    this.warningMessage = ' (not really.)';
 
     return Promise.resolve();
   }
@@ -102,6 +102,7 @@ class KssBuilderBaseExample extends KssBuilderBase {
     // First we let KssBuilderBase.prepare() clean-up the style guide object.
     return super.prepare(styleGuide).then(styleGuide => {
       // Then we do our own prep work inside this Promise's .then() method.
+      this.log('...Preparing the style guide.' + this.warningMessage);
       return Promise.resolve(styleGuide);
     });
   }
@@ -113,10 +114,9 @@ class KssBuilderBaseExample extends KssBuilderBase {
    * @returns {Promise} A `Promise` object.
    */
   build(styleGuide) {
-    styleGuide.sections();
-    this.log('...Building the demo style guide.' + this.warning);
+    this.log('...Building the demo style guide.' + this.warningMessage);
 
-    return Promise.resolve();
+    return Promise.resolve(styleGuide);
   }
 }
 
