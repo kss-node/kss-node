@@ -352,8 +352,8 @@ class KssBuilderBase {
    * messages to the KSS system so it can report them to the user.
    *
    * @param {...string} message The message to log.
-   * @returns {KssBuilderBase} The `KssBuilderBase` object is returned to allow chaining
-   *   of methods.
+   * @returns {KssBuilderBase} The `KssBuilderBase` object is returned to allow
+   *   chaining of methods.
    */
   log(message) {
     /* eslint-enable no-unused-vars */
@@ -370,8 +370,8 @@ class KssBuilderBase {
    * `console.log()`.
    *
    * @param {Function} logFunction Function to log a message to the user.
-   * @returns {KssBuilderBase} The `KssBuilderBase` object is returned to allow chaining
-   *   of methods.
+   * @returns {KssBuilderBase} The `KssBuilderBase` object is returned to allow
+   *   chaining of methods.
    */
   setLogFunction(logFunction) {
     this.logFunction = logFunction;
@@ -384,8 +384,8 @@ class KssBuilderBase {
    * Clone a builder's files.
    *
    * This method is fairly simple; it copies one directory to the specified
-   * location. An instance of KssBuilderBase does not need to override this method,
-   * but it can if it needs to do something more complicated.
+   * location. A sub-class of KssBuilderBase does not need to override this
+   * method, but it can if it needs to do something more complicated.
    *
    * @param {string} builderPath Path to the builder to clone.
    * @param {string} destinationPath Path to the destination of the newly cloned
@@ -429,8 +429,9 @@ class KssBuilderBase {
   /**
    * Initialize the style guide creation process.
    *
-   * This method can be set by any KssBuilderBase sub-class to do any custom tasks
-   * before the style sheets are parsed and the KssStyleGuide object is created.
+   * This method can be set by any KssBuilderBase sub-class to do any custom
+   * tasks before the style sheets are parsed and the KssStyleGuide object is
+   * created.
    *
    * @returns {Promise.<null>} A `Promise` object resolving to `null`.
    */
@@ -442,13 +443,13 @@ class KssBuilderBase {
    * Allow the builder to preform pre-build tasks or modify the KssStyleGuide
    * object.
    *
-   * The method can be set by any KssBuilderBase sub-class to do any custom tasks
-   * after the KssStyleGuide object is created and before the HTML style guide
-   * is built.
+   * The method can be set by any KssBuilderBase sub-class to do any custom
+   * tasks after the KssStyleGuide object is created and before the HTML style
+   * guide is built.
    *
    * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
-   * @returns {Promise.<KssStyleGuide>} A `Promise` object resolving to
-   *   `styleGuide`.
+   * @returns {Promise.<KssStyleGuide>} A `Promise` object resolving to a
+   *   `KssStyleGuide` object.
    */
   prepare(styleGuide) {
     let sectionReferences,
@@ -493,7 +494,8 @@ class KssBuilderBase {
    * Build the HTML files of the style guide given a KssStyleGuide object.
    *
    * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
-   * @returns {Promise.<KssStyleGuide>} A `Promise` object resolving to `styleGuide`.
+   * @returns {Promise.<KssStyleGuide>} A `Promise` object resolving to a
+   *   `KssStyleGuide` object.
    */
   build(styleGuide) {
     return Promise.resolve(styleGuide);

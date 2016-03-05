@@ -157,7 +157,8 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
    *
    * @alias module:kss/builder/handlebars.build
    * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
-   * @returns {Promise} A `Promise` object.
+   * @returns {Promise.<KssStyleGuide>} A `Promise` object resolving to a
+   *   `KssStyleGuide` object.
    */
   build(styleGuide) {
     this.styleGuide = styleGuide;
