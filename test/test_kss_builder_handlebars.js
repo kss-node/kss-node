@@ -5,7 +5,7 @@
 const cli = require('../lib/cli'),
   mockStream = require('mock-utf8-stream');
 
-describe('Handlebars builder', function() {
+describe('KssBuilderHandlebars builder (default)', function() {
   before(function(done) {
     let stdout = new mockStream.MockWritableStream(),
       stderr = new mockStream.MockWritableStream();
@@ -53,32 +53,32 @@ describe('Handlebars builder', function() {
   });
 
   describe('given --helpers option', function() {
-    it('should load additional Handlerbars helpers', function(done) {
-      expect(this.files.index).to.include('Handlerbars helper loaded into template!');
+    it('should load additional Handlebars helpers', function(done) {
+      expect(this.files.index).to.include('Handlebars helper loaded into template!');
       done();
     });
   });
 
-  describe('builder\'s Handlebars helpers', function() {
-    it('should load Handlerbars helper: {{{markup}}}', function(done) {
+  describe('KssBuilderBaseHandlebar\'s Handlebars helpers', function() {
+    it('should load Handlebars helper: {{{markup}}}', function(done) {
       expect(this.files['section-2']).to.include('Handlebars markup Helper: pseudo-class-hover');
       expect(this.files['section-2']).to.include('Handlebars markup Helper: stars-given<');
       expect(this.files['section-2']).to.include('Handlebars markup Helper: stars-given pseudo-class-hover');
       expect(this.files['section-2']).to.include('Handlebars markup Helper: disabled');
-      expect(this.files['section-2']).to.include('Nested Handlerbars partial part 1:part 2 of Nested Handlerbars partial');
-      expect(this.files['section-2']).to.include('Test of Handlerbars partial data');
+      expect(this.files['section-2']).to.include('Nested Handlebars partial part 1:part 2 of Nested Handlebars partial');
+      expect(this.files['section-2']).to.include('Test of Handlebars partial data');
       done();
     });
   });
 
   describe('builder\'s Handlebars helpers', function() {
-    it('should load Handlerbars helper: {{section [arg]}}', function(done) {
+    it('should load Handlebars helper: {{section [arg]}}', function(done) {
       expect(this.files['section-3']).to.include('Handlebars Section Helper Test 3');
       expect(this.files['section-3']).to.include('Section 3 has been successfully loaded.');
       done();
     });
 
-    it('should load Handlerbars helper: {{eachSection [arg]}}', function(done) {
+    it('should load Handlebars helper: {{eachSection [arg]}}', function(done) {
       expect(this.files['section-2']).to.include('Handlebars eachSection Helper Test 2.1.3');
       expect(this.files['section-2']).to.include('Handlebars eachSection Helper Test 2.1.4');
       expect(this.files['section-2']).to.include('Handlebars eachSection Helper: #each modifiers: :hover');
