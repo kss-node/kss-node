@@ -16,6 +16,8 @@ describe('KssBuilderBase object API', function() {
     'normalizeOptions',
     'log',
     'setLogFunction',
+    'logError',
+    'setLogErrorFunction',
     'clone',
     'init',
     'prepare',
@@ -285,6 +287,32 @@ describe('KssBuilderBase object API', function() {
       let builder = new KssBuilderBase();
       builder.setLogFunction(logFunction);
       expect(builder.logFunction).to.deep.equal(logFunction);
+    });
+  });
+
+  describe('.logError()', function() {
+    it('should log the given error', function() {
+      let loggedErrors = [],
+        logErrorFunction = function(error) {
+          loggedErrors.push(error);
+        };
+      let builder = new KssBuilderBase();
+      builder.setLogErrorFunction(logErrorFunction);
+      builder.logError(new Error('test1'));
+      builder.logError(new Error('test2'));
+      expect(loggedErrors).to.deep.equal([new Error('test1'), new Error('test2')]);
+    });
+  });
+
+  describe('.setLogErrorFunction()', function() {
+    it('should set the log error function to use', function() {
+      let loggedErrors = [],
+        logErrorFunction = function(error) {
+          loggedErrors.push(error);
+        };
+      let builder = new KssBuilderBase();
+      builder.setLogErrorFunction(logErrorFunction);
+      expect(builder.logErrorFunction).to.deep.equal(logErrorFunction);
     });
   });
 

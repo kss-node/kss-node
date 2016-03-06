@@ -46,6 +46,9 @@ class KssBuilderBase {
     // The log function defaults to console.log.
     this.setLogFunction(console.log);
 
+    // The error logging function defaults to console.error.
+    this.setLogErrorFunction(console.error);
+
     // Tell kss-node which Yargs-like options this builder has.
     this.addOptionDefinitions({
       source: {
@@ -211,6 +214,14 @@ class KssBuilderBase {
       }
     }
 
+    // Set the logging functions of the builder.
+    if (typeof options.logFunction === 'function') {
+      this.setLogFunction(options.logFunction);
+    }
+    if (typeof options.logErrorFunction === 'function') {
+      this.setLogErrorFunction(options.logErrorFunction);
+    }
+
     // Allow clone to be used without a path. We can't specify this default path
     // in the option definition or the clone flag would always be "on".
     if (options.clone === '' || options.clone === true) {
@@ -364,9 +375,9 @@ class KssBuilderBase {
   }
 
   /**
-   * The log() method logs a message for the user. This method allows the system
-   * to define the underlying function used by the log method to report the
-   * message to the user. The default log function is a wrapper around
+   * The `log()` method logs a message for the user. This method allows the
+   * system to define the underlying function used by the log method to report
+   * the message to the user. The default log function is a wrapper around
    * `console.log()`.
    *
    * @param {Function} logFunction Function to log a message to the user.
@@ -375,6 +386,43 @@ class KssBuilderBase {
    */
   setLogFunction(logFunction) {
     this.logFunction = logFunction;
+
+    // Allow chaining.
+    return this;
+  }
+
+  /* eslint-disable no-unused-vars */
+  /**
+   * Logs an error to be reported to the user.
+   *
+   * Since a builder can be used in places other than the console, using
+   * console.error() is inappropriate. The logError() method should be used to
+   * pass error messages to the KSS system so it can report them to the user.
+   *
+   * @param {Error} error The error to log.
+   * @returns {KssBuilderBase} The `KssBuilderBase` object is returned to allow
+   *   chaining of methods.
+   */
+  logError(error) {
+    /* eslint-enable no-unused-vars */
+    this.logErrorFunction.apply(null, arguments);
+
+    // Allow chaining.
+    return this;
+  }
+
+  /**
+   * The `error()` method logs an error message for the user. This method allows
+   * the system to define the underlying function used by the error method to
+   * report the error message to the user. The default log error function is a
+   * wrapper around `console.error()`.
+   *
+   * @param {Function} logErrorFunction Function to log a message to the user.
+   * @returns {KssBuilderBase} The `KssBuilderBase` object is returned to allow
+   *   chaining of methods.
+   */
+  setLogErrorFunction(logErrorFunction) {
+    this.logErrorFunction = logErrorFunction;
 
     // Allow chaining.
     return this;

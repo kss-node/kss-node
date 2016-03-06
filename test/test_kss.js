@@ -5,14 +5,23 @@
 const mockStream = require('mock-utf8-stream');
 
 const testKss = function(options) {
-  options.pipes = options.pipes || {};
-
-  // For our tests, feed kss() mock stdout and stderr so we can capture the
-  // output easier.
-  options.pipes.stdout = new mockStream.MockWritableStream();
-  options.pipes.stderr = new mockStream.MockWritableStream();
-  options.pipes.stdout.startCapture();
-  options.pipes.stderr.startCapture();
+  // For our tests, feed kss() log functions that mock stdout and stderr so we
+  // can capture the output easier.
+  let stdout = new mockStream.MockWritableStream();
+  let stderr = new mockStream.MockWritableStream();
+  stdout.startCapture();
+  stderr.startCapture();
+  options.logFunction = function() {
+    let message = '';
+    for (let i = 0; i < arguments.length; i++) {
+      message += arguments[i];
+    }
+    stdout.write(message + '\n');
+  };
+  options.logErrorFunction = function(error) {
+    // Show the full error stack if the verbose option is used twice or more.
+    stderr.write(((error.stack && options.verbose > 1) ? error.stack : error) + '\n');
+  };
 
   return kss(options).catch(error => {
     // Pass the error on to the next .then() method.
@@ -21,8 +30,8 @@ const testKss = function(options) {
     return {
       error: (result instanceof Error) ? result : null,
       result: (result instanceof Error) ? null : result,
-      stdout: options.pipes.stdout.capturedData,
-      stderr: options.pipes.stderr.capturedData
+      stdout: stdout.capturedData,
+      stderr: stderr.capturedData
     };
   });
 };

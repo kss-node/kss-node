@@ -8,26 +8,29 @@ const KssBuilderBase = require('../builder/base'),
 
 const testBuilder = function(options) {
   options = options || {};
-  options.pipes = options.pipes || {};
 
-  // For our tests, feed kss() mock stdout and stderr so we can capture the
-  // output easier.
+  let builder = new KssBuilderBaseExample();
+
+  // For our tests, feed kss() log functions that mock stdout and stderr so we
+  // can capture the output easier.
+  options.pipes = {};
   options.pipes.stdout = new mockStream.MockWritableStream();
   options.pipes.stderr = new mockStream.MockWritableStream();
   options.pipes.stdout.startCapture();
   options.pipes.stderr.startCapture();
-
-  let builder = new KssBuilderBaseExample();
-
-  builder.addOptions(options);
-
-  builder.setLogFunction(function() {
+  options.logFunction = function() {
     let message = '';
     for (let i = 0; i < arguments.length; i++) {
       message += arguments[i];
     }
     options.pipes.stdout.write(message + '\n');
-  });
+  };
+  options.logErrorFunction = function(error) {
+    // Show the full error stack if the verbose option is used twice or more.
+    options.pipes.stderr.write(((error.stack && options.verbose > 1) ? error.stack : error) + '\n');
+  };
+
+  builder.addOptions(options);
 
   return builder;
 };
