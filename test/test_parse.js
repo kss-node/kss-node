@@ -310,6 +310,43 @@ describe('kss.parse()', function() {
         });
       });
 
+      describe('.deprecated/.experimental with at-rule', function() {
+        before(function() {
+          return helperUtils.traverseFixtures({
+            mask: 'at-rules/property-deprecated-experimental.less',
+            markdown: false,
+            header: true,
+            atRule: true
+          }).then(styleGuide => {
+            this.styleGuide = styleGuide;
+          });
+        });
+
+        it('should find in header', function(done) {
+          expect(this.styleGuide.sections('deprecated.in-header').deprecated()).to.be.true;
+          expect(this.styleGuide.sections('experimental.in-header').experimental()).to.be.true;
+          done();
+        });
+
+        it('should find in description', function(done) {
+          expect(this.styleGuide.sections('deprecated.in-paragraph').deprecated()).to.be.true;
+          expect(this.styleGuide.sections('experimental.in-paragraph').experimental()).to.be.true;
+          done();
+        });
+
+        it('should not find in modifiers', function(done) {
+          expect(this.styleGuide.sections('deprecated.in-modifier').deprecated()).to.be.false;
+          expect(this.styleGuide.sections('experimental.in-modifier').experimental()).to.be.false;
+          done();
+        });
+
+        it('should not find when not at the beginning of a line', function(done) {
+          expect(this.styleGuide.sections('deprecated.not-at-beginning').deprecated()).to.be.false;
+          expect(this.styleGuide.sections('experimental.not-at-beginning').experimental()).to.be.false;
+          done();
+        });
+      });
+
       describe('.reference', function() {
         it('should find reference "X.0" without trailing zero', function() {
           return helperUtils.traverseFixtures({mask: 'sections-queries.less', header: true}).then(styleGuide => {
@@ -357,6 +394,40 @@ describe('kss.parse()', function() {
 
       it('should find a multi-word property', function(done) {
         expect(this.styleGuide.sections('custom.multi-word').custom('custom multi-word property')).to.equal('This is a multi-word property.');
+        done();
+      });
+
+      it('should find multiple properties', function(done) {
+        expect(this.styleGuide.sections('custom.multi').custom('custom')).to.equal('This is the first property.');
+        expect(this.styleGuide.sections('custom.multi').custom('custom2')).to.equal('This is the second property.');
+        done();
+      });
+    });
+
+    describe('.custom with at-rule', function() {
+      before(function() {
+        return helperUtils.traverseFixtures({
+          mask: 'at-rules/options-custom.less',
+          markdown: false,
+          custom: ['custom', 'custom2'],
+          atRule: true
+        }).then(styleGuide => {
+          this.styleGuide = styleGuide;
+        });
+      });
+
+      it('should find an inline value', function(done) {
+        expect(this.styleGuide.sections('custom.inline').custom('custom')).to.equal('The value of this property is inline.');
+        done();
+      });
+
+      it('should find a value on the next line', function(done) {
+        expect(this.styleGuide.sections('custom.value.next-line').custom('custom')).to.equal('The value of this property is on the next line.');
+        done();
+      });
+
+      it('should find a multi-line value', function(done) {
+        expect(this.styleGuide.sections('custom.value.multi-line').custom('custom')).to.equal('The value of this property spans multiple\nlines.');
         done();
       });
 
