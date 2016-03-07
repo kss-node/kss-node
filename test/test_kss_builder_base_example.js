@@ -13,39 +13,39 @@ const testBuilder = function(options) {
 
   // For our tests, feed kss() log functions that mock stdout and stderr so we
   // can capture the output easier.
-  options.pipes = {};
-  options.pipes.stdout = new mockStream.MockWritableStream();
-  options.pipes.stderr = new mockStream.MockWritableStream();
-  options.pipes.stdout.startCapture();
-  options.pipes.stderr.startCapture();
+  options.testStreams = {};
+  options.testStreams.stdout = new mockStream.MockWritableStream();
+  options.testStreams.stderr = new mockStream.MockWritableStream();
+  options.testStreams.stdout.startCapture();
+  options.testStreams.stderr.startCapture();
   options.logFunction = function() {
     let message = '';
     for (let i = 0; i < arguments.length; i++) {
       message += arguments[i];
     }
-    options.pipes.stdout.write(message + '\n');
+    options.testStreams.stdout.write(message + '\n');
   };
   options.logErrorFunction = function(error) {
     // Show the full error stack if the verbose option is used twice or more.
-    options.pipes.stderr.write(((error.stack && options.verbose > 1) ? error.stack : error) + '\n');
+    options.testStreams.stderr.write(((error.stack && options.verbose > 1) ? error.stack : error) + '\n');
   };
 
   builder.addOptions(options);
 
+  builder.getTestOutput = function(pipe) {
+    let streams = this.getOptions('testStreams');
+
+    if (typeof pipe === 'undefined') {
+      return {
+        stdout: streams.stdout.capturedData,
+        stderr: streams.stderr.capturedData
+      };
+    } else {
+      return streams[pipe].capturedData;
+    }
+  };
+
   return builder;
-};
-
-const getBuilderOutput = function(builder, pipe) {
-  let pipes = builder.getOptions('pipes');
-
-  if (typeof pipe === 'undefined') {
-    return {
-      stdout: pipes.stdout.capturedData,
-      stderr: pipes.stderr.capturedData
-    };
-  } else {
-    return pipes[pipe].capturedData;
-  }
 };
 
 describe('KssBuilderBaseExample object API', function() {
@@ -72,7 +72,7 @@ describe('KssBuilderBaseExample object API', function() {
     let builder = testBuilder(),
       destinationPath = path.resolve(__dirname, 'output', 'example');
     return builder.clone('', destinationPath).then(() => {
-      expect(getBuilderOutput(builder, 'stdout')).to.contain('Example builder cloned to ' + destinationPath + '! (not really.)');
+      expect(builder.getTestOutput('stdout')).to.contain('Example builder cloned to ' + destinationPath + '! (not really.)');
     });
   });
 
@@ -89,7 +89,7 @@ describe('KssBuilderBaseExample object API', function() {
       styleGuide = new kss.KssStyleGuide({sections: [{header: 'Section One'}, {header: 'Section Two'}]});
     return builder.init().then(() => {
       return builder.prepare(styleGuide).then(sg => {
-        expect(getBuilderOutput(builder, 'stdout')).to.contain('...Preparing the style guide.' + ' (not really.)');
+        expect(builder.getTestOutput('stdout')).to.contain('...Preparing the style guide.' + ' (not really.)');
         expect(sg).to.deep.equal(styleGuide);
       });
     });
@@ -100,7 +100,7 @@ describe('KssBuilderBaseExample object API', function() {
       styleGuide = new kss.KssStyleGuide({sections: [{header: 'Section One'}, {header: 'Section Two'}]});
     return builder.init().then(() => {
       return builder.build(styleGuide).then(sg => {
-        expect(getBuilderOutput(builder, 'stdout')).to.contain('...Building the demo style guide.' + ' (not really.)');
+        expect(builder.getTestOutput('stdout')).to.contain('...Building the demo style guide.' + ' (not really.)');
         expect(sg).to.deep.equal(styleGuide);
       });
     });

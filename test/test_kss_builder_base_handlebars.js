@@ -13,39 +13,39 @@ const testBuilder = function(options) {
 
   // For our tests, feed kss() log functions that mock stdout and stderr so we
   // can capture the output easier.
-  options.pipes = {};
-  options.pipes.stdout = new mockStream.MockWritableStream();
-  options.pipes.stderr = new mockStream.MockWritableStream();
-  options.pipes.stdout.startCapture();
-  options.pipes.stderr.startCapture();
+  options.testStreams = {};
+  options.testStreams.stdout = new mockStream.MockWritableStream();
+  options.testStreams.stderr = new mockStream.MockWritableStream();
+  options.testStreams.stdout.startCapture();
+  options.testStreams.stderr.startCapture();
   options.logFunction = function() {
     let message = '';
     for (let i = 0; i < arguments.length; i++) {
       message += arguments[i];
     }
-    options.pipes.stdout.write(message + '\n');
+    options.testStreams.stdout.write(message + '\n');
   };
   options.logErrorFunction = function(error) {
     // Show the full error stack if the verbose option is used twice or more.
-    options.pipes.stderr.write(((error.stack && options.verbose > 1) ? error.stack : error) + '\n');
+    options.testStreams.stderr.write(((error.stack && options.verbose > 1) ? error.stack : error) + '\n');
   };
 
   builder.addOptions(options);
 
+  builder.getTestOutput = function(pipe) {
+    let streams = this.getOptions('testStreams');
+
+    if (typeof pipe === 'undefined') {
+      return {
+        stdout: streams.stdout.capturedData,
+        stderr: streams.stderr.capturedData
+      };
+    } else {
+      return streams[pipe].capturedData;
+    }
+  };
+
   return builder;
-};
-
-const getBuilderOutput = function(builder, pipe) {
-  let pipes = builder.getOptions('pipes');
-
-  if (typeof pipe === 'undefined') {
-    return {
-      stdout: pipes.stdout.capturedData,
-      stderr: pipes.stderr.capturedData
-    };
-  } else {
-    return pipes[pipe].capturedData;
-  }
 };
 
 describe('KssBuilderBaseHandlebars object API', function() {
@@ -105,7 +105,7 @@ describe('KssBuilderBaseHandlebars object API', function() {
         destination: null
       });
       return builder.init().catch(error => {
-        let output = getBuilderOutput(builder, 'stdout');
+        let output = builder.getTestOutput('stdout');
         expect(output).to.contain('Building your KSS style guide!');
         expect(output).to.contain(' * Helpers     : /dev/null/example1, /dev/null/example2');
         return error;
