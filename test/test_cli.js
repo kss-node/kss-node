@@ -118,19 +118,20 @@ describe('Command Line Interface', function() {
     });
   });
 
-  describe('given --verbose option', function() {
-    it('should catch a failure when the builder API is not equal to the current API', function() {
-      return kssNode('--verbose --builder ' + helperUtils.fixtures('old-builder')).then(result => {
-        expect(result.error).to.exist;
-        expect(result.stderr).to.include('kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "1.0" is being used instead.');
-      });
-    });
-
-    it('should display error with stack if given --verbose --verbose', function() {
+  describe('given --verbose option two or more times', function() {
+    it('should display error in builder with stack', function() {
       return kssNode('--verbose --verbose --builder ' + helperUtils.fixtures('old-builder')).then(response => {
         let kssBuilderBase = path.resolve(__dirname, '..', 'builder', 'base', 'kss_builder_base.js');
         expect(response.error).to.exist;
         expect(response.stderr).to.include('Error: kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "1.0" is being used instead.\n    at ' + kssBuilderBase);
+      });
+    });
+
+    it('should display error in kss() with stack', function() {
+      return kssNode('--verbose --verbose').then(function(response) {
+        let kssPath = path.resolve(__dirname, '..', 'lib', 'kss.js');
+        expect(response.error).to.exist;
+        expect(response.stderr).to.include('No "source" option specified.\n    at ' + kssPath);
       });
     });
   });

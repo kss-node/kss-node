@@ -102,12 +102,14 @@ describe('kss object API', function() {
       });
     });
 
-    describe('given "verbose" option with value of 2 or more', function() {
-      it('should display error with stack', function() {
-        return testKss({verbose: 2}).then(function(response) {
-          let kssPath = path.resolve(__dirname, '..', 'lib', 'kss.js');
+    describe('given "verbose" option', function() {
+      it('should display a message when starting to parse', function() {
+        return testKss({
+          verbose: true,
+          source: helperUtils.fixtures('empty-source')
+        }).then(function(response) {
           expect(response.error).to.exist;
-          expect(response.stderr).to.include('No "source" option specified.\n    at ' + kssPath);
+          expect(response.stdout).to.include('...Parsing your style guide:');
         });
       });
     });
