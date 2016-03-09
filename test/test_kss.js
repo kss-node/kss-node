@@ -128,20 +128,6 @@ describe('kss object API', function() {
         });
       });
 
-      it('should not declare success if source directory is empty', function() {
-        let source = helperUtils.fixtures('empty-source');
-        return testKss({
-          verbose: true,
-          source: source,
-          destination: 'test/output/nested'
-        }).then(function(result) {
-          expect(result.error).to.exist;
-          expect(result.stdout).to.include('* KSS Source  : ' + source);
-          expect(result.stderr).to.include('No KSS documentation discovered in source files.');
-          expect(result.stdout).to.not.include(successMessage);
-        });
-      });
-
       it('should warn if homepage content is not found', function() {
         return testKss({
           source: helperUtils.fixtures('missing-homepage'),

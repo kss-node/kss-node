@@ -509,6 +509,11 @@ class KssBuilderBase {
       return section.reference();
     });
 
+    // Return an error if no KSS sections are found.
+    if (sectionReferences.length === 0) {
+      return Promise.reject(new Error('No KSS documentation discovered in source files.'));
+    }
+
     sectionReferences.forEach(reference => {
       let refParts = reference.split(delim),
         checkReference = '';

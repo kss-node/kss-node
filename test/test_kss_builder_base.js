@@ -372,6 +372,16 @@ describe('KssBuilderBase object API', function() {
       });
     });
 
+    it('should report an error if no KSS sections are found', function() {
+      let builder = new KssBuilderBase(),
+        styleGuide = new kss.KssStyleGuide();
+      return builder.prepare(styleGuide).then(result => {
+        expect(result).to.not.exist;
+      }).catch(error => {
+        expect(error.message).to.equal('No KSS documentation discovered in source files.');
+      });
+    });
+
     it('should add missing sections to the style guide', function() {
       let builder = new KssBuilderBase(),
         styleGuide1 = new kss.KssStyleGuide({sections: [

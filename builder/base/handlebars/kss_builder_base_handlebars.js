@@ -169,11 +169,6 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
       }).join('\n'));
     }
 
-    // Return an error if no KSS sections are found in the source files.
-    if (sections.length === 0) {
-      return Promise.reject(new Error('No KSS documentation discovered in source files.'));
-    }
-
     if (this.options.verbose) {
       this.log('...Determining section markup:');
     }
