@@ -59,29 +59,9 @@ class KssBuilderBaseExample extends KssBuilderBase {
    * @returns {Promise.<null>} A `Promise` object resolving to `null`.
    */
   clone(builderPath, destinationPath) {
-    // Note that, at this point, KssBuilderBaseExample.init() method has not
+    // Note that, at this point, KssBuilderBaseExample.prepare() method has not
     // been called.
     this.log('Example builder cloned to ' + destinationPath + '! (not really.)');
-
-    return Promise.resolve();
-  }
-
-  /**
-   * Initialize the style guide creation process.
-   *
-   * This method can be set by any KssBuilderBase sub-class to do any custom tasks
-   * before the style guide is built.
-   *
-   * @returns {Promise} A `Promise` object resolving to `null`.
-   */
-  init() {
-    // This example builder hard-codes the demo source.
-    this.options.source = [path.resolve(__dirname, '..', '..', '..', 'demo')];
-
-    // A real builder should initialize the templating system being used by this
-    // builder. For example, KssBuilderBaseHandlebars loads and initializes the
-    // Handlebars templating system.
-    this.warningMessage = ' (not really.)';
 
     return Promise.resolve();
   }
@@ -102,7 +82,17 @@ class KssBuilderBaseExample extends KssBuilderBase {
     // First we let KssBuilderBase.prepare() clean-up the style guide object.
     return super.prepare(styleGuide).then(styleGuide => {
       // Then we do our own prep work inside this Promise's .then() method.
+
+      // A real builder should initialize the templating system being used by
+      // this builder. For example, KssBuilderBaseHandlebars loads and
+      // initializes the Handlebars templating system.
+      this.warningMessage = ' (not really.)';
+
       this.log('...Preparing the style guide.' + this.warningMessage);
+
+      // This example builder hard-codes the demo source.
+      this.options.source = [path.resolve(__dirname, '..', '..', '..', 'demo')];
+
       return Promise.resolve(styleGuide);
     });
   }

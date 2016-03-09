@@ -78,18 +78,18 @@ describe('KssBuilderBaseHandlebars object API', function() {
   });
   /* eslint-enable guard-for-in,no-loop-func */
 
-  describe('.init', function() {
+  describe('.prepare', function() {
     before(function() {
       this.builder = testBuilder({
-        destination: path.resolve(__dirname, 'output', 'base_handlebars', 'init'),
+        destination: path.resolve(__dirname, 'output', 'base_handlebars', 'prepare'),
         builder: helperUtils.fixtures('builder-with-assets'),
         helpers: [helperUtils.fixtures('builder', 'helpers')]
       });
-      return this.builder.init();
+      return this.builder.prepare(new kss.KssStyleGuide({sections: [{header: 'Section 1', reference: 'one'}]}));
     });
 
     after(function() {
-      return fs.removeAsync(path.resolve(__dirname, 'output', 'base_handlebars', 'init'));
+      return fs.removeAsync(path.resolve(__dirname, 'output', 'base_handlebars', 'prepare'));
     });
 
     it('stores the global Handlebars object', function() {
@@ -101,10 +101,10 @@ describe('KssBuilderBaseHandlebars object API', function() {
       let builder = testBuilder({
         helpers: ['/dev/null/example1', '/dev/null/example2'],
         verbose: true,
-        // Force early init() failure.
+        // Force early prepare() failure.
         destination: null
       });
-      return builder.init().catch(error => {
+      return builder.prepare(new kss.KssStyleGuide({sections: [{header: 'Section 1', reference: 'one'}]})).catch(error => {
         let output = builder.getTestOutput('stdout');
         expect(output).to.contain('Building your KSS style guide!');
         expect(output).to.contain(' * Helpers     : /dev/null/example1, /dev/null/example2');
@@ -115,7 +115,7 @@ describe('KssBuilderBaseHandlebars object API', function() {
     });
 
     it('makes a kss-assets directory', function() {
-      return fs.readdirAsync(path.resolve(__dirname, 'output', 'base_handlebars', 'init', 'kss-assets')).then(directoryListing => {
+      return fs.readdirAsync(path.resolve(__dirname, 'output', 'base_handlebars', 'prepare', 'kss-assets')).then(directoryListing => {
         expect(directoryListing).to.deep.equal(['asset1.js', 'asset2.css']);
       });
     });

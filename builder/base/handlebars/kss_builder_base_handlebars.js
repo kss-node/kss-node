@@ -70,81 +70,81 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
   }
 
   /**
-   * Initialize the style guide creation process.
+   * Allow the builder to preform pre-build tasks or modify the KssStyleGuide
+   * object.
    *
-   * This method can be set by any KssBuilderBase sub-class to do any custom tasks
-   * before the style guide is built.
+   * The method can be set by any KssBuilderBase sub-class to do any custom
+   * tasks after the KssStyleGuide object is created and before the HTML style
+   * guide is built.
    *
-   * @alias module:kss/builder/handlebars.init
+   * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
    * @returns {Promise.<null>} A `Promise` object resolving to `null`.
    */
-  init() {
-    // Store the global Handlebars object.
-    this.Handlebars = require('handlebars');
+  prepare(styleGuide) {
+    return super.prepare(styleGuide).then(styleGuide => {
+      // Store the global Handlebars object.
+      this.Handlebars = require('handlebars');
 
-    // Load the standard Handlebars helpers.
-    require('./helpers.js').register(this.Handlebars, this.options);
+      // Load the standard Handlebars helpers.
+      require('./helpers.js').register(this.Handlebars, this.options);
 
-    if (this.options.verbose) {
-      this.log('');
-      this.log('Building your KSS style guide!');
-      this.log('');
-      this.log(' * KSS Source  : ' + this.options.source.join(', '));
-      this.log(' * Destination : ' + this.options.destination);
-      this.log(' * Builder     : ' + this.options.builder);
-      if (this.options.helpers.length) {
-        this.log(' * Helpers     : ' + this.options.helpers.join(', '));
+      if (this.options.verbose) {
+        this.log('');
+        this.log('Building your KSS style guide!');
+        this.log('');
+        this.log(' * KSS Source  : ' + this.options.source.join(', '));
+        this.log(' * Destination : ' + this.options.destination);
+        this.log(' * Builder     : ' + this.options.builder);
+        if (this.options.helpers.length) {
+          this.log(' * Helpers     : ' + this.options.helpers.join(', '));
+        }
+        this.log('');
       }
-      this.log('');
-    }
 
-    let initTasks = [];
+      let prepTasks = [];
 
-    // Create a new destination directory.
-    initTasks.push(
-      fs.mkdirsAsync(this.options.destination).then(() => {
-        // Optionally, copy the contents of the builder's "kss-assets" folder.
-        return fs.copyAsync(
-          path.join(this.options.builder, 'kss-assets'),
-          path.join(this.options.destination, 'kss-assets'),
-          {
-            clobber: true,
-            filter: filePath => {
-              // Only look at the part of the path inside the builder.
-              let relativePath = path.sep + path.relative(this.options.builder, filePath);
-              // Skip any files with a path matching: /node_modules or /.
-              return (new RegExp('^(?!.*' + path.sep + '(node_modules$|\\.))')).test(relativePath);
-            }
-          }
-        ).catch(() => {
-          // If the builder does not have a kss-assets folder, ignore the error.
-          return Promise.resolve();
-        });
-      })
-    );
-
-    // Load Handlebars helpers.
-    this.options.helpers.forEach(directory => {
-      initTasks.push(
-        fs.readdirAsync(directory).then(helperFiles => {
-          helperFiles.forEach(fileName => {
-            if (path.extname(fileName) === '.js') {
-              let helper = require(path.join(directory, fileName));
-              // istanbul ignore else
-              if (typeof helper.register === 'function') {
-                helper.register(this.Handlebars, this.options);
+      // Create a new destination directory.
+      prepTasks.push(
+        fs.mkdirsAsync(this.options.destination).then(() => {
+          // Optionally, copy the contents of the builder's "kss-assets" folder.
+          return fs.copyAsync(
+            path.join(this.options.builder, 'kss-assets'),
+            path.join(this.options.destination, 'kss-assets'),
+            {
+              clobber: true,
+              filter: filePath => {
+                // Only look at the part of the path inside the builder.
+                let relativePath = path.sep + path.relative(this.options.builder, filePath);
+                // Skip any files with a path matching: /node_modules or /.
+                return (new RegExp('^(?!.*' + path.sep + '(node_modules$|\\.))')).test(relativePath);
               }
             }
+          ).catch(() => {
+            // If the builder does not have a kss-assets folder, ignore the error.
+            return Promise.resolve();
           });
         })
       );
-    });
 
-    return Promise.all(initTasks).then(() => {
-      // Compile the Handlebars template.
-      return fs.readFileAsync(path.resolve(this.options.builder, 'index.html'), 'utf8').then(content => {
-        this.template = this.Handlebars.compile(content);
-        return Promise.resolve();
+      // Load Handlebars helpers.
+      this.options.helpers.forEach(directory => {
+        prepTasks.push(
+          fs.readdirAsync(directory).then(helperFiles => {
+            helperFiles.forEach(fileName => {
+              if (path.extname(fileName) === '.js') {
+                let helper = require(path.join(directory, fileName));
+                // istanbul ignore else
+                if (typeof helper.register === 'function') {
+                  helper.register(this.Handlebars, this.options);
+                }
+              }
+            });
+          })
+        );
+      });
+
+      return Promise.all(prepTasks).then(() => {
+        return Promise.resolve(styleGuide);
       });
     });
   }
@@ -152,7 +152,6 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
   /**
    * Build the HTML files of the style guide given a KssStyleGuide object.
    *
-   * @alias module:kss/builder/handlebars.build
    * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
    * @returns {Promise.<KssStyleGuide>} A `Promise` object resolving to a
    *   `KssStyleGuide` object.
@@ -160,6 +159,16 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
   build(styleGuide) {
     this.styleGuide = styleGuide;
     this.partials = {};
+
+    let buildTasks = [];
+
+    // Compile the Handlebars template.
+    buildTasks.push(
+      fs.readFileAsync(path.resolve(this.options.builder, 'index.html'), 'utf8').then(content => {
+        this.template = this.Handlebars.compile(content);
+        return Promise.resolve();
+      })
+    );
 
     let sections = this.styleGuide.sections();
 
@@ -174,75 +183,76 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
     }
 
     let sectionRoots = [];
-    return Promise.all(
-      sections.map(section => {
-        // Accumulate an array of section references for all sections at the root
-        // of the style guide.
-        let currentRoot = section.reference().split(/(?:\.|\ \-\ )/)[0];
-        if (sectionRoots.indexOf(currentRoot) === -1) {
-          sectionRoots.push(currentRoot);
-        }
 
-        if (!section.markup()) {
-          return Promise.resolve();
-        }
+    sections.forEach(section => {
+      // Accumulate an array of section references for all sections at the root
+      // of the style guide.
+      let currentRoot = section.reference().split(/(?:\.|\ \-\ )/)[0];
+      if (sectionRoots.indexOf(currentRoot) === -1) {
+        sectionRoots.push(currentRoot);
+      }
 
-        // Register all the markup blocks as Handlebars partials.
-        let findPartial,
-          partial = {
-            name: section.reference(),
-            reference: section.reference(),
-            file: '',
-            markup: section.markup(),
-            data: {}
-          };
-        // If the markup is a file path, attempt to load the file.
-        if (partial.markup.match(/^[^\n]+\.(html|hbs)$/)) {
-          partial.file = partial.markup;
-          partial.name = path.basename(partial.file, path.extname(partial.file));
+      if (!section.markup()) {
+        return;
+      }
 
-          findPartial = Promise.all(
-            this.options.source.map(source => {
-              return glob(source + '/**/' + partial.file);
-            })
-          ).then(globMatches => {
-            for (let files of globMatches) {
-              if (files.length) {
-                // Read the file contents from the first matched path.
-                partial.file = files[0];
-                return fs.readFileAsync(partial.file, 'utf8');
-              }
-            }
+      // Register all the markup blocks as Handlebars partials.
+      let findPartial,
+        partial = {
+          name: section.reference(),
+          reference: section.reference(),
+          file: '',
+          markup: section.markup(),
+          data: {}
+        };
+      // If the markup is a file path, attempt to load the file.
+      if (partial.markup.match(/^[^\n]+\.(html|hbs)$/)) {
+        partial.file = partial.markup;
+        partial.name = path.basename(partial.file, path.extname(partial.file));
 
-            // If the markup file is not found, note that in the style guide.
-            partial.markup += ' NOT FOUND!';
-            if (!this.options.verbose) {
-              this.log('WARNING: In section ' + partial.reference + ', ' + partial.markup);
+        findPartial = Promise.all(
+          this.options.source.map(source => {
+            return glob(source + '/**/' + partial.file);
+          })
+        ).then(globMatches => {
+          for (let files of globMatches) {
+            if (files.length) {
+              // Read the file contents from the first matched path.
+              partial.file = files[0];
+              return fs.readFileAsync(partial.file, 'utf8');
             }
-            return '';
-          }).then(contents => {
-            if (this.options.verbose) {
-              this.log(' - ' + partial.reference + ': ' + partial.markup);
-            }
-            if (contents) {
-              partial.markup = contents;
-              // Load sample data for the partial from the sample .json file.
-              try {
-                partial.data = require(path.join(path.dirname(partial.file), partial.name + '.json'));
-              } catch (error) {
-                partial.data = {};
-              }
-            }
-            return partial;
-          });
-        } else {
-          if (this.options.verbose) {
-            this.log(' - ' + partial.reference + ': inline markup');
           }
-          findPartial = Promise.resolve(partial);
-        }
 
-        return findPartial.then(partial => {
+          // If the markup file is not found, note that in the style guide.
+          partial.markup += ' NOT FOUND!';
+          if (!this.options.verbose) {
+            this.log('WARNING: In section ' + partial.reference + ', ' + partial.markup);
+          }
+          return '';
+        }).then(contents => {
+          if (this.options.verbose) {
+            this.log(' - ' + partial.reference + ': ' + partial.markup);
+          }
+          if (contents) {
+            partial.markup = contents;
+            // Load sample data for the partial from the sample .json file.
+            try {
+              partial.data = require(path.join(path.dirname(partial.file), partial.name + '.json'));
+            } catch (error) {
+              partial.data = {};
+            }
+          }
+          return partial;
+        });
+      } else {
+        if (this.options.verbose) {
+          this.log(' - ' + partial.reference + ': inline markup');
+        }
+        findPartial = Promise.resolve(partial);
+      }
+
+      buildTasks.push(
+        findPartial.then(partial => {
           // Register the partial using the file name (without extension) or using
           // the style guide reference.
           this.Handlebars.registerPartial(partial.name, partial.markup);
@@ -254,9 +264,11 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
           };
 
           return Promise.resolve();
-        });
-      })
-    ).then(() => {
+        })
+      );
+    });
+
+    return Promise.all(buildTasks).then(() => {
       if (this.options.verbose) {
         this.log('...Building style guide pages:');
       }
@@ -326,7 +338,6 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
   /**
    * Renders the handlebars template for a section and saves it to a file.
    *
-   * @alias module:kss/builder/handlebars.buildPage
    * @param {string} pageReference The reference of the current page's root
    *   section.
    * @param {Array} sections An array of KssSection objects.

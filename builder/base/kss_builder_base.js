@@ -475,19 +475,6 @@ class KssBuilderBase {
   }
 
   /**
-   * Initialize the style guide creation process.
-   *
-   * This method can be set by any KssBuilderBase sub-class to do any custom
-   * tasks before the style sheets are parsed and the KssStyleGuide object is
-   * created.
-   *
-   * @returns {Promise.<null>} A `Promise` object resolving to `null`.
-   */
-  init() {
-    return Promise.resolve();
-  }
-
-  /**
    * Allow the builder to preform pre-build tasks or modify the KssStyleGuide
    * object.
    *

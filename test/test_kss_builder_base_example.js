@@ -76,32 +76,24 @@ describe('KssBuilderBaseExample object API', function() {
     });
   });
 
-  it('should have a working init() method', function() {
-    let builder = testBuilder();
-    return builder.init().then(() => {
-      expect(builder.getOptions('source')[0]).to.equal(path.resolve(__dirname, '..', 'demo'));
-      expect(builder.warningMessage).to.equal(' (not really.)');
-    });
-  });
-
   it('should have a working prepare() method', function() {
     let builder = testBuilder(),
-      styleGuide = new kss.KssStyleGuide({sections: [{header: 'Section One'}, {header: 'Section Two'}]});
-    return builder.init().then(() => {
-      return builder.prepare(styleGuide).then(sg => {
-        expect(builder.getTestOutput('stdout')).to.contain('...Preparing the style guide.' + ' (not really.)');
-        expect(sg).to.deep.equal(styleGuide);
-      });
+      originalStyleGuide = new kss.KssStyleGuide({sections: [{header: 'Section One'}, {header: 'Section Two'}]});
+    return builder.prepare(originalStyleGuide).then(styleGuide => {
+      expect(builder.getOptions('source')[0]).to.equal(path.resolve(__dirname, '..', 'demo'));
+      expect(builder.warningMessage).to.equal(' (not really.)');
+      expect(builder.getTestOutput('stdout')).to.contain('...Preparing the style guide.' + ' (not really.)');
+      expect(styleGuide).to.deep.equal(originalStyleGuide);
     });
   });
 
   it('should have a working build() method', function() {
     let builder = testBuilder(),
-      styleGuide = new kss.KssStyleGuide({sections: [{header: 'Section One'}, {header: 'Section Two'}]});
-    return builder.init().then(() => {
-      return builder.build(styleGuide).then(sg => {
+      originalStyleGuide = new kss.KssStyleGuide({sections: [{header: 'Section One'}, {header: 'Section Two'}]});
+    return builder.prepare(originalStyleGuide).then(styleGuide => {
+      return builder.build(styleGuide).then(styleGuide => {
         expect(builder.getTestOutput('stdout')).to.contain('...Building the demo style guide.' + ' (not really.)');
-        expect(sg).to.deep.equal(styleGuide);
+        expect(styleGuide).to.deep.equal(originalStyleGuide);
       });
     });
   });

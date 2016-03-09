@@ -19,7 +19,6 @@ describe('KssBuilderBase object API', function() {
     'logError',
     'setLogErrorFunction',
     'clone',
-    'init',
     'prepare',
     'build'
   ].forEach(function(method) {
@@ -354,20 +353,13 @@ describe('KssBuilderBase object API', function() {
     });
   });
 
-  describe('.init()', function() {
-    it('should return a Promise', function() {
-      let obj = (new KssBuilderBase()).init();
-      return obj.then(() => {
-        expect(obj instanceof Promise).to.be.true;
-      });
-    });
-  });
-
   describe('.prepare()', function() {
-    it('should return the style guide given to it', function() {
+    it('should return a promise resolving to the KssStyleGuide given to it', function() {
       let builder = new KssBuilderBase(),
         styleGuide = new kss.KssStyleGuide({sections: [{header: 'Section', reference: '1.1'}]});
-      return builder.prepare(styleGuide).then((result) => {
+      let obj = builder.prepare(styleGuide);
+      return obj.then((result) => {
+        expect(obj instanceof Promise).to.be.true;
         expect(result).to.deep.equal(styleGuide);
       });
     });

@@ -58,23 +58,28 @@ class KssBuilderHandlebars extends KssBuilderBaseHandlebars {
   }
 
   /**
-   * Initialize this builder.
+   * Allow the builder to preform pre-build tasks or modify the KssStyleGuide
+   * object.
    *
-   * If this builder needs to do initialization work before the style guide is
-   * built, the builder can do its work inside the `init()` method. The parent
-   * class sets up access for this builder to an object containing the options
-   * of the requested build (as `this.options`), and the global Handlebars
-   * object (as `this.Handlebars`).
+   * The method can be set by any KssBuilderBase sub-class to do any custom
+   * tasks after the KssStyleGuide object is created and before the HTML style
+   * guide is built.
    *
    * The builder could also take this opportunity to do tasks like special
    * handling of "custom" properties or running Sass or Bower tasks.
    *
-   * @returns {Promise.<null>} A `Promise` object.
+   * The parent class sets up access for this builder to an object containing
+   * the options of the requested build (as `this.options`), and the global
+   * Handlebars object (as `this.Handlebars`).
+   *
+   * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
+   * @returns {Promise.<KssStyleGuide>} A `Promise` object resolving to a
+   *   `KssStyleGuide` object.
    */
-  init() {
-    // First call the init() of the parent KssBuilderBaseHandlebars class. Since
-    // it returns a Promise, we do our init work in a then().
-    return super.init().then(() => {
+  prepare(styleGuide) {
+    // First call the prepare() of the parent KssBuilderBaseHandlebars class.
+    // Since it returns a Promise, we do our prep work in a then().
+    return super.prepare(styleGuide).then(styleGuide => {
       // Load this builder's extra Handlebars helpers.
 
       // Allow a builder user to override the {{section [reference]}} helper
@@ -121,7 +126,7 @@ class KssBuilderHandlebars extends KssBuilderBaseHandlebars {
         });
       }
 
-      return Promise.resolve();
+      return Promise.resolve(styleGuide);
     });
   }
 }

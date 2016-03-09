@@ -81,8 +81,8 @@ describe('kss object API', function() {
       });
       return obj.then(function(result) {
         expect(obj).to.be.instanceof(Promise);
-        expect(result.result).to.be.instanceof(kss.KssStyleGuide);
         expect(result.error).to.not.exist;
+        expect(result.result).to.be.instanceof(kss.KssStyleGuide);
         expect(result.stdout).to.include(successMessage);
       });
     });
