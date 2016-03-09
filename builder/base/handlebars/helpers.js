@@ -4,7 +4,14 @@ module.exports.register = function(handlebars, options) {
   options = options || {};
 
   /**
-   * Outputs the current section's or modifier's markup.
+   * Outputs the markup for a section.
+   *
+   * If the current context is not a section, the section should be passed as
+   * the first parameter to this helper. For example:
+   * ```Handlebars
+   * {{-- Current context is not a section, but the parent context is a section. --}}
+   * {{markup ../this}}
+   * ```
    */
   handlebars.registerHelper('markup', function() {
     let options = arguments[arguments.length - 1];
