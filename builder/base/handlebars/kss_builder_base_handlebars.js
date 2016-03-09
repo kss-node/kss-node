@@ -275,14 +275,14 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
 
       // Group all of the sections by their root reference, and make a page for
       // each.
-      let pagePromises = sectionRoots.map(rootReference => {
+      let buildPageTasks = sectionRoots.map(rootReference => {
         return this.buildPage(rootReference, this.styleGuide.sections(rootReference + '.*'));
       });
 
       // Build the homepage.
-      pagePromises.push(this.buildPage('styleGuide.homepage', []));
+      buildPageTasks.push(this.buildPage('styleGuide.homepage', []));
 
-      return Promise.all(pagePromises);
+      return Promise.all(buildPageTasks);
     }).then(() => {
       // We return the KssStyleGuide, just like KssBuilderBase.build() does.
       return Promise.resolve(styleGuide);
