@@ -330,10 +330,10 @@ describe('KssBuilderBase object API', function() {
 
     it('should fail to clone if the given destination exists', function() {
       let builder = new KssBuilderBase();
-      return builder.clone(helperUtils.fixtures('builder'), helperUtils.fixtures('includes')).then(result => {
+      return builder.clone(helperUtils.fixtures('builder'), helperUtils.fixtures('traverse-directories')).then(result => {
         expect(result).to.not.be.undefined;
       }).catch(error => {
-        expect(error.message).to.equal('This folder already exists: ' + helperUtils.fixtures('includes'));
+        expect(error.message).to.equal('This folder already exists: ' + helperUtils.fixtures('traverse-directories'));
       });
     });
 

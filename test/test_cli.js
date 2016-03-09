@@ -89,7 +89,7 @@ describe('Command Line Interface', function() {
         expect(result.stdout).to.include('* KSS Source  : ' + source + ', ' + helperUtils.fixtures('with-include'));
         expect(result.stdout).to.include(successMessage);
 
-        let source2 = helperUtils.fixtures('includes');
+        let source2 = helperUtils.fixtures('traverse-directories/includes');
         return kssNode('--config test/fixtures/cli-option-config-source-array.json --verbose ' + source2).then(function(result) {
           expect(result.error).to.not.exist;
           expect(result.stdout).to.include('* KSS Source  : ' + source2 + ', ' + helperUtils.fixtures('with-include') + ', ' + helperUtils.fixtures('missing-homepage'));
