@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports.register = function(handlebars, options) {
-  options = options || {};
+  options = options || /* istanbul ignore next */ {};
 
   /**
    * Outputs the markup for a section.
@@ -16,17 +16,19 @@ module.exports.register = function(handlebars, options) {
   handlebars.registerHelper('markup', function() {
     let options = arguments[arguments.length - 1];
 
-    if (!this) {
-      return options.inverse('');
-    }
-
     // Assume the current context is the section we want unless one is passed as
     // the first parameter of this helper.
     let section = (arguments.length > 1) ? arguments[0] : this;
 
     // Verify we found a JSON representation of a KssSection object.
+    // istanbul ignore if
     if (!section.reference) {
       throw new handlebars.Exception('{{markup}} helper must be used in a Section object or passed a Section object as the first parameter.');
+    }
+
+    // If the section does not have any markup, render an empty string.
+    if (!section.markup) {
+      return new handlebars.SafeString('');
     }
 
     // Load the information about this section's markup partial.
@@ -48,8 +50,8 @@ module.exports.register = function(handlebars, options) {
       data.modifier_class += options.hash['modifier_class'];
     } else if (this.className) {
       data.modifier_class += this.className;
-    } else if (section.modifiers.length !== 0) {
-      data.modifier_class += options.placeholder;
+    } else if (section.modifiers.length !== 0 && options.data.root.options.placeholder) {
+      data.modifier_class += options.data.root.options.placeholder;
     }
     /* eslint-enable camelcase */
 
@@ -59,25 +61,5 @@ module.exports.register = function(handlebars, options) {
     // we want the ability to display it as a code sample with {{ }} and as
     // rendered HTML with {{{ }}}.
     return template(data);
-  });
-
-  /**
-   * Outputs console.log() debugging information for each parameter given.
-   *
-   * If no parameters are given, the entire context is output with
-   * `console.log(this)`.
-   */
-  handlebars.registerHelper('consoleLog', function() {
-    if (arguments.length > 1) {
-      // 'options' is automatically passed as the last argument, so skip it.
-      for (let i = 0; i < arguments.length - 1; i++) {
-        console.log(arguments[i]);
-      }
-    } else {
-      console.log('==================== Current Handlebars context:');
-      console.log(this);
-      console.log('====================');
-    }
-    return '';
   });
 };

@@ -18,7 +18,7 @@ describe('KssBuilderHandlebars builder (default)', function() {
     return cli({
       stdout: stdout,
       stderr: stderr,
-      argv: ['node', 'bin/kss-node', 'test/fixtures/with-include', 'test/output/nested', '--builder', 'test/fixtures/builder', '--helpers', 'test/fixtures/builder/helpers']
+      argv: ['node', 'bin/kss-node', 'test/fixtures/with-include', 'test/output/nested', '--builder', 'test/fixtures/builder']
     }).catch(function(error) {
       // Pass the error on to the next .then().
       return error;
@@ -27,7 +27,6 @@ describe('KssBuilderHandlebars builder (default)', function() {
       this.stdout = stdout.capturedData;
       return Promise.all(
         [
-          'index',
           'section-2',
           'section-3'
         ].map(fileName => {
@@ -36,23 +35,6 @@ describe('KssBuilderHandlebars builder (default)', function() {
           });
         })
       );
-    });
-  });
-
-  describe('given --helpers option', function() {
-    it('should load additional Handlebars helpers', function() {
-      expect(this.files.index).to.include('Handlebars helper loaded into template!');
-    });
-  });
-
-  describe('KssBuilderBaseHandlebar\'s Handlebars helpers', function() {
-    it('should load Handlebars helper: {{{markup}}}', function() {
-      expect(this.files['section-2']).to.include('Handlebars markup Helper: pseudo-class-hover');
-      expect(this.files['section-2']).to.include('Handlebars markup Helper: stars-given<');
-      expect(this.files['section-2']).to.include('Handlebars markup Helper: stars-given pseudo-class-hover');
-      expect(this.files['section-2']).to.include('Handlebars markup Helper: disabled');
-      expect(this.files['section-2']).to.include('Nested Handlebars partial part 1:part 2 of Nested Handlebars partial');
-      expect(this.files['section-2']).to.include('Test of Handlebars partial data');
     });
   });
 

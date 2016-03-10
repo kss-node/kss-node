@@ -4,10 +4,81 @@
   <meta charset="utf-8">
   <title>KssBuilderBaseHandlebars test template</title>
   <meta name="generator" content="kss-node" />
+
+  {{{styles}}}
 </head>
 <body>
 
-Test template.
+<nav>
+  <ul>
+    {{#each menu}}
+    <li>
+MENU-ITEM:[referenceURI:{{referenceURI}}, referenceNumber:{{referenceNumber}}, header:{{header}}, isActive:{{isActive}}, {{#if children}}children:yes{{else}}children:none{{/if}}]
+      {{#if children}}
+      <ul>
+        {{#each children}}
+        <li>
+MENU-ITEM-CHILD:[referenceURI:{{referenceURI}}, referenceNumber:{{referenceNumber}}, header:{{header}}, isGrandChild:{{isGrandChild}}]
+        </li>
+        {{/each}}
+      </ul>
+      {{/if}}
+    </li>
+    {{/each}}
+  </ul>
+</nav>
+
+
+{{#if homepage}}
+  Homepage:
+  {{{homepage}}}
+{{else}}
+  {{#each sections}}
+    <section>
+      <h2>referenceURI:{{referenceURI}}</h2>
+      depth:{{depth}}
+      referenceNumber:{{referenceNumber}}
+      reference:{{reference}}
+      header:{{header}}
+      sourceFile.name:{{sourceFile.name}}
+      sourceFile.line:{{sourceFile.line}}
+      description: {{{description}}}
+      {{#if parameters}}
+        parameters:
+        {{#each parameters}}
+          name:{{name}}
+          description:{{{description}}}
+        {{/each}}
+      {{else}}
+        parameters:none
+      {{/if}}
+      {{#if modifiers}}modifiers:yes{{else}}modifiers:none{{/if}}
+
+      {{#if markup}}
+        ref:{{reference}}:markup:{{{markup}}}
+        {{#if modifiers}}
+          modifiers:
+          {{#each modifiers}}
+            name:{{name}}
+            description:{{{description}}}
+            className:{{className}}
+            ref:{{../reference}}:modifier:{{className}}:markup:{{{markup ../this}}}
+            ref:{{../reference}}:modifier:{{className}}:markup:{{{markup ../this modifier_class="HARDCODE"}}}
+          {{/each}}
+        {{/if}}
+      {{else}}
+        ref:{{reference}}:no-markup:{{{markup}}}
+      {{/if}}
+    </section>
+  {{/each}}
+{{/if}}
+
+<p>
+  kss-builder-base-handlebars--option-helpers:{{test}}
+</p>
+
+<!-- JavaScripts -->
+{{{scripts}}}
 
 </body>
 </html>
