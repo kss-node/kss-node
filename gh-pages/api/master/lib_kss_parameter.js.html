@@ -67,6 +67,7 @@ class KssParameter {
 
     this.data = {
       name: '',
+      defaultValue: '',
       description: ''
     };
 
@@ -123,6 +124,29 @@ class KssParameter {
   }
 
   /**
+   * Gets or sets the default value of the `KssParameter`.
+   *
+   * If the `defaultValue` value is provided, the default value of this
+   * `KssParameter` is set. Otherwise, the default value of the `KssParameter` is
+   * returned.
+   *
+   * @param {string} defaultValue Optional. The default value of the
+   *   `KssParameter`.
+   * @returns {string|KssParameter} If `defaultValue` is given, the current
+   *   `KssParameter` object is returned to allow chaining of methods. Otherwise,
+   *   the default value of the `KssParameter` is returned.
+   */
+  defaultValue(defaultValue) {
+    if (typeof defaultValue !== 'undefined') {
+      this.data.defaultValue = defaultValue;
+      // Allow chaining.
+      return this;
+    } else {
+      return this.data.defaultValue;
+    }
+  }
+
+  /**
    * Gets or sets the description of the `KssParameter`.
    *
    * If the `description` is provided, the description of this `KssParameter` is set.
@@ -151,6 +175,7 @@ class KssParameter {
   toJSON() {
     return {
       name: this.name(),
+      defaultValue: this.defaultValue(),
       description: this.description()
     };
   }
@@ -167,7 +192,7 @@ module.exports = KssParameter;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder.html">kss/builder</a></li><li><a href="module-kss_builder_class_handlebars.html">kss/builder/class/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder_class_handlebars-KssBuilderHandlebars.html">KssBuilderHandlebars</a></li><li><a href="module-kss_builder-KssBuilder.html">KssBuilder</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder_base.html">kss/builder/base</a></li><li><a href="module-kss_builder_base_handlebars.html">kss/builder/base/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder_base_handlebars-KssBuilderBaseHandlebars.html">KssBuilderBaseHandlebars</a></li><li><a href="module-kss_builder_base-KssBuilderBase.html">KssBuilderBase</a></li></ul>
 </nav>
 
 <br class="clear">

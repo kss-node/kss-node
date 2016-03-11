@@ -39,7 +39,7 @@
  * @module kss/lib/parse
  */
 
-const KssStyleGuide = require('./kss_styleguide.js'),
+const KssStyleGuide = require('./kss_style_guide.js'),
   marked = require('marked'),
   path = require('path');
 
@@ -349,12 +349,12 @@ const findCommentBlocks = function(input) {
  * KssModifier.
  *
  * @private
- * @param {Array} lines Modifier lines, which should all be strings.
+ * @param {Array} rawModifiers Raw Modifiers, which should all be strings.
  * @param {Object} options The options object.
  * @returns {Array} The modifier instances created.
  */
-const createModifiers = function(lines, options) {
-  return lines.map(entry => {
+const createModifiers = function(rawModifiers, options) {
+  return rawModifiers.map(entry => {
     // Split modifier name and the description.
     let modifier = entry.split(/\s+\-\s+/, 1)[0];
     let description = entry.replace(modifier, '', 1).replace(/^\s+\-\s+/, '');
@@ -376,15 +376,23 @@ const createModifiers = function(lines, options) {
  * KssParameter.
  *
  * @private
- * @param {Array} lines Parameter lines, which should all be strings.
+ * @param {Array} rawParameters Raw parameters, which should all be strings.
  * @param {Object} options The options object.
  * @returns {Array} The parameter instances created.
  */
-const createParameters = function(lines, options) {
-  return lines.map(entry => {
+const createParameters = function(rawParameters, options) {
+  return rawParameters.map(entry => {
     // Split parameter name and the description.
     let parameter = entry.split(/\s+\-\s+/, 1)[0];
+    let defaultValue = '';
     let description = entry.replace(parameter, '', 1).replace(/^\s+\-\s+/, '');
+
+    // Split parameter name and the default value.
+    if (/\s+=\s+/.test(parameter)) {
+      let tokens = parameter.split(/\s+=\s+/);
+      parameter = tokens[0];
+      defaultValue = tokens[1];
+    }
 
     // Markdown parsing.
     if (options.markdown) {
@@ -393,6 +401,7 @@ const createParameters = function(lines, options) {
 
     return {
       name: parameter,
+      defaultValue: defaultValue,
       description: description
     };
   });
@@ -475,7 +484,7 @@ module.exports = parse;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder.html">kss/builder</a></li><li><a href="module-kss_builder_class_handlebars.html">kss/builder/class/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder_class_handlebars-KssBuilderHandlebars.html">KssBuilderHandlebars</a></li><li><a href="module-kss_builder-KssBuilder.html">KssBuilder</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder_base.html">kss/builder/base</a></li><li><a href="module-kss_builder_base_handlebars.html">kss/builder/base/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder_base_handlebars-KssBuilderBaseHandlebars.html">KssBuilderBaseHandlebars</a></li><li><a href="module-kss_builder_base-KssBuilderBase.html">KssBuilderBase</a></li></ul>
 </nav>
 
 <br class="clear">

@@ -41,16 +41,34 @@
             <div class="description"><p>The core kss API can be imported with:</p>
 <pre class="prettyprint source"><code>var kss = require('kss');</code></pre><p>The main object is a function that will build a style guide given the correct
 options.</p>
-<pre class="prettyprint source"><code>kss(options, callback);</code></pre><p>The various constructors and methods can then be accessed with:</p>
+<pre class="prettyprint source"><code>kss(options);</code></pre><p>The various constructors and methods can then be accessed with:</p>
 <pre class="prettyprint source"><code>const KssStyleGuide = require('kss').KssStyleGuide;
 const KssSection    = require('kss').KssSection;
 const KssModifier   = require('kss').KssModifier;
 const KssParameter  = require('kss').KssParameter;
-const KssConfig     = require('kss').KssConfig;
 
 const kss           = require('kss');
 const traverse      = require('kss').traverse();
-const parse         = require('kss').parse();</code></pre></div>
+const parse         = require('kss').parse();</code></pre><p>The usual style guide build process:</p>
+<ul>
+<li>The command-line tool uses <code>lib/cli</code> to gather the command line options,
+which passes the options to <code>kss()</code>.</li>
+<li>The <code>kss()</code> function takes an object of options and calls <code>traverse()</code>.</li>
+<li>The <code>traverse()</code> function reads all the <code>source</code> directories and calls
+<code>parse()</code>.</li>
+<li>The <code>parse()</code> function finds the KSS comments in the provided text, creates
+a JSON object containing all the parsed data and passes it the
+<code>new KssStyleGuide(data)</code> constructor to create a style guide object.</li>
+<li>The <code>kss()</code> function loads the specified builder, which is a collection of
+files and an optional module that provides a sub-class of <code>KssBuilderBase</code>.</li>
+<li><code>kss()</code> passes its options to the builder the builder's <code>addOptions()</code>
+method.</li>
+<li>The builder's <code>prepare()</code> method is given the <code>KssStyleGuide</code> object and
+can do any pre-build tasks, like initializing its templating system (if it
+has one.)</li>
+<li>The builder's <code>build()</code> method is run and the style guide files are
+created in the specified destination.</li>
+</ul></div>
         
 
         
@@ -137,9 +155,6 @@ const parse         = require('kss').parse();</code></pre></div>
         <h3 class="subsection-title">Classes</h3>
 
         <dl>
-            <dt><a href="module-kss.KssConfig.html">KssConfig</a></dt>
-            <dd></dd>
-        
             <dt><a href="module-kss.KssModifier.html">KssModifier</a></dt>
             <dd></dd>
         
@@ -589,7 +604,7 @@ your options.</li>
 
     
 
-    <h4 class="name" id="~kss"><span class="type-signature">(inner) </span>kss<span class="signature">(options<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="~kss"><span class="type-signature">(inner) </span>kss<span class="signature">(options<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;(KssStyleGuide|null)>}</span></h4>
 
     
 
@@ -660,7 +675,7 @@ your options.</li>
 
             
 
-            <td class="description last"><p>A collection of configuration options.</p></td>
+            <td class="description last"><p>A collection of options.</p></td>
         </tr>
 
     
@@ -701,7 +716,7 @@ your options.</li>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss.js.html">lib/kss.js</a>, <a href="lib_kss.js.html#line41">line 41</a>
+        <a href="lib_kss.js.html">lib/kss.js</a>, <a href="lib_kss.js.html#line58">line 58</a>
     </li></ul></dd>
     
 
@@ -728,7 +743,8 @@ your options.</li>
 
         
 <div class="param-desc">
-    <p>A <code>Promise</code> object.</p>
+    <p>A <code>Promise</code> object resolving to a
+  <code>KssStyleGuide</code> object, or to <code>null</code> if the clone option is used.</p>
 </div>
 
 
@@ -739,7 +755,7 @@ your options.</li>
     </dt>
     <dd>
         
-<span class="param-type">Promise</span>
+<span class="param-type">Promise.&lt;(KssStyleGuide|null)></span>
 
 
     </dd>
@@ -765,7 +781,7 @@ your options.</li>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder.html">kss/builder</a></li><li><a href="module-kss_builder_class_handlebars.html">kss/builder/class/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder_class_handlebars-KssBuilderHandlebars.html">KssBuilderHandlebars</a></li><li><a href="module-kss_builder-KssBuilder.html">KssBuilder</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder_base.html">kss/builder/base</a></li><li><a href="module-kss_builder_base_handlebars.html">kss/builder/base/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder_base_handlebars-KssBuilderBaseHandlebars.html">KssBuilderBaseHandlebars</a></li><li><a href="module-kss_builder_base-KssBuilderBase.html">KssBuilderBase</a></li></ul>
 </nav>
 
 <br class="clear">
