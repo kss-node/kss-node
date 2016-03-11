@@ -97,7 +97,12 @@
       <ul class="kss-parameters">
       {{#each parameters}}
         <li class="kss-parameters__item">
-          <code class="kss-parameters__name">{{name}}</code>
+          <div class="kss-parameters__name"><code>{{name}}</code></div>
+          {{#if defaultValue}}
+            <div class="kss-parameters__default-value">Defaults to: <code>{{defaultValue}}</code></div>
+          {{else}}
+            <div class="kss-parameters__no-default"></div>
+          {{/if}}
           <div class="kss-parameters__description">{{{description}}}</div>
         </li>
       {{/each}}
