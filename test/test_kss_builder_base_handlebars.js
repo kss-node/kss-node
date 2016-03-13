@@ -159,13 +159,13 @@ describe('KssBuilderBaseHandlebars object API', function() {
     it('loads optional helpers', function() {
       expect(this.builderPrepared.Handlebars.helpers.test).to.exist;
     });
-
-    it('compiles the Handlebars template', function() {
-      expect(this.builderPrepared.template).to.be.function;
-    });
   });
 
   describe('.build', function() {
+    it('compiles the Handlebars templates', function() {
+      expect(this.builder.template).to.be.function;
+    });
+
     it('should save the KssStyleGuide', function() {
       let styleGuide = new kss.KssStyleGuide({
         sections: [
