@@ -416,7 +416,6 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
 
       return fs.writeFileAsync(path.join(this.options.destination, fileInfo.fileName),
         this.template({
-          pageReference: pageReference,
           sections: sections.map(section => {
             return section.toJSON();
           }),
