@@ -93,7 +93,7 @@ class KssBuilderHandlebars extends KssBuilderBaseHandlebars {
         this.Handlebars.registerHelper('section', function(reference, options) {
           let section = options.data.root.styleGuide.sections(reference);
 
-          return section ? options.fn(section.toJSON()) : options.inverse('');
+          return section.toJSON ? options.fn(section.toJSON()) : options.inverse('');
         });
       }
 
