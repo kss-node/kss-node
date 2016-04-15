@@ -21,3 +21,5 @@ nbproject
 .DS_Store
 ._*
 Thumbs.db
+
+/styleguide
