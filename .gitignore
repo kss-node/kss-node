@@ -21,3 +21,6 @@ nbproject
 .DS_Store
 ._*
 Thumbs.db
+
+#Exclude demo
+/styleguide
