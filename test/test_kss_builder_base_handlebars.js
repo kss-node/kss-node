@@ -272,7 +272,7 @@ describe('KssBuilderBaseHandlebars object API', function() {
         // - save the style guide
         // - compile the Handlebars template
         builder.styleGuide = styleGuide;
-        return fs.readFileAsync(path.resolve(builder.options.builder, 'index.html'), 'utf8');
+        return fs.readFileAsync(path.resolve(builder.options.builder, 'index.hbs'), 'utf8');
       }).then(content => {
         builder.template = builder.Handlebars.compile(content);
 

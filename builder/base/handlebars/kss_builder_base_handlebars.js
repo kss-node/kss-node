@@ -164,7 +164,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
 
     // Compile the Handlebars template.
     buildTasks.push(
-      fs.readFileAsync(path.resolve(this.options.builder, 'index.html'), 'utf8').then(content => {
+      fs.readFileAsync(path.resolve(this.options.builder, 'index.hbs'), 'utf8').then(content => {
         this.template = this.Handlebars.compile(content);
         return Promise.resolve();
       })
