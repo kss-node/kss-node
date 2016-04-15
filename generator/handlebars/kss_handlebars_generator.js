@@ -134,7 +134,7 @@ kssHandlebarsGenerator.init = function(config, cb) {
   }
 
   // Compile the Handlebars template.
-  this.template = fs.readFileSync(this.config.template + '/index.html', 'utf8');
+  this.template = fs.readFileSync(this.config.template + '/index.hbs', 'utf8');
   this.template = this.Handlebars.compile(this.template);
 
   return cb(null);
