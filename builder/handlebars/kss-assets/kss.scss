@@ -438,9 +438,31 @@ $kss-vertical-rhythm      : $kss-font-size * 1.5;
   }
 
   // ------------------------------------------------------------------------------
-  //   group prettyprint.js styling
+  // screenfull.js styles
   // ------------------------------------------------------------------------------
-  /* Pretty printing styles. Used with prettify.js. */
+
+  .kss-section {
+    &:-webkit-full-screen,
+    &:-moz-full-screen,
+    &:-ms-fullscreen,
+    &:fullscreen {
+      max-width: initial;
+      width: 100vw;
+      min-height: 100vh;
+      margin-bottom: 0;
+      overflow: scroll;
+
+      /* Remove all padding on the wrapper */
+      .kss-modifier__wrapper {
+        padding: 0;
+        border: none;
+      }
+    }
+  }
+
+  // ------------------------------------------------------------------------------
+  // prettyprint.js styles
+  // ------------------------------------------------------------------------------
 
   /* SPAN elements with the classes below are added by prettyprint. */
   .pln { color: #000 }  /* plain text */

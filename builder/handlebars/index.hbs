@@ -112,6 +112,9 @@
         <div class="kss-modifier__wrapper">
           <div class="kss-modifier__heading kss-style">
             Example{{#if modifiers}}s{{/if}}
+            <a href="#kssref-{{referenceURI}}"
+              onclick="var el = document.getElementById('kssref-{{referenceURI}}'); screenfull.toggle(el); return false;"
+            >Focus</a>
           </div>
 
           {{#if modifiers}}
@@ -158,6 +161,7 @@
 <script src="kss-assets/kss.js"></script>
 <script src="kss-assets/scrollspy.js"></script>
 <script src="kss-assets/prettify.js"></script>
+<script src="kss-assets/screenfull.js"></script>
 <script>
   prettyPrint();
   var spy = new ScrollSpy('#kss-node', {
