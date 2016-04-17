@@ -117,9 +117,9 @@
       <div class="kss-modifier__wrapper">
         <div class="kss-modifier__heading kss-style">
           Example{{#if modifiers}}s{{/if}}
-          <a href="#kssref-{{referenceURI}}" onclick="var el = document.getElementById('kssref-{{referenceURI}}'); requestFullscreen(el);">
-            Focus
-          </a>
+          <a href="#kssref-{{referenceURI}}-fullscreen"
+             onclick="var el = document.getElementById('kssref-{{referenceURI}}-fullscreen'); screenfull.toggle(el); return false;"
+          >Focus</a>
         </div>
       {{#if modifiers}}
         <div class="kss-modifier__default-name kss-style">

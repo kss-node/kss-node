@@ -423,7 +423,7 @@
   // ------------------------------------------------------------------------------
   /* Using the fullscreen api via screenfull.js. */
 
-  .kss-section {
+  .kss-modifier__wrapper {
     &:-webkit-full-screen,
     &:-moz-full-screen,
     &:-ms-fullscreen,
@@ -433,12 +433,8 @@
       min-height: 100vh;
       margin-bottom: 0;
       overflow: scroll;
-
-      /* Remove all width elements on the wrapper*/
-      .kss-modifier__wrapper {
-          padding: 0;
-          border: none;
-      }
+      padding: 0;
+      border: none;
     }
   }
 
