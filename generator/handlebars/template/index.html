@@ -117,6 +117,9 @@
       <div class="kss-modifier__wrapper">
         <div class="kss-modifier__heading kss-style">
           Example{{#if modifiers}}s{{/if}}
+          <a href="#kssref-{{referenceURI}}" onclick="var el = document.getElementById('kssref-{{referenceURI}}'); requestFullscreen(el);">
+            Focus
+          </a>
         </div>
       {{#if modifiers}}
         <div class="kss-modifier__default-name kss-style">
@@ -156,6 +159,7 @@
 <!-- SCRIPTS -->
 <script src="public/kss.js"></script>
 <script src="public/prettify.js"></script>
+<script src="public/screenfull.js"></script>
 <script>
   prettyPrint();
 </script>

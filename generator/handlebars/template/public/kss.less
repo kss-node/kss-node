@@ -419,6 +419,30 @@
   }
 
   // ------------------------------------------------------------------------------
+  //   @group Full Screen Styling
+  // ------------------------------------------------------------------------------
+  /* Using the fullscreen api via screenfull.js. */
+
+  .kss-section {
+    &:-webkit-full-screen,
+    &:-moz-full-screen,
+    &:-ms-fullscreen,
+    &:fullscreen {
+      max-width: initial;
+      width: 100vw;
+      min-height: 100vh;
+      margin-bottom: 0;
+      overflow: scroll;
+
+      /* Remove all width elements on the wrapper*/
+      .kss-modifier__wrapper {
+          padding: 0;
+          border: none;
+      }
+    }
+  }
+
+  // ------------------------------------------------------------------------------
   //   @group prettyprint.js styling
   // ------------------------------------------------------------------------------
   /* Pretty printing styles. Used with prettify.js. */
