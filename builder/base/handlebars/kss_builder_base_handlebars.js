@@ -158,14 +158,16 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
    */
   build(styleGuide) {
     this.styleGuide = styleGuide;
+    this.templates = {};
     this.partials = {};
 
     let buildTasks = [];
 
-    // Compile the Handlebars template.
+    // Compile the index.html Handlebars template.
     buildTasks.push(
       fs.readFileAsync(path.resolve(this.options.builder, 'index.html'), 'utf8').then(content => {
-        this.template = this.Handlebars.compile(content);
+        this.templates.index = this.Handlebars.compile(content);
+        this.templates.section = this.Handlebars.compile(content);
         return Promise.resolve();
       })
     );
@@ -273,14 +275,16 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
         this.log('...Building style guide pages:');
       }
 
-      // Group all of the sections by their root reference, and make a page for
-      // each.
-      let buildPageTasks = sectionRoots.map(rootReference => {
-        return this.buildPage(rootReference, this.styleGuide.sections(rootReference + '.*'));
-      });
+      let buildPageTasks = [];
 
       // Build the homepage.
-      buildPageTasks.push(this.buildPage('styleGuide.homepage', []));
+      buildPageTasks.push(this.buildPage('index', null, []));
+
+      // Group all of the sections by their root reference, and make a page for
+      // each.
+      sectionRoots.forEach(rootReference => {
+        buildPageTasks.push(this.buildPage('section', rootReference, this.styleGuide.sections(rootReference + '.*')));
+      });
 
       return Promise.all(buildPageTasks);
     }).then(() => {
@@ -338,16 +342,17 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
   /**
    * Renders the handlebars template for a section and saves it to a file.
    *
-   * @param {string} pageReference The reference of the current page's root
-   *   section.
+   * @param {string} templateName The name of the template to use.
+   * @param {string|null} pageReference The reference of the current page's root
+   *   section, or null if the current page is the homepage.
    * @param {Array} sections An array of KssSection objects.
    * @returns {Promise} A `Promise` object.
    */
-  buildPage(pageReference, sections) {
+  buildPage(templateName, pageReference, sections) {
     let getFileInfo;
 
     // Create a Promise resulting in the homepage file information.
-    if (pageReference === 'styleGuide.homepage') {
+    if (templateName === 'index') {
       let fileInfo = {
         fileName: 'index.html',
         homePageText: false
@@ -384,14 +389,15 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
     } else {
       let rootSection = this.styleGuide.sections(pageReference),
         fileInfo = {
-          fileName: 'section-' + rootSection.referenceURI() + '.html',
+          fileName: templateName + '-' + rootSection.referenceURI() + '.html',
           homePageText: false
         };
       if (this.options.verbose) {
         this.log(
-          ' - section ' + pageReference + ' [',
-          rootSection.header() ? rootSection.header() : /* istanbul ignore next */ 'Unnamed',
-          ']'
+          ' - ' + templateName + ' ' + pageReference
+          + ' ['
+          + (rootSection.header() ? rootSection.header() : /* istanbul ignore next */ 'Unnamed')
+          + ']'
         );
       }
       getFileInfo = Promise.resolve(fileInfo);
@@ -415,7 +421,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
       }
 
       return fs.writeFileAsync(path.join(this.options.destination, fileInfo.fileName),
-        this.template({
+        this.templates[templateName]({
           sections: sections.map(section => {
             return section.toJSON();
           }),

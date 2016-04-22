@@ -163,7 +163,7 @@ describe('KssBuilderBaseHandlebars object API', function() {
 
   describe('.build', function() {
     it('compiles the Handlebars templates', function() {
-      expect(this.builder.template).to.be.function;
+      expect(this.builder.templates.section).to.be.function;
     });
 
     it('should save the KssStyleGuide', function() {
@@ -257,7 +257,7 @@ describe('KssBuilderBaseHandlebars object API', function() {
       expect(this.files['index']).to.include('<script src="javascript-2.js"></script>');
     });
 
-    it('should build the homepage given "styleGuide.homepage" as pageReference', function() {
+    it('should build the homepage given "index" as templateName', function() {
       expect(this.files['index']).to.include('<meta name="generator" content="kss-node" />');
 
       let builder = testBuilder({
@@ -274,10 +274,11 @@ describe('KssBuilderBaseHandlebars object API', function() {
         builder.styleGuide = styleGuide;
         return fs.readFileAsync(path.resolve(builder.options.builder, 'index.html'), 'utf8');
       }).then(content => {
-        builder.template = builder.Handlebars.compile(content);
+        builder.templates = {};
+        builder.templates.index = builder.Handlebars.compile(content);
 
         // Now generate the homepage to test this method directly.
-        return builder.buildPage('styleGuide.homepage', []);
+        return builder.buildPage('index', null, []);
       }).then(() => {
         return fs.readFileAsync(path.join(__dirname, 'output', 'base_handlebars', 'buildPage', 'index.html'), 'utf8');
       }).then(homepageContent => {
