@@ -158,16 +158,23 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
    */
   build(styleGuide) {
     this.styleGuide = styleGuide;
-    this.templates = {};
     this.partials = {};
+
+    if (typeof this.templates === 'undefined') {
+      this.templates = {};
+    }
 
     let buildTasks = [];
 
     // Compile the index.html Handlebars template.
     buildTasks.push(
       fs.readFileAsync(path.resolve(this.options.builder, 'index.html'), 'utf8').then(content => {
-        this.templates.index = this.Handlebars.compile(content);
-        this.templates.section = this.Handlebars.compile(content);
+        if (typeof this.templates.index === 'undefined') {
+          this.templates.index = this.Handlebars.compile(content);
+        }
+        if (typeof this.templates.section === 'undefined') {
+          this.templates.section = this.Handlebars.compile(content);
+        }
         return Promise.resolve();
       })
     );
@@ -346,22 +353,67 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
    * @param {string|null} pageReference The reference of the current page's root
    *   section, or null if the current page is the homepage.
    * @param {Array} sections An array of KssSection objects.
+   * @param {Object} [context] Additional context to give to the Handlebars
+   *   template when it is rendered.
    * @returns {Promise} A `Promise` object.
    */
-  buildPage(templateName, pageReference, sections) {
-    let getFileInfo;
+  buildPage(templateName, pageReference, sections, context) {
+    context = context || {};
+    context.styleGuide = this.styleGuide;
+    context.sections = sections.map(section => {
+      return section.toJSON();
+    });
+    context.hasNumericReferences = this.styleGuide.hasNumericReferences();
+    context.partials = this.partials;
+    context.options = this.options || /* istanbul ignore next */ {};
 
-    // Create a Promise resulting in the homepage file information.
-    if (templateName === 'index') {
-      let fileInfo = {
-        fileName: 'index.html',
-        homePageText: false
-      };
-      if (this.options.verbose) {
-        this.log(' - homepage');
+    // Create the HTML to load the optional CSS and JS (if a sub-class hasn't already built it.)
+    if (typeof context.styles === 'undefined') {
+      context.styles = '';
+      for (let key in this.options.css) {
+        // istanbul ignore else
+        if (this.options.css.hasOwnProperty(key)) {
+          context.styles = context.styles + '<link rel="stylesheet" href="' + this.options.css[key] + '">\n';
+        }
       }
+    }
+    if (typeof context.scripts === 'undefined') {
+      context.scripts = '';
+      for (let key in this.options.js) {
+        // istanbul ignore else
+        if (this.options.js.hasOwnProperty(key)) {
+          context.scripts = context.scripts + '<script src="' + this.options.js[key] + '"></script>\n';
+        }
+      }
+    }
 
-      getFileInfo = Promise.all(
+    // Create a menu for the page (if a sub-class hasn't already built one.)
+    if (typeof context.menu === 'undefined') {
+      context.menu = this.createMenu(pageReference);
+    }
+
+    // Determine the file name to use for this page.
+    if (pageReference) {
+      let rootSection = this.styleGuide.sections(pageReference);
+      if (this.options.verbose) {
+        this.log(
+          ' - ' + templateName + ' ' + pageReference
+          + ' ['
+          + (rootSection.header() ? rootSection.header() : /* istanbul ignore next */ 'Unnamed')
+          + ']'
+        );
+      }
+      // Convert the pageReference to be URI-friendly.
+      pageReference = rootSection.referenceURI();
+    } else if (this.options.verbose) {
+      this.log(' - homepage');
+    }
+    let fileName = templateName + (pageReference ? '-' + pageReference : '') + '.html';
+
+    // Grab the homepage text if it hasn't already been provided.
+    let getHomepageText;
+    if (templateName === 'index' && typeof context.homepage === 'undefined') {
+      getHomepageText = Promise.all(
         this.options.source.map(source => {
           return glob(source + '/**/' + this.options.homepage);
         })
@@ -380,60 +432,21 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
         }
         return '';
       }).then(homePageText => {
-        // Ensure homePageText is a non-false value.
-        fileInfo.homePageText = homePageText ? marked(homePageText) : ' ';
-        return fileInfo;
+        // Ensure homePageText is a non-false value. And run any results through
+        // Markdown.
+        context.homepage = homePageText ? marked(homePageText) : ' ';
+        return Promise.resolve();
       });
-
-      // Create a Promise resulting in the non-homepage file information.
     } else {
-      let rootSection = this.styleGuide.sections(pageReference),
-        fileInfo = {
-          fileName: templateName + '-' + rootSection.referenceURI() + '.html',
-          homePageText: false
-        };
-      if (this.options.verbose) {
-        this.log(
-          ' - ' + templateName + ' ' + pageReference
-          + ' ['
-          + (rootSection.header() ? rootSection.header() : /* istanbul ignore next */ 'Unnamed')
-          + ']'
-        );
-      }
-      getFileInfo = Promise.resolve(fileInfo);
+      getHomepageText = Promise.resolve();
+      context.homepage = false;
     }
 
-    return getFileInfo.then(fileInfo => {
-      // Create the HTML to load the optional CSS and JS.
-      let styles = '',
-        scripts = '';
-      for (let key in this.options.css) {
-        // istanbul ignore else
-        if (this.options.css.hasOwnProperty(key)) {
-          styles = styles + '<link rel="stylesheet" href="' + this.options.css[key] + '">\n';
-        }
-      }
-      for (let key in this.options.js) {
-        // istanbul ignore else
-        if (this.options.js.hasOwnProperty(key)) {
-          scripts = scripts + '<script src="' + this.options.js[key] + '"></script>\n';
-        }
-      }
-
-      return fs.writeFileAsync(path.join(this.options.destination, fileInfo.fileName),
-        this.templates[templateName]({
-          sections: sections.map(section => {
-            return section.toJSON();
-          }),
-          menu: this.createMenu(pageReference),
-          homepage: fileInfo.homePageText,
-          styles: styles,
-          scripts: scripts,
-          hasNumericReferences: this.styleGuide.hasNumericReferences(),
-          partials: this.partials,
-          styleGuide: this.styleGuide,
-          options: this.options || /* istanbul ignore next */ {}
-        })
+    return getHomepageText.then(() => {
+      // Render the template and save it to the destination.
+      return fs.writeFileAsync(
+        path.join(this.options.destination, fileName),
+        this.templates[templateName](context)
       );
     });
   }
