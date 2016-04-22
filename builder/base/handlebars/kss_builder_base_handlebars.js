@@ -160,6 +160,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
     this.styleGuide = styleGuide;
     this.partials = {};
 
+    // istanbul ignore else
     if (typeof this.templates === 'undefined') {
       this.templates = {};
     }
@@ -169,9 +170,11 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
     // Compile the index.hbs Handlebars template.
     buildTasks.push(
       fs.readFileAsync(path.resolve(this.options.builder, 'index.hbs'), 'utf8').then(content => {
+        // istanbul ignore else
         if (typeof this.templates.index === 'undefined') {
           this.templates.index = this.Handlebars.compile(content);
         }
+        // istanbul ignore else
         if (typeof this.templates.section === 'undefined') {
           this.templates.section = this.Handlebars.compile(content);
         }
@@ -368,6 +371,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
     context.options = this.options || /* istanbul ignore next */ {};
 
     // Create the HTML to load the optional CSS and JS (if a sub-class hasn't already built it.)
+    // istanbul ignore else
     if (typeof context.styles === 'undefined') {
       context.styles = '';
       for (let key in this.options.css) {
@@ -377,6 +381,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
         }
       }
     }
+    // istanbul ignore else
     if (typeof context.scripts === 'undefined') {
       context.scripts = '';
       for (let key in this.options.js) {
@@ -388,6 +393,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
     }
 
     // Create a menu for the page (if a sub-class hasn't already built one.)
+    // istanbul ignore else
     if (typeof context.menu === 'undefined') {
       context.menu = this.createMenu(pageReference);
     }

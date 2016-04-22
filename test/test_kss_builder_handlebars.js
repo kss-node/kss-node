@@ -42,6 +42,7 @@ describe('KssBuilderHandlebars builder (default)', function() {
     it('should load Handlebars helper: {{section [arg]}}', function() {
       expect(this.files['section-3']).to.include('Handlebars Section Helper Test 3');
       expect(this.files['section-3']).to.include('Section 3 has been successfully loaded.');
+      expect(this.files['section-3']).to.include('Handlebars Section Helper Test Fail');
     });
 
     it('should load Handlebars helper: {{eachSection [arg]}}', function() {
