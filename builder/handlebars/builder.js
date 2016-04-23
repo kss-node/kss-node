@@ -83,7 +83,7 @@ class KssBuilderHandlebars extends KssBuilderBaseHandlebars {
       // Load this builder's extra Handlebars helpers.
 
       // Allow a builder user to override the {{section [reference]}} helper
-      // with the --helpers setting. Since a user's handlebars helpers are
+      // with the --extend setting. Since a user's handlebars helpers are
       // loaded first, we need to check if this helper already exists.
       if (!this.Handlebars.helpers['section']) {
         /**
@@ -98,7 +98,7 @@ class KssBuilderHandlebars extends KssBuilderBaseHandlebars {
       }
 
       // Allow a builder user to override the {{eachSection [query]}} helper
-      // with the --helpers setting.
+      // with the --extend setting.
       if (!this.Handlebars.helpers['eachSection']) {
         /**
          * Loop over a section query. If a number is supplied, will convert into

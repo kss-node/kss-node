@@ -40,11 +40,11 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
 
     // Tell kss-node which Yargs-like options this builder has.
     this.addOptionDefinitions({
-      'helpers': {
+      'extend': {
         group: 'Style guide:',
         string: true,
         path: true,
-        describe: 'Location of custom handlebars helpers; see http://bit.ly/kss-wiki'
+        describe: 'Location of modules to extend Handlebars; see http://bit.ly/kss-wiki'
       },
       'homepage': {
         group: 'Style guide:',
@@ -85,8 +85,8 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
       // Store the global Handlebars object.
       this.Handlebars = require('handlebars');
 
-      // Load the standard Handlebars helpers.
-      require('./helpers.js').register(this.Handlebars, this.options);
+      // Load the module to extend Handlebars in our standard ways.
+      require('./extend.js')(this.Handlebars, this.options);
 
       if (this.options.verbose) {
         this.log('');
@@ -95,8 +95,8 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
         this.log(' * KSS Source  : ' + this.options.source.join(', '));
         this.log(' * Destination : ' + this.options.destination);
         this.log(' * Builder     : ' + this.options.builder);
-        if (this.options.helpers.length) {
-          this.log(' * Helpers     : ' + this.options.helpers.join(', '));
+        if (this.options.extend.length) {
+          this.log(' * Extend      : ' + this.options.extend.join(', '));
         }
         this.log('');
       }
@@ -126,16 +126,16 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
         })
       );
 
-      // Load Handlebars helpers.
-      this.options.helpers.forEach(directory => {
+      // Load modules that extend Handlebars.
+      this.options.extend.forEach(directory => {
         prepTasks.push(
-          fs.readdirAsync(directory).then(helperFiles => {
-            helperFiles.forEach(fileName => {
+          fs.readdirAsync(directory).then(files => {
+            files.forEach(fileName => {
               if (path.extname(fileName) === '.js') {
-                let helper = require(path.join(directory, fileName));
+                let extendFunction = require(path.join(directory, fileName));
                 // istanbul ignore else
-                if (typeof helper.register === 'function') {
-                  helper.register(this.Handlebars, this.options);
+                if (typeof extendFunction === 'function') {
+                  extendFunction(this.Handlebars, this.options);
                 }
               }
             });
@@ -350,7 +350,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
   }
 
   /**
-   * Renders the handlebars template for a section and saves it to a file.
+   * Renders the Handlebars template for a section and saves it to a file.
    *
    * @param {string} templateName The name of the template to use.
    * @param {string|null} pageReference The reference of the current page's root

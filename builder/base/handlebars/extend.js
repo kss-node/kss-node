@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports.register = function(handlebars, options) {
+module.exports = function(Handlebars, options) {
   options = options || /* istanbul ignore next */ {};
 
   /**
@@ -13,7 +13,7 @@ module.exports.register = function(handlebars, options) {
    * {{markup ../this}}
    * ```
    */
-  handlebars.registerHelper('markup', function() {
+  Handlebars.registerHelper('markup', function() {
     let options = arguments[arguments.length - 1];
 
     // Assume the current context is the section we want unless one is passed as
@@ -23,12 +23,12 @@ module.exports.register = function(handlebars, options) {
     // Verify we found a JSON representation of a KssSection object.
     // istanbul ignore if
     if (!section.reference) {
-      throw new handlebars.Exception('{{markup}} helper must be used in a Section object or passed a Section object as the first parameter.');
+      throw new Handlebars.Exception('{{markup}} helper must be used in a Section object or passed a Section object as the first parameter.');
     }
 
     // If the section does not have any markup, render an empty string.
     if (!section.markup) {
-      return new handlebars.SafeString('');
+      return new Handlebars.SafeString('');
     }
 
     // Load the information about this section's markup partial.
@@ -56,7 +56,7 @@ module.exports.register = function(handlebars, options) {
     /* eslint-enable camelcase */
 
     // Compile the section's markup partial into a template.
-    let template = handlebars.compile('{{> "' + partial.name + '"}}');
+    let template = Handlebars.compile('{{> "' + partial.name + '"}}');
     // We don't wrap the rendered template in "new handlebars.SafeString()" since
     // we want the ability to display it as a code sample with {{ }} and as
     // rendered HTML with {{{ }}}.

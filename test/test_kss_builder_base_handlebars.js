@@ -57,7 +57,7 @@ describe('KssBuilderBaseHandlebars object API', function() {
       source: source,
       destination: destination,
       builder: helperUtils.fixtures('builder-with-assets'),
-      helpers: helperUtils.fixtures('builder-with-assets', 'helpers'),
+      extend: helperUtils.fixtures('builder-with-assets', 'extend'),
       css: ['styles-1.css', 'styles-2.css'],
       js: ['javascript-1.js', 'javascript-2.js'],
       verbose: true
@@ -96,7 +96,7 @@ describe('KssBuilderBaseHandlebars object API', function() {
 
     it('should implement the default option definitions', function() {
       let builder = new KssBuilderBaseHandlebars();
-      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'verbose', 'helpers', 'homepage', 'placeholder', 'nav-depth']);
+      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'verbose', 'extend', 'homepage', 'placeholder', 'nav-depth']);
     });
   });
 
@@ -115,7 +115,7 @@ describe('KssBuilderBaseHandlebars object API', function() {
       this.builderPrepared = testBuilder({
         destination: path.resolve(__dirname, 'output', 'base_handlebars', 'prepare'),
         builder: helperUtils.fixtures('builder-with-assets'),
-        helpers: [helperUtils.fixtures('builder-with-assets', 'helpers')]
+        extend: [helperUtils.fixtures('builder-with-assets', 'extend')]
       });
       return this.builderPrepared.prepare(new kss.KssStyleGuide({sections: [{header: 'Section 1', reference: 'one'}]}));
     });
@@ -129,13 +129,13 @@ describe('KssBuilderBaseHandlebars object API', function() {
       expect(this.builderPrepared.Handlebars).to.be.object;
     });
 
-    it('loads the standard Handlebars helpers', function() {
+    it('loads the standard Handlebars extensions', function() {
       expect(this.builderPrepared.Handlebars.helpers).to.have.property('markup');
     });
 
     it('outputs settings if the verbose option is set', function() {
       let builder = testBuilder({
-        helpers: ['/dev/null/example1', '/dev/null/example2'],
+        extend: ['/dev/null/example1', '/dev/null/example2'],
         verbose: true,
         // Force early prepare() failure.
         destination: null
@@ -143,7 +143,7 @@ describe('KssBuilderBaseHandlebars object API', function() {
       return builder.prepare(new kss.KssStyleGuide({sections: [{header: 'Section 1', reference: 'one'}]})).catch(error => {
         let output = builder.getTestOutput('stdout');
         expect(output).to.contain('Building your KSS style guide!');
-        expect(output).to.contain(' * Helpers     : /dev/null/example1, /dev/null/example2');
+        expect(output).to.contain(' * Extend      : /dev/null/example1, /dev/null/example2');
         return error;
       }).then(error => {
         expect(error.message).to.equal('Path must be a string. Received null');
@@ -156,7 +156,7 @@ describe('KssBuilderBaseHandlebars object API', function() {
       });
     });
 
-    it('loads optional helpers', function() {
+    it('loads optional Handlebars extensions', function() {
       expect(this.builderPrepared.Handlebars.helpers.test).to.exist;
     });
   });
@@ -210,7 +210,7 @@ describe('KssBuilderBaseHandlebars object API', function() {
         source: helperUtils.fixtures('source-handlebars-builder-test'),
         destination: path.resolve(__dirname, 'output', 'base_handlebars', 'build-no-verbose'),
         builder: helperUtils.fixtures('builder-with-assets'),
-        helpers: helperUtils.fixtures('builder-with-assets', 'helpers')
+        extend: helperUtils.fixtures('builder-with-assets', 'extend')
       });
       let styleGuide = new kss.KssStyleGuide({sections: [{header: 'Heading 4.3', reference: '4.3', markup: '4.3.hbs'}]});
       return builder.prepare(styleGuide).then(styleGuide => {

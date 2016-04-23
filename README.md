@@ -60,7 +60,7 @@ Style guide:
   --css          URL of a CSS file to include in the style guide
   --js           URL of a JavaScript file to include in the style guide
   --custom       Process a custom property name when parsing KSS comments
-  --helpers      Location of custom handlebars helpers; see
+  --extend       Location of modules to extend Handlebars; see
                  http://bit.ly/kss-wiki
   --homepage     File name of the homepage's Markdown file
                                                         [default: "homepage.md"]
