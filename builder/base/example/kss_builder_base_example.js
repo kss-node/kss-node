@@ -38,7 +38,6 @@ class KssBuilderBaseExample extends KssBuilderBase {
 
     this.addOptionDefinitions({
       'example-option': {
-        alias: 'u',
         string: true,
         description: 'This is a custom command-line option used by this Builder.'
       }
