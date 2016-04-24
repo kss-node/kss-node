@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>kss-node JavaScript API: Module: kss/lib/traverse</title>
+    <title>kss-node JavaScript API: Source: builder/twig/builder.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,129 +17,83 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: kss/lib/traverse</h1>
+    <h1 class="page-title">Source: builder/twig/builder.js</h1>
 
     
 
 
 
-
-<section>
-
-<header>
     
-        
-            
-        
-    
-</header>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict';
 
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description"><p>The <code>kss/lib/traverse</code> module is normally accessed via the
-<a href="module-kss.html#.traverse"><code>traverse()</code></a> method of the <code>kss</code> module:</p>
-<pre class="prettyprint source"><code>const kss = require('kss');
-let styleGuide = kss.traverse(directory, options);</code></pre></div>
-        
-
-        
-            
-
-
-
+/**
+ * This module is used to load the base KSS builder class needed by this builder
+ * and to define any custom CLI options or extend any base class methods.
+ *
+ * Note: since this builder wants to extend the KssBuilderBaseTwig class, it
+ * must export a KssBuilderBaseTwig sub-class as a module. Otherwise, kss-node
+ * will assume the builder wants to use the KssBuilderBaseHandlebars class.
+ *
+ * This file's name should follow standard node.js require() conventions. It
+ * should either be named index.js or have its name set in the "main" property
+ * of the builder's package.json. See
+ * http://nodejs.org/api/modules.html#modules_folders_as_modules
+ *
+ * @module kss/builder/twig
+ */
 
 
 
+// We want to extend kss-node's Twig builder so we can add options that
+// are used in our templates.
+let KssBuilderBaseTwig;
 
+try {
+  // In order for a builder to be "kss-node clone"-able, it must use the
+  // require('kss/builder/path') syntax.
+  KssBuilderBaseTwig = require('kss/builder/base/twig');
+} catch (e) {
+  // The above require() line will always work.
+  //
+  // Unless you are one of the developers of kss-node and are using a git clone
+  // of kss-node where this code will not be inside a "node_modules/kss" folder
+  // which would allow node.js to find it with require('kss/anything'), forcing
+  // you to write a long-winded comment and catch the error and try again using
+  // a relative path.
+  KssBuilderBaseTwig = require('../base/twig');
+}
 
+/**
+ * A kss-node builder that takes input files and builds a style guide using Twig
+ * templates.
+ */
+class KssBuilderTwig extends KssBuilderBaseTwig {
+  /**
+   * Create a builder object.
+   */
+  constructor() {
+    // First call the constructor of KssBuilderBaseTwig.
+    super();
 
+    // Then tell kss-node which Yargs-like options this builder adds.
+    this.addOptionDefinitions({
+      title: {
+        group: 'Style guide:',
+        string: true,
+        multiple: false,
+        describe: 'Title of the style guide',
+        default: 'KSS Style Guide'
+      }
+    });
+  }
+}
 
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_traverse.js.html">lib/traverse.js</a>, <a href="lib_traverse.js.html#line3">line 3</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+module.exports = KssBuilderTwig;
+</code></pre>
+        </article>
+    </section>
 
 
 

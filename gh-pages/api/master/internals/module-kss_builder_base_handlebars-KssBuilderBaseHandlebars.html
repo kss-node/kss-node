@@ -248,7 +248,7 @@ const builder = new KssBuilderBaseHandlebars();</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="builder_base_handlebars_kss_builder_base_handlebars.js.html">builder/base/handlebars/kss_builder_base_handlebars.js</a>, <a href="builder_base_handlebars_kss_builder_base_handlebars.js.html#line159">line 159</a>
+        <a href="builder_base_handlebars_kss_builder_base_handlebars.js.html">builder/base/handlebars/kss_builder_base_handlebars.js</a>, <a href="builder_base_handlebars_kss_builder_base_handlebars.js.html#line156">line 156</a>
     </li></ul></dd>
     
 
@@ -302,14 +302,14 @@ const builder = new KssBuilderBaseHandlebars();</code></pre>
 
     
 
-    <h4 class="name" id="buildPage"><span class="type-signature"></span>buildPage<span class="signature">(pageReference, sections)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="buildPage"><span class="type-signature"></span>buildPage<span class="signature">(templateName, pageReference, sections, context<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Renders the handlebars template for a section and saves it to a file.</p>
+    <p>Renders the Handlebars template for a section and saves it to a file.</p>
 </div>
 
 
@@ -333,6 +333,8 @@ const builder = new KssBuilderBaseHandlebars();</code></pre>
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -345,7 +347,7 @@ const builder = new KssBuilderBaseHandlebars();</code></pre>
 
         <tr>
             
-                <td class="name"><code>pageReference</code></td>
+                <td class="name"><code>templateName</code></td>
             
 
             <td class="type">
@@ -358,11 +360,53 @@ const builder = new KssBuilderBaseHandlebars();</code></pre>
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The name of the template to use.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pageReference</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+|
+
+<span class="param-type">null</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
             <td class="description last"><p>The reference of the current page's root
-  section.</p></td>
+  section, or null if the current page is the homepage.</p></td>
         </tr>
 
     
@@ -382,10 +426,52 @@ const builder = new KssBuilderBaseHandlebars();</code></pre>
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
             <td class="description last"><p>An array of KssSection objects.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>context</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>Additional context to give to the Handlebars
+  template when it is rendered.</p></td>
         </tr>
 
     
@@ -426,7 +512,7 @@ const builder = new KssBuilderBaseHandlebars();</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="builder_base_handlebars_kss_builder_base_handlebars.js.html">builder/base/handlebars/kss_builder_base_handlebars.js</a>, <a href="builder_base_handlebars_kss_builder_base_handlebars.js.html#line346">line 346</a>
+        <a href="builder_base_handlebars_kss_builder_base_handlebars.js.html">builder/base/handlebars/kss_builder_base_handlebars.js</a>, <a href="builder_base_handlebars_kss_builder_base_handlebars.js.html#line363">line 363</a>
     </li></ul></dd>
     
 
@@ -580,7 +666,7 @@ const builder = new KssBuilderBaseHandlebars();</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="builder_base_handlebars_kss_builder_base_handlebars.js.html">builder/base/handlebars/kss_builder_base_handlebars.js</a>, <a href="builder_base_handlebars_kss_builder_base_handlebars.js.html#line300">line 300</a>
+        <a href="builder_base_handlebars_kss_builder_base_handlebars.js.html">builder/base/handlebars/kss_builder_base_handlebars.js</a>, <a href="builder_base_handlebars_kss_builder_base_handlebars.js.html#line314">line 314</a>
     </li></ul></dd>
     
 
@@ -802,7 +888,7 @@ guide is built.</p>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder_base.html">kss/builder/base</a></li><li><a href="module-kss_builder_base_handlebars.html">kss/builder/base/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder_base_handlebars-KssBuilderBaseHandlebars.html">KssBuilderBaseHandlebars</a></li><li><a href="module-kss_builder_base-KssBuilderBase.html">KssBuilderBase</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder_base.html">kss/builder/base</a></li><li><a href="module-kss_builder_base_handlebars.html">kss/builder/base/handlebars</a></li><li><a href="module-kss_builder_base_twig.html">kss/builder/base/twig</a></li><li><a href="module-kss_builder_handlebars.html">kss/builder/handlebars</a></li><li><a href="module-kss_builder_twig.html">kss/builder/twig</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder_base_handlebars-KssBuilderBaseHandlebars.html">KssBuilderBaseHandlebars</a></li><li><a href="module-kss_builder_base_twig-KssBuilderBaseTwig.html">KssBuilderBaseTwig</a></li><li><a href="module-kss_builder_base-KssBuilderBase.html">KssBuilderBase</a></li><li><a href="module-kss_builder_handlebars-KssBuilderHandlebars.html">KssBuilderHandlebars</a></li><li><a href="module-kss_builder_twig-KssBuilderTwig.html">KssBuilderTwig</a></li></ul>
 </nav>
 
 <br class="clear">

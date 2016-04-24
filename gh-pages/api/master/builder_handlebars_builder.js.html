@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>kss-node JavaScript API: Source: builder/handlebars/builder.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: builder/handlebars/builder.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict';
+
+/**
+ * This module is used to load the base KSS builder class needed by this builder
+ * and to define any custom CLI options or extend any base class methods.
+ *
+ * Note: this module is optional. If a builder does not export a KssBuilderBase
+ * sub-class as a module, then kss-node will assume the builder wants to use
+ * the KssBuilderBaseHandlebars class.
+ *
+ * This file's name should follow standard node.js require() conventions. It
+ * should either be named index.js or have its name set in the "main" property
+ * of the builder's package.json. See
+ * http://nodejs.org/api/modules.html#modules_folders_as_modules
+ *
+ * @module kss/builder/handlebars
+ */
+
+
+// We want to extend kss-node's Handlebars builder so we can add options that
+// are used in our templates.
+let KssBuilderBaseHandlebars;
+
+try {
+  // In order for a builder to be "kss-node clone"-able, it must use the
+  // require('kss/builder/path') syntax.
+  KssBuilderBaseHandlebars = require('kss/builder/base/handlebars');
+} catch (e) {
+  // The above require() line will always work.
+  //
+  // Unless you are one of the developers of kss-node and are using a git clone
+  // of kss-node where this code will not be inside a "node_modules/kss" folder
+  // which would allow node.js to find it with require('kss/anything'), forcing
+  // you to write a long-winded comment and catch the error and try again using
+  // a relative path.
+  KssBuilderBaseHandlebars = require('../base/handlebars');
+}
+
+/**
+ * A kss-node builder that takes input files and builds a style guide using
+ * Handlebars templates.
+ */
+class KssBuilderHandlebars extends KssBuilderBaseHandlebars {
+  /**
+   * Create a builder object.
+   */
+  constructor() {
+    // First call the constructor of KssBuilderBaseHandlebars.
+    super();
+
+    // Then tell kss-node which Yargs-like options this builder adds.
+    this.addOptionDefinitions({
+      title: {
+        group: 'Style guide:',
+        string: true,
+        multiple: false,
+        describe: 'Title of the style guide',
+        default: 'KSS Style Guide'
+      }
+    });
+  }
+
+  /**
+   * Allow the builder to preform pre-build tasks or modify the KssStyleGuide
+   * object.
+   *
+   * The method can be set by any KssBuilderBase sub-class to do any custom
+   * tasks after the KssStyleGuide object is created and before the HTML style
+   * guide is built.
+   *
+   * The builder could also take this opportunity to do tasks like special
+   * handling of "custom" properties or running Sass or Bower tasks.
+   *
+   * The parent class sets up access for this builder to an object containing
+   * the options of the requested build (as `this.options`), and the global
+   * Handlebars object (as `this.Handlebars`).
+   *
+   * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
+   * @returns {Promise.&lt;KssStyleGuide>} A `Promise` object resolving to a
+   *   `KssStyleGuide` object.
+   */
+  prepare(styleGuide) {
+    // First call the prepare() of the parent KssBuilderBaseHandlebars class.
+    // Since it returns a Promise, we do our prep work in a then().
+    return super.prepare(styleGuide).then(styleGuide => {
+      // Load this builder's extra Handlebars helpers.
+
+      // Allow a builder user to override the {{section [reference]}} helper
+      // with the --extend setting. Since a user's handlebars helpers are
+      // loaded first, we need to check if this helper already exists.
+      if (!this.Handlebars.helpers['section']) {
+        /**
+         * Returns a single section, found by its reference
+         * @param  {String} reference The reference to search for.
+         */
+        this.Handlebars.registerHelper('section', function(reference, options) {
+          let section = options.data.root.styleGuide.sections(reference);
+
+          return section.toJSON ? options.fn(section.toJSON()) : options.inverse('');
+        });
+      }
+
+      // Allow a builder user to override the {{eachSection [query]}} helper
+      // with the --extend setting.
+      if (!this.Handlebars.helpers['eachSection']) {
+        /**
+         * Loop over a section query. If a number is supplied, will convert into
+         * a query for all children and descendants of that reference.
+         * @param  {Mixed} query The section query
+         */
+        this.Handlebars.registerHelper('eachSection', function(query, options) {
+          let styleGuide = options.data.root.styleGuide;
+
+          if (!query.match(/\bx\b|\*/g)) {
+            query = query + '.*';
+          }
+          let sections = styleGuide.sections(query);
+          if (!sections.length) {
+            return options.inverse('');
+          }
+
+          let l = sections.length;
+          let buffer = '';
+          for (let i = 0; i &lt; l; i += 1) {
+            buffer += options.fn(sections[i].toJSON());
+          }
+
+          return buffer;
+        });
+      }
+
+      return Promise.resolve(styleGuide);
+    });
+  }
+}
+
+module.exports = KssBuilderHandlebars;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder_base.html">kss/builder/base</a></li><li><a href="module-kss_builder_base_handlebars.html">kss/builder/base/handlebars</a></li><li><a href="module-kss_builder_base_twig.html">kss/builder/base/twig</a></li><li><a href="module-kss_builder_handlebars.html">kss/builder/handlebars</a></li><li><a href="module-kss_builder_twig.html">kss/builder/twig</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder_base_handlebars-KssBuilderBaseHandlebars.html">KssBuilderBaseHandlebars</a></li><li><a href="module-kss_builder_base_twig-KssBuilderBaseTwig.html">KssBuilderBaseTwig</a></li><li><a href="module-kss_builder_base-KssBuilderBase.html">KssBuilderBase</a></li><li><a href="module-kss_builder_handlebars-KssBuilderHandlebars.html">KssBuilderHandlebars</a></li><li><a href="module-kss_builder_twig-KssBuilderTwig.html">KssBuilderTwig</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>kss-node JavaScript API: Module: kss/lib/traverse</title>
+    <title>kss-node JavaScript API: Module: kss/builder/handlebars</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: kss/lib/traverse</h1>
+    <h1 class="page-title">Module: kss/builder/handlebars</h1>
 
     
 
@@ -38,10 +38,15 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>The <code>kss/lib/traverse</code> module is normally accessed via the
-<a href="module-kss.html#.traverse"><code>traverse()</code></a> method of the <code>kss</code> module:</p>
-<pre class="prettyprint source"><code>const kss = require('kss');
-let styleGuide = kss.traverse(directory, options);</code></pre></div>
+            <div class="description"><p>This module is used to load the base KSS builder class needed by this builder
+and to define any custom CLI options or extend any base class methods.</p>
+<p>Note: this module is optional. If a builder does not export a KssBuilderBase
+sub-class as a module, then kss-node will assume the builder wants to use
+the KssBuilderBaseHandlebars class.</p>
+<p>This file's name should follow standard node.js require() conventions. It
+should either be named index.js or have its name set in the &quot;main&quot; property
+of the builder's package.json. See
+http://nodejs.org/api/modules.html#modules_folders_as_modules</p></div>
         
 
         
@@ -90,7 +95,7 @@ let styleGuide = kss.traverse(directory, options);</code></pre></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_traverse.js.html">lib/traverse.js</a>, <a href="lib_traverse.js.html#line3">line 3</a>
+        <a href="builder_handlebars_builder.js.html">builder/handlebars/builder.js</a>, <a href="builder_handlebars_builder.js.html#line3">line 3</a>
     </li></ul></dd>
     
 
@@ -124,6 +129,13 @@ let styleGuide = kss.traverse(directory, options);</code></pre></div>
 
     
 
+    
+        <h3 class="subsection-title">Classes</h3>
+
+        <dl>
+            <dt><a href="module-kss_builder_handlebars-KssBuilderHandlebars.html">KssBuilderHandlebars</a></dt>
+            <dd></dd>
+        </dl>
     
 
      

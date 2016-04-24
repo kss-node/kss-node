@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>kss-node JavaScript API: Module: kss/builder/base</title>
+    <title>kss-node JavaScript API: Module: kss/builder/twig</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: kss/builder/base</h1>
+    <h1 class="page-title">Module: kss/builder/twig</h1>
 
     
 
@@ -38,8 +38,15 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>The <code>kss/builder/base</code> module loads the KssBuilderBase class.</p>
-<pre class="prettyprint source"><code>const KssBuilderBase = require('kss/builder/base');</code></pre></div>
+            <div class="description"><p>This module is used to load the base KSS builder class needed by this builder
+and to define any custom CLI options or extend any base class methods.</p>
+<p>Note: since this builder wants to extend the KssBuilderBaseTwig class, it
+must export a KssBuilderBaseTwig sub-class as a module. Otherwise, kss-node
+will assume the builder wants to use the KssBuilderBaseHandlebars class.</p>
+<p>This file's name should follow standard node.js require() conventions. It
+should either be named index.js or have its name set in the &quot;main&quot; property
+of the builder's package.json. See
+http://nodejs.org/api/modules.html#modules_folders_as_modules</p></div>
         
 
         
@@ -88,7 +95,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line3">line 3</a>
+        <a href="builder_twig_builder.js.html">builder/twig/builder.js</a>, <a href="builder_twig_builder.js.html#line3">line 3</a>
     </li></ul></dd>
     
 
@@ -126,7 +133,7 @@
         <h3 class="subsection-title">Classes</h3>
 
         <dl>
-            <dt><a href="module-kss_builder_base-KssBuilderBase.html">KssBuilderBase</a></dt>
+            <dt><a href="module-kss_builder_twig-KssBuilderTwig.html">KssBuilderTwig</a></dt>
             <dd></dd>
         </dl>
     

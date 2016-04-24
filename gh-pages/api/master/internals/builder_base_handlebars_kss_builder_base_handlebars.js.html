@@ -68,11 +68,11 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
 
     // Tell kss-node which Yargs-like options this builder has.
     this.addOptionDefinitions({
-      'helpers': {
+      'extend': {
         group: 'Style guide:',
         string: true,
         path: true,
-        describe: 'Location of custom handlebars helpers; see http://bit.ly/kss-wiki'
+        describe: 'Location of modules to extend Handlebars; see http://bit.ly/kss-wiki'
       },
       'homepage': {
         group: 'Style guide:',
@@ -113,9 +113,6 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
       // Store the global Handlebars object.
       this.Handlebars = require('handlebars');
 
-      // Load the standard Handlebars helpers.
-      require('./helpers.js').register(this.Handlebars, this.options);
-
       if (this.options.verbose) {
         this.log('');
         this.log('Building your KSS style guide!');
@@ -123,8 +120,8 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
         this.log(' * KSS Source  : ' + this.options.source.join(', '));
         this.log(' * Destination : ' + this.options.destination);
         this.log(' * Builder     : ' + this.options.builder);
-        if (this.options.helpers.length) {
-          this.log(' * Helpers     : ' + this.options.helpers.join(', '));
+        if (this.options.extend.length) {
+          this.log(' * Extend      : ' + this.options.extend.join(', '));
         }
         this.log('');
       }
@@ -144,7 +141,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
                 // Only look at the part of the path inside the builder.
                 let relativePath = path.sep + path.relative(this.options.builder, filePath);
                 // Skip any files with a path matching: /node_modules or /.
-                return (new RegExp('^(?!.*' + path.sep + '(node_modules$|\\.))')).test(relativePath);
+                return (new RegExp('^(?!.*\\' + path.sep + '(node_modules$|\\.))')).test(relativePath);
               }
             }
           ).catch(() => {
@@ -154,16 +151,16 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
         })
       );
 
-      // Load Handlebars helpers.
-      this.options.helpers.forEach(directory => {
+      // Load modules that extend Handlebars.
+      this.options.extend.forEach(directory => {
         prepTasks.push(
-          fs.readdirAsync(directory).then(helperFiles => {
-            helperFiles.forEach(fileName => {
+          fs.readdirAsync(directory).then(files => {
+            files.forEach(fileName => {
               if (path.extname(fileName) === '.js') {
-                let helper = require(path.join(directory, fileName));
+                let extendFunction = require(path.join(directory, fileName));
                 // istanbul ignore else
-                if (typeof helper.register === 'function') {
-                  helper.register(this.Handlebars, this.options);
+                if (typeof extendFunction === 'function') {
+                  extendFunction(this.Handlebars, this.options);
                 }
               }
             });
@@ -188,15 +185,30 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
     this.styleGuide = styleGuide;
     this.partials = {};
 
+    // istanbul ignore else
+    if (typeof this.templates === 'undefined') {
+      this.templates = {};
+    }
+
     let buildTasks = [];
 
-    // Compile the Handlebars template.
-    buildTasks.push(
-      fs.readFileAsync(path.resolve(this.options.builder, 'index.html'), 'utf8').then(content => {
-        this.template = this.Handlebars.compile(content);
-        return Promise.resolve();
-      })
-    );
+    // Compile the index.hbs Handlebars template.
+    // istanbul ignore else
+    if (typeof this.templates.index === 'undefined' || /* istanbul ignore next */ typeof this.templates.section === 'undefined') {
+      buildTasks.push(
+        fs.readFileAsync(path.resolve(this.options.builder, 'index.hbs'), 'utf8').then(content => {
+          // istanbul ignore else
+          if (typeof this.templates.index === 'undefined') {
+            this.templates.index = this.Handlebars.compile(content);
+          }
+          // istanbul ignore else
+          if (typeof this.templates.section === 'undefined') {
+            this.templates.section = this.Handlebars.compile(content);
+          }
+          return Promise.resolve();
+        })
+      );
+    }
 
     let sections = this.styleGuide.sections();
 
@@ -231,7 +243,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
           reference: section.reference(),
           file: '',
           markup: section.markup(),
-          data: {}
+          context: {}
         };
       // If the markup is a file path, attempt to load the file.
       if (partial.markup.match(/^[^\n]+\.(html|hbs)$/)) {
@@ -263,11 +275,11 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
           }
           if (contents) {
             partial.markup = contents;
-            // Load sample data for the partial from the sample .json file.
+            // Load sample context for the partial from the sample .json file.
             try {
-              partial.data = require(path.join(path.dirname(partial.file), partial.name + '.json'));
+              partial.context = require(path.join(path.dirname(partial.file), partial.name + '.json'));
             } catch (error) {
-              partial.data = {};
+              partial.context = {};
             }
           }
           return partial;
@@ -284,11 +296,11 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
           // Register the partial using the file name (without extension) or using
           // the style guide reference.
           this.Handlebars.registerPartial(partial.name, partial.markup);
-          // Save the name of the partial and its data for retrieval in the markup
-          // helper, where we only know the reference.
+          // Save the name of the template and its context for retrieval in
+          // buildPage(), where we only know the reference.
           this.partials[partial.reference] = {
             name: partial.name,
-            data: partial.data
+            context: partial.context
           };
 
           return Promise.resolve();
@@ -301,14 +313,16 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
         this.log('...Building style guide pages:');
       }
 
-      // Group all of the sections by their root reference, and make a page for
-      // each.
-      let buildPageTasks = sectionRoots.map(rootReference => {
-        return this.buildPage(rootReference, this.styleGuide.sections(rootReference + '.*'));
-      });
+      let buildPageTasks = [];
 
       // Build the homepage.
-      buildPageTasks.push(this.buildPage('styleGuide.homepage', []));
+      buildPageTasks.push(this.buildPage('index', null, []));
+
+      // Group all of the sections by their root reference, and make a page for
+      // each.
+      sectionRoots.forEach(rootReference => {
+        buildPageTasks.push(this.buildPage('section', rootReference, this.styleGuide.sections(rootReference + '.*')));
+      });
 
       return Promise.all(buildPageTasks);
     }).then(() => {
@@ -364,27 +378,109 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
   }
 
   /**
-   * Renders the handlebars template for a section and saves it to a file.
+   * Renders the Handlebars template for a section and saves it to a file.
    *
-   * @param {string} pageReference The reference of the current page's root
-   *   section.
+   * @param {string} templateName The name of the template to use.
+   * @param {string|null} pageReference The reference of the current page's root
+   *   section, or null if the current page is the homepage.
    * @param {Array} sections An array of KssSection objects.
+   * @param {Object} [context] Additional context to give to the Handlebars
+   *   template when it is rendered.
    * @returns {Promise} A `Promise` object.
    */
-  buildPage(pageReference, sections) {
-    let getFileInfo;
+  buildPage(templateName, pageReference, sections, context) {
+    context = context || {};
+    context.styleGuide = this.styleGuide;
+    context.sections = sections.map(section => {
+      return section.toJSON();
+    });
+    context.hasNumericReferences = this.styleGuide.hasNumericReferences();
+    context.partials = this.partials;
+    context.options = this.options || /* istanbul ignore next */ {};
 
-    // Create a Promise resulting in the homepage file information.
-    if (pageReference === 'styleGuide.homepage') {
-      let fileInfo = {
-        fileName: 'index.html',
-        homePageText: false
-      };
-      if (this.options.verbose) {
-        this.log(' - homepage');
+    // Render the template for each section markup and modifier.
+    context.sections.forEach(section => {
+      // If the section does not have any markup, render an empty string.
+      if (section.markup) {
+        // Load the information about this section's markup partial.
+        let partialInfo = this.partials[section.reference];
+        let template = this.Handlebars.compile('{{> "' + partialInfo.name + '"}}');
+
+        // Copy the template.context so we can modify it.
+        let data = JSON.parse(JSON.stringify(partialInfo.context));
+
+        /* eslint-disable camelcase */
+
+        // Display the placeholder if the section has modifiers.
+        data.modifier_class = data.modifier_class || '';
+        if (section.modifiers.length !== 0 &amp;&amp; this.options.placeholder) {
+          data.modifier_class += (data.modifier_class ? ' ' : '') + this.options.placeholder;
+        }
+
+        // We don't wrap the rendered template in "new handlebars.SafeString()" since
+        // we want the ability to display it as a code sample with {{ }} and as
+        // rendered HTML with {{{ }}}.
+        section.markup = template(data);
+
+        section.modifiers.forEach(modifier => {
+          let data = JSON.parse(JSON.stringify(partialInfo.context));
+          data.modifier_class = (data.modifier_class ? data.modifier_class + ' ' : '') + modifier.className;
+          modifier.markup = template(data);
+        });
+        /* eslint-enable camelcase */
       }
+    });
 
-      getFileInfo = Promise.all(
+    // Create the HTML to load the optional CSS and JS (if a sub-class hasn't already built it.)
+    // istanbul ignore else
+    if (typeof context.styles === 'undefined') {
+      context.styles = '';
+      for (let key in this.options.css) {
+        // istanbul ignore else
+        if (this.options.css.hasOwnProperty(key)) {
+          context.styles = context.styles + '&lt;link rel="stylesheet" href="' + this.options.css[key] + '">\n';
+        }
+      }
+    }
+    // istanbul ignore else
+    if (typeof context.scripts === 'undefined') {
+      context.scripts = '';
+      for (let key in this.options.js) {
+        // istanbul ignore else
+        if (this.options.js.hasOwnProperty(key)) {
+          context.scripts = context.scripts + '&lt;script src="' + this.options.js[key] + '">&lt;/script>\n';
+        }
+      }
+    }
+
+    // Create a menu for the page (if a sub-class hasn't already built one.)
+    // istanbul ignore else
+    if (typeof context.menu === 'undefined') {
+      context.menu = this.createMenu(pageReference);
+    }
+
+    // Determine the file name to use for this page.
+    if (pageReference) {
+      let rootSection = this.styleGuide.sections(pageReference);
+      if (this.options.verbose) {
+        this.log(
+          ' - ' + templateName + ' ' + pageReference
+          + ' ['
+          + (rootSection.header() ? rootSection.header() : /* istanbul ignore next */ 'Unnamed')
+          + ']'
+        );
+      }
+      // Convert the pageReference to be URI-friendly.
+      pageReference = rootSection.referenceURI();
+    } else if (this.options.verbose) {
+      this.log(' - homepage');
+    }
+    let fileName = templateName + (pageReference ? '-' + pageReference : '') + '.html';
+
+    // Grab the homepage text if it hasn't already been provided.
+    let getHomepageText;
+    if (templateName === 'index' &amp;&amp; typeof context.homepage === 'undefined') {
+      getHomepageText = Promise.all(
         this.options.source.map(source => {
           return glob(source + '/**/' + this.options.homepage);
         })
@@ -403,60 +499,21 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
         }
         return '';
       }).then(homePageText => {
-        // Ensure homePageText is a non-false value.
-        fileInfo.homePageText = homePageText ? marked(homePageText) : ' ';
-        return fileInfo;
+        // Ensure homePageText is a non-false value. And run any results through
+        // Markdown.
+        context.homepage = homePageText ? marked(homePageText) : ' ';
+        return Promise.resolve();
       });
-
-      // Create a Promise resulting in the non-homepage file information.
     } else {
-      let rootSection = this.styleGuide.sections(pageReference),
-        fileInfo = {
-          fileName: 'section-' + rootSection.referenceURI() + '.html',
-          homePageText: false
-        };
-      if (this.options.verbose) {
-        this.log(
-          ' - section ' + pageReference + ' [',
-          rootSection.header() ? rootSection.header() : /* istanbul ignore next */ 'Unnamed',
-          ']'
-        );
-      }
-      getFileInfo = Promise.resolve(fileInfo);
+      getHomepageText = Promise.resolve();
+      context.homepage = false;
     }
 
-    return getFileInfo.then(fileInfo => {
-      // Create the HTML to load the optional CSS and JS.
-      let styles = '',
-        scripts = '';
-      for (let key in this.options.css) {
-        // istanbul ignore else
-        if (this.options.css.hasOwnProperty(key)) {
-          styles = styles + '&lt;link rel="stylesheet" href="' + this.options.css[key] + '">\n';
-        }
-      }
-      for (let key in this.options.js) {
-        // istanbul ignore else
-        if (this.options.js.hasOwnProperty(key)) {
-          scripts = scripts + '&lt;script src="' + this.options.js[key] + '">&lt;/script>\n';
-        }
-      }
-
-      return fs.writeFileAsync(path.join(this.options.destination, fileInfo.fileName),
-        this.template({
-          pageReference: pageReference,
-          sections: sections.map(section => {
-            return section.toJSON();
-          }),
-          menu: this.createMenu(pageReference),
-          homepage: fileInfo.homePageText,
-          styles: styles,
-          scripts: scripts,
-          hasNumericReferences: this.styleGuide.hasNumericReferences(),
-          partials: this.partials,
-          styleGuide: this.styleGuide,
-          options: this.options || /* istanbul ignore next */ {}
-        })
+    return getHomepageText.then(() => {
+      // Render the template and save it to the destination.
+      return fs.writeFileAsync(
+        path.join(this.options.destination, fileName),
+        this.templates[templateName](context)
       );
     });
   }
@@ -473,7 +530,7 @@ module.exports = KssBuilderBaseHandlebars;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder_base.html">kss/builder/base</a></li><li><a href="module-kss_builder_base_handlebars.html">kss/builder/base/handlebars</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder_base_handlebars-KssBuilderBaseHandlebars.html">KssBuilderBaseHandlebars</a></li><li><a href="module-kss_builder_base-KssBuilderBase.html">KssBuilderBase</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder_base.html">kss/builder/base</a></li><li><a href="module-kss_builder_base_handlebars.html">kss/builder/base/handlebars</a></li><li><a href="module-kss_builder_base_twig.html">kss/builder/base/twig</a></li><li><a href="module-kss_builder_handlebars.html">kss/builder/handlebars</a></li><li><a href="module-kss_builder_twig.html">kss/builder/twig</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder_base_handlebars-KssBuilderBaseHandlebars.html">KssBuilderBaseHandlebars</a></li><li><a href="module-kss_builder_base_twig-KssBuilderBaseTwig.html">KssBuilderBaseTwig</a></li><li><a href="module-kss_builder_base-KssBuilderBase.html">KssBuilderBase</a></li><li><a href="module-kss_builder_handlebars-KssBuilderHandlebars.html">KssBuilderHandlebars</a></li><li><a href="module-kss_builder_twig-KssBuilderTwig.html">KssBuilderTwig</a></li></ul>
 </nav>
 
 <br class="clear">

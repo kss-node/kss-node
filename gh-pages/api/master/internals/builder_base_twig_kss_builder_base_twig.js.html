@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>kss-node JavaScript API: Source: builder/base/handlebars/kss_builder_base_handlebars.js</title>
+    <title>kss-node JavaScript API: Source: builder/base/twig/kss_builder_base_twig.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: builder/base/handlebars/kss_builder_base_handlebars.js</h1>
+    <h1 class="page-title">Source: builder/base/twig/kss_builder_base_twig.js</h1>
 
     
 
@@ -29,12 +29,12 @@
             <pre class="prettyprint source linenums"><code>'use strict';
 
 /**
- * The `kss/builder/base/handlebars` module loads the KssBuilderBaseHandlebars
- * class, a `{@link KssBuilderBase}` sub-class using Handlebars templating.
+ * The `kss/builder/base/twig` module loads the KssBuilderBaseTwig
+ * class, a `{@link KssBuilderBase}` sub-class using Twig.js templating.
  * ```
- * const KssBuilderBaseHandlebars = require('kss/builder/base/handlebars');
+ * const KssBuilderBaseTwig = require('kss/builder/base/twig');
  * ```
- * @module kss/builder/base/handlebars
+ * @module kss/builder/base/twig
  */
 
 const KssBuilderBase = require('../kss_builder_base.js'),
@@ -47,16 +47,16 @@ const fs = Promise.promisifyAll(require('fs-extra')),
 
 /**
  * A kss-node builder takes input files and builds a style guide using
- * Handlebars templates.
+ * Twig.js templates.
  */
-class KssBuilderBaseHandlebars extends KssBuilderBase {
+class KssBuilderBaseTwig extends KssBuilderBase {
 
   /**
-   * Create a KssBuilderBaseHandlebars object.
+   * Create a KssBuilderBaseTwig object.
    *
    * ```
-   * const KssBuilderBaseHandlebars = require('kss/builder/base/handlebars');
-   * const builder = new KssBuilderBaseHandlebars();
+   * const KssBuilderBaseTwig = require('kss/builder/base/twig');
+   * const builder = new KssBuilderBaseTwig();
    * ```
    */
   constructor() {
@@ -72,7 +72,12 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
         group: 'Style guide:',
         string: true,
         path: true,
-        describe: 'Location of modules to extend Handlebars; see http://bit.ly/kss-wiki'
+        describe: 'Location of modules to extend Twig.js; see http://bit.ly/kss-wiki'
+      },
+      'namespace': {
+        group: 'Style guide:',
+        string: true,
+        describe: 'Adds a Twig namespace, given the formatted string: "namespace:path"'
       },
       'homepage': {
         group: 'Style guide:',
@@ -110,8 +115,45 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
    */
   prepare(styleGuide) {
     return super.prepare(styleGuide).then(styleGuide => {
-      // Store the global Handlebars object.
-      this.Handlebars = require('handlebars');
+      // Store the global Twig object.
+      this.Twig = require('twig');
+
+      // Collect the namespaces to be used by Twig.
+      this.namespaces = {
+        builderTwig: path.resolve(this.options.builder)
+      };
+      this.options.namespace.forEach(namespace => {
+        // namespace should be of the form "namespace:path";
+        let tokens = namespace.split(':', 2);
+        if (tokens[1]) {
+          this.namespaces[tokens[0]] = path.resolve(tokens[1]);
+        }
+      });
+
+      // Promisify Twig.twig().
+      this.Twig.twigAsync = (options) => {
+        return new Promise((resolve, reject) => {
+          // Use our Promise's functions.
+          options.load = resolve;
+          options.error = reject;
+          // We enforce some options.
+          options.async = true;
+          options.autoescape = true;
+          options.namespaces = this.namespaces;
+
+          // twig() ignores load/error if data or ref are specified.
+          if (options.data || options.ref) {
+            try {
+              resolve(this.Twig.twig(options));
+            } catch (error) {
+              // istanbul ignore next
+              reject(error);
+            }
+          } else {
+            this.Twig.twig(options);
+          }
+        });
+      };
 
       if (this.options.verbose) {
         this.log('');
@@ -146,12 +188,13 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
             }
           ).catch(() => {
             // If the builder does not have a kss-assets folder, ignore the error.
+            // istanbul ignore next
             return Promise.resolve();
           });
         })
       );
 
-      // Load modules that extend Handlebars.
+      // Load modules that extend Twig.
       this.options.extend.forEach(directory => {
         prepTasks.push(
           fs.readdirAsync(directory).then(files => {
@@ -160,7 +203,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
                 let extendFunction = require(path.join(directory, fileName));
                 // istanbul ignore else
                 if (typeof extendFunction === 'function') {
-                  extendFunction(this.Handlebars, this.options);
+                  extendFunction(this.Twig, this.options);
                 }
               }
             });
@@ -183,7 +226,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
    */
   build(styleGuide) {
     this.styleGuide = styleGuide;
-    this.partials = {};
+    this.userTemplates = {};
 
     // istanbul ignore else
     if (typeof this.templates === 'undefined') {
@@ -192,18 +235,21 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
 
     let buildTasks = [];
 
-    // Compile the index.hbs Handlebars template.
+    // Compile the index.twig Twig template.
     // istanbul ignore else
     if (typeof this.templates.index === 'undefined' || /* istanbul ignore next */ typeof this.templates.section === 'undefined') {
       buildTasks.push(
-        fs.readFileAsync(path.resolve(this.options.builder, 'index.hbs'), 'utf8').then(content => {
+        this.Twig.twigAsync({
+          id: '@builderTwig/index.twig',
+          path: path.resolve(this.options.builder, 'index.twig')
+        }).then(template => {
           // istanbul ignore else
           if (typeof this.templates.index === 'undefined') {
-            this.templates.index = this.Handlebars.compile(content);
+            this.templates.index = template;
           }
           // istanbul ignore else
           if (typeof this.templates.section === 'undefined') {
-            this.templates.section = this.Handlebars.compile(content);
+            this.templates.section = template;
           }
           return Promise.resolve();
         })
@@ -236,71 +282,85 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
         return;
       }
 
-      // Register all the markup blocks as Handlebars partials.
-      let findPartial,
-        partial = {
+      // Register all the markup blocks as Twig templates.
+      let findTemplate,
+        template = {
           name: section.reference(),
           reference: section.reference(),
           file: '',
           markup: section.markup(),
+          compiled: false,
           context: {}
         };
       // If the markup is a file path, attempt to load the file.
-      if (partial.markup.match(/^[^\n]+\.(html|hbs)$/)) {
-        partial.file = partial.markup;
-        partial.name = path.basename(partial.file, path.extname(partial.file));
+      if (template.markup.match(/^[^\n]+\.twig$/)) {
+        template.file = template.markup;
+        template.name = path.basename(template.file);
 
-        findPartial = Promise.all(
+        findTemplate = Promise.all(
           this.options.source.map(source => {
-            return glob(source + '/**/' + partial.file);
+            return glob(source + '/**/' + template.file);
           })
         ).then(globMatches => {
           for (let files of globMatches) {
             if (files.length) {
-              // Read the file contents from the first matched path.
-              partial.file = files[0];
-              return fs.readFileAsync(partial.file, 'utf8');
+              // Read the template from the first matched path.
+              template.file = files[0];
+              return this.Twig.twigAsync({
+                id: template.name,
+                path: template.file
+              });
             }
           }
 
           // If the markup file is not found, note that in the style guide.
-          partial.markup += ' NOT FOUND!';
+          template.markup += ' NOT FOUND!';
           if (!this.options.verbose) {
-            this.log('WARNING: In section ' + partial.reference + ', ' + partial.markup);
+            this.log('WARNING: In section ' + template.reference + ', ' + template.markup);
           }
           return '';
-        }).then(contents => {
+        }).then(compiledTemplate => {
           if (this.options.verbose) {
-            this.log(' - ' + partial.reference + ': ' + partial.markup);
+            this.log(' - ' + template.reference + ': ' + template.markup);
           }
-          if (contents) {
-            partial.markup = contents;
-            // Load sample context for the partial from the sample .json file.
+          if (compiledTemplate) {
+            template.compiled = compiledTemplate;
+            // Load sample context for the template from the sample .json file.
             try {
-              partial.context = require(path.join(path.dirname(partial.file), partial.name + '.json'));
+              template.context = require(path.join(path.dirname(template.file), path.basename(template.name, '.twig') + '.json'));
             } catch (error) {
-              partial.context = {};
+              template.context = {};
             }
           }
-          return partial;
+          return template;
         });
       } else {
+        // istanbul ignore else
         if (this.options.verbose) {
-          this.log(' - ' + partial.reference + ': inline markup');
+          this.log(' - ' + template.reference + ': inline markup');
         }
-        findPartial = Promise.resolve(partial);
+        findTemplate = Promise.resolve(template);
       }
 
       buildTasks.push(
-        findPartial.then(partial => {
-          // Register the partial using the file name (without extension) or using
-          // the style guide reference.
-          this.Handlebars.registerPartial(partial.name, partial.markup);
+        findTemplate.then(template => {
+          // If we don't yet have a compiled Template, compile the markup.
+          if (!template.compiled) {
+            return this.Twig.twigAsync({
+              id: template.name,
+              data: template.markup
+            }).then(compiledTemplate => {
+              template.compiled = compiledTemplate;
+              return template;
+            });
+          }
+          return template;
+        }).then(template => {
           // Save the name of the template and its context for retrieval in
           // buildPage(), where we only know the reference.
-          this.partials[partial.reference] = {
-            name: partial.name,
-            context: partial.context
+          this.userTemplates[template.reference] = {
+            ref: template.name,
+            context: template.context
           };
 
           return Promise.resolve();
@@ -336,7 +396,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
    *
    * @param {string} pageReference The reference of the root section of the page
    *   being built.
-   * @returns {Array} An array of menu items that can be used as a Handlebars
+   * @returns {Array} An array of menu items that can be used as a Twig
    *   variable.
    */
   createMenu(pageReference) {
@@ -368,6 +428,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
 
       // Remove menu items that are deeper than the nav-depth option.
       for (let i = 0; i &lt; menuItem.children.length; i++) {
+        // istanbul ignore if
         if (menuItem.children[i].depth > this.options['nav-depth']) {
           delete menuItem.children[i];
         }
@@ -378,14 +439,14 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
   }
 
   /**
-   * Renders the Handlebars template for a section and saves it to a file.
+   * Renders the Twig template for a section and saves it to a file.
    *
    * @param {string} templateName The name of the template to use.
    * @param {string|null} pageReference The reference of the current page's root
    *   section, or null if the current page is the homepage.
    * @param {Array} sections An array of KssSection objects.
-   * @param {Object} [context] Additional context to give to the Handlebars
-   *   template when it is rendered.
+   * @param {Object} [context] Additional context to give to the Twig template
+   *   when it is rendered.
    * @returns {Promise} A `Promise` object.
    */
   buildPage(templateName, pageReference, sections, context) {
@@ -395,19 +456,20 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
       return section.toJSON();
     });
     context.hasNumericReferences = this.styleGuide.hasNumericReferences();
-    context.partials = this.partials;
+    context.userTemplates = this.userTemplates;
     context.options = this.options || /* istanbul ignore next */ {};
 
     // Render the template for each section markup and modifier.
     context.sections.forEach(section => {
-      // If the section does not have any markup, render an empty string.
       if (section.markup) {
-        // Load the information about this section's markup partial.
-        let partialInfo = this.partials[section.reference];
-        let template = this.Handlebars.compile('{{> "' + partialInfo.name + '"}}');
+        // Load the information about this section's markup template.
+        let templateInfo = this.userTemplates[section.reference];
+        let template = this.Twig.twig({
+          ref: templateInfo.ref
+        });
 
         // Copy the template.context so we can modify it.
-        let data = JSON.parse(JSON.stringify(partialInfo.context));
+        let data = JSON.parse(JSON.stringify(templateInfo.context));
 
         /* eslint-disable camelcase */
 
@@ -417,15 +479,12 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
           data.modifier_class += (data.modifier_class ? ' ' : '') + this.options.placeholder;
         }
 
-        // We don't wrap the rendered template in "new handlebars.SafeString()" since
-        // we want the ability to display it as a code sample with {{ }} and as
-        // rendered HTML with {{{ }}}.
-        section.markup = template(data);
+        section.markup = template.render(data);
 
         section.modifiers.forEach(modifier => {
-          let data = JSON.parse(JSON.stringify(partialInfo.context));
+          let data = JSON.parse(JSON.stringify(templateInfo.context));
           data.modifier_class = (data.modifier_class ? data.modifier_class + ' ' : '') + modifier.className;
-          modifier.markup = template(data);
+          modifier.markup = template.render(data);
         });
         /* eslint-enable camelcase */
       }
@@ -513,13 +572,13 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
       // Render the template and save it to the destination.
       return fs.writeFileAsync(
         path.join(this.options.destination, fileName),
-        this.templates[templateName](context)
+        this.templates[templateName].render(context)
       );
     });
   }
 }
 
-module.exports = KssBuilderBaseHandlebars;
+module.exports = KssBuilderBaseTwig;
 </code></pre>
         </article>
     </section>
@@ -530,7 +589,7 @@ module.exports = KssBuilderBaseHandlebars;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder_base.html">kss/builder/base</a></li><li><a href="module-kss_builder_base_handlebars.html">kss/builder/base/handlebars</a></li><li><a href="module-kss_builder_base_twig.html">kss/builder/base/twig</a></li><li><a href="module-kss_builder_handlebars.html">kss/builder/handlebars</a></li><li><a href="module-kss_builder_twig.html">kss/builder/twig</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder_base_handlebars-KssBuilderBaseHandlebars.html">KssBuilderBaseHandlebars</a></li><li><a href="module-kss_builder_base_twig-KssBuilderBaseTwig.html">KssBuilderBaseTwig</a></li><li><a href="module-kss_builder_base-KssBuilderBase.html">KssBuilderBase</a></li><li><a href="module-kss_builder_handlebars-KssBuilderHandlebars.html">KssBuilderHandlebars</a></li><li><a href="module-kss_builder_twig-KssBuilderTwig.html">KssBuilderTwig</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder_base.html">kss/builder/base</a></li><li><a href="module-kss_builder_base_handlebars.html">kss/builder/base/handlebars</a></li><li><a href="module-kss_builder_base_twig.html">kss/builder/base/twig</a></li><li><a href="module-kss_builder_handlebars.html">kss/builder/handlebars</a></li><li><a href="module-kss_builder_twig.html">kss/builder/twig</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder_base_handlebars-KssBuilderBaseHandlebars.html">KssBuilderBaseHandlebars</a></li><li><a href="module-kss_builder_base_twig-KssBuilderBaseTwig.html">KssBuilderBaseTwig</a></li><li><a href="module-kss_builder_base-KssBuilderBase.html">KssBuilderBase</a></li><li><a href="module-kss_builder_handlebars-KssBuilderHandlebars.html">KssBuilderHandlebars</a></li><li><a href="module-kss_builder_twig-KssBuilderTwig.html">KssBuilderTwig</a></li></ul>
 </nav>
 
 <br class="clear">

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>kss-node JavaScript API: Module: kss/lib/cli</title>
+    <title>kss-node JavaScript API: Class: KssBuilderHandlebars</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: kss/lib/cli</h1>
+    <h1 class="page-title">Class: KssBuilderHandlebars</h1>
 
     
 
@@ -28,8 +28,11 @@
 
 <header>
     
+        <h2>
+            <span class="ancestors"><a href="module-kss_builder_handlebars.html">kss/builder/handlebars</a>~</span>KssBuilderHandlebars</h2>
         
-            
+            <div class="class-description"><p>A kss-node builder that takes input files and builds a style guide using
+Handlebars templates.</p></div>
         
     
 </header>
@@ -38,15 +41,20 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>The <code>kss/lib/cli</code> module is a wrapper around the code used by the
-<code>bin/kss-node</code> command line utility.</p>
-<pre class="prettyprint source"><code>const cli = require('kss/lib/cli');</code></pre></div>
-        
 
-        
-            
+    
+    <h2>Constructor</h2>
+    
+
+    <h4 class="name" id="KssBuilderHandlebars"><span class="type-signature"></span>new KssBuilderHandlebars<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
 
 
+
+<div class="description">
+    <p>Create a builder object.</p>
+</div>
 
 
 
@@ -89,7 +97,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_cli.js.html">lib/cli.js</a>, <a href="lib_cli.js.html#line3">line 3</a>
+        <a href="builder_handlebars_builder.js.html">builder/handlebars/builder.js</a>, <a href="builder_handlebars_builder.js.html#line43">line 43</a>
     </li></ul></dd>
     
 
@@ -115,7 +123,6 @@
 
 
 
-        
     
     </div>
 
@@ -139,15 +146,23 @@
 
     
 
-    <h4 class="name" id="~cli"><span class="type-signature">(inner) </span>cli<span class="signature">(opts)</span><span class="type-signature"> &rarr; {Promise.&lt;(KssStyleGuide|null)>}</span></h4>
+    <h4 class="name" id="prepare"><span class="type-signature"></span>prepare<span class="signature">(styleGuide)</span><span class="type-signature"> &rarr; {Promise.&lt;KssStyleGuide>}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Parses command line arguments in <code>opts.argv</code> and outputs messages and errors
-on <code>opts.stdout</code> and <code>opts.stderr</code>, respectively.</p>
+    <p>Allow the builder to preform pre-build tasks or modify the KssStyleGuide
+object.</p>
+<p>The method can be set by any KssBuilderBase sub-class to do any custom
+tasks after the KssStyleGuide object is created and before the HTML style
+guide is built.</p>
+<p>The builder could also take this opportunity to do tasks like special
+handling of &quot;custom&quot; properties or running Sass or Bower tasks.</p>
+<p>The parent class sets up access for this builder to an object containing
+the options of the requested build (as <code>this.options</code>), and the global
+Handlebars object (as <code>this.Handlebars</code>).</p>
 </div>
 
 
@@ -183,13 +198,13 @@ on <code>opts.stdout</code> and <code>opts.stderr</code>, respectively.</p>
 
         <tr>
             
-                <td class="name"><code>opts</code></td>
+                <td class="name"><code>styleGuide</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">KssStyleGuide</span>
 
 
             
@@ -199,7 +214,7 @@ on <code>opts.stdout</code> and <code>opts.stderr</code>, respectively.</p>
 
             
 
-            <td class="description last"><p>The <code>stdout</code>, <code>stderr</code> and <code>argv</code> options to use.</p></td>
+            <td class="description last"><p>The KSS style guide in object format.</p></td>
         </tr>
 
     
@@ -240,7 +255,7 @@ on <code>opts.stdout</code> and <code>opts.stderr</code>, respectively.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_cli.js.html">lib/cli.js</a>, <a href="lib_cli.js.html#line31">line 31</a>
+        <a href="builder_handlebars_builder.js.html">builder/handlebars/builder.js</a>, <a href="builder_handlebars_builder.js.html#line82">line 82</a>
     </li></ul></dd>
     
 
@@ -268,7 +283,7 @@ on <code>opts.stdout</code> and <code>opts.stderr</code>, respectively.</p>
         
 <div class="param-desc">
     <p>A <code>Promise</code> object resolving to a
-  <code>KssStyleGuide</code> object, or to <code>null</code> if the clone option is used.</p>
+  <code>KssStyleGuide</code> object.</p>
 </div>
 
 
@@ -279,7 +294,7 @@ on <code>opts.stdout</code> and <code>opts.stderr</code>, respectively.</p>
     </dt>
     <dd>
         
-<span class="param-type">Promise.&lt;(KssStyleGuide|null)></span>
+<span class="param-type">Promise.&lt;KssStyleGuide></span>
 
 
     </dd>
