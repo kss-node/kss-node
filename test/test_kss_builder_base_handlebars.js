@@ -129,10 +129,6 @@ describe('KssBuilderBaseHandlebars object API', function() {
       expect(this.builderPrepared.Handlebars).to.be.object;
     });
 
-    it('loads the standard Handlebars extensions', function() {
-      expect(this.builderPrepared.Handlebars.helpers).to.have.property('markup');
-    });
-
     it('outputs settings if the verbose option is set', function() {
       let builder = testBuilder({
         extend: ['/dev/null/example1', '/dev/null/example2'],
@@ -304,11 +300,7 @@ describe('KssBuilderBaseHandlebars object API', function() {
     });
 
     it('should add modifier_class from the JSON data', function() {
-      expect(this.files['section-1']).to.include('ref:1.C:markup:<div class="one-cee-from-json ">');
-    });
-
-    it('should add modifier_class from the hash parameter of the helper', function() {
-      expect(this.files['section-1']).to.include('ref:1.E:modifier:modifier-1:markup:<div class="HARDCODE"></div>');
+      expect(this.files['section-1']).to.include('ref:1.C:markup:<div class="one-cee-from-json [modifier class]">');
     });
 
     it('should add modifier_class from the modifier\'s className property', function() {

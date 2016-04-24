@@ -85,9 +85,6 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
       // Store the global Handlebars object.
       this.Handlebars = require('handlebars');
 
-      // Load the module to extend Handlebars in our standard ways.
-      require('./extend.js')(this.Handlebars, this.options);
-
       if (this.options.verbose) {
         this.log('');
         this.log('Building your KSS style guide!');
@@ -218,7 +215,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
           reference: section.reference(),
           file: '',
           markup: section.markup(),
-          data: {}
+          context: {}
         };
       // If the markup is a file path, attempt to load the file.
       if (partial.markup.match(/^[^\n]+\.(html|hbs)$/)) {
@@ -250,11 +247,11 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
           }
           if (contents) {
             partial.markup = contents;
-            // Load sample data for the partial from the sample .json file.
+            // Load sample context for the partial from the sample .json file.
             try {
-              partial.data = require(path.join(path.dirname(partial.file), partial.name + '.json'));
+              partial.context = require(path.join(path.dirname(partial.file), partial.name + '.json'));
             } catch (error) {
-              partial.data = {};
+              partial.context = {};
             }
           }
           return partial;
@@ -271,11 +268,11 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
           // Register the partial using the file name (without extension) or using
           // the style guide reference.
           this.Handlebars.registerPartial(partial.name, partial.markup);
-          // Save the name of the partial and its data for retrieval in the markup
-          // helper, where we only know the reference.
+          // Save the name of the template and its context for retrieval in
+          // buildPage(), where we only know the reference.
           this.partials[partial.reference] = {
             name: partial.name,
-            data: partial.data
+            context: partial.context
           };
 
           return Promise.resolve();
@@ -372,6 +369,39 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
     context.hasNumericReferences = this.styleGuide.hasNumericReferences();
     context.partials = this.partials;
     context.options = this.options || /* istanbul ignore next */ {};
+
+    // Render the template for each section markup and modifier.
+    context.sections.forEach(section => {
+      // If the section does not have any markup, render an empty string.
+      if (section.markup) {
+        // Load the information about this section's markup partial.
+        let partialInfo = this.partials[section.reference];
+        let template = this.Handlebars.compile('{{> "' + partialInfo.name + '"}}');
+
+        // Copy the template.context so we can modify it.
+        let data = JSON.parse(JSON.stringify(partialInfo.context));
+
+        /* eslint-disable camelcase */
+
+        // Display the placeholder if the section has modifiers.
+        data.modifier_class = data.modifier_class || '';
+        if (section.modifiers.length !== 0 && this.options.placeholder) {
+          data.modifier_class += (data.modifier_class ? ' ' : '') + this.options.placeholder;
+        }
+
+        // We don't wrap the rendered template in "new handlebars.SafeString()" since
+        // we want the ability to display it as a code sample with {{ }} and as
+        // rendered HTML with {{{ }}}.
+        section.markup = template(data);
+
+        section.modifiers.forEach(modifier => {
+          let data = JSON.parse(JSON.stringify(partialInfo.context));
+          data.modifier_class = (data.modifier_class ? data.modifier_class + ' ' : '') + modifier.className;
+          modifier.markup = template(data);
+        });
+        /* eslint-enable camelcase */
+      }
+    });
 
     // Create the HTML to load the optional CSS and JS (if a sub-class hasn't already built it.)
     // istanbul ignore else
