@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>KssBuilderBaseHandlebars test template</title>
+  <meta name="generator" content="kss-node" />
+
+  {{ styles|raw }}
+</head>
+<body>
+
+<nav>
+  <ul>
+    {% for menu_item in menu %}
+    <li>
+MENU-ITEM:[referenceURI:{{ menu_item.referenceURI }}, referenceNumber:{{ menu_item.referenceNumber }}, header:{{ menu_item.header }}, isActive:{{ menu_item.isActive }}, {% if menu_item.children is not empty %}children:yes{% else %}children:none{% endif %}]
+      {% for menu_child in menu_item.children %}
+        {% if loop.first %}
+          <ul>
+        {% endif %}
+        <li>
+MENU-ITEM-CHILD:[referenceURI:{{ menu_child.referenceURI }}, referenceNumber:{{ menu_child.referenceNumber }}, header:{{ menu_child.header }}, isGrandChild:{{ menu_child.isGrandChild }}]
+        </li>
+        {% if loop.last %}
+          </ul>
+        {% endif %}
+      {% endfor %}
+    </li>
+    {% endfor %}
+  </ul>
+</nav>
+
+
+{% if homepage %}
+  Homepage:
+  {{ homepage|raw }}
+{% else %}
+  {% for section in sections %}
+    <section>
+      <h2>referenceURI:{{ section.referenceURI }}</h2>
+      depth:{{ section.depth }}
+      referenceNumber:{{ section.referenceNumber }}
+      reference:{{ section.reference }}
+      header:{{ section.header }}
+      sourceFile.name:{{ section.sourceFile.name }}
+      sourceFile.line:{{ section.sourceFile.line }}
+      description: {{ section.description|raw }}
+      {% if section.parameters %}
+        parameters:
+        {% for parameter in section.parameters %}
+          name:{{ parameter.name }}
+          description:{{ parameter.description|raw }}
+        {% endfor %}
+      {% else %}
+        parameters:none
+      {% endif %}
+      {% if section.modifiers %}modifiers:yes{% else %}modifiers:none{% endif %}
+
+      {% if section.markup %}
+        ref:{{ section.reference }}:markup:{{ section.markup|raw }}
+        {% if section.modifiers %}
+          modifiers:
+          {% for modifier in section.modifiers %}
+            name:{{ modifier.name }}
+            description:{{ modifier.description|raw }}
+            className:{{ modifier.className }}
+            ref:{{ section.reference }}:modifier:{{ modifier.className }}:markup:{{ modifier.markup }}
+          {% endfor %}
+        {% endif %}
+      {% else %}
+        ref:{{ section.reference }}:no-markup:{{ section.markup|raw }}
+      {% endif %}
+    </section>
+  {% endfor %}
+{% endif %}
+
+<p>
+  kss-builder-base-handlebars--option-extend:{{ 'string'|example }}
+</p>
+
+<!-- JavaScripts -->
+{{ scripts|raw }}
+
+</body>
+</html>
