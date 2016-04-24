@@ -6,7 +6,10 @@
     ],
     "exclude": [
       "builder/base/example",
-      "builder/handlebars"
+      "builder/handlebars/kss-assets",
+      "builder/handlebars/node_modules",
+      "builder/twig/kss-assets",
+      "builder/twig/node_modules"
     ]
   },
   "opts": {

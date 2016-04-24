@@ -2,6 +2,11 @@ docs:
 	# Build the default builder's Sass.
 	if [[ ! -e ./builder/handlebars/node_modules/.bin/node-sass ]]; then cd builder/handlebars && npm install; fi
 	cd builder/handlebars && npm run-script sass
+
+	# Build the twig builder's Sass.
+	if [[ ! -e ./builder/twig/node_modules/.bin/node-sass ]]; then cd builder/twig && npm install; fi
+	cd builder/twig && npm run-script sass
+
 	# Build the kss-node demo.
 	./bin/kss-node --destination gh-pages --demo
 	# Build the JS docs.
