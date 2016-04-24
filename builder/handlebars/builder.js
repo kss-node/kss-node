@@ -17,7 +17,6 @@
  */
 
 
-
 // We want to extend kss-node's Handlebars builder so we can add options that
 // are used in our templates.
 let KssBuilderBaseHandlebars;
@@ -37,6 +36,10 @@ try {
   KssBuilderBaseHandlebars = require('../base/handlebars');
 }
 
+/**
+ * A kss-node builder that takes input files and builds a style guide using
+ * Handlebars templates.
+ */
 class KssBuilderHandlebars extends KssBuilderBaseHandlebars {
   /**
    * Create a builder object.

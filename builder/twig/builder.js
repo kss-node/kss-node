@@ -4,9 +4,9 @@
  * This module is used to load the base KSS builder class needed by this builder
  * and to define any custom CLI options or extend any base class methods.
  *
- * Note: this module is optional. If a builder does not export a KssBuilderBase
- * sub-class as a module, then kss-node will assume the builder wants to use
- * the KssBuilderBaseTwig class.
+ * Note: since this builder wants to extend the KssBuilderBaseTwig class, it
+ * must export a KssBuilderBaseTwig sub-class as a module. Otherwise, kss-node
+ * will assume the builder wants to use the KssBuilderBaseHandlebars class.
  *
  * This file's name should follow standard node.js require() conventions. It
  * should either be named index.js or have its name set in the "main" property
@@ -15,7 +15,6 @@
  *
  * @module kss/builder/twig
  */
-
 
 
 // We want to extend kss-node's Twig builder so we can add options that
@@ -37,6 +36,10 @@ try {
   KssBuilderBaseTwig = require('../base/twig');
 }
 
+/**
+ * A kss-node builder that takes input files and builds a style guide using Twig
+ * templates.
+ */
 class KssBuilderTwig extends KssBuilderBaseTwig {
   /**
    * Create a builder object.
