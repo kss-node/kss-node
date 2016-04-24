@@ -19,11 +19,7 @@ describe('KssBuilderHandlebars builder (default)', function() {
       stdout: stdout,
       stderr: stderr,
       argv: ['node', 'bin/kss-node', 'test/fixtures/with-include', 'test/output/nested', '--builder', 'test/fixtures/builder']
-    }).catch(function(error) {
-      // Pass the error on to the next .then().
-      return error;
-    }).then(result => {
-      expect(result).to.not.be.instanceOf(Error);
+    }).then(() => {
       this.stdout = stdout.capturedData;
       return Promise.all(
         [

@@ -168,19 +168,22 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
     let buildTasks = [];
 
     // Compile the index.hbs Handlebars template.
-    buildTasks.push(
-      fs.readFileAsync(path.resolve(this.options.builder, 'index.hbs'), 'utf8').then(content => {
-        // istanbul ignore else
-        if (typeof this.templates.index === 'undefined') {
-          this.templates.index = this.Handlebars.compile(content);
-        }
-        // istanbul ignore else
-        if (typeof this.templates.section === 'undefined') {
-          this.templates.section = this.Handlebars.compile(content);
-        }
-        return Promise.resolve();
-      })
-    );
+    // istanbul ignore else
+    if (typeof this.templates.index === 'undefined' || /* istanbul ignore next */ typeof this.templates.section === 'undefined') {
+      buildTasks.push(
+        fs.readFileAsync(path.resolve(this.options.builder, 'index.hbs'), 'utf8').then(content => {
+          // istanbul ignore else
+          if (typeof this.templates.index === 'undefined') {
+            this.templates.index = this.Handlebars.compile(content);
+          }
+          // istanbul ignore else
+          if (typeof this.templates.section === 'undefined') {
+            this.templates.section = this.Handlebars.compile(content);
+          }
+          return Promise.resolve();
+        })
+      );
+    }
 
     let sections = this.styleGuide.sections();
 
