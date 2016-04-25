@@ -1,0 +1,6 @@
+{
+  "//"          : "A JSON comment",
+  "source"      : "source-twig-builder-test",
+  "destination" : "../output/nested",
+  "builder"     : "nonexistant/path"
+}

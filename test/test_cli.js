@@ -3,7 +3,8 @@
 'use strict';
 
 const cli = require('../lib/cli'),
-  mockStream = require('mock-utf8-stream');
+  mockStream = require('mock-utf8-stream'),
+  Twig = require('twig');
 
 const API = '3.0';
 
@@ -19,6 +20,11 @@ const kssNode = function(args) {
   if (args) {
     Array.prototype.push.apply(argv, args.split(' '));
   }
+
+  // Empty the Twig template registry before running each test.
+  Twig.extend(function(Twig) {
+    Twig.Templates.registry = {};
+  });
 
   return cli({
     stdout: stdout,
@@ -82,6 +88,28 @@ describe('Command Line Interface', function() {
       });
     });
 
+    it('should load the Twig builder when given the config file uses "builder/twig"', function() {
+      return kssNode('--config test/fixtures/cli-option-config-twig.json --verbose').then(result => {
+        expect(result.error).to.not.exist;
+        expect(result.stdout).to.include(successMessage);
+        expect(result.stdout).to.include('Builder     : ' + path.resolve(__dirname, '..', 'builder', 'twig'));
+      });
+    });
+
+    it('should catch an error if the builder path does not exist', function() {
+      return kssNode('--config test/fixtures/cli-option-config-builder-nonexistant.json --verbose').then(result => {
+        expect(result.error).to.exist;
+        expect(result.stderr).to.include('The builder path, "' + path.resolve(__dirname, 'fixtures', 'nonexistant', 'path') + '", is not a directory.');
+      });
+    });
+
+    it('should catch an error if the builder path is not a directory', function() {
+      return kssNode('--config test/fixtures/cli-option-config-builder-notdirectory.json --verbose').then(result => {
+        expect(result.error).to.exist;
+        expect(result.stderr).to.include('The builder path, "' + path.resolve(__dirname, 'fixtures', 'cli-option-config.json') + '", is not a directory.');
+      });
+    });
+
     it('should add the first unnamed as the source directory', function() {
       let source = helperUtils.fixtures('missing-homepage');
       return kssNode('--config test/fixtures/cli-option-config.json --verbose ' + source).then(function(result) {
@@ -114,6 +142,14 @@ describe('Command Line Interface', function() {
       return kssNode('--builder ' + helperUtils.fixtures('old-builder')).then(result => {
         expect(result.error).to.exist;
         expect(result.stderr).to.include('kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "1.0" is being used instead.');
+      });
+    });
+
+    it('should load the Twig builder when given the string "builder/twig"', function() {
+      return kssNode('--builder builder/twig --verbose --source ' + helperUtils.fixtures('source-twig-builder-test') + ' --destination ' + helperUtils.fixtures('..', 'output', 'nested')).then(result => {
+        expect(result.error).to.not.exist;
+        expect(result.stdout).to.include(successMessage);
+        expect(result.stdout).to.include('Builder     : ' + path.resolve(__dirname, '..', 'builder', 'twig'));
       });
     });
   });
