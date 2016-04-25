@@ -364,6 +364,7 @@ $kss-vertical-rhythm      : $kss-font-size * 1.5;
   .kss-parameters__name {
     display: table-cell;
     padding-right: 20px;
+    white-space: nowrap;
   }
   .kss-parameters__no-default {
     display: table-cell;
