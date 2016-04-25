@@ -12,7 +12,7 @@
 // Import the KssBuilderBase class. We will extend it to scaffold our builder.
 // Note: Since you will be building a sub-class outside of the kss module, this
 // next line will be: const KssBuilderBase = require('kss/builder/base');
-const KssBuilderBase = require('../'),
+const KssBuilderBase = require('..'),
   path = require('path');
 
 // Define "KssBuilderBaseExample" as the name of our example builder class.

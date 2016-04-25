@@ -11,7 +11,7 @@ const testBuilder = function(options) {
 
   let builder = new KssBuilderBaseTwig();
   if (!options.builder) {
-    options.builder = path.resolve(__dirname, '../', 'builder', 'twig');
+    options.builder = path.resolve(__dirname, '..', 'builder', 'twig');
   }
 
   // For our tests, feed kss() log functions that mock stdout and stderr so we
