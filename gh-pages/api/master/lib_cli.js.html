@@ -108,7 +108,8 @@ const cli = function(opts) {
   // Check if there are settings coming from a JSON config file. We need to note
   // the config file's values and the directory where it is located.
   let configFileOptions = {},
-    configFileDirectory = '';
+    configFileDirectory = '',
+    checkBuilderPath = Promise.resolve();
   if (options.config) {
     let configFilePath = path.resolve(options.config);
     configFileOptions = require(configFilePath);
@@ -117,6 +118,21 @@ const cli = function(opts) {
     // location. Later, we will do the same for other paths in the config file.
     if (configFileOptions.builder) {
       options.builder = path.resolve(configFileDirectory, configFileOptions.builder);
+      checkBuilderPath = fs.statAsync(options.builder).then(stats => {
+        if (!stats.isDirectory()) {
+          throw new Error();
+        }
+        return Promise.resolve();
+      }).catch(() => {
+        // If the resolved builder path does not work, check if the Twig builder
+        // was desired.
+        if (configFileOptions.builder === 'builder/twig') {
+          options.builder = path.resolve(__dirname, '..', 'builder', 'twig');
+          return Promise.resolve();
+        } else {
+          throw new Error('The builder path, "' + options.builder + '", is not a directory.');
+        }
+      });
     }
   }
 
@@ -128,9 +144,25 @@ const cli = function(opts) {
   };
 
   // Confirm this is a compatible builder.
-  return KssBuilderBase.loadBuilder(options.builder).catch(error => {
-    reportError(error);
-    return Promise.reject(error);
+  return checkBuilderPath.then(() => {
+    return KssBuilderBase.loadBuilder(options.builder);
+  }).catch(error => {
+    let catchLoadFailure;
+    // If the builder specified was "builder/twig" and there was no existing
+    // path relative to the working directory, we should try again while using
+    // the path to kss-node's Twig builder.
+    // istanbul ignore if
+    if (options.builder === 'builder/twig') {
+      options.builder = path.resolve(__dirname, '..', 'builder', 'twig');
+      catchLoadFailure = KssBuilderBase.loadBuilder(options.builder);
+    } else {
+      catchLoadFailure = Promise.reject(error);
+    }
+
+    return catchLoadFailure.catch(error => {
+      reportError(error);
+      throw error;
+    });
   }).then(builder => {
     builder.addOptionDefinitions(cliOptionDefinitions);
 
@@ -165,7 +197,7 @@ const cli = function(opts) {
             return path.resolve(configFileDirectory, value);
           });
           /* eslint-enable no-loop-func */
-        } else {
+        } else if (key !== 'builder' || options[key] !== 'builder/twig') {
           options[key] = path.resolve(configFileDirectory, options[key]);
         }
       }

@@ -358,12 +358,16 @@ $kss-vertical-rhythm      : $kss-font-size * 1.5;
     margin-left: 0;
     padding-left: 0;
   }
+  .kss-parameters__title {
+    font-weight: bold;
+  }
   .kss-parameters__item {
     display: table-row;
   }
   .kss-parameters__name {
     display: table-cell;
     padding-right: 20px;
+    white-space: nowrap;
   }
   .kss-parameters__no-default {
     display: table-cell;

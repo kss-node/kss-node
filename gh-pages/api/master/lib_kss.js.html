@@ -73,6 +73,7 @@
  */
 
 const KssBuilderBase = require('../builder'),
+  path = require('path'),
   Promise = require('bluebird'),
   traverse = require('./traverse.js');
 
@@ -90,12 +91,26 @@ const kss = function(options) {
 
   // Confirm this is a compatible builder.
   return KssBuilderBase.loadBuilder(options.builder || require('../builder/handlebars')).catch(error => {
-    // If we fail to create a builder, set up builder.logError() for the
-    // next .catch().
-    builder = {
-      logError: (typeof options.logErrorFunction === 'function') ? options.logErrorFunction : console.error
-    };
-    throw error;
+    let catchLoadFailure;
+    // If the builder specified was "builder/twig" and there was no existing
+    // path relative to the working directory, we should try again while using
+    // the path to kss-node's Twig builder.
+    // istanbul ignore if
+    if (options.builder === 'builder/twig') {
+      options.builder = path.resolve(__dirname, '..', 'builder', 'twig');
+      catchLoadFailure = KssBuilderBase.loadBuilder(options.builder);
+    } else {
+      catchLoadFailure = Promise.reject(error);
+    }
+
+    return catchLoadFailure.catch(error => {
+      // If we fail to create a builder, set up builder.logError() for the
+      // next .catch().
+      builder = {
+        logError: (typeof options.logErrorFunction === 'function') ? options.logErrorFunction : console.error
+      };
+      throw error;
+    });
   }).then(newBuilder => {
     builder = newBuilder;
 
