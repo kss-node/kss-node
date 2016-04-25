@@ -76,6 +76,16 @@ Options:
   --version       Show version number
 ```
 
+Since each builder has its own set of options, you can see the help for those options by using `--builder` with `--help`. For example, running `kss-node --help --builder builder/twig` will show these additional options:
+
+```
+Style guide:
+  --extend       Location of modules to extend Twig.js; see
+                 http://bit.ly/kss-wiki
+  --namespace    Adds a Twig namespace, given the formatted string:
+                 "namespace:path"
+```
+
 In order to parse your stylesheets containing KSS docs, you need to either specify a single directory as the first argument or you can specify one or more source directories with one or more `--source [directory]` flags.
 
 The style guide will be built in the `styleguide` directory unless you specify the second argument or use a `--destination [directory]` flag.
