@@ -103,11 +103,6 @@
         </li>
       {{/each}}
       </ul>
-      {{#if sourceFile.name}}
-      <div class="kss-source">
-        Source: <code>{{sourceFile.name}}</code>, line {{sourceFile.line}}
-      </div>
-      {{/if}}
     {{/if}}
     </div>
 
@@ -136,16 +131,15 @@
         </div>
       {{/each}}
       </div>
-
       <div class="kss-markup kss-style">
         <pre class="prettyprint linenums lang-html"><code data-language="html">{{markup}}</code></pre>
       </div>
+    {{/if}}
 
-      {{#if sourceFile.name}}
+    {{#if sourceFile.name}}
       <div class="kss-source kss-style">
         Source: <code>{{sourceFile.name}}</code>, line {{sourceFile.line}}
       </div>
-      {{/if}}
     {{/if}}
 
     </{{#if @first}}div{{else}}section{{/if}}>

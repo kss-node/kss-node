@@ -83,10 +83,11 @@
           </div>
         {% endif %}
 
-        {% if section.parameters is not empty %}
-          <div class="kss-parameters__title">Parameters:</div>
-          <ul class="kss-parameters">
-          {% for parameter in section.parameters %}
+        {% for parameter in section.parameters %}
+          {% if loop.first %}
+            <div class="kss-parameters__title">Parameters:</div>
+            <ul class="kss-parameters">
+          {% endif %}
             <li class="kss-parameters__item">
               <div class="kss-parameters__name"><code>{{ parameter.name }}</code></div>
               {% if parameter.defaultValue %}
@@ -96,14 +97,10 @@
               {% endif %}
               <div class="kss-parameters__description">{{ parameter.description|raw }}</div>
             </li>
-          {% endfor %}
-          </ul>
-          {% if section.sourceFile.name %}
-            <div class="kss-source">
-              Source: <code>{{ section.sourceFile.name }}</code>, line {{ section.sourceFile.line }}
-            </div>
+          {% if loop.last %}
+            </ul>
           {% endif %}
-        {% endif %}
+        {% endfor %}
       </div>
 
       {% if section.markup %}
@@ -137,12 +134,12 @@
         <div class="kss-markup kss-style">
           <pre class="prettyprint linenums lang-html"><code data-language="html">{{ section.markup|escape('html') }}</code></pre>
         </div>
+      {% endif %}
 
-        {% if section.sourceFile.name %}
-          <div class="kss-source kss-style">
-            Source: <code>{{ section.sourceFile.name }}</code>, line {{ section.sourceFile.line }}
-          </div>
-        {% endif %}
+      {% if section.sourceFile.name %}
+        <div class="kss-source kss-style">
+          Source: <code>{{ section.sourceFile.name }}</code>, line {{ section.sourceFile.line }}
+        </div>
       {% endif %}
     </{{ sectionElement }}>
   {% endfor %}
