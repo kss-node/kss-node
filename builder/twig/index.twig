@@ -31,16 +31,16 @@
           <span class="kss-nav__ref">{{ menu_item.referenceNumber }}</span><span class="kss-nav__name">{{ menu_item.header }}</span>
         </a>
         {% if menu_item.isActive and menu_item.children is not empty %}
-        <ul class="kss-nav__menu-child">
-        {% for menu_child in menu_item.children %}
-          <li class="kss-nav__menu-item">
-            <a class="kss-nav__menu-link" href="section-{{ menu_item.referenceURI }}.html#kssref-{{ menu_child.referenceURI }}">
-              <span class="kss-nav__ref {% if menu_child.isGrandChild %}kss-nav__ref-child{% endif %}">{{ menu_child.referenceNumber }}</span
-              ><span class="kss-nav__name">{{ menu_child.header }}</span>
-            </a>
-          </li>
-        {% endfor %}
-        </ul>
+          <ul class="kss-nav__menu-child">
+          {% for menu_child in menu_item.children %}
+            <li class="kss-nav__menu-item">
+              <a class="kss-nav__menu-link" href="section-{{ menu_item.referenceURI }}.html#kssref-{{ menu_child.referenceURI }}">
+                <span class="kss-nav__ref {% if menu_child.isGrandChild %}kss-nav__ref-child{% endif %}">{{ menu_child.referenceNumber }}</span
+                ><span class="kss-nav__name">{{ menu_child.header }}</span>
+              </a>
+            </li>
+          {% endfor %}
+          </ul>
         {% endif %}
       </li>
     {% endfor %}
@@ -57,96 +57,94 @@
   {#
     Display each section, in order.
 
-    The "root" element comes first in this loop, and can be detected using
-    the "#if @first" block as seen below.
+    The "root" element comes first in this loop, and can be detected using the
+    "loop.first" variable as seen below.
   #}
   {% for section in sections %}
-    <{% if loop.first %}div{% else %}section{% endif %} id="kssref-{{ section.referenceURI }}" class="kss-section kss-section--depth-{{ section.depth }}">
-
-    <div class="kss-style">
-      <h{{ section.depth }} class="kss-title kss-title--level-{{ section.depth }}">
-        <a class="kss-title__permalink" href="#kssref-{{ section.referenceURI }}">
-          <span class="kss-title__ref">
-            {{ section.referenceNumber }}
-            <span class="kss-title__permalink-hash">
-              {% if hasNumericReferences %}
-                #permalink
-              {% else %}
-                #{{ section.reference }}
-              {% endif %}
+    {% set sectionElement = loop.first ? 'div' : 'section' %}
+    <{{ sectionElement }} id="kssref-{{ section.referenceURI }}" class="kss-section kss-section--depth-{{ section.depth }}">
+      <div class="kss-style">
+        {% set headerElement = (section.depth > 6) ? 'h6' : 'h' ~ section.depth %}
+        <{{ headerElement }} class="kss-title kss-title--level-{{ section.depth }}">
+          <a class="kss-title__permalink" href="#kssref-{{ section.referenceURI }}">
+            <span class="kss-title__ref">
+              {{ section.referenceNumber }}
+              <span class="kss-title__permalink-hash">
+                {{ hasNumericReferences ? '#permalink' : section.reference }}
+              </span>
             </span>
-          </span>
-          {{ section.header }}
-        </a>
-      </h{{ section.depth }}>
+            {{ section.header }}
+          </a>
+        </{{ headerElement }}>
 
-    {% if section.description %}
-      <div class="kss-description">
-        {{ section.description|raw }}
-      </div>
-    {% endif %}
+        {% if section.description %}
+          <div class="kss-description">
+            {{ section.description|raw }}
+          </div>
+        {% endif %}
 
-    {% if section.parameters is not empty %}
-      <div class="kss-parameters__title">Parameters:</div>
-      <ul class="kss-parameters">
-      {% for parameter in section.parameters %}
-        <li class="kss-parameters__item">
-          <div class="kss-parameters__name"><code>{{ parameter.name }}</code></div>
-          {% if parameter.defaultValue %}
-            <div class="kss-parameters__default-value">Defaults to: <code>{{ parameter.defaultValue }}</code></div>
-          {% else %}
-            <div class="kss-parameters__no-default"></div>
+        {% if section.parameters is not empty %}
+          <div class="kss-parameters__title">Parameters:</div>
+          <ul class="kss-parameters">
+          {% for parameter in section.parameters %}
+            <li class="kss-parameters__item">
+              <div class="kss-parameters__name"><code>{{ parameter.name }}</code></div>
+              {% if parameter.defaultValue %}
+                <div class="kss-parameters__default-value">Defaults to: <code>{{ parameter.defaultValue }}</code></div>
+              {% else %}
+                <div class="kss-parameters__no-default"></div>
+              {% endif %}
+              <div class="kss-parameters__description">{{ parameter.description|raw }}</div>
+            </li>
+          {% endfor %}
+          </ul>
+          {% if section.sourceFile.name %}
+            <div class="kss-source">
+              Source: <code>{{ section.sourceFile.name }}</code>, line {{ section.sourceFile.line }}
+            </div>
           {% endif %}
-          <div class="kss-parameters__description">{{ parameter.description|raw }}</div>
-        </li>
-      {% endfor %}
-      </ul>
-      {% if section.sourceFile.name %}
-      <div class="kss-source">
-        Source: <code>{{ section.sourceFile.name }}</code>, line {{ section.sourceFile.line }}
+        {% endif %}
       </div>
+
+      {% if section.markup %}
+        <div class="kss-modifier__wrapper">
+          <div class="kss-modifier__heading kss-style">
+            Example{% if section.modifiers is not empty %}s{% endif %}
+          </div>
+
+          {% if section.modifiers is not empty %}
+            <div class="kss-modifier__default-name kss-style">
+              Default styling
+            </div>
+          {% endif %}
+
+          <div class="kss-modifier__example">
+            {{ section.markup|raw }}
+          </div>
+
+          {% for modifier in section.modifiers %}
+            <div class="kss-modifier__name kss-style">
+              {{ modifier.name }}
+            </div>
+            <div class="kss-modifier__description kss-style">
+              {{ modifier.description|raw }}
+            </div>
+            <div class="kss-modifier__example">
+              {{ modifier.markup|raw }}
+            </div>
+          {% endfor %}
+        </div>
+        <div class="kss-markup kss-style">
+          <pre class="prettyprint linenums lang-html"><code data-language="html">{{ section.markup|escape('html') }}</code></pre>
+        </div>
+
+        {% if section.sourceFile.name %}
+          <div class="kss-source kss-style">
+            Source: <code>{{ section.sourceFile.name }}</code>, line {{ section.sourceFile.line }}
+          </div>
+        {% endif %}
       {% endif %}
-    {% endif %}
-    </div>
-
-    {% if section.markup %}
-      <div class="kss-modifier__wrapper">
-        <div class="kss-modifier__heading kss-style">
-          Example{% if section.modifiers is not empty %}s{% endif %}
-        </div>
-      {% if section.modifiers is not empty %}
-        <div class="kss-modifier__default-name kss-style">
-          Default styling
-        </div>
-      {% endif %}
-        <div class="kss-modifier__example">
-          {{ section.markup|raw }}
-        </div>
-      {% for modifier in section.modifiers %}
-        <div class="kss-modifier__name kss-style">
-          {{ modifier.name }}
-        </div>
-        <div class="kss-modifier__description kss-style">
-          {{ modifier.description|raw }}
-        </div>
-        <div class="kss-modifier__example">
-          {{ modifier.markup|raw }}
-        </div>
-      {% endfor %}
-      </div>
-
-      <div class="kss-markup kss-style">
-        <pre class="prettyprint linenums lang-html"><code data-language="html">{{ section.markup|escape('html') }}</code></pre>
-      </div>
-
-      {% if section.sourceFile.name %}
-      <div class="kss-source kss-style">
-        Source: <code>{{ section.sourceFile.name }}</code>, line {{ section.sourceFile.line }}
-      </div>
-      {% endif %}
-    {% endif %}
-
-    </{% if loop.first %}div{% else %}section{% endif %}>
+    </{{ sectionElement }}>
   {% endfor %}
 {% endif %}
 </article>
