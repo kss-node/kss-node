@@ -122,7 +122,7 @@
         <div class="kss-modifier__example">
           {{ section.markup|raw }}
         </div>
-      {% for modifier in modifiers %}
+      {% for modifier in section.modifiers %}
         <div class="kss-modifier__name kss-style">
           {{ modifier.name }}
         </div>
@@ -136,7 +136,7 @@
       </div>
 
       <div class="kss-markup kss-style">
-        <pre class="prettyprint linenums lang-html"><code data-language="html">{{ section.markup }}</code></pre>
+        <pre class="prettyprint linenums lang-html"><code data-language="html">{{ section.markup|escape('html') }}</code></pre>
       </div>
 
       {% if section.sourceFile.name %}
