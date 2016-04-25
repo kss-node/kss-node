@@ -31,18 +31,18 @@
           <span class="kss-nav__ref">{{referenceNumber}}</span><span class="kss-nav__name">{{header}}</span>
         </a>
         {{#if isActive}}
-        {{#if children}}
-        <ul class="kss-nav__menu-child">
-        {{#each children}}
-          <li class="kss-nav__menu-item">
-            <a class="kss-nav__menu-link" href="section-{{../referenceURI}}.html#kssref-{{referenceURI}}">
-              <span class="kss-nav__ref {{#if isGrandChild}}kss-nav__ref-child{{/if}}">{{referenceNumber}}</span
-              ><span class="kss-nav__name">{{header}}</span>
-            </a>
-          </li>
-        {{/each}}
-        </ul>
-        {{/if}}
+          {{#if children}}
+            <ul class="kss-nav__menu-child">
+            {{#each children}}
+              <li class="kss-nav__menu-item">
+                <a class="kss-nav__menu-link" href="section-{{../referenceURI}}.html#kssref-{{referenceURI}}">
+                  <span class="kss-nav__ref {{#if isGrandChild}}kss-nav__ref-child{{/if}}">{{referenceNumber}}</span
+                  ><span class="kss-nav__name">{{header}}</span>
+                </a>
+              </li>
+            {{/each}}
+            </ul>
+          {{/if}}
         {{/if}}
       </li>
     {{/each}}
@@ -65,82 +65,85 @@
   {{#each sections}}
     <{{#if @first}}div{{else}}section{{/if}} id="kssref-{{referenceURI}}" class="kss-section kss-section--depth-{{depth}}">
 
-    <div class="kss-style">
-      <h{{depth}} class="kss-title kss-title--level-{{depth}}">
-        <a class="kss-title__permalink" href="#kssref-{{referenceURI}}">
-          <span class="kss-title__ref">
-            {{referenceNumber}}
-            <span class="kss-title__permalink-hash">
-              {{#if @root.hasNumericReferences}}
-                #permalink
-              {{else}}
-                #{{reference}}
-              {{/if}}
+      <div class="kss-style">
+        <h{{depth}} class="kss-title kss-title--level-{{depth}}">
+          <a class="kss-title__permalink" href="#kssref-{{referenceURI}}">
+            <span class="kss-title__ref">
+              {{referenceNumber}}
+              <span class="kss-title__permalink-hash">
+                {{#if @root.hasNumericReferences}}
+                  #permalink
+                {{else}}
+                  #{{reference}}
+                {{/if}}
+              </span>
             </span>
-          </span>
-          {{header}}
-        </a>
-      </h{{depth}}>
+            {{header}}
+          </a>
+        </h{{depth}}>
 
-    {{#if description}}
-      <div class="kss-description">
-        {{{description}}}
+        {{#if description}}
+          <div class="kss-description">
+            {{{description}}}
+          </div>
+        {{/if}}
+
+        {{#if parameters}}
+          <div class="kss-parameters__title">Parameters:</div>
+          <ul class="kss-parameters">
+          {{#each parameters}}
+            <li class="kss-parameters__item">
+              <div class="kss-parameters__name"><code>{{name}}</code></div>
+              {{#if defaultValue}}
+                <div class="kss-parameters__default-value">Defaults to: <code>{{defaultValue}}</code></div>
+              {{else}}
+                <div class="kss-parameters__no-default"></div>
+              {{/if}}
+              <div class="kss-parameters__description">{{{description}}}</div>
+            </li>
+          {{/each}}
+          </ul>
+        {{/if}}
       </div>
-    {{/if}}
 
-    {{#if parameters}}
-      <div class="kss-parameters__title">Parameters:</div>
-      <ul class="kss-parameters">
-      {{#each parameters}}
-        <li class="kss-parameters__item">
-          <div class="kss-parameters__name"><code>{{name}}</code></div>
-          {{#if defaultValue}}
-            <div class="kss-parameters__default-value">Defaults to: <code>{{defaultValue}}</code></div>
-          {{else}}
-            <div class="kss-parameters__no-default"></div>
+      {{#if markup}}
+        <div class="kss-modifier__wrapper">
+          <div class="kss-modifier__heading kss-style">
+            Example{{#if modifiers}}s{{/if}}
+          </div>
+
+          {{#if modifiers}}
+            <div class="kss-modifier__default-name kss-style">
+              Default styling
+            </div>
           {{/if}}
-          <div class="kss-parameters__description">{{{description}}}</div>
-        </li>
-      {{/each}}
-      </ul>
-    {{/if}}
-    </div>
 
-    {{#if markup}}
-      <div class="kss-modifier__wrapper">
-        <div class="kss-modifier__heading kss-style">
-          Example{{#if modifiers}}s{{/if}}
+          <div class="kss-modifier__example">
+            {{{markup}}}
+          </div>
+
+          {{#each modifiers}}
+            <div class="kss-modifier__name kss-style">
+              {{name}}
+            </div>
+            <div class="kss-modifier__description kss-style">
+              {{{description}}}
+            </div>
+            <div class="kss-modifier__example">
+              {{{markup}}}
+            </div>
+          {{/each}}
         </div>
-      {{#if modifiers}}
-        <div class="kss-modifier__default-name kss-style">
-          Default styling
+        <div class="kss-markup kss-style">
+          <pre class="prettyprint linenums lang-html"><code data-language="html">{{markup}}</code></pre>
         </div>
       {{/if}}
-        <div class="kss-modifier__example">
-          {{{markup}}}
-        </div>
-      {{#each modifiers}}
-        <div class="kss-modifier__name kss-style">
-          {{name}}
-        </div>
-        <div class="kss-modifier__description kss-style">
-          {{{description}}}
-        </div>
-        <div class="kss-modifier__example">
-          {{{markup}}}
-        </div>
-      {{/each}}
-      </div>
-      <div class="kss-markup kss-style">
-        <pre class="prettyprint linenums lang-html"><code data-language="html">{{markup}}</code></pre>
-      </div>
-    {{/if}}
 
-    {{#if sourceFile.name}}
-      <div class="kss-source kss-style">
-        Source: <code>{{sourceFile.name}}</code>, line {{sourceFile.line}}
-      </div>
-    {{/if}}
+      {{#if sourceFile.name}}
+        <div class="kss-source kss-style">
+          Source: <code>{{sourceFile.name}}</code>, line {{sourceFile.line}}
+        </div>
+      {{/if}}
 
     </{{#if @first}}div{{else}}section{{/if}}>
   {{/each}}
