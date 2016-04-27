@@ -80,10 +80,11 @@ Since each builder has its own set of options, you can see the help for those op
 
 ```
 Style guide:
-  --extend       Location of modules to extend Twig.js; see
-                 http://bit.ly/kss-wiki
-  --namespace    Adds a Twig namespace, given the formatted string:
-                 "namespace:path"
+  --extend          Location of modules to extend Twig.js; see
+                    http://bit.ly/kss-wiki
+  --extend-drupal8  Extend Twig.js using kss's Drupal 8 extensions
+  --namespace       Adds a Twig namespace, given the formatted string:
+                    "namespace:path"
 ```
 
 In order to parse your stylesheets containing KSS docs, you need to either specify a single directory as the first argument or you can specify one or more source directories with one or more `--source [directory]` flags.
