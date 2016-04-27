@@ -110,7 +110,7 @@ describe('KssBuilderBaseTwig object API', function() {
 
     it('should implement the default option definitions', function() {
       let builder = new KssBuilderBaseTwig();
-      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'verbose', 'extend', 'namespace', 'homepage', 'placeholder', 'nav-depth']);
+      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'verbose', 'extend', 'extend-drupal8', 'namespace', 'homepage', 'placeholder', 'nav-depth']);
     });
   });
 
@@ -127,10 +127,11 @@ describe('KssBuilderBaseTwig object API', function() {
   describe('.prepare', function() {
     before(function() {
       this.builderPrepared = testBuilder({
-        destination: path.resolve(__dirname, 'output', 'base_twig', 'prepare'),
-        builder: helperUtils.fixtures('builder-twig-with-assets'),
-        extend: [helperUtils.fixtures('builder-twig-with-assets', 'extend')],
-        namespace: ['example:/dev/null/twig', 'invalid-without-semi-colon']
+        'destination': path.resolve(__dirname, 'output', 'base_twig', 'prepare'),
+        'builder': helperUtils.fixtures('builder-twig-with-assets'),
+        'extend': [helperUtils.fixtures('builder-twig-with-assets', 'extend')],
+        'extend-drupal8': true,
+        'namespace': ['example:/dev/null/twig', 'invalid-without-semi-colon']
       });
       return this.builderPrepared.prepare(new kss.KssStyleGuide({sections: [{header: 'Section 1', reference: 'one'}]}));
     });
@@ -179,6 +180,12 @@ describe('KssBuilderBaseTwig object API', function() {
       expect(this.builderPrepared.Twig).to.have.property('exampleExtension');
       this.builderPrepared.Twig.extend(function(Twig) {
         expect(Twig.filters).to.have.property('example');
+      });
+    });
+
+    it('loads optional Twig extensions for Drupal 8', function() {
+      this.builderPrepared.Twig.extend(function(Twig) {
+        expect(Twig.filters).to.have.property('drupal_escape');
       });
     });
   });

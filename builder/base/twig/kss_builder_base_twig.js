@@ -46,6 +46,13 @@ class KssBuilderBaseTwig extends KssBuilderBase {
         path: true,
         describe: 'Location of modules to extend Twig.js; see http://bit.ly/kss-wiki'
       },
+      'extend-drupal8': {
+        group: 'Style guide:',
+        boolean: true,
+        default: false,
+        multiple: false,
+        describe: 'Extend Twig.js using kss\'s Drupal 8 extensions'
+      },
       'namespace': {
         group: 'Style guide:',
         string: true,
@@ -167,6 +174,9 @@ class KssBuilderBaseTwig extends KssBuilderBase {
       );
 
       // Load modules that extend Twig.
+      if (this.options['extend-drupal8']) {
+        this.options.extend.unshift(path.resolve(__dirname, 'extend-drupal8'));
+      }
       this.options.extend.forEach(directory => {
         prepTasks.push(
           fs.readdirAsync(directory).then(files => {
