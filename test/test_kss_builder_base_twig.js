@@ -146,7 +146,6 @@ describe('KssBuilderBaseTwig object API', function() {
     });
 
     it('collects the namespaces to be used by Twig', function() {
-      console.log(this.builderPrepared.namespaces);
       expect(this.builderPrepared.namespaces).to.have.property('builderTwig');
       expect(this.builderPrepared.namespaces.builderTwig).to.equal(helperUtils.fixtures('builder-twig-with-assets'));
       expect(this.builderPrepared.namespaces).to.have.property('example');
