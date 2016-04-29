@@ -159,7 +159,8 @@ describe('Command Line Interface', function() {
       return kssNode('--verbose --verbose --builder ' + helperUtils.fixtures('old-builder')).then(response => {
         let kssBuilderBase = path.resolve(__dirname, '..', 'builder', 'base', 'kss_builder_base.js');
         expect(response.error).to.exist;
-        expect(response.stderr).to.include('Error: kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "1.0" is being used instead.\n    at ' + kssBuilderBase);
+        expect(response.stderr).to.include('Error: kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "1.0" is being used instead.\n    at ');
+        expect(response.stderr).to.include(kssBuilderBase);
       });
     });
 
@@ -167,7 +168,8 @@ describe('Command Line Interface', function() {
       return kssNode('--verbose --verbose').then(function(response) {
         let kssPath = path.resolve(__dirname, '..', 'lib', 'kss.js');
         expect(response.error).to.exist;
-        expect(response.stderr).to.include('No "source" option specified.\n    at ' + kssPath);
+        expect(response.stderr).to.include('No "source" option specified.\n    at ');
+        expect(response.stderr).to.include(kssPath);
       });
     });
   });
