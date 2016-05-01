@@ -369,15 +369,11 @@ $kss-vertical-rhythm      : $kss-font-size * 1.5;
     padding-right: 20px;
     white-space: nowrap;
   }
-  .kss-parameters__no-default {
-    display: table-cell;
-  }
-  .kss-parameters__default-value {
-    display: table-cell;
-    padding-right: 20px;
-  }
   .kss-parameters__description {
     display: table-cell;
+  }
+  .kss-parameters__default-value code {
+    white-space: nowrap;
   }
 
   .kss-modifier__wrapper {

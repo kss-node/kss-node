@@ -90,12 +90,14 @@
           {% endif %}
             <li class="kss-parameters__item">
               <div class="kss-parameters__name"><code>{{ parameter.name }}</code></div>
-              {% if parameter.defaultValue %}
-                <div class="kss-parameters__default-value">Defaults to: <code>{{ parameter.defaultValue }}</code></div>
-              {% else %}
-                <div class="kss-parameters__no-default"></div>
-              {% endif %}
-              <div class="kss-parameters__description">{{ parameter.description|raw }}</div>
+              <div class="kss-parameters__description">
+                {{ parameter.description|raw }}
+                {% if parameter.defaultValue %}
+                  <div class="kss-parameters__default-value">
+                    Defaults to: <code>{{ parameter.defaultValue }}</code>
+                  </div>
+                {% endif %}
+              </div>
             </li>
           {% if loop.last %}
             </ul>
