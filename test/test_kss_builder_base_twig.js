@@ -6,66 +6,68 @@ const KssBuilderBase = require('../builder/base'),
   KssBuilderBaseTwig = require('../builder/base/twig'),
   mockStream = require('mock-utf8-stream');
 
-const testBuilder = function(options) {
-  options = options || {};
+class TestKssBuilderBaseTwig extends KssBuilderBaseTwig {
+  constructor(options) {
+    super();
 
-  let builder = new KssBuilderBaseTwig();
-  if (!options.builder) {
-    options.builder = path.resolve(__dirname, '..', 'builder', 'twig');
+    options = options || {};
+
+    if (!options.builder) {
+      options.builder = path.resolve(__dirname, '..', 'builder', 'twig');
+    }
+
+    // For our tests, feed kss() log functions that mock stdout and stderr so we
+    // can capture the output easier.
+    this.testStreams = {};
+    this.testStreams.stdout = new mockStream.MockWritableStream();
+    this.testStreams.stderr = new mockStream.MockWritableStream();
+    this.testStreams.stdout.startCapture();
+    this.testStreams.stderr.startCapture();
+    options.logFunction = (function() {
+      let message = '';
+      for (let i = 0; i < arguments.length; i++) {
+        message += arguments[i];
+      }
+      this.testStreams.stdout.write(message + '\n');
+    }).bind(this);
+    options.logErrorFunction = (function(error) {
+      // Show the full error stack if the verbose option is used twice or more.
+      this.testStreams.stderr.write(((error.stack && options.verbose > 1) ? error.stack : error) + '\n');
+    }).bind(this);
+
+    this.addOptions(options);
   }
 
-  // For our tests, feed kss() log functions that mock stdout and stderr so we
-  // can capture the output easier.
-  options.testStreams = {};
-  options.testStreams.stdout = new mockStream.MockWritableStream();
-  options.testStreams.stderr = new mockStream.MockWritableStream();
-  options.testStreams.stdout.startCapture();
-  options.testStreams.stderr.startCapture();
-  options.logFunction = function() {
-    let message = '';
-    for (let i = 0; i < arguments.length; i++) {
-      message += arguments[i];
-    }
-    options.testStreams.stdout.write(message + '\n');
-  };
-  options.logErrorFunction = function(error) {
-    // Show the full error stack if the verbose option is used twice or more.
-    options.testStreams.stderr.write(((error.stack && options.verbose > 1) ? error.stack : error) + '\n');
-  };
-
-  builder.addOptions(options);
-
-  // The internal Twig variable is GLOBAL. This method allows the test to move
-  // the Twig registry for later inspection.
-  builder.saveRegistry = function() {
-    builder.Twig.extend(function(Twig) {
-      builder.registry = Twig.Templates.registry;
-      Twig.Templates.registry = {};
-    });
-  };
-
-  builder.getTestOutput = function(pipe) {
-    let streams = this.getOptions('testStreams');
-
+  getTestOutput(pipe) {
     if (typeof pipe === 'undefined') {
       return {
-        stdout: streams.stdout.capturedData,
-        stderr: streams.stderr.capturedData
+        stdout: this.testStreams.stdout.capturedData,
+        stderr: this.testStreams.stderr.capturedData
       };
     } else {
-      return streams[pipe].capturedData;
+      return this.testStreams[pipe].capturedData;
     }
-  };
+  }
 
-  return builder;
-};
+  // The internal Twig variable is GLOBAL and the global Twig template
+  // registry is reset each time any test's build() is run. So we copy the
+  // Twig registry for later inspection by our tests.
+  build(styleGuide) {
+    return super.build(styleGuide).then(styleGuide => {
+      this.Twig.extend(Twig => {
+        this.registry = Twig.Templates.registry;
+      });
+      return Promise.resolve(styleGuide);
+    });
+  }
+}
 
 describe('KssBuilderBaseTwig object API', function() {
   before(function() {
     this.files = {};
     let source = helperUtils.fixtures('source-twig-builder-test'),
       destination = path.resolve(__dirname, 'output', 'base_twig', 'build');
-    this.builder = testBuilder({
+    this.builder = new TestKssBuilderBaseTwig({
       source: source,
       destination: destination,
       builder: helperUtils.fixtures('builder-twig-with-assets'),
@@ -77,10 +79,8 @@ describe('KssBuilderBaseTwig object API', function() {
     return kss.traverse(source).then(styleGuide => {
       return this.builder.prepare(styleGuide);
     }).then(styleGuide => {
-      this.builder.saveRegistry();
       return this.builder.build(styleGuide);
     }).then(() => {
-      this.builder.saveRegistry();
       return Promise.all(
         [
           'index',
@@ -126,7 +126,7 @@ describe('KssBuilderBaseTwig object API', function() {
 
   describe('.prepare', function() {
     before(function() {
-      this.builderPrepared = testBuilder({
+      this.builderPrepared = new TestKssBuilderBaseTwig({
         'destination': path.resolve(__dirname, 'output', 'base_twig', 'prepare'),
         'builder': helperUtils.fixtures('builder-twig-with-assets'),
         'extend': [helperUtils.fixtures('builder-twig-with-assets', 'extend')],
@@ -153,7 +153,7 @@ describe('KssBuilderBaseTwig object API', function() {
     });
 
     it('outputs settings if the verbose option is set', function() {
-      let builder = testBuilder({
+      let builder = new TestKssBuilderBaseTwig({
         extend: ['/dev/null/example1', '/dev/null/example2'],
         verbose: true,
         // Force early prepare() failure.
@@ -201,15 +201,13 @@ describe('KssBuilderBaseTwig object API', function() {
           {header: 'Section B'}
         ]
       });
-      let builder = testBuilder();
+      let builder = new TestKssBuilderBaseTwig();
       builder.addOptions({
         destination: path.resolve(__dirname, 'output', 'base_twig', 'save-styleguide')
       });
       return builder.prepare(styleGuide).then(styleGuide => {
-        builder.saveRegistry();
         return builder.build(styleGuide);
       }).then(() => {
-        builder.saveRegistry();
         expect(builder.styleGuide).to.deep.equal(styleGuide);
       });
     });
@@ -256,7 +254,7 @@ describe('KssBuilderBaseTwig object API', function() {
       let stdout = this.builder.getTestOutput('stdout');
       expect(stdout).to.include(' - 1.D: missing-file.twig NOT FOUND!');
 
-      let builder = testBuilder({
+      let builder = new TestKssBuilderBaseTwig({
         source: helperUtils.fixtures('source-twig-builder-test'),
         destination: path.resolve(__dirname, 'output', 'base_twig', 'build-no-verbose'),
         builder: helperUtils.fixtures('builder-twig-with-assets'),
@@ -264,10 +262,8 @@ describe('KssBuilderBaseTwig object API', function() {
       });
       let styleGuide = new kss.KssStyleGuide({sections: [{header: 'Heading 4.3', reference: '4.3', markup: '4.3.twig'}]});
       return builder.prepare(styleGuide).then(styleGuide => {
-        builder.saveRegistry();
         return builder.build(styleGuide);
       }).then(() => {
-        builder.saveRegistry();
         expect(builder.getTestOutput('stdout')).to.include('WARNING: In section 4.3, 4.3.twig NOT FOUND!');
       });
     });
@@ -312,7 +308,7 @@ describe('KssBuilderBaseTwig object API', function() {
     it('should build the homepage given "index" as templateName', function() {
       expect(this.files['index']).to.include('<meta name="generator" content="kss-node" />');
 
-      let builder = testBuilder({
+      let builder = new TestKssBuilderBaseTwig({
         source: helperUtils.fixtures('source-twig-builder-test'),
         destination: path.resolve(__dirname, 'output', 'base_twig', 'buildPage'),
         builder: helperUtils.fixtures('builder-twig-with-assets'),
@@ -320,14 +316,16 @@ describe('KssBuilderBaseTwig object API', function() {
       });
       let styleGuide = new kss.KssStyleGuide({sections: [{header: 'Heading 4.3', reference: '4.3'}]});
       return builder.prepare(styleGuide).then(styleGuide => {
-        // Instead of running builder.build(), we do 2 of its tasks manually:
+        // Instead of running builder.build(), we do 3 of its tasks manually:
         // - save the style guide
+        // - reset the Twig template registry
         // - compile the Twig template
         builder.styleGuide = styleGuide;
-        builder.saveRegistry();
+        builder.Twig.extend(function(Twig) {
+          Twig.Templates.registry = {};
+        });
         return builder.Twig.twigAsync({path: path.resolve(builder.options.builder, 'index.twig')});
       }).then(template => {
-        builder.saveRegistry();
         builder.templates = {};
         builder.templates.index = template;
 

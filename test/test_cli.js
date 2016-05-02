@@ -3,8 +3,7 @@
 'use strict';
 
 const cli = require('../lib/cli'),
-  mockStream = require('mock-utf8-stream'),
-  Twig = require('twig');
+  mockStream = require('mock-utf8-stream');
 
 const API = '3.0';
 
@@ -20,11 +19,6 @@ const kssNode = function(args) {
   if (args) {
     Array.prototype.push.apply(argv, args.split(' '));
   }
-
-  // Empty the Twig template registry before running each test.
-  Twig.extend(function(Twig) {
-    Twig.Templates.registry = {};
-  });
 
   return cli({
     stdout: stdout,

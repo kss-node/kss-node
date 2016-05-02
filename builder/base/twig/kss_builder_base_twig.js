@@ -97,6 +97,14 @@ class KssBuilderBaseTwig extends KssBuilderBase {
       // Store the global Twig object.
       this.Twig = require('twig');
 
+      // We need the ability to reset the template registry since the global
+      // Twig object is the same object every time it is require()d.
+      this.Twig.registryReset = (function() {
+        this.extend(function(Twig) {
+          Twig.Templates.registry = {};
+        });
+      }).bind(this.Twig);
+
       // Collect the namespaces to be used by Twig.
       this.namespaces = {
         builderTwig: path.resolve(this.options.builder)
@@ -214,6 +222,10 @@ class KssBuilderBaseTwig extends KssBuilderBase {
     if (typeof this.templates === 'undefined') {
       this.templates = {};
     }
+
+    // Reset the Twig template registry so KSS can be run in a "watch" task that
+    // does not destroy the Node.js environment between builds.
+    this.Twig.registryReset();
 
     let buildTasks = [];
 
