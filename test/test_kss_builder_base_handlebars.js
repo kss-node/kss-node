@@ -6,54 +6,56 @@ const KssBuilderBase = require('../builder/base'),
   KssBuilderBaseHandlebars = require('../builder/base/handlebars'),
   mockStream = require('mock-utf8-stream');
 
-const testBuilder = function(options) {
-  options = options || {};
+class TestKssBuilderBaseHandlebars extends KssBuilderBaseHandlebars {
+  constructor(options) {
+    super();
 
-  let builder = new KssBuilderBaseHandlebars();
+    options = options || {};
 
-  // For our tests, feed kss() log functions that mock stdout and stderr so we
-  // can capture the output easier.
-  options.testStreams = {};
-  options.testStreams.stdout = new mockStream.MockWritableStream();
-  options.testStreams.stderr = new mockStream.MockWritableStream();
-  options.testStreams.stdout.startCapture();
-  options.testStreams.stderr.startCapture();
-  options.logFunction = function() {
-    let message = '';
-    for (let i = 0; i < arguments.length; i++) {
-      message += arguments[i];
+    if (!options.builder) {
+      options.builder = path.resolve(__dirname, '..', 'builder', 'twig');
     }
-    options.testStreams.stdout.write(message + '\n');
-  };
-  options.logErrorFunction = function(error) {
-    // Show the full error stack if the verbose option is used twice or more.
-    options.testStreams.stderr.write(((error.stack && options.verbose > 1) ? error.stack : error) + '\n');
-  };
 
-  builder.addOptions(options);
+    // For our tests, feed kss() log functions that mock stdout and stderr so we
+    // can capture the output easier.
+    this.testStreams = {};
+    this.testStreams.stdout = new mockStream.MockWritableStream();
+    this.testStreams.stderr = new mockStream.MockWritableStream();
+    this.testStreams.stdout.startCapture();
+    this.testStreams.stderr.startCapture();
+    options.logFunction = (function() {
+      let message = '';
+      for (let i = 0; i < arguments.length; i++) {
+        message += arguments[i];
+      }
+      this.testStreams.stdout.write(message + '\n');
+    }).bind(this);
+    options.logErrorFunction = (function(error) {
+      // Show the full error stack if the verbose option is used twice or more.
+      this.testStreams.stderr.write(((error.stack && options.verbose > 1) ? error.stack : error) + '\n');
+    }).bind(this);
 
-  builder.getTestOutput = function(pipe) {
-    let streams = this.getOptions('testStreams');
+    this.addOptions(options);
+  }
 
+  getTestOutput(pipe) {
     if (typeof pipe === 'undefined') {
       return {
-        stdout: streams.stdout.capturedData,
-        stderr: streams.stderr.capturedData
+        stdout: this.testStreams.stdout.capturedData,
+        stderr: this.testStreams.stderr.capturedData
       };
     } else {
-      return streams[pipe].capturedData;
+      return this.testStreams[pipe].capturedData;
     }
-  };
-
-  return builder;
-};
+  }
+}
 
 describe('KssBuilderBaseHandlebars object API', function() {
   before(function() {
     this.files = {};
     let source = helperUtils.fixtures('source-handlebars-builder-test'),
       destination = path.resolve(__dirname, 'output', 'base_handlebars', 'build');
-    this.builder = testBuilder({
+    this.builder = new TestKssBuilderBaseHandlebars({
       source: source,
       destination: destination,
       builder: helperUtils.fixtures('builder-with-assets'),
@@ -112,7 +114,7 @@ describe('KssBuilderBaseHandlebars object API', function() {
 
   describe('.prepare', function() {
     before(function() {
-      this.builderPrepared = testBuilder({
+      this.builderPrepared = new TestKssBuilderBaseHandlebars({
         destination: path.resolve(__dirname, 'output', 'base_handlebars', 'prepare'),
         builder: helperUtils.fixtures('builder-with-assets'),
         extend: [helperUtils.fixtures('builder-with-assets', 'extend')]
@@ -130,7 +132,7 @@ describe('KssBuilderBaseHandlebars object API', function() {
     });
 
     it('outputs settings if the verbose option is set', function() {
-      let builder = testBuilder({
+      let builder = new TestKssBuilderBaseHandlebars({
         extend: ['/dev/null/example1', '/dev/null/example2'],
         verbose: true,
         // Force early prepare() failure.
@@ -169,7 +171,7 @@ describe('KssBuilderBaseHandlebars object API', function() {
           {header: 'Section B'}
         ]
       });
-      let builder = testBuilder();
+      let builder = new TestKssBuilderBaseHandlebars();
       return builder.build(styleGuide).catch(error => {
         return error;
       }).then(() => {
@@ -202,7 +204,7 @@ describe('KssBuilderBaseHandlebars object API', function() {
       let stdout = this.builder.getTestOutput('stdout');
       expect(stdout).to.include(' - 1.D: missing-file.hbs NOT FOUND!');
 
-      let builder = testBuilder({
+      let builder = new TestKssBuilderBaseHandlebars({
         source: helperUtils.fixtures('source-handlebars-builder-test'),
         destination: path.resolve(__dirname, 'output', 'base_handlebars', 'build-no-verbose'),
         builder: helperUtils.fixtures('builder-with-assets'),
@@ -256,7 +258,7 @@ describe('KssBuilderBaseHandlebars object API', function() {
     it('should build the homepage given "index" as templateName', function() {
       expect(this.files['index']).to.include('<meta name="generator" content="kss-node" />');
 
-      let builder = testBuilder({
+      let builder = new TestKssBuilderBaseHandlebars({
         source: helperUtils.fixtures('source-handlebars-builder-test'),
         destination: path.resolve(__dirname, 'output', 'base_handlebars', 'buildPage'),
         builder: helperUtils.fixtures('builder-with-assets'),

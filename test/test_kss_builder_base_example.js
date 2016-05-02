@@ -6,47 +6,49 @@ const KssBuilderBase = require('../builder/base'),
   KssBuilderBaseExample = require('../builder/base/example'),
   mockStream = require('mock-utf8-stream');
 
-const testBuilder = function(options) {
-  options = options || {};
+class TestKssBuilderBaseExample extends KssBuilderBaseExample {
+  constructor(options) {
+    super();
 
-  let builder = new KssBuilderBaseExample();
+    options = options || {};
 
-  // For our tests, feed kss() log functions that mock stdout and stderr so we
-  // can capture the output easier.
-  options.testStreams = {};
-  options.testStreams.stdout = new mockStream.MockWritableStream();
-  options.testStreams.stderr = new mockStream.MockWritableStream();
-  options.testStreams.stdout.startCapture();
-  options.testStreams.stderr.startCapture();
-  options.logFunction = function() {
-    let message = '';
-    for (let i = 0; i < arguments.length; i++) {
-      message += arguments[i];
+    if (!options.builder) {
+      options.builder = path.resolve(__dirname, '..', 'builder', 'twig');
     }
-    options.testStreams.stdout.write(message + '\n');
-  };
-  options.logErrorFunction = function(error) {
-    // Show the full error stack if the verbose option is used twice or more.
-    options.testStreams.stderr.write(((error.stack && options.verbose > 1) ? error.stack : error) + '\n');
-  };
 
-  builder.addOptions(options);
+    // For our tests, feed kss() log functions that mock stdout and stderr so we
+    // can capture the output easier.
+    this.testStreams = {};
+    this.testStreams.stdout = new mockStream.MockWritableStream();
+    this.testStreams.stderr = new mockStream.MockWritableStream();
+    this.testStreams.stdout.startCapture();
+    this.testStreams.stderr.startCapture();
+    options.logFunction = (function() {
+      let message = '';
+      for (let i = 0; i < arguments.length; i++) {
+        message += arguments[i];
+      }
+      this.testStreams.stdout.write(message + '\n');
+    }).bind(this);
+    options.logErrorFunction = (function(error) {
+      // Show the full error stack if the verbose option is used twice or more.
+      this.testStreams.stderr.write(((error.stack && options.verbose > 1) ? error.stack : error) + '\n');
+    }).bind(this);
 
-  builder.getTestOutput = function(pipe) {
-    let streams = this.getOptions('testStreams');
+    this.addOptions(options);
+  }
 
+  getTestOutput(pipe) {
     if (typeof pipe === 'undefined') {
       return {
-        stdout: streams.stdout.capturedData,
-        stderr: streams.stderr.capturedData
+        stdout: this.testStreams.stdout.capturedData,
+        stderr: this.testStreams.stderr.capturedData
       };
     } else {
-      return streams[pipe].capturedData;
+      return this.testStreams[pipe].capturedData;
     }
-  };
-
-  return builder;
-};
+  }
+}
 
 describe('KssBuilderBaseExample object API', function() {
 
@@ -69,7 +71,7 @@ describe('KssBuilderBaseExample object API', function() {
   });
 
   it('should have a working clone() method', function() {
-    let builder = testBuilder(),
+    let builder = new TestKssBuilderBaseExample(),
       destinationPath = path.resolve(__dirname, 'output', 'example');
     return builder.clone('', destinationPath).then(() => {
       expect(builder.getTestOutput('stdout')).to.contain('Example builder cloned to ' + destinationPath + '! (not really.)');
@@ -77,7 +79,7 @@ describe('KssBuilderBaseExample object API', function() {
   });
 
   it('should have a working prepare() method', function() {
-    let builder = testBuilder(),
+    let builder = new TestKssBuilderBaseExample(),
       originalStyleGuide = new kss.KssStyleGuide({sections: [{header: 'Section One'}, {header: 'Section Two'}]});
     return builder.prepare(originalStyleGuide).then(styleGuide => {
       expect(builder.getOptions('source')[0]).to.equal(path.resolve(__dirname, '..', 'demo'));
@@ -88,7 +90,7 @@ describe('KssBuilderBaseExample object API', function() {
   });
 
   it('should have a working build() method', function() {
-    let builder = testBuilder(),
+    let builder = new TestKssBuilderBaseExample(),
       originalStyleGuide = new kss.KssStyleGuide({sections: [{header: 'Section One'}, {header: 'Section Two'}]});
     return builder.prepare(originalStyleGuide).then(styleGuide => {
       return builder.build(styleGuide).then(styleGuide => {
