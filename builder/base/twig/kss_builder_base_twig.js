@@ -110,7 +110,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
       });
 
       // Promisify Twig.twig().
-      this.Twig.twigAsync = (options) => {
+      this.Twig.twigAsync = (function(options) {
         return new Promise((resolve, reject) => {
           // Use our Promise's functions.
           options.load = resolve;
@@ -123,16 +123,16 @@ class KssBuilderBaseTwig extends KssBuilderBase {
           // twig() ignores load/error if data or ref are specified.
           if (options.data || options.ref) {
             try {
-              resolve(this.Twig.twig(options));
+              resolve(this.twig(options));
             } catch (error) {
               // istanbul ignore next
               reject(error);
             }
           } else {
-            this.Twig.twig(options);
+            this.twig(options);
           }
         });
-      };
+      }).bind(this.Twig);
 
       if (this.options.verbose) {
         this.log('');
