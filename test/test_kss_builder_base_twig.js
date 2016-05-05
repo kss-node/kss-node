@@ -155,6 +155,7 @@ describe('KssBuilderBaseTwig object API', function() {
     it('outputs settings if the verbose option is set', function() {
       let builder = new TestKssBuilderBaseTwig({
         extend: ['/dev/null/example1', '/dev/null/example2'],
+        namespace: ['fubar:/dev/null/example1'],
         verbose: true,
         // Force early prepare() failure.
         destination: null

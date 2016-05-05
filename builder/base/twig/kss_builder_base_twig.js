@@ -152,6 +152,9 @@ class KssBuilderBaseTwig extends KssBuilderBase {
         if (this.options.extend.length) {
           this.log(' * Extend      : ' + this.options.extend.join(', '));
         }
+        if (this.options.namespace.length) {
+          this.log(' * Namespace   : ' + this.options.namespace.join(', '));
+        }
         this.log('');
       }
 
