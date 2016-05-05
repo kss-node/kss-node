@@ -457,120 +457,126 @@ class KssBuilderBaseTwig extends KssBuilderBase {
     context.options = this.options || /* istanbul ignore next */ {};
 
     // Render the template for each section markup and modifier.
-    context.sections.forEach(section => {
-      if (section.markup) {
-        // Load the information about this section's markup template.
-        let templateInfo = this.userTemplates[section.reference];
-        let template = this.Twig.twig({
-          ref: templateInfo.ref
-        });
+    return Promise.all(
+      context.sections.map(section => {
+        if (section.markup) {
+          // Load the information about this section's markup template.
+          let templateInfo = this.userTemplates[section.reference];
+          return this.Twig.twigAsync({
+            ref: templateInfo.ref
+          }).then(template => {
+            // Copy the template.context so we can modify it.
+            let data = JSON.parse(JSON.stringify(templateInfo.context));
 
-        // Copy the template.context so we can modify it.
-        let data = JSON.parse(JSON.stringify(templateInfo.context));
+            /* eslint-disable camelcase */
 
-        /* eslint-disable camelcase */
+            // Display the placeholder if the section has modifiers.
+            data.modifier_class = data.modifier_class || '';
+            if (section.modifiers.length !== 0 && this.options.placeholder) {
+              data.modifier_class += (data.modifier_class ? ' ' : '') + this.options.placeholder;
+            }
 
-        // Display the placeholder if the section has modifiers.
-        data.modifier_class = data.modifier_class || '';
-        if (section.modifiers.length !== 0 && this.options.placeholder) {
-          data.modifier_class += (data.modifier_class ? ' ' : '') + this.options.placeholder;
+            section.markup = template.render(data);
+
+            section.modifiers.forEach(modifier => {
+              let data = JSON.parse(JSON.stringify(templateInfo.context));
+              data.modifier_class = (data.modifier_class ? data.modifier_class + ' ' : '') + modifier.className;
+              modifier.markup = template.render(data);
+            });
+            /* eslint-enable camelcase */
+            return Promise.resolve();
+          });
+        } else {
+          return Promise.resolve();
         }
+      })
+    ).then(() => {
 
-        section.markup = template.render(data);
-
-        section.modifiers.forEach(modifier => {
-          let data = JSON.parse(JSON.stringify(templateInfo.context));
-          data.modifier_class = (data.modifier_class ? data.modifier_class + ' ' : '') + modifier.className;
-          modifier.markup = template.render(data);
-        });
-        /* eslint-enable camelcase */
-      }
-    });
-
-    // Create the HTML to load the optional CSS and JS (if a sub-class hasn't already built it.)
-    // istanbul ignore else
-    if (typeof context.styles === 'undefined') {
-      context.styles = '';
-      for (let key in this.options.css) {
-        // istanbul ignore else
-        if (this.options.css.hasOwnProperty(key)) {
-          context.styles = context.styles + '<link rel="stylesheet" href="' + this.options.css[key] + '">\n';
-        }
-      }
-    }
-    // istanbul ignore else
-    if (typeof context.scripts === 'undefined') {
-      context.scripts = '';
-      for (let key in this.options.js) {
-        // istanbul ignore else
-        if (this.options.js.hasOwnProperty(key)) {
-          context.scripts = context.scripts + '<script src="' + this.options.js[key] + '"></script>\n';
-        }
-      }
-    }
-
-    // Create a menu for the page (if a sub-class hasn't already built one.)
-    // istanbul ignore else
-    if (typeof context.menu === 'undefined') {
-      context.menu = this.createMenu(pageReference);
-    }
-
-    // Determine the file name to use for this page.
-    if (pageReference) {
-      let rootSection = this.styleGuide.sections(pageReference);
-      if (this.options.verbose) {
-        this.log(
-          ' - ' + templateName + ' ' + pageReference
-          + ' ['
-          + (rootSection.header() ? rootSection.header() : /* istanbul ignore next */ 'Unnamed')
-          + ']'
-        );
-      }
-      // Convert the pageReference to be URI-friendly.
-      pageReference = rootSection.referenceURI();
-    } else if (this.options.verbose) {
-      this.log(' - homepage');
-    }
-    let fileName = templateName + (pageReference ? '-' + pageReference : '') + '.html';
-
-    // Grab the homepage text if it hasn't already been provided.
-    let getHomepageText;
-    if (templateName === 'index' && typeof context.homepage === 'undefined') {
-      getHomepageText = Promise.all(
-        this.options.source.map(source => {
-          return glob(source + '/**/' + this.options.homepage);
-        })
-      ).then(globMatches => {
-        for (let files of globMatches) {
-          if (files.length) {
-            // Read the file contents from the first matched path.
-            return fs.readFileAsync(files[0], 'utf8');
+      // Create the HTML to load the optional CSS and JS (if a sub-class hasn't already built it.)
+      // istanbul ignore else
+      if (typeof context.styles === 'undefined') {
+        context.styles = '';
+        for (let key in this.options.css) {
+          // istanbul ignore else
+          if (this.options.css.hasOwnProperty(key)) {
+            context.styles = context.styles + '<link rel="stylesheet" href="' + this.options.css[key] + '">\n';
           }
         }
-
-        if (this.options.verbose) {
-          this.log('   ...no homepage content found in ' + this.options.homepage + '.');
-        } else {
-          this.log('WARNING: no homepage content found in ' + this.options.homepage + '.');
+      }
+      // istanbul ignore else
+      if (typeof context.scripts === 'undefined') {
+        context.scripts = '';
+        for (let key in this.options.js) {
+          // istanbul ignore else
+          if (this.options.js.hasOwnProperty(key)) {
+            context.scripts = context.scripts + '<script src="' + this.options.js[key] + '"></script>\n';
+          }
         }
-        return '';
-      }).then(homePageText => {
-        // Ensure homePageText is a non-false value. And run any results through
-        // Markdown.
-        context.homepage = homePageText ? marked(homePageText) : ' ';
-        return Promise.resolve();
-      });
-    } else {
-      getHomepageText = Promise.resolve();
-      context.homepage = false;
-    }
+      }
 
-    return getHomepageText.then(() => {
-      // Render the template and save it to the destination.
-      return fs.writeFileAsync(
-        path.join(this.options.destination, fileName),
-        this.templates[templateName].render(context)
-      );
+      // Create a menu for the page (if a sub-class hasn't already built one.)
+      // istanbul ignore else
+      if (typeof context.menu === 'undefined') {
+        context.menu = this.createMenu(pageReference);
+      }
+
+      // Determine the file name to use for this page.
+      if (pageReference) {
+        let rootSection = this.styleGuide.sections(pageReference);
+        if (this.options.verbose) {
+          this.log(
+            ' - ' + templateName + ' ' + pageReference
+            + ' ['
+            + (rootSection.header() ? rootSection.header() : /* istanbul ignore next */ 'Unnamed')
+            + ']'
+          );
+        }
+        // Convert the pageReference to be URI-friendly.
+        pageReference = rootSection.referenceURI();
+      } else if (this.options.verbose) {
+        this.log(' - homepage');
+      }
+      let fileName = templateName + (pageReference ? '-' + pageReference : '') + '.html';
+
+      // Grab the homepage text if it hasn't already been provided.
+      let getHomepageText;
+      if (templateName === 'index' && typeof context.homepage === 'undefined') {
+        getHomepageText = Promise.all(
+          this.options.source.map(source => {
+            return glob(source + '/**/' + this.options.homepage);
+          })
+        ).then(globMatches => {
+          for (let files of globMatches) {
+            if (files.length) {
+              // Read the file contents from the first matched path.
+              return fs.readFileAsync(files[0], 'utf8');
+            }
+          }
+
+          if (this.options.verbose) {
+            this.log('   ...no homepage content found in ' + this.options.homepage + '.');
+          } else {
+            this.log('WARNING: no homepage content found in ' + this.options.homepage + '.');
+          }
+          return '';
+        }).then(homePageText => {
+          // Ensure homePageText is a non-false value. And run any results through
+          // Markdown.
+          context.homepage = homePageText ? marked(homePageText) : ' ';
+          return Promise.resolve();
+        });
+      } else {
+        getHomepageText = Promise.resolve();
+        context.homepage = false;
+      }
+
+      return getHomepageText.then(() => {
+        // Render the template and save it to the destination.
+        return fs.writeFileAsync(
+          path.join(this.options.destination, fileName),
+          this.templates[templateName].render(context)
+        );
+      });
     });
   }
 }
