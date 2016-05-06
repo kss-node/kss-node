@@ -118,7 +118,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
       });
 
       // Promisify Twig.twig().
-      let namespacesFromTwig = this.namespaces;
+      let namespacesFromKSS = this.namespaces;
       this.Twig.twigAsync = (function(options) {
         return new Promise((resolve, reject) => {
           // Use our Promise's functions.
@@ -127,7 +127,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
           // We enforce some options.
           options.async = true;
           options.autoescape = true;
-          options.namespaces = namespacesFromTwig;
+          options.namespaces = namespacesFromKSS;
 
           // twig() ignores load/error if data or ref are specified.
           if (options.data || options.ref) {
