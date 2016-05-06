@@ -106,14 +106,14 @@ class KssBuilderBaseTwig extends KssBuilderBase {
       }).bind(this.Twig);
 
       // Collect the namespaces to be used by Twig.
-      this.namespaces = {
+      let twigNamespaces = {
         builderTwig: path.resolve(this.options.builder)
       };
       this.options.namespace.forEach(namespace => {
         // namespace should be of the form "namespace:path";
         let tokens = namespace.split(':', 2);
         if (tokens[1]) {
-          this.namespaces[tokens[0]] = path.resolve(tokens[1]);
+          twigNamespaces[tokens[0]] = path.resolve(tokens[1]);
         }
       });
 
@@ -126,7 +126,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
           // We enforce some options.
           options.async = true;
           options.autoescape = true;
-          options.namespaces = this.namespaces;
+          options.namespaces = twigNamespaces;
 
           // twig() ignores load/error if data or ref are specified.
           if (options.data || options.ref) {
