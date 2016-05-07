@@ -460,7 +460,6 @@ class KssBuilderBase {
       // If the destination path does not exist, we copy the builder to it.
       // istanbul ignore else
       if (result.code === 'ENOENT') {
-        let notHidden = new RegExp('^(?!.*' + path.sep + '(node_modules$|\\.))');
         return fs.copyAsync(
           builderPath,
           destinationPath,
@@ -470,7 +469,7 @@ class KssBuilderBase {
               // Only look at the part of the path inside the builder.
               let relativePath = path.sep + path.relative(builderPath, filePath);
               // Skip any files with a path matching: /node_modules or /.
-              return notHidden.test(relativePath);
+              return (new RegExp('^(?!.*\\' + path.sep + '(node_modules$|\\.))')).test(relativePath);
             }
           }
         );
