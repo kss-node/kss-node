@@ -268,6 +268,29 @@ class KssBuilderBaseTwig extends KssBuilderBase {
 
     let sectionRoots = [];
 
+    // Compile an inline template in markup.
+    let compileInline = template => {
+      return this.Twig.twigAsync({
+        id: template.name,
+        data: template.markup
+      }).then(() => {
+        return template;
+      });
+    };
+
+    // Save the name of the template and its context for retrieval in
+    // buildPage(), where we only know the reference.
+    let saveTemplate = template => {
+      this.userTemplates[template.reference] = {
+        ref: template.name,
+        context: template.context,
+        exampleRef: template.exampleFile ? template.exampleName : false,
+        exampleContext: template.exampleContext
+      };
+
+      return Promise.resolve();
+    };
+
     sections.forEach(section => {
       // Accumulate an array of section references for all sections at the root
       // of the style guide.
@@ -281,89 +304,120 @@ class KssBuilderBaseTwig extends KssBuilderBase {
       }
 
       // Register all the markup blocks as Twig templates.
-      let findTemplate,
-        template = {
-          name: section.reference(),
-          reference: section.reference(),
-          file: '',
-          markup: section.markup(),
-          compiled: false,
-          context: {}
-        };
-      // If the markup is a file path, attempt to load the file.
-      if (template.markup.match(/^[^\n]+\.twig$/)) {
-        template.file = template.markup;
-        template.name = path.basename(template.file);
+      let template = {
+        name: section.reference(),
+        reference: section.reference(),
+        file: '',
+        markup: section.markup(),
+        context: {},
+        exampleName: false,
+        exampleFile: '',
+        exampleContext: {}
+      };
 
-        findTemplate = Promise.all(
-          this.options.source.map(source => {
-            return glob(source + '/**/' + template.file);
-          })
-        ).then(globMatches => {
-          for (let files of globMatches) {
-            if (files.length) {
-              // Read the template from the first matched path.
-              template.file = files[0];
-              return this.Twig.twigAsync({
-                id: template.name,
-                path: template.file
-              });
-            }
-          }
-
-          // If the markup file is not found, note that in the style guide.
-          template.markup += ' NOT FOUND!';
-          if (!this.options.verbose) {
-            this.log('WARNING: In section ' + template.reference + ', ' + template.markup);
-          }
-          return '';
-        }).then(compiledTemplate => {
-          if (this.options.verbose) {
-            this.log(' - ' + template.reference + ': ' + template.markup);
-          }
-          if (compiledTemplate) {
-            template.compiled = compiledTemplate;
-            // Load sample context for the template from the sample .json file.
-            try {
-              template.context = require(path.join(path.dirname(template.file), path.basename(template.name, '.twig') + '.json'));
-            } catch (error) {
-              template.context = {};
-            }
-          }
-          return template;
-        });
-      } else {
+      // Check if the markup is a file path.
+      if (!template.markup.match(/^[^\n]+\.twig$/)) {
         // istanbul ignore else
         if (this.options.verbose) {
           this.log(' - ' + template.reference + ': inline markup');
         }
-        findTemplate = Promise.resolve(template);
-      }
+        buildTasks.push(
+          compileInline(template).then(saveTemplate)
+        );
+      } else {
+        // Attempt to load the file path.
+        template.file = template.markup;
+        template.name = path.basename(template.file);
+        template.exampleName = 'kss-example-' + template.name;
 
-      buildTasks.push(
-        findTemplate.then(template => {
-          // If we don't yet have a compiled Template, compile the markup.
-          if (!template.compiled) {
-            return this.Twig.twigAsync({
-              id: template.name,
-              data: template.markup
-            }).then(compiledTemplate => {
-              template.compiled = compiledTemplate;
+        let findTemplates = [];
+        this.options.source.forEach(source => {
+          findTemplates.push(glob(source + '/**/' + template.file));
+          findTemplates.push(glob(source + '/**/kss-example-' + template.name));
+        });
+        buildTasks.push(
+          Promise.all(findTemplates).then(globMatches => {
+            let foundTemplate = false,
+              foundExample = false,
+              compileTemplates = [];
+            for (let files of globMatches) {
+              if (!foundTemplate || !foundExample) {
+                for (let file of files) {
+                  // Read the template from the first matched path.
+                  let filename = path.basename(file);
+                  if (!foundTemplate && filename === template.name) {
+                    foundTemplate = true;
+                    template.file = file;
+                    compileTemplates.push(
+                      this.Twig.twigAsync({
+                        id: template.name,
+                        path: file
+                      }).then(() => {
+                        // Load sample context for the template from the sample
+                        // .json file.
+                        try {
+                          template.context = require(path.join(path.dirname(template.file), path.basename(template.name, '.twig') + '.json'));
+                        } catch (error) {
+                          template.context = {};
+                        }
+                        return Promise.resolve();
+                      })
+                    );
+                  } else if (!foundExample && filename === template.exampleName) {
+                    foundExample = true;
+                    template.exampleFile = file;
+                    compileTemplates.push(
+                      this.Twig.twigAsync({
+                        id: template.exampleName,
+                        path: file
+                      }).then(() => {
+                        // Load sample context for the template from the sample
+                        // .json file.
+                        try {
+                          template.exampleContext = require(path.join(path.dirname(template.exampleFile), path.basename(template.exampleName, '.twig') + '.json'));
+                        } catch (error) {
+                          // istanbul ignore next
+                          template.exampleContext = {};
+                        }
+                        return Promise.resolve();
+                      })
+                    );
+                  }
+                }
+              }
+            }
+
+            // If the markup file is not found, note that in the style guide.
+            if (!foundTemplate && !foundExample) {
+              template.markup += ' NOT FOUND!';
+              if (!this.options.verbose) {
+                this.log('WARNING: In section ' + template.reference + ', ' + template.markup);
+              }
+              compileTemplates.push(
+                compileInline(template)
+              );
+            } else /* istanbul ignore if */ if (!foundTemplate) {
+              // If we found an example, but no template, compile an empty
+              // template.
+              template.markup = '';
+              compileTemplates.push(
+                this.Twig.twigAsync({
+                  id: template.name,
+                  data: ''
+                })
+              );
+            }
+
+            if (this.options.verbose) {
+              this.log(' - ' + template.reference + ': ' + template.markup);
+            }
+
+            return Promise.all(compileTemplates).then(() => {
               return template;
             });
-          }
-          return template;
-        }).then(template => {
-          // Save the name of the template and its context for retrieval in
-          // buildPage(), where we only know the reference.
-          this.userTemplates[template.reference] = {
-            ref: template.name,
-            context: template.context
-          };
-
-          return Promise.resolve();
-        })
-      );
+          }).then(saveTemplate)
+        );
+      }
     });
 
     return Promise.all(buildTasks).then(() => {
@@ -479,13 +533,28 @@ class KssBuilderBaseTwig extends KssBuilderBase {
 
             section.markup = template.render(data);
 
-            section.modifiers.forEach(modifier => {
-              let data = JSON.parse(JSON.stringify(templateInfo.context));
-              data.modifier_class = (data.modifier_class ? data.modifier_class + ' ' : '') + modifier.className;
-              modifier.markup = template.render(data);
+            let getExampleTemplate,
+              templateContext;
+            if (templateInfo.exampleRef) {
+              getExampleTemplate = this.Twig.twigAsync({
+                ref: templateInfo.exampleRef
+              });
+              templateContext = templateInfo.exampleContext;
+            } else {
+              getExampleTemplate = Promise.resolve(template);
+              templateContext = templateInfo.context;
+            }
+
+            /* eslint-disable max-nested-callbacks */
+            return getExampleTemplate.then(template => {
+              section.modifiers.forEach(modifier => {
+                let data = JSON.parse(JSON.stringify(templateContext));
+                data.modifier_class = (data.modifier_class ? data.modifier_class + ' ' : '') + modifier.className;
+                modifier.markup = template.render(data);
+              });
+              return Promise.resolve();
             });
-            /* eslint-enable camelcase */
-            return Promise.resolve();
+            /* eslint-enable camelcase, max-nested-callbacks */
           });
         } else {
           return Promise.resolve();

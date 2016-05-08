@@ -56,7 +56,10 @@ describe('KssBuilderBaseHandlebars object API', function() {
     let source = helperUtils.fixtures('source-handlebars-builder-test'),
       destination = path.resolve(__dirname, 'output', 'base_handlebars', 'build');
     this.builder = new TestKssBuilderBaseHandlebars({
-      source: source,
+      source: [
+        source,
+        helperUtils.fixtures('source-twig-builder-test')
+      ],
       destination: destination,
       builder: helperUtils.fixtures('builder-with-assets'),
       extend: helperUtils.fixtures('builder-with-assets', 'extend'),
@@ -297,12 +300,20 @@ describe('KssBuilderBaseHandlebars object API', function() {
       expect(this.files['section-1']).to.include('ref:1.D:markup:missing-file.hbs NOT FOUND!');
     });
 
+    it('should render kss-example-* {{ markup }}', function() {
+      expect(this.files['section-1']).to.include('<h1>Example 1c</h1>');
+    });
+
     it('should render {{{markup}}} when there is no markup', function() {
       expect(this.files['section-1']).to.include('ref:1.A:no-markup:\n');
     });
 
     it('should add modifier_class from the JSON data', function() {
       expect(this.files['section-1']).to.include('ref:1.C:markup:<div class="one-cee-from-json [modifier class]">');
+    });
+
+    it('should add modifier_class from the example JSON data', function() {
+      expect(this.files['section-1']).to.include('ref:1.C:modifier:modifier-1:markup:<div class="one-cee-example-from-json modifier-1">');
     });
 
     it('should add modifier_class from the modifier\'s className property', function() {
