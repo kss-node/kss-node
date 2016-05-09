@@ -532,6 +532,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
             }
 
             section.markup = template.render(data);
+            section.example = section.markup;
 
             let getExampleTemplate,
               templateContext;
@@ -547,6 +548,15 @@ class KssBuilderBaseTwig extends KssBuilderBase {
 
             /* eslint-disable max-nested-callbacks */
             return getExampleTemplate.then(template => {
+              if (templateInfo.exampleRef) {
+                let data = JSON.parse(JSON.stringify(templateContext));
+                data.modifier_class = data.modifier_class || /* istanbul ignore next */ '';
+                // istanbul ignore else
+                if (section.modifiers.length !== 0 && this.options.placeholder) {
+                  data.modifier_class += (data.modifier_class ? ' ' : /* istanbul ignore next */ '') + this.options.placeholder;
+                }
+                section.example = template.render(data);
+              }
               section.modifiers.forEach(modifier => {
                 let data = JSON.parse(JSON.stringify(templateContext));
                 data.modifier_class = (data.modifier_class ? data.modifier_class + ' ' : '') + modifier.className;

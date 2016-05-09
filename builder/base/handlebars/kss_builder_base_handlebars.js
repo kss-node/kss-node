@@ -444,14 +444,25 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
         // we want the ability to display it as a code sample with {{ }} and as
         // rendered HTML with {{{ }}}.
         section.markup = template(data);
+        section.example = section.markup;
 
         let templateContext;
         if (partialInfo.exampleName) {
           template = this.Handlebars.compile('{{> "' + partialInfo.exampleName + '"}}');
           templateContext = partialInfo.exampleContext;
+
+          // Re-render the example variable with the example partial.
+          data = JSON.parse(JSON.stringify(templateContext));
+          data.modifier_class = data.modifier_class || /* istanbul ignore next */ '';
+          // istanbul ignore else
+          if (section.modifiers.length !== 0 && this.options.placeholder) {
+            data.modifier_class += (data.modifier_class ? ' ' : /* istanbul ignore next */ '') + this.options.placeholder;
+          }
+          section.example = template(data);
         } else {
           templateContext = partialInfo.context;
         }
+
 
         section.modifiers.forEach(modifier => {
           let data = JSON.parse(JSON.stringify(templateContext));
