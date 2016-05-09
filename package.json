@@ -24,7 +24,7 @@
   },
   "scripts": {
     "test": "istanbul cover _mocha",
-    "posttest": "eslint bin/kss-node .",
+    "posttest": "eslint bin/kss bin/kss-node .",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "docs": "make docs"
   },
@@ -48,6 +48,7 @@
     "mock-utf8-stream": "^0.1.1"
   },
   "bin": {
+    "kss": "./bin/kss",
     "kss-node": "./bin/kss-node"
   },
   "engines": {

@@ -10,7 +10,7 @@ const API = '3.0';
 // Instead of child_process.exec, we use the lib/cli.js module and feed it mock
 // stdout, stderr and argv.
 const kssNode = function(args) {
-  let argv = ['node', 'bin/kss-node'],
+  let argv = ['node', 'bin/kss'],
     stdout = new mockStream.MockWritableStream(),
     stderr = new mockStream.MockWritableStream();
 
@@ -126,7 +126,7 @@ describe('Command Line Interface', function() {
       return kssNode('--demo --destination ' + helperUtils.fixtures('..', 'output', 'nested')).then(function(result) {
         expect(result.error).to.not.exist;
         expect(result.stdout).to.include(successMessage);
-        expect(result.stdout).to.include('WELCOME to the kss-node demo! We\'ve turned on the --verbose flag so you can see what kss-node is doing.');
+        expect(result.stdout).to.include('WELCOME to the kss demo! We\'ve turned on the --verbose flag so you can see what kss is doing.');
       });
     });
   });
@@ -135,7 +135,7 @@ describe('Command Line Interface', function() {
     it('should catch a failure when the builder API is not equal to the current API', function() {
       return kssNode('--builder ' + helperUtils.fixtures('old-builder')).then(result => {
         expect(result.error).to.exist;
-        expect(result.stderr).to.include('kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "1.0" is being used instead.');
+        expect(result.stderr).to.include('kss expected the builder to implement KssBuilderBase API version ' + API + '; version "1.0" is being used instead.');
       });
     });
 
@@ -153,7 +153,7 @@ describe('Command Line Interface', function() {
       return kssNode('--verbose --verbose --builder ' + helperUtils.fixtures('old-builder')).then(response => {
         let kssBuilderBase = path.resolve(__dirname, '..', 'builder', 'base', 'kss_builder_base.js');
         expect(response.error).to.exist;
-        expect(response.stderr).to.include('Error: kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "1.0" is being used instead.\n    at ');
+        expect(response.stderr).to.include('Error: kss expected the builder to implement KssBuilderBase API version ' + API + '; version "1.0" is being used instead.\n    at ');
         expect(response.stderr).to.include(kssBuilderBase);
       });
     });

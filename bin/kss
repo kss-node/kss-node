@@ -1,0 +1,17 @@
+#!/usr/bin/env node
+
+/* eslint-disable no-process-exit */
+
+'use strict';
+
+const cli = require('../lib/cli');
+
+cli({
+  stdout: process.stdout,
+  stderr: process.stderr,
+  argv: process.argv
+}).then(function() {
+  process.exit(0);
+}).catch(function() {
+  process.exit(1);
+});

@@ -199,7 +199,7 @@ class KssBuilderBase {
       }
 
       if (!isCompatible) {
-        return reject(new Error('kss-node expected the builder to implement KssBuilderBase API version ' + kssBuilderAPI + '; version "' + builderAPI + '" is being used instead.'));
+        return reject(new Error('kss expected the builder to implement KssBuilderBase API version ' + kssBuilderAPI + '; version "' + builderAPI + '" is being used instead.'));
       }
 
       return resolve(newBuilder);

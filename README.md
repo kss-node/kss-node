@@ -7,7 +7,7 @@
 This is a Node.js implementation of [Knyle Style Sheets](https://github.com/kneath/kss) (KSS), "a documentation syntax for CSS" that's intended to have syntax readable by humans *and* machines. Hence, the kss-node software can be used to create a "living style guide".
 
 1. Write human-readable documentation using "KSS syntax" comments.
-2. Have `kss-node` automatically build a style guide from your stylesheets.
+2. Have the `kss` tool automatically build a style guide from your stylesheets.
 
 Here's an example KSS comment:
 ```scss
@@ -42,14 +42,14 @@ kss-node is installed just like any other Node.js software. Read the [kss-node Q
 To get you up and running quickly, a style guide builder is included that can be used from the command line. It parses stylesheets and spits out a set of static HTML files.
 
 ```
-Usage: kss-node [options]
+Usage: kss [options]
 
 File locations:
   --source       Source directory to parse for KSS comments
   --destination  Destination directory of style guide    [default: "styleguide"]
   --mask, -m     Use a mask for detecting files containing KSS comments
                          [default: "*.css|*.less|*.sass|*.scss|*.styl|*.stylus"]
-  --config, -c   Load the kss-node options from a json file
+  --config, -c   Load the kss options from a json file
 
 Builder:
   --clone        Clone a style guide builder to customize
@@ -76,7 +76,7 @@ Options:
   --version       Show version number
 ```
 
-Since each builder has its own set of options, you can see the help for those options by using `--builder` with `--help`. For example, running `kss-node --help --builder builder/twig` will show these additional options:
+Since each builder has its own set of options, you can see the help for those options by using `--builder` with `--help`. For example, running `kss --help --builder builder/twig` will show these additional options:
 
 ```
 Style guide:
@@ -91,16 +91,16 @@ In order to parse your stylesheets containing KSS docs, you need to either speci
 
 The style guide will be built in the `styleguide` directory unless you specify the second argument or use a `--destination [directory]` flag.
 
-Even though kss-node parses your CSS source, your CSS won't be included in the style guide unless you use the `--css` option or create a custom builder with `--clone`.
+Even though kss parses your CSS source, your CSS won't be included in the style guide unless you use the `--css` option or create a custom builder with `--clone`.
 
 You can build a copy of the demo style guide like so:
 
-    $ kss-node --demo
+    $ kss --demo
 
-If you want to change the HTML of the style guide being built, you can create your own builder, i.e. skin, theme. Use the `kss-node --clone` command to initialize a copy of the default builder so you can edit it and use it when building your style guide with the `--builder` flag.
+If you want to change the HTML of the style guide being built, you can create your own builder, i.e. skin, theme. Use the `kss --clone` command to initialize a copy of the default builder so you can edit it and use it when building your style guide with the `--builder` flag.
 
-    $ kss-node --clone custom-builder
-    $ kss-node path/to/sass styleguide --builder custom-builder
+    $ kss --clone custom-builder
+    $ kss path/to/sass styleguide --builder custom-builder
 
 The default builder should look something like this:
 
@@ -118,7 +118,7 @@ Additional kss-node specifics are detailed in this version of the [KSS spec](htt
 
 Take a look at the [demo project](https://github.com/kss-node/kss-node/tree/master/demo) for some examples.
 
-## Using kss-node from Node.js
+## Using kss from Node.js
 
 Check out the [JavaScript API](http://kss-node.github.io/kss-node/section-javascript-api.html) for a full explanation. Here's an example:
 

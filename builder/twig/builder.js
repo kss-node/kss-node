@@ -22,7 +22,7 @@
 let KssBuilderBaseTwig;
 
 try {
-  // In order for a builder to be "kss-node clone"-able, it must use the
+  // In order for a builder to be "kss clone"-able, it must use the
   // require('kss/builder/path') syntax.
   KssBuilderBaseTwig = require('kss/builder/base/twig');
 } catch (e) {
@@ -48,7 +48,7 @@ class KssBuilderTwig extends KssBuilderBaseTwig {
     // First call the constructor of KssBuilderBaseTwig.
     super();
 
-    // Then tell kss-node which Yargs-like options this builder adds.
+    // Then tell kss which Yargs-like options this builder adds.
     this.addOptionDefinitions({
       title: {
         group: 'Style guide:',

@@ -3,7 +3,7 @@
 This software is a Node.js implementation of [Knyle Style Sheets](https://github.com/kneath/kss) (KSS), "a documentation syntax for CSS" that's intended to have syntax readable by humans *and* machines. Hence, the kss-node software can be used to create a "living style guide".
 
 1. Write human-readable documentation using "KSS syntax" comments. Can be added to CSS, Sass, LESS, or any other CSS Preprocessor files.
-2. Have `kss-node` automatically build a style guide from your stylesheets.
+2. Have the `kss` tool automatically build a style guide from your stylesheets.
 
 Here's an example KSS comment:
 <pre class="prettyprint linenums lang-css"><code data-language="css">/*
@@ -28,9 +28,9 @@ Style guide: components.button
 
 **For more information on how to write KSS comments, see the [KSS spec](https://github.com/kss-node/kss/blob/spec/SPEC.md).**
 
-## kss-node demo
+## kss demo
 
-This site is built with the `kss-node` command-line tool and parses the KSS documentation found in this [demo project](https://github.com/kss-node/kss-node/tree/master/demo).
+This site is built with the `kss` command-line tool and parses the KSS documentation found in this [demo project](https://github.com/kss-node/kss-node/tree/master/demo).
 
 The styling of this site is a demo of [kss-node](https://github.com/kss-node/kss-node)'s default style guide builder. By using the site navigation to the left (or above), you can see how your documentation would look with the default builder. Note that alternate builders are available.
 

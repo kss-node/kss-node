@@ -175,12 +175,12 @@ describe('kss object API', function() {
       it('should provide an error if KssBuilderBase.loadBuilder() method fails', function() {
         return testKss({builder: helperUtils.fixtures('old-builder')}).then(function(response) {
           expect(response.error).to.exist;
-          expect(response.stderr).to.include('kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "1.0" is being used instead.');
+          expect(response.stderr).to.include('kss expected the builder to implement KssBuilderBase API version ' + API + '; version "1.0" is being used instead.');
           return kss({builder: helperUtils.fixtures('old-builder')}).then(() => {
             return Promise.reject(new Error('kss() should fail, but does not'));
           }).catch(error => {
             expect(error).to.exist;
-            expect(error.message).to.equal('kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "1.0" is being used instead.');
+            expect(error.message).to.equal('kss expected the builder to implement KssBuilderBase API version ' + API + '; version "1.0" is being used instead.');
           });
         });
       });
@@ -188,7 +188,7 @@ describe('kss object API', function() {
       it('should provide an error if given a KssGenerator 2.0', function() {
         return testKss({builder: helperUtils.fixtures('old-generator')}).then(function(response) {
           expect(response.error).to.exist;
-          expect(response.stderr).to.include('kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "2.0" is being used instead.');
+          expect(response.stderr).to.include('kss expected the builder to implement KssBuilderBase API version ' + API + '; version "2.0" is being used instead.');
         });
       });
     });

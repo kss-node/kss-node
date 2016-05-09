@@ -77,7 +77,7 @@ describe('KssBuilderBase object API', function() {
       return KssBuilderBase.loadBuilder(KssBuilderBase).then(result => {
         expect(result).to.not.exist;
       }).catch(error => {
-        expect(error.message).to.equal('kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "undefined" is being used instead.');
+        expect(error.message).to.equal('kss expected the builder to implement KssBuilderBase API version ' + API + '; version "undefined" is being used instead.');
       });
     });
 
@@ -85,7 +85,7 @@ describe('KssBuilderBase object API', function() {
       return KssBuilderBase.loadBuilder(helperUtils.fixtures('old-builder')).then(result => {
         expect(result).to.not.exist;
       }).catch(error => {
-        expect(error.message).to.equal('kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "1.0" is being used instead.');
+        expect(error.message).to.equal('kss expected the builder to implement KssBuilderBase API version ' + API + '; version "1.0" is being used instead.');
       });
     });
 
@@ -93,7 +93,7 @@ describe('KssBuilderBase object API', function() {
       return KssBuilderBase.loadBuilder(helperUtils.fixtures('newer-builder')).then(result => {
         expect(result).to.not.exist;
       }).catch(error => {
-        expect(error.message).to.equal('kss-node expected the builder to implement KssBuilderBase API version ' + API + '; version "10.0" is being used instead.');
+        expect(error.message).to.equal('kss expected the builder to implement KssBuilderBase API version ' + API + '; version "10.0" is being used instead.');
       });
     });
 

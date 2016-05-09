@@ -18,7 +18,7 @@ describe('KssBuilderTwig builder', function() {
     return cli({
       stdout: stdout,
       stderr: stderr,
-      argv: ['node', 'bin/kss-node', 'test/fixtures/with-include', 'test/output/twig', '--builder', 'builder/twig', '--title', 'KssBuilderTwig Test Style Guide', '--verbose']
+      argv: ['node', 'bin/kss', 'test/fixtures/with-include', 'test/output/twig', '--builder', 'builder/twig', '--title', 'KssBuilderTwig Test Style Guide', '--verbose']
     }).then(() => {
       this.stdout = stdout.capturedData;
       return Promise.all(
