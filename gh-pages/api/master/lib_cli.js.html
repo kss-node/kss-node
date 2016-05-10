@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>kss-node JavaScript API: Source: lib/cli.js</title>
+    <title>KSS JavaScript API: Source: lib/cli.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -30,7 +30,7 @@
 
 /**
  * The `kss/lib/cli` module is a wrapper around the code used by the
- * `bin/kss-node` command line utility.
+ * `bin/kss` command line utility.
  *
  * ```
  * const cli = require('kss/lib/cli');
@@ -57,7 +57,7 @@ const fs = Promise.promisifyAll(require('fs-extra'));
  *   `KssStyleGuide` object, or to `null` if the clone option is used.
  */
 const cli = function(opts) {
-  // First 2 args are "node" and path to kss-node script; we don't need them.
+  // First 2 args are "node" and path to kss script; we don't need them.
   const args = opts.argv.slice(2) || /* istanbul ignore next */ [];
 
   // Set up a logging function for any messages we need to send to stdout.
@@ -74,7 +74,7 @@ const cli = function(opts) {
   if (args.indexOf('--demo') !== -1) {
     // Add the configuration file to the raw arguments list.
     args.push('--config', path.join(__dirname, '../demo/kss-config.json'));
-    reportMessage('WELCOME to the kss-node demo! We\'ve turned on the --verbose flag so you can see what kss-node is doing.');
+    reportMessage('WELCOME to the kss demo! We\'ve turned on the --verbose flag so you can see what kss is doing.');
   }
 
   const cliOptionDefinitions = {
@@ -83,7 +83,7 @@ const cli = function(opts) {
       alias: 'c',
       config: true,
       multiple: false,
-      describe: 'Load the kss-node options from a json file'
+      describe: 'Load the kss options from a json file'
     },
     'demo': {
       multiple: false,
@@ -171,7 +171,7 @@ const cli = function(opts) {
     options = yargs(args)
       .options(builder.getOptionDefinitions())
       // Make a --help option available.
-      .usage('Usage: kss-node [options]')
+      .usage('Usage: kss [options]')
       .help('help')
       .alias('help', 'h')
       .alias('help', '?')

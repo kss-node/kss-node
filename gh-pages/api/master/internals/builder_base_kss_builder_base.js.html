@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>kss-node JavaScript API: Source: builder/base/kss_builder_base.js</title>
+    <title>KSS JavaScript API: Source: builder/base/kss_builder_base.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -227,7 +227,7 @@ class KssBuilderBase {
       }
 
       if (!isCompatible) {
-        return reject(new Error('kss-node expected the builder to implement KssBuilderBase API version ' + kssBuilderAPI + '; version "' + builderAPI + '" is being used instead.'));
+        return reject(new Error('kss expected the builder to implement KssBuilderBase API version ' + kssBuilderAPI + '; version "' + builderAPI + '" is being used instead.'));
       }
 
       return resolve(newBuilder);
@@ -488,7 +488,6 @@ class KssBuilderBase {
       // If the destination path does not exist, we copy the builder to it.
       // istanbul ignore else
       if (result.code === 'ENOENT') {
-        let notHidden = new RegExp('^(?!.*' + path.sep + '(node_modules$|\\.))');
         return fs.copyAsync(
           builderPath,
           destinationPath,
@@ -498,7 +497,7 @@ class KssBuilderBase {
               // Only look at the part of the path inside the builder.
               let relativePath = path.sep + path.relative(builderPath, filePath);
               // Skip any files with a path matching: /node_modules or /.
-              return notHidden.test(relativePath);
+              return (new RegExp('^(?!.*\\' + path.sep + '(node_modules$|\\.))')).test(relativePath);
             }
           }
         );

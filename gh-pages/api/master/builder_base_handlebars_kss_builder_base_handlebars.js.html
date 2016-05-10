@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>kss-node JavaScript API: Source: builder/base/handlebars/kss_builder_base_handlebars.js</title>
+    <title>KSS JavaScript API: Source: builder/base/handlebars/kss_builder_base_handlebars.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -224,6 +224,25 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
 
     let sectionRoots = [];
 
+    // Save the name of the partial and its context for retrieval in
+    // buildPage(), where we only know the reference.
+    let savePartial = partial => {
+      // Register the partial using the file name (without extension) or using
+      // the style guide reference.
+      this.Handlebars.registerPartial(partial.name, partial.markup);
+      if (partial.exampleMarkup) {
+        this.Handlebars.registerPartial(partial.exampleName, partial.exampleMarkup);
+      }
+      this.partials[partial.reference] = {
+        name: partial.name,
+        context: partial.context,
+        exampleName: partial.exampleMarkup ? partial.exampleName : false,
+        exampleContext: partial.exampleContext
+      };
+
+      return Promise.resolve();
+    };
+
     sections.forEach(section => {
       // Accumulate an array of section references for all sections at the root
       // of the style guide.
@@ -237,75 +256,107 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
       }
 
       // Register all the markup blocks as Handlebars partials.
-      let findPartial,
-        partial = {
-          name: section.reference(),
-          reference: section.reference(),
-          file: '',
-          markup: section.markup(),
-          context: {}
-        };
-      // If the markup is a file path, attempt to load the file.
-      if (partial.markup.match(/^[^\n]+\.(html|hbs)$/)) {
-        partial.file = partial.markup;
-        partial.name = path.basename(partial.file, path.extname(partial.file));
+      let partial = {
+        name: section.reference(),
+        reference: section.reference(),
+        file: '',
+        markup: section.markup(),
+        context: {},
+        exampleName: false,
+        exampleMarkup: '',
+        exampleContext: {}
+      };
 
-        findPartial = Promise.all(
-          this.options.source.map(source => {
-            return glob(source + '/**/' + partial.file);
-          })
-        ).then(globMatches => {
-          for (let files of globMatches) {
-            if (files.length) {
-              // Read the file contents from the first matched path.
-              partial.file = files[0];
-              return fs.readFileAsync(partial.file, 'utf8');
-            }
-          }
-
-          // If the markup file is not found, note that in the style guide.
-          partial.markup += ' NOT FOUND!';
-          if (!this.options.verbose) {
-            this.log('WARNING: In section ' + partial.reference + ', ' + partial.markup);
-          }
-          return '';
-        }).then(contents => {
-          if (this.options.verbose) {
-            this.log(' - ' + partial.reference + ': ' + partial.markup);
-          }
-          if (contents) {
-            partial.markup = contents;
-            // Load sample context for the partial from the sample .json file.
-            try {
-              partial.context = require(path.join(path.dirname(partial.file), partial.name + '.json'));
-            } catch (error) {
-              partial.context = {};
-            }
-          }
-          return partial;
-        });
-      } else {
+      // Check if the markup is a file path.
+      if (!partial.markup.match(/^[^\n]+\.(html|hbs)$/)) {
         if (this.options.verbose) {
           this.log(' - ' + partial.reference + ': inline markup');
         }
-        findPartial = Promise.resolve(partial);
+        buildTasks.push(
+          savePartial(partial)
+        );
+      } else {
+        // Attempt to load the file path.
+        partial.file = partial.markup;
+        partial.name = path.basename(partial.file, path.extname(partial.file));
+        partial.exampleName = 'kss-example-' + partial.name;
+
+        let findPartials = [],
+          matchFilename = path.basename(partial.file),
+          matchExampleFilename = 'kss-example-' + matchFilename;
+        this.options.source.forEach(source => {
+          findPartials.push(glob(source + '/**/' + partial.file));
+          findPartials.push(glob(source + '/**/' + matchExampleFilename));
+        });
+        buildTasks.push(
+          Promise.all(findPartials).then(globMatches => {
+            let foundPartial = false,
+              foundExample = false,
+              readPartials = [];
+            for (let files of globMatches) {
+              if (!foundPartial || !foundExample) {
+                for (let file of files) {
+                  // Read the partial from the first matched path.
+                  let filename = path.basename(file);
+                  if (!foundPartial &amp;&amp; filename === matchFilename) {
+                    foundPartial = true;
+                    partial.file = file;
+                    readPartials.push(
+                      fs.readFileAsync(partial.file, 'utf8').then(contents => {
+                        partial.markup = contents;
+                        // Load sample context for the partial from the sample
+                        // .json file.
+                        try {
+                          partial.context = require(path.join(path.dirname(file), partial.name + '.json'));
+                        } catch (error) {
+                          partial.context = {};
+                        }
+                        return Promise.resolve();
+                      })
+                    );
+                  } else if (!foundExample &amp;&amp; filename === matchExampleFilename) {
+                    foundExample = true;
+                    readPartials.push(
+                      fs.readFileAsync(file, 'utf8').then(contents => {
+                        partial.exampleMarkup = contents;
+                        // Load sample context for the partial from the sample
+                        // .json file.
+                        try {
+                          partial.exampleContext = require(path.join(path.dirname(file), partial.exampleName + '.json'));
+                        } catch (error) {
+                          // istanbul ignore next
+                          partial.exampleContext = {};
+                        }
+                        return Promise.resolve();
+                      })
+                    );
+                  }
+                }
+              }
+            }
+
+            // If the markup file is not found, note that in the style guide.
+            if (!foundPartial &amp;&amp; !foundExample) {
+              partial.markup += ' NOT FOUND!';
+              if (!this.options.verbose) {
+                this.log('WARNING: In section ' + partial.reference + ', ' + partial.markup);
+              }
+            } else /* istanbul ignore if */ if (!foundPartial) {
+              // If we found an example, but no partial, register an empty
+              // partial.
+              partial.markup = '';
+            }
+
+            if (this.options.verbose) {
+              this.log(' - ' + partial.reference + ': ' + partial.markup);
+            }
+
+            return Promise.all(readPartials).then(() => {
+              return partial;
+            });
+          }).then(savePartial)
+        );
       }
-
-      buildTasks.push(
-        findPartial.then(partial => {
-          // Register the partial using the file name (without extension) or using
-          // the style guide reference.
-          this.Handlebars.registerPartial(partial.name, partial.markup);
-          // Save the name of the template and its context for retrieval in
-          // buildPage(), where we only know the reference.
-          this.partials[partial.reference] = {
-            name: partial.name,
-            context: partial.context
-          };
-
-          return Promise.resolve();
-        })
-      );
     });
 
     return Promise.all(buildTasks).then(() => {
@@ -421,9 +472,28 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
         // we want the ability to display it as a code sample with {{ }} and as
         // rendered HTML with {{{ }}}.
         section.markup = template(data);
+        section.example = section.markup;
+
+        let templateContext;
+        if (partialInfo.exampleName) {
+          template = this.Handlebars.compile('{{> "' + partialInfo.exampleName + '"}}');
+          templateContext = partialInfo.exampleContext;
+
+          // Re-render the example variable with the example partial.
+          data = JSON.parse(JSON.stringify(templateContext));
+          data.modifier_class = data.modifier_class || /* istanbul ignore next */ '';
+          // istanbul ignore else
+          if (section.modifiers.length !== 0 &amp;&amp; this.options.placeholder) {
+            data.modifier_class += (data.modifier_class ? ' ' : /* istanbul ignore next */ '') + this.options.placeholder;
+          }
+          section.example = template(data);
+        } else {
+          templateContext = partialInfo.context;
+        }
+
 
         section.modifiers.forEach(modifier => {
-          let data = JSON.parse(JSON.stringify(partialInfo.context));
+          let data = JSON.parse(JSON.stringify(templateContext));
           data.modifier_class = (data.modifier_class ? data.modifier_class + ' ' : '') + modifier.className;
           modifier.markup = template(data);
         });
