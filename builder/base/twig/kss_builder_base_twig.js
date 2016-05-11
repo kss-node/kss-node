@@ -399,11 +399,10 @@ class KssBuilderBaseTwig extends KssBuilderBase {
             } else /* istanbul ignore if */ if (!foundTemplate) {
               // If we found an example, but no template, compile an empty
               // template.
-              template.markup = '';
               compileTemplates.push(
                 this.Twig.twigAsync({
                   id: template.name,
-                  data: ''
+                  data: ' ' // Cannot be an empty string.
                 })
               );
             }
