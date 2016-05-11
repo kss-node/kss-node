@@ -111,6 +111,9 @@
       {{#if example}}
         <div class="kss-modifier__wrapper">
           <div class="kss-modifier__heading kss-style">
+              <a href="#kssref-{{referenceURI}}-fullscreen"
+                 onclick="var el = document.getElementsByClassName('kss-{{referenceURI}}-fullscreen')[0]; screenfull.toggle(el); return false;"
+                      >Focus</a>
             Example{{#if modifiers}}s{{/if}}
           </div>
 
@@ -131,7 +134,7 @@
             <div class="kss-modifier__description kss-style">
               {{{description}}}
             </div>
-            <div class="kss-modifier__example">
+            <div class="kss-modifier__example kss-{{referenceURI}}-fullscreen">
               {{{markup}}}
             </div>
           {{/each}}
@@ -158,6 +161,7 @@
 <script src="kss-assets/kss.js"></script>
 <script src="kss-assets/scrollspy.js"></script>
 <script src="kss-assets/prettify.js"></script>
+<script src="kss-assets/screenfull.js"></script>
 <script>
   prettyPrint();
   var spy = new ScrollSpy('#kss-node', {
