@@ -105,7 +105,7 @@
         {% endfor %}
       </div>
 
-      {% if section.markup %}
+      {% if section.example %}
         <div class="kss-modifier__wrapper">
           <div class="kss-modifier__heading kss-style">
             Example{% if section.modifiers is not empty %}s{% endif %}
@@ -133,9 +133,11 @@
             </div>
           {% endfor %}
         </div>
-        <div class="kss-markup kss-style">
-          <pre class="prettyprint linenums lang-html"><code data-language="html">{{ section.markup|escape('html') }}</code></pre>
-        </div>
+        {% if section.markup %}
+          <div class="kss-markup kss-style">
+            <pre class="prettyprint linenums lang-html"><code data-language="html">{{ section.markup|escape('html') }}</code></pre>
+          </div>
+        {% endif %}
       {% endif %}
 
       {% if section.sourceFile.name %}

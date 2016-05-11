@@ -402,7 +402,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
               compileTemplates.push(
                 this.Twig.twigAsync({
                   id: template.name,
-                  data: ' ' // Cannot be an empty string.
+                  data: '{# Cannot be an empty string. #}'
                 })
               );
             }

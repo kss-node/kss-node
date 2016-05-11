@@ -108,7 +108,7 @@
         {{/if}}
       </div>
 
-      {{#if markup}}
+      {{#if example}}
         <div class="kss-modifier__wrapper">
           <div class="kss-modifier__heading kss-style">
             Example{{#if modifiers}}s{{/if}}
@@ -136,9 +136,11 @@
             </div>
           {{/each}}
         </div>
-        <div class="kss-markup kss-style">
-          <pre class="prettyprint linenums lang-html"><code data-language="html">{{markup}}</code></pre>
-        </div>
+        {{#if example}}
+          <div class="kss-markup kss-style">
+            <pre class="prettyprint linenums lang-html"><code data-language="html">{{markup}}</code></pre>
+          </div>
+        {{/if}}
       {{/if}}
 
       {{#if sourceFile.name}}
