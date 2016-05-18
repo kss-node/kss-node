@@ -48,7 +48,7 @@ describe('KssBuilderBase object API', function() {
 
     it('should implement the default option definitions', function() {
       let builder = new KssBuilderBase();
-      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'verbose']);
+      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'breakpoint', 'verbose']);
     });
 
     it('should set the default log function', function() {

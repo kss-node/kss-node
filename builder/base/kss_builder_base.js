@@ -105,6 +105,11 @@ class KssBuilderBase {
         string: true,
         describe: 'Process a custom property name when parsing KSS comments'
       },
+      breakpoint: {
+        group: 'Style guide:',
+        string: true,
+        describe: 'A list of responsive breakpoints to simulate'
+      },
 
       verbose: {
         count: true,
