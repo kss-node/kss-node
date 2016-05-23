@@ -344,7 +344,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
             } else /* istanbul ignore if */ if (!foundPartial) {
               // If we found an example, but no partial, register an empty
               // partial.
-              partial.markup = '';
+              partial.markup = '{{! Cannot be an empty string. }}';
             }
 
             if (this.options.verbose) {
