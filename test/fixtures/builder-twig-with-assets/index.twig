@@ -56,8 +56,8 @@ MENU-ITEM-CHILD:[referenceURI:{{ menu_child.referenceURI }}, referenceNumber:{{ 
       {% endif %}
       {% if section.modifiers %}modifiers:yes{% else %}modifiers:none{% endif %}
 
-      {% if section.markup %}
-        ref:{{ section.reference }}:markup:{{ section.markup|raw }}
+      {% if section.example %}
+        ref:{{ section.reference }}:example:{{ section.example|raw }}
         {% if section.modifiers %}
           modifiers:
           {% for modifier in section.modifiers %}
@@ -67,6 +67,11 @@ MENU-ITEM-CHILD:[referenceURI:{{ menu_child.referenceURI }}, referenceNumber:{{ 
             ref:{{ section.reference }}:modifier:{{ modifier.className }}:markup:{{ modifier.markup }}
           {% endfor %}
         {% endif %}
+      {% else %}
+        ref:{{ section.reference }}:no-example:{{ section.example|raw }}
+      {% endif %}
+      {% if section.markup %}
+        ref:{{ section.reference }}:markup:{{ section.markup|raw }}
       {% else %}
         ref:{{ section.reference }}:no-markup:{{ section.markup|raw }}
       {% endif %}

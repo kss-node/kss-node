@@ -1,4 +1,12 @@
 {
   "modifier_class": "one-cee-example-from-json",
-  "content": "This is the content."
+  "content": "This is the content.",
+  "sampleArray": [
+    "An item in SampleArray",
+    "Another item in SampleArray"
+  ],
+  "sampleNull": null,
+  "sampleObject": {
+    "sampleProperty": "sampleProperty value"
+  }
 }

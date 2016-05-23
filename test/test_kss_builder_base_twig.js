@@ -351,8 +351,8 @@ describe('KssBuilderBaseTwig object API', function() {
 
   describe('Twig markup data', function() {
     it('should render {{ markup }}', function() {
-      expect(this.files['section-1']).to.include('ref:1.B:markup:<span>inline</span>');
-      expect(this.files['section-1']).to.include('ref:1.D:markup:missing-file.twig NOT FOUND!');
+      expect(this.files['section-1']).to.include('ref:1.B:example:<span>inline</span>');
+      expect(this.files['section-1']).to.include('ref:1.D:example:missing-file.twig NOT FOUND!');
     });
 
     it('should render kss-example-* {{ markup }}', function() {
@@ -360,7 +360,7 @@ describe('KssBuilderBaseTwig object API', function() {
     });
 
     it('should render {{ markup }} when there is no markup', function() {
-      expect(this.files['section-1']).to.include('ref:1.A:no-markup:\n');
+      expect(this.files['section-1']).to.include('ref:1.A:no-example:\n');
     });
 
     it('should add modifier_class from the JSON data', function() {
@@ -377,7 +377,13 @@ describe('KssBuilderBaseTwig object API', function() {
     });
 
     it('should add modifier_class from the placeholder option if used on section', function() {
-      expect(this.files['section-1']).to.include('ref:1.E:markup:<div class="[modifier class]"></div>');
+      expect(this.files['section-1']).to.include('ref:1.E:example:<div class="[modifier class]"></div>');
+    });
+
+    it('should add safe markup from the example JSON data', function() {
+      expect(this.files['section-1']).to.include('An item in SampleArray');
+      expect(this.files['section-1']).to.include('Empty sampleNull::');
+      expect(this.files['section-1']).to.include('sampleProperty value');
     });
   });
 

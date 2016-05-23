@@ -3,4 +3,9 @@
   <p>
     {{ content }}
   </p>
+  {% for item in sampleArray %}
+    {{ item }}
+  {% endfor %}
+  <p>Empty sampleNull:{{ sampleNull }}:</p>
+  <p>{{ sampleObject.sampleProperty }}</p>
 </div>

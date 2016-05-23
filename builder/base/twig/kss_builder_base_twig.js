@@ -147,7 +147,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
       this.Twig.extend(Twig => {
         safeMarkup = function(input) {
           if (typeof input === 'string' || typeof input === 'number' || typeof input === 'boolean') {
-            return new Twig.Markup(input);
+            return Twig.Markup(input);
           } else if (Array.isArray(input)) {
             return input.map(safeMarkup);
           } else if (input && typeof input === 'object') {
