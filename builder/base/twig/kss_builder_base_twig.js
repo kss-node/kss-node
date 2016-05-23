@@ -143,6 +143,27 @@ class KssBuilderBaseTwig extends KssBuilderBase {
         });
       }).bind(this.Twig);
 
+      let safeMarkup;
+      this.Twig.extend(Twig => {
+        safeMarkup = function(input) {
+          if (typeof input === 'string' || typeof input === 'number' || typeof input === 'boolean') {
+            return new Twig.Markup(input);
+          } else if (Array.isArray(input)) {
+            return input.map(safeMarkup);
+          } else if (input && typeof input === 'object') {
+            for (let key in input) {
+              // istanbul ignore else
+              if (input.hasOwnProperty(key)) {
+                input[key] = safeMarkup(input[key]);
+              }
+            }
+            return input;
+          }
+          return input;
+        };
+      });
+      this.safeMarkup = safeMarkup;
+
       if (this.options.verbose) {
         this.log('');
         this.log('Building your KSS style guide!');
@@ -530,7 +551,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
               data.modifier_class += (data.modifier_class ? ' ' : '') + this.options.placeholder;
             }
 
-            section.markup = template.render(data);
+            section.markup = template.render(this.safeMarkup(data));
             section.example = section.markup;
 
             let getExampleTemplate,
@@ -554,12 +575,12 @@ class KssBuilderBaseTwig extends KssBuilderBase {
                 if (section.modifiers.length !== 0 && this.options.placeholder) {
                   data.modifier_class += (data.modifier_class ? ' ' : /* istanbul ignore next */ '') + this.options.placeholder;
                 }
-                section.example = template.render(data);
+                section.example = template.render(this.safeMarkup(data));
               }
               section.modifiers.forEach(modifier => {
                 let data = JSON.parse(JSON.stringify(templateContext));
                 data.modifier_class = (data.modifier_class ? data.modifier_class + ' ' : '') + modifier.className;
-                modifier.markup = template.render(data);
+                modifier.markup = template.render(this.safeMarkup(data));
               });
               return Promise.resolve();
             });
