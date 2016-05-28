@@ -108,6 +108,9 @@
       {% if section.example %}
         <div class="kss-modifier__wrapper">
           <div class="kss-modifier__heading kss-style">
+            <a href="#kssref-{{ section.referenceURI }}-fullscreen"
+               onclick="var el = document.getElementsByClassName('kss-{{ section.referenceURI }}-fullscreen')[0]; screenfull.toggle(el); return false;"
+                    >Focus</a>
             Example{% if section.modifiers is not empty %}s{% endif %}
           </div>
 
@@ -117,7 +120,7 @@
             </div>
           {% endif %}
 
-          <div class="kss-modifier__example">
+          <div class="kss-modifier__example kss-{{ section.referenceURI }}-fullscreen">
             {{ section.example|raw }}
           </div>
 
@@ -154,6 +157,7 @@
 <script src="kss-assets/kss.js"></script>
 <script src="kss-assets/scrollspy.js"></script>
 <script src="kss-assets/prettify.js"></script>
+<script src="kss-assets/screenfull.js"></script>
 <script>
   prettyPrint();
   var spy = new ScrollSpy('#kss-node', {
