@@ -1,7 +1,10 @@
 (function() {
   'use strict';
 
+  var storageKey = 'kss-breakpoint';
+
   var forEach = Array.prototype.forEach,
+      find = Array.prototype.find,
       map = Array.prototype.map;
 
   var classList = document.body.classList,
@@ -33,6 +36,8 @@
 
     forEach.call(listItems, clearActive);
     this.parentNode.classList.add('kss-breakpoint--active');
+
+    localStorage.setItem(storageKey, cssClass);
   };
 
   breakpoints = map.call(listItems, function (a) {
@@ -40,5 +45,9 @@
     return a.textContent.trim();
   });
 
-  document.addEventListener('DOMContentLoaded', applyBreakpoint.bind(listItems[listItems.length - 1]));
+  var selected;
+  if (selected = localStorage.getItem(storageKey)) {
+    var selectedItem = find.call(listItems, function (item) { return item.textContent.trim() === selected; });
+    applyBreakpoint.bind(selectedItem)();
+  }
 }());
