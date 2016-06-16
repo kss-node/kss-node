@@ -18,7 +18,9 @@
     var cssClass = this.textContent.trim();
     var width = this.title;
 
-    classList.remove.apply(classList, breakpoints)
+    breakpoints.forEach(function (breakpoint) {
+      classList.remove.call(classList, breakpoint)
+    })
     classList.add(cssClass);
 
     forEach.call(kssSections, function(section) {
