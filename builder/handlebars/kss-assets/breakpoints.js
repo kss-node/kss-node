@@ -14,7 +14,10 @@
     item.parentNode.classList.remove('kss-breakpoint--active')
   };
 
-  var applyBreakpoint = function () {
+  var applyBreakpoint = function (event) {
+    if (event) {
+      event.preventDefault();
+    }
     var cssClass = this.textContent.trim();
     var width = this.title;
 
@@ -37,5 +40,5 @@
     return a.textContent.trim();
   });
 
-  document.addEventListener('DOMContentLoaded', applyBreakpoint.bind(listItems[listItems.length - 1]))
+  document.addEventListener('DOMContentLoaded', applyBreakpoint.bind(listItems[listItems.length - 1]));
 }());
