@@ -36,4 +36,6 @@
     a.addEventListener('click', applyBreakpoint)
     return a.textContent.trim();
   });
+
+  document.addEventListener('DOMContentLoaded', applyBreakpoint.bind(listItems[listItems.length - 1]))
 }());
