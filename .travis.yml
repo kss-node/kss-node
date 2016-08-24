@@ -7,3 +7,6 @@ node_js:
   - '5'
   - '6'
 script: npm test && (npm run report-coverage || test 1)
+
+notifications:
+  email: false
