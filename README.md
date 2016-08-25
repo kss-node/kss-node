@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/kss-node/kss-node.png?branch=master)](http://travis-ci.org/kss-node/kss-node/builds) [![Coverage Status](https://coveralls.io/repos/kss-node/kss-node/badge.svg?branch=master&service=github)](https://coveralls.io/github/kss-node/kss-node?branch=master)
+[![Build Status](https://secure.travis-ci.org/kss-node/kss-node.png?branch=master)](http://travis-ci.org/kss-node/kss-node/builds) [![Coverage Status](https://coveralls.io/repos/kss-node/kss-node/badge.svg?branch=master&service=github)](https://coveralls.io/github/kss-node/kss-node?branch=master) [![Dependency Status](https://david-dm.org/kss-node/kss-node.svg)](https://david-dm.org/kss-node/kss-node)
 
 **Note:** This README is for the `master` branch of this project. To see the README for the latest stable release see [https://www.npmjs.com/package/kss](https://www.npmjs.com/package/kss).
 
