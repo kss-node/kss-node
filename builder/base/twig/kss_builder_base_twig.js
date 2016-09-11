@@ -72,6 +72,13 @@ class KssBuilderBaseTwig extends KssBuilderBase {
         describe: 'Placeholder text to use for modifier classes',
         default: '[modifier class]'
       },
+      'attribute-placeholder': {
+        group: 'Style guide:',
+        string: true,
+        multiple: false,
+        describe: 'Placeholder text to use for modifier attributes',
+        default: '[modifier attribute]'
+      },
       'nav-depth': {
         group: 'Style guide:',
         multiple: false,
@@ -571,15 +578,22 @@ class KssBuilderBaseTwig extends KssBuilderBase {
               if (templateInfo.exampleRef) {
                 let data = JSON.parse(JSON.stringify(templateContext));
                 data.modifier_class = data.modifier_class || /* istanbul ignore next */ '';
+                data.modifier_attribute = data.modifier_attribute || /* istanbul ignore next */ '';
                 // istanbul ignore else
-                if (section.modifiers.length !== 0 && this.options.placeholder) {
+                if (section.modifiers.length !== 0 && this.options.placeholder && this.options['attribute-placeholder']) {
                   data.modifier_class += (data.modifier_class ? ' ' : /* istanbul ignore next */ '') + this.options.placeholder;
+                  data.modifier_attribute += (data.modifier_attribute ? ' ' : /* istanbul ignore next */ '') + this.options['attribute-placeholder'];
                 }
                 section.example = template.render(this.safeMarkup(data));
               }
               section.modifiers.forEach(modifier => {
                 let data = JSON.parse(JSON.stringify(templateContext));
-                data.modifier_class = (data.modifier_class ? data.modifier_class + ' ' : '') + modifier.className;
+                // Test to see if it's an attribute modifier
+                if (/^\[.*\]$/i.test(modifier.name)) {
+                  data.modifier_attribute = (data.modifier_attribute ? data.modifier_attribute + ' ' : '') + modifier.className;
+                } else {
+                  data.modifier_class = (data.modifier_class ? data.modifier_class + ' ' : '') + modifier.className;
+                }
                 modifier.markup = template.render(this.safeMarkup(data));
               });
               return Promise.resolve();

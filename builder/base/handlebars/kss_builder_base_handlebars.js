@@ -60,6 +60,13 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
         describe: 'Placeholder text to use for modifier classes',
         default: '[modifier class]'
       },
+      'attribute-placeholder': {
+        group: 'Style guide:',
+        string: true,
+        multiple: false,
+        describe: 'Placeholder text to use for modifier attributes',
+        default: '[modifier attribute]'
+      },
       'nav-depth': {
         group: 'Style guide:',
         multiple: false,
@@ -427,7 +434,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
       if (section.markup) {
         // Load the information about this section's markup partial.
         let partialInfo = this.partials[section.reference];
-        let template = this.Handlebars.compile('{{> "' + partialInfo.name + '"}}');
+        let template = this.Handlebars.compile('{{> "' + partialInfo.name + '"}}', {noEscape: true});
 
         // Copy the template.context so we can modify it.
         let data = JSON.parse(JSON.stringify(partialInfo.context));
@@ -436,8 +443,10 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
 
         // Display the placeholder if the section has modifiers.
         data.modifier_class = data.modifier_class || '';
-        if (section.modifiers.length !== 0 && this.options.placeholder) {
+        data.modifier_attribute = data.modifier_attribute || '';
+        if (section.modifiers.length !== 0 && this.options.placeholder && this.options['attribute-placeholder']) {
           data.modifier_class += (data.modifier_class ? ' ' : '') + this.options.placeholder;
+          data.modifier_attribute += (data.modifier_attribute ? ' ' : '') + this.options['attribute-placeholder'];
         }
 
         // We don't wrap the rendered template in "new handlebars.SafeString()" since
@@ -466,7 +475,13 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
 
         section.modifiers.forEach(modifier => {
           let data = JSON.parse(JSON.stringify(templateContext));
-          data.modifier_class = (data.modifier_class ? data.modifier_class + ' ' : '') + modifier.className;
+
+          // Test to see if it's an attribute modifier
+          if (/^\[.*\]$/i.test(modifier.name)) {
+            data.modifier_attribute = (data.modifier_attribute ? data.modifier_attribute + ' ' : '') + modifier.className;
+          } else {
+            data.modifier_class = (data.modifier_class ? data.modifier_class + ' ' : '') + modifier.className;
+          }
           modifier.markup = template(data);
         });
         /* eslint-enable camelcase */
