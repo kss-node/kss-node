@@ -501,6 +501,18 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
       context.menu = this.createMenu(pageReference);
     }
 
+    // Create a list of breakpoints (if a sub-class hasn't already built one.)
+    // istanbul ignore else
+    if (typeof context.breakpoints === 'undefined') {
+      context.breakpoints = [];
+      for (let key in this.options.breakpoint) {
+        // istanbul ignore else
+        if (this.options.breakpoint.hasOwnProperty(key)) {
+          context.breakpoints.push(this.options.breakpoint[key].split(' '));
+        }
+      }
+    }
+
     // Determine the file name to use for this page.
     if (pageReference) {
       let rootSection = this.styleGuide.sections(pageReference);

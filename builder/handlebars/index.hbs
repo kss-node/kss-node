@@ -47,6 +47,18 @@
       </li>
     {{/each}}
     </ul>
+    {{#if breakpoints}}
+      <h2 class="kss-breakpoints">Breakpoints</h2>
+      <ul class="kss-nav__menu">
+        {{#each breakpoints}}
+          <li class="kss-nav__menu-item kss-breakpoint">
+            <a href="#" class="kss-js-breakpoint" title="{{1}}">
+              {{0}}
+            </a>
+          </li>
+        {{/each}}
+      </ul>
+    {{/if}}
   </nav>
 </div>
 <article role="main" class="kss-main">
@@ -158,6 +170,7 @@
 <script src="kss-assets/kss.js"></script>
 <script src="kss-assets/scrollspy.js"></script>
 <script src="kss-assets/prettify.js"></script>
+<script src="kss-assets/breakpoints.js"></script>
 <script>
   prettyPrint();
   var spy = new ScrollSpy('#kss-node', {

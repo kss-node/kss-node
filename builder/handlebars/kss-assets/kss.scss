@@ -245,6 +245,21 @@ $kss-vertical-rhythm      : $kss-font-size * 1.5;
     }
   }
 
+  .kss-breakpoints {
+    @media screen and (min-width: 769px) {
+      font-size: 1.25em;
+    }
+  }
+
+  .kss-breakpoint {
+  }
+
+  .kss-breakpoint--active {
+    &:before {
+      content: '>';
+    }
+  }
+
   .kss-nav__menu-link {
     position: relative;
     display: inline-block;
