@@ -55,7 +55,7 @@ class KssBuilderBase {
         group: 'File locations:',
         string: true,
         path: true,
-        describe: 'Source directory to parse for KSS comments'
+        describe: 'Source directory to recursively parse for KSS comments, homepage, and markup'
       },
       destination: {
         group: 'File locations:',

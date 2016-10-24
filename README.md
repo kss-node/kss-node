@@ -45,7 +45,8 @@ To get you up and running quickly, a style guide builder is included that can be
 Usage: kss [options]
 
 File locations:
-  --source       Source directory to parse for KSS comments
+  --source       Source directory to recursively parse for KSS comments,
+                 homepage, and markup
   --destination  Destination directory of style guide    [default: "styleguide"]
   --mask, -m     Use a mask for detecting files containing KSS comments
                          [default: "*.css|*.less|*.sass|*.scss|*.styl|*.stylus"]
