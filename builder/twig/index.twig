@@ -62,8 +62,9 @@
   #}
   {% for section in sections %}
     {% set sectionElement = loop.first ? 'div' : 'section' %}
-    <{{ sectionElement }} id="kssref-{{ section.referenceURI }}" class="kss-section kss-section--depth-{{ section.depth }}">
+    <{{ sectionElement }} id="kss-fullscreen-{{ section.referenceURI }}" class="kss-section kss-section--depth-{{ section.depth }}">
       <div class="kss-style">
+        <a name="kssref-{{referenceURI}}"></a>
         {% set headerElement = (section.depth > 6) ? 'h6' : 'h' ~ section.depth %}
         <{{ headerElement }} class="kss-title kss-title--level-{{ section.depth }}">
           <a class="kss-title__permalink" href="#kssref-{{ section.referenceURI }}">
@@ -76,6 +77,20 @@
             {{ section.header }}
           </a>
         </{{ headerElement }}>
+
+        {% if section.example %}
+          <p class="kss-toolbar">
+            <a href="#kssref-{{section.referenceURI}}" data-kss-fullscreen="{{section.referenceURI}}">
+              <span class="kss-toolbar__tooltip">Toggle full screen</span>
+              <svg class="off" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" viewBox="0 0 64 64">
+                <path class="kss-toolbar__icon-fill" d="M64 0v26l-10-10-12 12-6-6 12-12-10-10zM28 42l-12 12 10 10h-26v-26l10 10 12-12z"></path>
+              </svg>
+              <svg class="on" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" viewBox="0 0 64 64">
+                <path class="kss-toolbar__icon-fill" d="M28 36v26l-10-10-12 12-6-6 12-12-10-10zM64 6l-12 12 10 10h-26v-26l10 10 12-12z"></path>
+              </svg>
+            </a>
+          </p>
+        {% endif %}
 
         {% if section.description %}
           <div class="kss-description">
@@ -154,11 +169,17 @@
 <script src="kss-assets/kss.js"></script>
 <script src="kss-assets/scrollspy.js"></script>
 <script src="kss-assets/prettify.js"></script>
+<script src="kss-assets/kss-fullscreen.js"></script>
 <script>
   prettyPrint();
   var spy = new ScrollSpy('#kss-node', {
     nav: '.kss-nav__menu-child > li > a',
     className: 'is-in-viewport'
+  });
+  var kssFullScreen = new KssFullScreen({
+    idPrefix: 'kss-fullscreen-',
+    bodyClass: 'kss-fullscreen-mode',
+    elementClass: 'is-fullscreen'
   });
 </script>
 {{ scripts|raw }}

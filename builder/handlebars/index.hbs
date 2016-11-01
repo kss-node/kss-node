@@ -63,9 +63,10 @@
     the "#if @first" block as seen below.
   }}
   {{#each sections}}
-    <{{#if @first}}div{{else}}section{{/if}} id="kssref-{{referenceURI}}" class="kss-section kss-section--depth-{{depth}}">
+    <{{#if @first}}div{{else}}section{{/if}} id="kss-fullscreen-{{referenceURI}}" class="kss-section kss-section--depth-{{depth}}">
 
       <div class="kss-style">
+        <a name="kssref-{{referenceURI}}"></a>
         <h{{depth}} class="kss-title kss-title--level-{{depth}}">
           <a class="kss-title__permalink" href="#kssref-{{referenceURI}}">
             <span class="kss-title__ref">
@@ -81,6 +82,20 @@
             {{header}}
           </a>
         </h{{depth}}>
+
+        {{#if example}}
+          <p class="kss-toolbar">
+            <a href="#kssref-{{referenceURI}}" data-kss-fullscreen="{{referenceURI}}">
+              <span class="kss-toolbar__tooltip">Toggle full screen</span>
+              <svg class="off" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" viewBox="0 0 64 64">
+                <path class="kss-toolbar__icon-fill" d="M64 0v26l-10-10-12 12-6-6 12-12-10-10zM28 42l-12 12 10 10h-26v-26l10 10 12-12z"></path>
+              </svg>
+              <svg class="on" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" viewBox="0 0 64 64">
+                <path class="kss-toolbar__icon-fill" d="M28 36v26l-10-10-12 12-6-6 12-12-10-10zM64 6l-12 12 10 10h-26v-26l10 10 12-12z"></path>
+              </svg>
+            </a>
+          </p>
+        {{/if}}
 
         {{#if description}}
           <div class="kss-description">
@@ -112,9 +127,6 @@
         <div class="kss-modifier__wrapper">
           <div class="kss-modifier__heading kss-style">
             Example{{#if modifiers}}s{{/if}}
-            <a href="#kssref-{{referenceURI}}"
-              onclick="var el = document.getElementById('kssref-{{referenceURI}}'); screenfull.toggle(el); return false;"
-            >Focus</a>
           </div>
 
           {{#if modifiers}}
@@ -161,12 +173,17 @@
 <script src="kss-assets/kss.js"></script>
 <script src="kss-assets/scrollspy.js"></script>
 <script src="kss-assets/prettify.js"></script>
-<script src="kss-assets/screenfull.js"></script>
+<script src="kss-assets/kss-fullscreen.js"></script>
 <script>
   prettyPrint();
   var spy = new ScrollSpy('#kss-node', {
     nav: '.kss-nav__menu-child > li > a',
     className: 'is-in-viewport'
+  });
+  var kssFullScreen = new KssFullScreen({
+    idPrefix: 'kss-fullscreen-',
+    bodyClass: 'kss-fullscreen-mode',
+    elementClass: 'is-fullscreen'
   });
 </script>
 {{{scripts}}}
