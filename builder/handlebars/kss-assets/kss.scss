@@ -497,3 +497,17 @@ $kss-vertical-rhythm      : $kss-font-size * 1.5;
     }
   }
 }
+
+// ------------------------------------------------------------------------------
+//   @group Full Screen Styling
+// ------------------------------------------------------------------------------
+/* Using the fullscreen api via screenfull.js. */
+
+.kss-modifier__example {
+  &:-webkit-full-screen {
+    width: 100vw;
+    height: 100vh;
+    max-width: none;
+    overflow: auto;
+  }
+}
