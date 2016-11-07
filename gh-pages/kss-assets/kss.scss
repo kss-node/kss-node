@@ -165,9 +165,16 @@ $kss-vertical-rhythm      : $kss-font-size * 1.5;
   padding: 20px;
   background: #fff;
 
+  &.kss-fullscreen-mode {
+    .kss-sidebar,
+    .kss-section:not(.is-fullscreen),
+    .kss-github {
+      display: none;
+    }
+  }
+
   @media screen and (min-width: 769px) {
     padding: 0;
-    background: #fff;
 
     .kss-main,
     .kss-sidebar {
@@ -314,10 +321,35 @@ $kss-vertical-rhythm      : $kss-font-size * 1.5;
   .kss-section {
     max-width: 48em;
     margin-bottom: ($kss-vertical-rhythm * 2);
+
+    // "fullscreen" styles copied from Mozilla's default stylesheet.
+    &.is-fullscreen {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      margin: 0 !important;
+      min-width: 0 !important;
+      max-width: none !important;
+      min-height: 0 !important;
+      max-height: none !important;
+      box-sizing: border-box !important;
+      object-fit: contain !important;
+      transform: none !important;
+      // Turn on scrolling if needed.
+      overflow: auto !important;
+      padding: 20px;
+    }
   }
 
   .kss-title {
     margin-bottom: 0;
+  }
+  .is-fullscreen .kss-title {
+    margin-top: 0;
   }
   .kss-title__ref {
     display: block;
@@ -351,6 +383,122 @@ $kss-vertical-rhythm      : $kss-font-size * 1.5;
     color: #ccc;
   }
 
+  .kss-toolbar {
+    margin: 6px 0 24px;
+    display: inline-block;
+    border: 1px solid #eee;
+    background-color: #f9f9f9;
+    border-right-color: #e0e0e0;
+    border-bottom-color: #e0e0e0;
+    line-height: 1;
+    padding: 3px;
+
+    a {
+      box-sizing: content-box;
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      padding: 3px;
+      vertical-align: top;
+      // Tooltip wrapper styles:
+      position: relative;
+      overflow: visible;
+
+      + a {
+        margin-left: 6px;
+      }
+
+      .kss-toolbar__icon-fill {
+        fill: #ccc;
+      }
+
+      svg.on {
+        display: none;
+      }
+
+      &:focus,
+      &:hover {
+        border-color: #000;
+
+        .kss-toolbar__icon-fill {
+          fill: #000;
+        }
+      }
+    }
+  }
+  .kss-toolbar__tooltip {
+    position: absolute;
+    z-index: 1;
+    display: inline-block;
+    bottom: 100%;
+    left: -10px;
+    margin-bottom: 5px;
+    border: solid 1px #666;
+    padding: 8px 10px 6px;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, .25);
+    white-space: nowrap;
+    color: #000;
+    background: #fff;
+    cursor: help;
+    opacity: 0;
+    transition: opacity 0.25s;
+    // Visually hidden
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    clip: rect(1px, 1px, 1px, 1px);
+    word-wrap: normal;
+
+    // Solid grey triangle.
+    &:before,
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 15px;
+      width: 0;
+      height: 0;
+      border-width: 7px 5px 0;
+      border-color: #666 transparent;
+      border-style: solid;
+    }
+
+    // White triangle knock-out.
+    &:after {
+      bottom: -6px;
+      border-top-color: #fff;
+    }
+  }
+  a:focus,
+  a:hover {
+    > .kss-toolbar__tooltip {
+      opacity: 1;
+      // Visually hidden off
+      clip: auto;
+      height: auto;
+      width: auto;
+      overflow: visible;
+    }
+  }
+  .is-fullscreen .kss-toolbar a[data-kss-fullscreen],
+  &.kss-guides-mode .kss-toolbar a[data-kss-guides],
+  &.kss-markup-mode .kss-toolbar a[data-kss-markup] {
+    border-color: #666;
+    background-color: #666;
+
+    .kss-toolbar__icon-fill {
+      fill: #fff;
+    }
+
+    svg.on {
+      display: block;
+    }
+
+    svg.off {
+      display: none;
+    }
+  }
+
   .kss-parameters {
     display: table;
     list-style-type: none;
@@ -378,44 +526,143 @@ $kss-vertical-rhythm      : $kss-font-size * 1.5;
 
   .kss-modifier__wrapper {
     border: 1px solid #ccc;
-    padding: 10px;
+    padding: 0 10px 10px;
+  }
+  .is-fullscreen .kss-modifier__wrapper {
+    // Un-do padding on .kss-section.
+    margin-left: -20px;
+    margin-right: -20px;
+    // Remove all padding on the wrapper
+    padding-left: 0;
+    padding-right: 0;
+    border: none;
   }
   .kss-modifier__heading {
-    margin: -10px -10px 10px -10px;
+    margin: 0 -10px 10px -10px;
     padding: 10px;
     border-bottom: 1px solid #ccc;
     background-color: #eee;
     font-weight: bold;
   }
+  .is-fullscreen .kss-modifier__heading {
+    margin: 0 20px 10px;
+    border: 1px solid #ccc;
+  }
   .kss-modifier__default-name {
     font-weight: bold;
     margin-bottom: ($kss-vertical-rhythm / 2);
+  }
+  .is-fullscreen .kss-modifier__default-name {
+    margin-left: 20px;
+    margin-right: 20px;
   }
   .kss-modifier__name {
     float: left;
     padding-right: 10px;
     font-weight: bold;
   }
+  .is-fullscreen .kss-modifier__name {
+    margin-left: 20px;
+  }
   .kss-modifier__description {
     margin-bottom: ($kss-vertical-rhythm / 2);
   }
+  .is-fullscreen .kss-modifier__description {
+    margin-right: 20px;
+  }
   .kss-modifier__example {
     clear: left;
-    padding: 1px 0; // Contain the example's margins.
+    border: 2px dashed transparent;
     position: relative; // Contain the example's absolute positioning.
-    margin: 0 0 ($kss-vertical-rhythm - 1px) 0;
+    margin: -2px -2px ($kss-vertical-rhythm - 2px);
 
     &:last-child {
-      margin: 0;
+      margin-bottom: 0;
+    }
+  }
+  &.kss-guides-mode .kss-modifier__example,
+  &.kss-guides-mode .kss-modifier__example-footer {
+    &:before,
+    &:after {
+      z-index: -1;
+      box-sizing: border-box;
+      content: '';
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      border: 2px solid #000;
+    }
+  }
+  &.kss-guides-mode .kss-modifier__example {
+    border-color: #000;
+
+    &:before {
+      top: -5px;
+      left: -5px;
+      border-top: 0;
+      border-left: 0;
+    }
+    &:after {
+      top: -5px;
+      right: -5px;
+      border-top: 0;
+      border-right: 0;
+    }
+  }
+  &.kss-guides-mode.kss-fullscreen-mode .kss-modifier__example {
+    &:before {
+      left: auto;
+      right: 0;
+    }
+    &:after {
+      right: auto;
+      left: 0;
+    }
+  }
+  .kss-modifier__example-footer {
+    clear: both;
+  }
+  &.kss-guides-mode .kss-modifier__example-footer {
+    &:before {
+      bottom: -5px;
+      left: -5px;
+      border-bottom: 0;
+      border-left: 0;
+    }
+    &:after {
+      bottom: -5px;
+      right: -5px;
+      border-right: 0;
+      border-bottom: 0;
+    }
+  }
+  &.kss-guides-mode.kss-fullscreen-mode .kss-modifier__example-footer {
+    &:before {
+      left: auto;
+      right: 0;
+    }
+    &:after {
+      right: auto;
+      left: 0;
     }
   }
 
   .kss-markup {
-    margin: -1px 0 $kss-vertical-rhythm 0;
-    border: 1px solid #999;
-  }
-  .kss-markup pre {
-    margin: 0;
+    margin: $kss-vertical-rhythm 0;
+    border: 1px solid #ccc;
+
+    &[open] summary {
+      border-bottom: 1px solid #ccc;
+      margin-bottom: 3px;
+    }
+
+    summary {
+      padding-left: 10px;
+    }
+
+    pre {
+      margin: 0;
+    }
   }
 
   .kss-source {
@@ -438,9 +685,8 @@ $kss-vertical-rhythm      : $kss-font-size * 1.5;
   }
 
   // ------------------------------------------------------------------------------
-  //   group prettyprint.js styling
+  // prettify.js styles
   // ------------------------------------------------------------------------------
-  /* Pretty printing styles. Used with prettify.js. */
 
   /* SPAN elements with the classes below are added by prettyprint. */
   .pln { color: #000 }  /* plain text */

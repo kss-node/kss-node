@@ -46,9 +46,10 @@
 </div>
 <article role="main" class="kss-main">
 
-    <div id="kssref-javascript-api" class="kss-section kss-section--depth-1">
+    <div id="kss-fullscreen-javascript-api" class="kss-section kss-section--depth-1">
 
       <div class="kss-style">
+        <a name="kssref-javascript-api"></a>
         <h1 class="kss-title kss-title--level-1">
           <a class="kss-title__permalink" href="#kssref-javascript-api">
             <span class="kss-title__ref">
@@ -60,6 +61,7 @@
             JavaScript API
           </a>
         </h1>
+
 
           <div class="kss-description">
             <p>The JavaScript API documentation is available for many versions of kss-node:</p>
@@ -88,11 +90,26 @@
 <script src="kss-assets/kss.js"></script>
 <script src="kss-assets/scrollspy.js"></script>
 <script src="kss-assets/prettify.js"></script>
+<script src="kss-assets/kss-fullscreen.js"></script>
+<script src="kss-assets/kss-guides.js"></script>
+<script src="kss-assets/kss-markup.js"></script>
 <script>
   prettyPrint();
   var spy = new ScrollSpy('#kss-node', {
     nav: '.kss-nav__menu-child > li > a',
     className: 'is-in-viewport'
+  });
+  var kssFullScreen = new KssFullScreen({
+    idPrefix: 'kss-fullscreen-',
+    bodyClass: 'kss-fullscreen-mode',
+    elementClass: 'is-fullscreen'
+  });
+  var kssGuides = new KssGuides({
+    bodyClass: 'kss-guides-mode'
+  });
+  var kssMarkup = new KssMarkup({
+    bodyClass: 'kss-markup-mode',
+    detailsClass: 'kss-markup'
   });
 </script>
 
