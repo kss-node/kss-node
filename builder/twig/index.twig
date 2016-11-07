@@ -89,6 +89,13 @@
                 <path class="kss-toolbar__icon-fill" d="M28 36v26l-10-10-12 12-6-6 12-12-10-10zM64 6l-12 12 10 10h-26v-26l10 10 12-12z"></path>
               </svg>
             </a>
+            <a href="#kssref-{{section.referenceURI}}" data-kss-markup="true">
+              <span class="kss-toolbar__tooltip">Toggle HTML markup</span>
+              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" viewBox="0 0 64 64">
+                <path class="kss-toolbar__icon-fill" d="M37.555,46.239l6.103,6.103l20.342,-20.342l-20.342,-20.342l-6.103,6.103l14.24,14.239l-14.24,14.239Z"/>
+                <path class="kss-toolbar__icon-fill" d="M26.445,17.761l-6.103,-6.103l-20.342,20.342l20.342,20.342l6.103,-6.103l-14.24,-14.239l14.24,-14.239Z"/>
+              </svg>
+            </a>
           </p>
         {% endif %}
 
@@ -149,9 +156,16 @@
           {% endfor %}
         </div>
         {% if section.markup %}
-          <div class="kss-markup kss-style">
+          <details class="kss-markup kss-style">
+            <summary>
+              {% if markupFile %}
+                Markup: <code>{{ markupFile }}</code>
+              {% else %}
+                Markup
+              {% endif %}
+            </summary>
             <pre class="prettyprint linenums lang-html"><code data-language="html">{{ section.markup|escape('html') }}</code></pre>
-          </div>
+          </details>
         {% endif %}
       {% endif %}
 
@@ -170,6 +184,7 @@
 <script src="kss-assets/scrollspy.js"></script>
 <script src="kss-assets/prettify.js"></script>
 <script src="kss-assets/kss-fullscreen.js"></script>
+<script src="kss-assets/kss-markup.js"></script>
 <script>
   prettyPrint();
   var spy = new ScrollSpy('#kss-node', {
@@ -180,6 +195,10 @@
     idPrefix: 'kss-fullscreen-',
     bodyClass: 'kss-fullscreen-mode',
     elementClass: 'is-fullscreen'
+  });
+  var kssMarkup = new KssMarkup({
+    bodyClass: 'kss-markup-mode',
+    detailsClass: 'kss-markup'
   });
 </script>
 {{ scripts|raw }}

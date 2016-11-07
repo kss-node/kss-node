@@ -480,7 +480,8 @@ $kss-vertical-rhythm      : $kss-font-size * 1.5;
       overflow: visible;
     }
   }
-  .is-fullscreen .kss-toolbar a[data-kss-fullscreen] {
+  .is-fullscreen .kss-toolbar a[data-kss-fullscreen],
+  &.kss-markup-mode .kss-toolbar a[data-kss-markup] {
     border-color: #666;
     background-color: #666;
 
@@ -580,11 +581,21 @@ $kss-vertical-rhythm      : $kss-font-size * 1.5;
   }
 
   .kss-markup {
-    margin: -1px 0 $kss-vertical-rhythm 0;
-    border: 1px solid #999;
-  }
-  .kss-markup pre {
-    margin: 0;
+    margin: $kss-vertical-rhythm 0;
+    border: 1px solid #ccc;
+
+    &[open] summary {
+      border-bottom: 1px solid #ccc;
+      margin-bottom: 3px;
+    }
+
+    summary {
+      padding-left: 10px;
+    }
+
+    pre {
+      margin: 0;
+    }
   }
 
   .kss-source {
