@@ -249,6 +249,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
         );
       } else {
         // Attempt to load the file path.
+        section.custom('markupFile', partial.markup);
         partial.file = partial.markup;
         partial.name = path.basename(partial.file, path.extname(partial.file));
         partial.exampleName = 'kss-example-' + partial.name;

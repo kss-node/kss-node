@@ -347,6 +347,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
         );
       } else {
         // Attempt to load the file path.
+        section.custom('markupFile', template.markup);
         template.file = template.markup;
         template.name = path.basename(template.file);
         template.exampleName = 'kss-example-' + template.name;
