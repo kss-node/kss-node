@@ -481,6 +481,7 @@ $kss-vertical-rhythm      : $kss-font-size * 1.5;
     }
   }
   .is-fullscreen .kss-toolbar a[data-kss-fullscreen],
+  &.kss-guides-mode .kss-toolbar a[data-kss-guides],
   &.kss-markup-mode .kss-toolbar a[data-kss-markup] {
     border-color: #666;
     background-color: #666;
@@ -571,12 +572,78 @@ $kss-vertical-rhythm      : $kss-font-size * 1.5;
   }
   .kss-modifier__example {
     clear: left;
-    padding: 1px 0; // Contain the example's margins.
+    border: 2px dashed transparent;
     position: relative; // Contain the example's absolute positioning.
-    margin: 0 0 ($kss-vertical-rhythm - 1px) 0;
+    margin: -2px -2px ($kss-vertical-rhythm - 2px);
 
     &:last-child {
-      margin: 0;
+      margin-bottom: 0;
+    }
+  }
+  &.kss-guides-mode .kss-modifier__example,
+  &.kss-guides-mode .kss-modifier__example-footer {
+    &:before,
+    &:after {
+      z-index: -1;
+      box-sizing: border-box;
+      content: '';
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      border: 2px solid #000;
+    }
+  }
+  &.kss-guides-mode .kss-modifier__example {
+    border-color: #000;
+
+    &:before {
+      top: -5px;
+      left: -5px;
+      border-top: 0;
+      border-left: 0;
+    }
+    &:after {
+      top: -5px;
+      right: -5px;
+      border-top: 0;
+      border-right: 0;
+    }
+  }
+  &.kss-guides-mode.kss-fullscreen-mode .kss-modifier__example {
+    &:before {
+      left: auto;
+      right: 0;
+    }
+    &:after {
+      right: auto;
+      left: 0;
+    }
+  }
+  .kss-modifier__example-footer {
+    clear: both;
+  }
+  &.kss-guides-mode .kss-modifier__example-footer {
+    &:before {
+      bottom: -5px;
+      left: -5px;
+      border-bottom: 0;
+      border-left: 0;
+    }
+    &:after {
+      bottom: -5px;
+      right: -5px;
+      border-right: 0;
+      border-bottom: 0;
+    }
+  }
+  &.kss-guides-mode.kss-fullscreen-mode .kss-modifier__example-footer {
+    &:before {
+      left: auto;
+      right: 0;
+    }
+    &:after {
+      right: auto;
+      left: 0;
     }
   }
 
