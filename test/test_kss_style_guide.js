@@ -227,7 +227,7 @@ describe('KssStyleGuide object API', function() {
             '4.1.1', '4.1.1.1', '4.1.1.2',
             '4.1.2', '4.1.2.2',
             '8',
-            '9', '9.1', '9.1.1', '9.2', '9.3', '9.4', '9.5', '9.10', '9.11', '9.100',
+            '9', '9.1', '9.1.1', '9.2', '9.3', '9.4', '9.5', '9.10', '9.11', '9.100', '95', '905',
             'alpha', 'alpha.alpha', 'alpha.alpha.alpha', 'alpha.beta', 'alpha.delta', 'alpha.epsilon', 'alpha.gamma', 'alpha-bet',
             'WordKeys.Base.Link', 'WordKeys.Components', 'WordKeys.Components.Message', 'WordKeys.Components.Tabs', 'WordKeys.Forms.Button', 'WordKeys.Forms.Input'
           ];
@@ -407,7 +407,7 @@ describe('KssStyleGuide object API', function() {
       });
 
       it('should return numeric sections in order', function(done) {
-        let expected = ['9', '9.1', '9.1.1', '9.2', '9.3', '9.4', '9.5', '9.10', '9.11', '9.100'];
+        let expected = ['9', '9.1', '9.1.1', '9.2', '9.3', '9.4', '9.5', '9.10', '9.11', '9.100', '95', '905'];
         let results = this.styleGuide.sections(/9.*/).map(function(section) {
           return section.reference();
         });
