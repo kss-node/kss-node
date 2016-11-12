@@ -129,15 +129,13 @@ var kss = require('kss'),
         markdown: false
     };
 
-kss.traverse('public/stylesheets/', options, function(error, styleGuide) {
-    if (error) throw error;
-
-    styleGuide.sections('2.1.1')                                   // <KssSection>
-    styleGuide.sections('2.1.1').modifiers(0)                      // <KssModifier>
-    styleGuide.sections('2.1.1').modifiers(':hover').description() // 'Subtle hover highlight'
-    styleGuide.sections('2.1.1').modifiers(0).className()          // 'pseudo-class-hover'
-    styleGuide.sections('2.x.x')                                   // [<KssSection>, ...]
-    styleGuide.sections('2.1.1').modifiers()                       // [<KssModifier>, ...]
+kss.traverse('public/stylesheets/', options).then(function(styleGuide) {
+    styleGuide.sections('2.1.1');                                   // <KssSection>
+    styleGuide.sections('2.1.1').modifiers(0);                      // <KssModifier>
+    styleGuide.sections('2.1.1').modifiers(':hover').description(); // 'Subtle hover highlight'
+    styleGuide.sections('2.1.1').modifiers(0).className();          // 'pseudo-class-hover'
+    styleGuide.sections('2.x.x');                                   // [<KssSection>, ...]
+    styleGuide.sections('2.1.1').modifiers();                       // [<KssModifier>, ...]
 });
 ```
 
