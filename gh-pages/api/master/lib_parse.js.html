@@ -49,6 +49,7 @@ inlineRenderer.paragraph = function(text) {
   return text;
 };
 
+// @TODO: Replace {base, path, contents} with Vinyl.
 /**
  * Parse an array/string of documented CSS, or an array of file objects with
  * their content.
@@ -115,17 +116,13 @@ const parse = function(input, options) {
         modifiers: [],
         parameters: [],
         markup: '',
-        sourceFile: {
-          name: file.path ? file.path : '',
-          base: file.base ? file.base : '',
+        source: {
+          // Always display using UNIX separators.
+          filename: file.base ? path.relative(file.base, file.path).replace(/\\/g, '/') : file.path,
           path: file.path ? file.path : '',
           line: comment.line
         }
       };
-      if (file.base) {
-        // Always display using UNIX separators.
-        newSection.sourceFile.name = path.relative(file.base, file.path).replace(/\\/g, '/');
-      }
 
       // Split the comment block into paragraphs.
       let paragraphs = comment.text.split('\n\n');

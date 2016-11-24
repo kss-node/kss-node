@@ -85,6 +85,11 @@ class KssSection {
       referenceURI: '',
       weight: 0,
       markup: '',
+      source: {
+        filename: '',
+        path: '',
+        line: ''
+      },
       modifiers: [],
       parameters: []
     };
@@ -122,6 +127,7 @@ class KssSection {
       referenceURI: this.referenceURI(),
       weight: this.weight(),
       markup: this.markup(),
+      source: this.source(),
       // Include meta as well.
       depth: this.depth()
     };
@@ -447,6 +453,61 @@ class KssSection {
     this.data.markup = markup;
     // Allow chaining.
     return this;
+  }
+
+  /**
+   * Gets or sets the file information of the file where the section was
+   * originally found.
+   *
+   * If the `source` parameter is provided, the `source` for this section is
+   * set. Otherwise, the `source` of the section is returned.
+   *
+   * The `source` object contains the following information:
+   * - filename: The name of the file.
+   * - path: The full path of the file.
+   * - line: The line number where the KSS comment is found.
+   *
+   * @param {{filename, path, line}} [source] The source file information where
+   *   the section was originally found.
+   * @returns {KssSection|{filename, path, line}} If `source` is given, the
+   *   `KssSection` object is returned to allow chaining of methods. Otherwise,
+   *   the source of the section is returned.
+   */
+  source(source) {
+    if (typeof source === 'undefined') {
+      return this.data.source;
+    }
+
+    if (source.filename) {
+      this.data.source.filename = source.filename;
+    }
+    if (source.path) {
+      this.data.source.path = source.path;
+    }
+    if (source.line) {
+      this.data.source.line = source.line;
+    }
+
+    // Allow chaining.
+    return this;
+  }
+
+  /**
+   * Gets the name of the file where the section was originally found.
+   *
+   * @returns {string} Returns the source file's path relative to the base path.
+   */
+  sourceFileName() {
+    return this.data.source.filename;
+  }
+
+  /**
+   * Gets the line number where the section was found in the original source file.
+   *
+   * @returns {string} Returns the source file's line number.
+   */
+  sourceLine() {
+    return this.data.source.line;
   }
 
   /**
