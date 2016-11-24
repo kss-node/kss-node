@@ -195,7 +195,9 @@ describe('KssBuilderBaseTwig object API', function() {
 
   describe('.build', function() {
     it('compiles the Twig templates', function() {
+      expect(this.builder.templates.index).to.be.function;
       expect(this.builder.templates.section).to.be.function;
+      expect(this.builder.templates.item).to.be.function;
     });
 
     it('should save the KssStyleGuide', function() {

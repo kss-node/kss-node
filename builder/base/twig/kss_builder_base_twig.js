@@ -263,28 +263,63 @@ class KssBuilderBaseTwig extends KssBuilderBase {
     // does not destroy the Node.js environment between builds.
     this.Twig.registryReset();
 
-    let buildTasks = [];
+    let buildTasks = [],
+      loadTask;
 
-    // Compile the index.twig Twig template.
+    // Optionally load the index.twig Twig template.
     // istanbul ignore else
-    if (typeof this.templates.index === 'undefined' || /* istanbul ignore next */ typeof this.templates.section === 'undefined') {
-      buildTasks.push(
-        this.Twig.twigAsync({
-          id: '@builderTwig/index.twig',
-          path: path.resolve(this.options.builder, 'index.twig')
-        }).then(template => {
-          // istanbul ignore else
-          if (typeof this.templates.index === 'undefined') {
-            this.templates.index = template;
-          }
-          // istanbul ignore else
-          if (typeof this.templates.section === 'undefined') {
-            this.templates.section = template;
-          }
-          return Promise.resolve();
-        })
-      );
+    if (typeof this.templates.index === 'undefined') {
+      loadTask = this.Twig.twigAsync({
+        id: '@builderTwig/index.twig',
+        path: path.resolve(this.options.builder, 'index.twig')
+      }).then(template => {
+        this.templates.index = template;
+        return Promise.resolve();
+      });
+    } else {
+      loadTask = Promise.resolve();
     }
+
+    // Optionally load the section.twig Twig template.
+    // istanbul ignore else
+    if (typeof this.templates.section === 'undefined') {
+      loadTask = loadTask.then(() => {
+        return this.Twig.twigAsync({
+          id: '@builderTwig/section.twig',
+          path: path.resolve(this.options.builder, 'section.twig')
+        }).then(template => {
+          /* istanbul ignore next */
+          this.templates.section = template;
+          /* istanbul ignore next */
+          return Promise.resolve();
+        }).catch(() => {
+          // If the section.twig template cannot be read, use index.twig.
+          this.templates.section = this.templates.index;
+          return Promise.resolve();
+        });
+      });
+    }
+
+    // Optionally load the item.twig Twig template.
+    // istanbul ignore else
+    if (typeof this.templates.item === 'undefined') {
+      loadTask = loadTask.then(() => {
+        return this.Twig.twigAsync({
+          id: '@builderTwig/item.twig',
+          path: path.resolve(this.options.builder, 'item.twig')
+        }).then(template => {
+          /* istanbul ignore next */
+          this.templates.item = template;
+          /* istanbul ignore next */
+          return Promise.resolve();
+        }).catch(() => {
+          // If the item.twig template cannot be read, use section.twig or index.twig.
+          this.templates.item = this.templates.section ? this.templates.section : /* istanbul ignore next */ this.templates.index;
+          return Promise.resolve();
+        });
+      });
+    }
+    buildTasks.push(loadTask);
 
     let sections = this.styleGuide.sections();
 
@@ -468,6 +503,14 @@ class KssBuilderBaseTwig extends KssBuilderBase {
         buildPageTasks.push(this.buildPage('section', rootReference, this.styleGuide.sections(rootReference + '.*')));
       });
 
+      // For each section, build a page which only has a single section on it.
+      // istanbul ignore else
+      if (this.templates.item) {
+        sections.forEach(section => {
+          buildPageTasks.push(this.buildPage('item', section.reference(), [section]));
+        });
+      }
+
       return Promise.all(buildPageTasks);
     }).then(() => {
       // We return the KssStyleGuide, just like KssBuilderBase.build() does.
@@ -535,6 +578,11 @@ class KssBuilderBaseTwig extends KssBuilderBase {
    */
   buildPage(templateName, pageReference, sections, context) {
     context = context || {};
+    context.template = {
+      isHomepage: templateName === 'index',
+      isSection: templateName === 'section',
+      isItem: templateName === 'item'
+    };
     context.styleGuide = this.styleGuide;
     context.sections = sections.map(section => {
       return section.toJSON();

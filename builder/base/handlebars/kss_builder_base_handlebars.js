@@ -162,25 +162,54 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
       this.templates = {};
     }
 
-    let buildTasks = [];
+    let buildTasks = [],
+      loadTask;
 
-    // Compile the index.hbs Handlebars template.
+    // Optionally load/compile the index.hbs Handlebars template.
     // istanbul ignore else
-    if (typeof this.templates.index === 'undefined' || /* istanbul ignore next */ typeof this.templates.section === 'undefined') {
-      buildTasks.push(
-        fs.readFileAsync(path.resolve(this.options.builder, 'index.hbs'), 'utf8').then(content => {
-          // istanbul ignore else
-          if (typeof this.templates.index === 'undefined') {
-            this.templates.index = this.Handlebars.compile(content);
-          }
-          // istanbul ignore else
-          if (typeof this.templates.section === 'undefined') {
-            this.templates.section = this.Handlebars.compile(content);
-          }
-          return Promise.resolve();
-        })
-      );
+    if (typeof this.templates.index === 'undefined') {
+      loadTask = fs.readFileAsync(path.resolve(this.options.builder, 'index.hbs'), 'utf8').then(content => {
+        this.templates.index = this.Handlebars.compile(content);
+        return Promise.resolve();
+      });
+    } else {
+      loadTask = Promise.resolve();
     }
+
+    // Optionally load/compile the section.hbs Handlebars template.
+    // istanbul ignore else
+    if (typeof this.templates.section === 'undefined') {
+      loadTask = loadTask.then(() => {
+        return fs.readFileAsync(path.resolve(this.options.builder, 'section.hbs'), 'utf8').then(content => {
+          /* istanbul ignore next */
+          this.templates.section = this.Handlebars.compile(content);
+          /* istanbul ignore next */
+          return Promise.resolve();
+        }).catch(() => {
+          // If the section.hbs template cannot be read, use index.hbs.
+          this.templates.section = this.templates.index;
+          return Promise.resolve();
+        });
+      });
+    }
+
+    // Optionally load/compile the item.hbs Handlebars template.
+    // istanbul ignore else
+    if (typeof this.templates.item === 'undefined') {
+      loadTask = loadTask.then(() => {
+        return fs.readFileAsync(path.resolve(this.options.builder, 'item.hbs'), 'utf8').then(content => {
+          /* istanbul ignore next */
+          this.templates.item = this.Handlebars.compile(content);
+          /* istanbul ignore next */
+          return Promise.resolve();
+        }).catch(() => {
+          // If the item.hbs template cannot be read, use section.hbs or index.hbs.
+          this.templates.item = this.templates.section ? this.templates.section : /* istanbul ignore next */ this.templates.index;
+          return Promise.resolve();
+        });
+      });
+    }
+    buildTasks.push(loadTask);
 
     let sections = this.styleGuide.sections();
 
@@ -348,6 +377,14 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
         buildPageTasks.push(this.buildPage('section', rootReference, this.styleGuide.sections(rootReference + '.*')));
       });
 
+      // For each section, build a page which only has a single section on it.
+      // istanbul ignore else
+      if (this.templates.item) {
+        sections.forEach(section => {
+          buildPageTasks.push(this.buildPage('item', section.reference(), [section]));
+        });
+      }
+
       return Promise.all(buildPageTasks);
     }).then(() => {
       // We return the KssStyleGuide, just like KssBuilderBase.build() does.
@@ -414,6 +451,11 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
    */
   buildPage(templateName, pageReference, sections, context) {
     context = context || {};
+    context.template = {
+      isHomepage: templateName === 'index',
+      isSection: templateName === 'section',
+      isItem: templateName === 'item'
+    };
     context.styleGuide = this.styleGuide;
     context.sections = sections.map(section => {
       return section.toJSON();
