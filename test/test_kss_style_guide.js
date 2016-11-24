@@ -82,6 +82,11 @@ describe('KssStyleGuide object API', function() {
             reference: '1.1',
             referenceNumber: '1.1',
             referenceURI: '1-1',
+            source: {
+              filename: 'source.css',
+              path: '/path/source.css',
+              line: '2'
+            },
             weight: 0
           }
         ]

@@ -23,6 +23,9 @@ describe('KssSection object API', function() {
     'weight',
     'depth',
     'markup',
+    'source',
+    'sourceFileName',
+    'sourceLine',
     'modifiers',
     'parameters',
     'toJSON'
@@ -52,6 +55,10 @@ describe('KssSection object API', function() {
       expect(obj.data).to.have.property('referenceURI');
       expect(obj.data).to.have.property('weight');
       expect(obj.data).to.have.property('markup');
+      expect(obj.data).to.have.property('source');
+      expect(obj.data.source).to.have.property('filename');
+      expect(obj.data.source).to.have.property('path');
+      expect(obj.data.source).to.have.property('line');
       expect(obj.data).to.have.property('modifiers');
       expect(obj.data).to.have.property('parameters');
       done();
@@ -417,6 +424,52 @@ describe('KssSection object API', function() {
     it('should return itself if given a value', function(done) {
       let section = new kss.KssSection({markup: 'original'});
       expect(section.markup('new')).to.deep.equal(section);
+      done();
+    });
+  });
+
+  describe('.source()', function() {
+    it('should return data.source', function(done) {
+      this.styleGuide.sections().map(function(section) {
+        expect(section.source()).to.equal(section.data.source);
+      });
+      done();
+    });
+
+    it('should set data.source if given {property: value}', function(done) {
+      let section = new kss.KssSection({source: {filename: 'original.css', path: 'original.css', line: '1'}});
+      section.source({filename: 'new.css'});
+      expect(section.data.source.filename).to.equal('new.css');
+      expect(section.data.source.path).to.equal('original.css');
+      section.source({path: 'new.css'});
+      expect(section.data.source.line).to.equal('1');
+      expect(section.data.source.path).to.equal('new.css');
+      section.source({line: '2'});
+      expect(section.data.source.line).to.equal('2');
+      done();
+    });
+
+    it('should return itself if given a value', function(done) {
+      let section = new kss.KssSection({source: {filename: 'style.css', line: '2'}});
+      expect(section.source({filename: 'new.css'})).to.deep.equal(section);
+      done();
+    });
+  });
+
+  describe('.sourceFileName()', function() {
+    it('should return data.source.filename', function(done) {
+      this.styleGuide.sections().map(function(section) {
+        expect(section.sourceFileName()).to.equal(section.data.source.filename);
+      });
+      done();
+    });
+  });
+
+  describe('.sourceLine()', function() {
+    it('should return data.source.line', function(done) {
+      this.styleGuide.sections().map(function(section) {
+        expect(section.sourceLine()).to.equal(section.data.source.line);
+      });
       done();
     });
   });
