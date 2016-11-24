@@ -574,6 +574,7 @@ $kss-vertical-rhythm      : $kss-font-size * 1.5;
     clear: left;
     border: 2px dashed transparent;
     position: relative; // Contain the example's absolute positioning.
+    z-index: 0; // Establishes a local stacking context.
     margin: -2px -2px ($kss-vertical-rhythm - 2px);
 
     &:last-child {
