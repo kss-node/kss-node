@@ -520,10 +520,14 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
     }
     let fileName = templateName + (pageReference ? '-' + pageReference : '') + '.html';
 
-    // Grab the homepage text if it hasn't already been provided.
     let getHomepageText;
-    if (templateName === 'index' && typeof context.homepage === 'undefined') {
-      getHomepageText = Promise.all(
+    if (templateName !== 'index') {
+      getHomepageText = Promise.resolve();
+      context.homepage = false;
+    } else {
+      // Grab the homepage text if it hasn't already been provided.
+      // istanbul ignore else
+      getHomepageText = (typeof context.homepage !== 'undefined') ? /* istanbul ignore next */ Promise.resolve() : Promise.all(
         this.options.source.map(source => {
           return glob(source + '/**/' + this.options.homepage);
         })
@@ -547,9 +551,6 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
         context.homepage = homePageText ? marked(homePageText) : ' ';
         return Promise.resolve();
       });
-    } else {
-      getHomepageText = Promise.resolve();
-      context.homepage = false;
     }
 
     return getHomepageText.then(() => {
