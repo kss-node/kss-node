@@ -35,7 +35,7 @@
     "glob": "^7.0.3",
     "handlebars": "^4.0.0",
     "marked": "^0.3.6",
-    "twig": "^0.10.0",
+    "twig": "^0.10.2",
     "yargs": "^6.0.0"
   },
   "devDependencies": {

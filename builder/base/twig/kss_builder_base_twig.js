@@ -138,7 +138,18 @@ class KssBuilderBaseTwig extends KssBuilderBase {
               reject(error);
             }
           } else {
-            this.twig(options);
+            // In 0.10.2 and earlier, twig.js incorrectly "throws" an error if
+            // the path is not a valid file. So we have to double check for an
+            // error and use reject() before calling twig().
+            // @TODO Remove after upstream fix. https://github.com/twigjs/twig.js/pull/431
+            fs.stat(options.path, (err, stats) => {
+              if (err || !stats.isFile()) {
+                reject(new Error('Unable to find template file ' + options.path));
+                return;
+              }
+              // Call twig() with our load/error callbacks.
+              this.twig(options);
+            });
           }
         });
       }).bind(this.Twig);
