@@ -725,7 +725,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
         }).then(homePageText => {
           // Ensure homePageText is a non-false value. And run any results through
           // Markdown.
-          context.homepage = homePageText ? marked(homePageText) : ' ';
+          context.homepage = homePageText ? marked(homePageText) : '';
           return Promise.resolve();
         });
       }

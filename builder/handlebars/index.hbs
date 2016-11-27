@@ -50,10 +50,12 @@
   </nav>
 </div>
 <article role="main" class="kss-main">
-{{#if homepage}}
-  <div id="kssref-0" class="kss-section kss-section--depth-0 kss-overview kss-style">
-    {{{homepage}}}
-  </div>
+{{#if template.isHomepage}}
+  {{#if homepage}}
+    <div id="kssref-0" class="kss-section kss-section--depth-0 kss-overview kss-style">
+      {{{homepage}}}
+    </div>
+  {{/if}}
 {{else}}
 
   {{!
