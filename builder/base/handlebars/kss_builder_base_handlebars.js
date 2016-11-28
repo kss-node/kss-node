@@ -40,31 +40,25 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
 
     // Tell kss-node which Yargs-like options this builder has.
     this.addOptionDefinitions({
-      'extend': {
+      extend: {
         group: 'Style guide:',
         string: true,
         path: true,
         describe: 'Location of modules to extend Handlebars; see http://bit.ly/kss-wiki'
       },
-      'homepage': {
+      homepage: {
         group: 'Style guide:',
         string: true,
         multiple: false,
         describe: 'File name of the homepage\'s Markdown file',
         default: 'homepage.md'
       },
-      'placeholder': {
+      placeholder: {
         group: 'Style guide:',
         string: true,
         multiple: false,
         describe: 'Placeholder text to use for modifier classes',
         default: '[modifier class]'
-      },
-      'nav-depth': {
-        group: 'Style guide:',
-        multiple: false,
-        describe: 'Limit the navigation to the depth specified',
-        default: 3
       }
     });
   }
@@ -389,52 +383,6 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
     }).then(() => {
       // We return the KssStyleGuide, just like KssBuilderBase.build() does.
       return Promise.resolve(styleGuide);
-    });
-  }
-
-  /**
-   * Creates a 2-level hierarchical menu from the style guide.
-   *
-   * @param {string} pageReference The reference of the root section of the page
-   *   being built.
-   * @returns {Array} An array of menu items that can be used as a Handlebars
-   *   variable.
-   */
-  createMenu(pageReference) {
-    // Helper function that converts a section to a menu item.
-    const toMenuItem = function(section) {
-      // @TODO: Add an option to "include" the specific properties returned.
-      let menuItem = section.toJSON();
-
-      // Remove data we definitely won't need for the menu.
-      delete menuItem.markup;
-      delete menuItem.modifiers;
-      delete menuItem.parameters;
-
-      // Mark the current page in the menu.
-      menuItem.isActive = (menuItem.reference === pageReference);
-
-      // Mark any "deep" menu items.
-      menuItem.isGrandChild = (menuItem.depth > 2);
-
-      return menuItem;
-    };
-
-    // Retrieve all the root sections of the style guide.
-    return this.styleGuide.sections('x').map(rootSection => {
-      let menuItem = toMenuItem(rootSection);
-
-      // Retrieve the child sections for each of the root sections.
-      menuItem.children = this.styleGuide.sections(rootSection.reference() + '.*').slice(1).map(toMenuItem);
-
-      // Remove menu items that are deeper than the nav-depth option.
-      for (let i = 0; i < menuItem.children.length; i++) {
-        if (menuItem.children[i].depth > this.options['nav-depth']) {
-          delete menuItem.children[i];
-        }
-      }
-
-      return menuItem;
     });
   }
 

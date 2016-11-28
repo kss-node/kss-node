@@ -51,13 +51,13 @@ class KssBuilderBase {
 
     // Tell kss-node which Yargs-like options this builder has.
     this.addOptionDefinitions({
-      source: {
+      'source': {
         group: 'File locations:',
         string: true,
         path: true,
         describe: 'Source directory to recursively parse for KSS comments, homepage, and markup'
       },
-      destination: {
+      'destination': {
         group: 'File locations:',
         string: true,
         path: true,
@@ -65,7 +65,7 @@ class KssBuilderBase {
         describe: 'Destination directory of style guide',
         default: 'styleguide'
       },
-      mask: {
+      'mask': {
         group: 'File locations:',
         alias: 'm',
         string: true,
@@ -74,14 +74,14 @@ class KssBuilderBase {
         default: '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
       },
 
-      clone: {
+      'clone': {
         group: 'Builder:',
         string: true,
         path: true,
         multiple: false,
         describe: 'Clone a style guide builder to customize'
       },
-      builder: {
+      'builder': {
         group: 'Builder:',
         alias: 'b',
         string: true,
@@ -90,23 +90,29 @@ class KssBuilderBase {
         describe: 'Use the specified builder when building your style guide',
         default: path.relative(process.cwd(), path.join(__dirname, '..', 'handlebars'))
       },
-      css: {
+      'css': {
         group: 'Style guide:',
         string: true,
         describe: 'URL of a CSS file to include in the style guide'
       },
-      js: {
+      'js': {
         group: 'Style guide:',
         string: true,
         describe: 'URL of a JavaScript file to include in the style guide'
       },
-      custom: {
+      'custom': {
         group: 'Style guide:',
         string: true,
         describe: 'Process a custom property name when parsing KSS comments'
       },
+      'nav-depth': {
+        group: 'Style guide:',
+        multiple: false,
+        describe: 'Limit the navigation to the depth specified',
+        default: 3
+      },
 
-      verbose: {
+      'verbose': {
         count: true,
         multiple: false,
         describe: 'Display verbose details while building'
@@ -545,6 +551,51 @@ class KssBuilderBase {
    */
   build(styleGuide) {
     return Promise.resolve(styleGuide);
+  }
+
+  /**
+   * Creates a 2-level hierarchical menu from the style guide.
+   *
+   * @param {string} pageReference The reference of the root section of the page
+   *   being built.
+   * @returns {Array} An array of menu items that can be used as a template
+   *   variable.
+   */
+  createMenu(pageReference) {
+    // Helper function that converts a section to a menu item.
+    const toMenuItem = function(section) {
+      // @TODO: Add an option to "include" the specific properties returned.
+      let menuItem = section.toJSON();
+
+      // Remove data we definitely won't need for the menu.
+      delete menuItem.markup;
+      delete menuItem.modifiers;
+      delete menuItem.parameters;
+      delete menuItem.source;
+
+      // Mark the current page in the menu.
+      menuItem.isActive = (menuItem.reference === pageReference);
+
+      // Mark any "deep" menu items.
+      menuItem.isGrandChild = (menuItem.depth > 2);
+
+      return menuItem;
+    };
+
+    // Retrieve all the root sections of the style guide.
+    return this.styleGuide.sections('x').map(rootSection => {
+      let menuItem = toMenuItem(rootSection);
+
+      // Retrieve the child sections for each of the root sections.
+      menuItem.children = this.styleGuide.sections(rootSection.reference() + '.*').slice(1).map(toMenuItem);
+
+      // Remove menu items that are deeper than the nav-depth option.
+      menuItem.children = menuItem.children.filter(item => {
+        return item.depth <= this.options['nav-depth'];
+      }, this);
+
+      return menuItem;
+    });
   }
 }
 

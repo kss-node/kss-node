@@ -20,7 +20,8 @@ describe('KssBuilderBase object API', function() {
     'setLogErrorFunction',
     'clone',
     'prepare',
-    'build'
+    'build',
+    'createMenu'
   ].forEach(function(method) {
     it('has ' + method + '() method', function(done) {
       expect(new KssBuilderBase()).to.respondTo(method);
@@ -48,7 +49,7 @@ describe('KssBuilderBase object API', function() {
 
     it('should implement the default option definitions', function() {
       let builder = new KssBuilderBase();
-      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'verbose']);
+      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'nav-depth', 'verbose']);
     });
 
     it('should set the default log function', function() {
@@ -402,6 +403,103 @@ describe('KssBuilderBase object API', function() {
       return builder.build(styleGuide).then((result) => {
         expect(result).to.deep.equal(styleGuide);
       });
+    });
+  });
+
+  describe('.createMenu', function() {
+    before(function() {
+      this.styleGuide = new kss.KssStyleGuide({sections: [
+        {header: 'Header 1', reference: '1'},
+        {header: 'Header 1.E', reference: '1.E'},
+        {header: 'Header 1.E.A', reference: '1.E.A'},
+        {header: 'Header 1.E.A.A', reference: '1.E.A.A'},
+        {header: 'Header 2', reference: '2'},
+        {header: 'Header 2.A', reference: '2.A'},
+        {header: 'Header 3', reference: '3'}
+      ]});
+    });
+
+    it('should create a 2-level hierarchical menu', function(done) {
+      let builder = new KssBuilderBase(),
+        menu;
+      builder.styleGuide = this.styleGuide;
+      builder.addOptions({'nav-depth': 4});
+      menu = builder.createMenu('1');
+      expect(menu.length, 'menu.length').to.equal(3);
+
+      expect(menu[0].header).to.equal('Header 1');
+      expect(menu[0].isActive, 'menu[0].isActive').to.be.true;
+      expect(menu[0].isGrandChild, 'menu[0].isGrandChild').to.be.false;
+      expect(menu[0].children.length, 'menu[0].children.length').to.equal(3);
+
+      expect(menu[0].children[0].header).to.equal('Header 1.E');
+      expect(menu[0].children[0].isActive, 'menu[0].children[0].isActive').to.be.false;
+      expect(menu[0].children[0].isGrandChild, 'menu[0].children[0].isGrandChild').to.be.false;
+
+      expect(menu[0].children[1].header).to.equal('Header 1.E.A');
+      expect(menu[0].children[1].isActive, 'menu[0].children[1].isActive').to.be.false;
+      expect(menu[0].children[1].isGrandChild, 'menu[0].children[1].isGrandChild').to.be.true;
+
+      expect(menu[0].children[2].header).to.equal('Header 1.E.A.A');
+      expect(menu[0].children[2].isActive, 'menu[0].children[1].isActive').to.be.false;
+      expect(menu[0].children[2].isGrandChild, 'menu[0].children[1].isGrandChild').to.be.true;
+
+      expect(menu[1].header).to.equal('Header 2');
+      expect(menu[1].isActive, 'menu[1].isActive').to.be.false;
+      expect(menu[1].isGrandChild, 'menu[1].isGrandChild').to.be.false;
+      expect(menu[1].children.length, 'menu[1].children.length').to.equal(1);
+
+      expect(menu[1].children[0].header).to.equal('Header 2.A');
+      expect(menu[1].children[0].isActive, 'menu[1].children[0].isActive').to.be.false;
+      expect(menu[1].children[0].isGrandChild, 'menu[1].children[0].isGrandChild').to.be.false;
+
+      expect(menu[2].header).to.equal('Header 3');
+      expect(menu[2].isActive, 'menu[2].isActive').to.be.false;
+      expect(menu[2].isGrandChild, 'menu[2].isGrandChild').to.be.false;
+      expect(menu[2].children.length, 'menu[2].children.length').to.equal(0);
+
+      done();
+    });
+
+    it('should mark the specified root as active', function(done) {
+      let builder = new KssBuilderBase(),
+        menu;
+      builder.styleGuide = this.styleGuide;
+      menu = builder.createMenu('2');
+
+      expect(menu[0].header).to.equal('Header 1');
+      expect(menu[0].isActive, 'menu[0].isActive').to.be.false;
+      expect(menu[1].header).to.equal('Header 2');
+      expect(menu[1].isActive, 'menu[1].isActive').to.be.true;
+      expect(menu[2].header).to.equal('Header 3');
+      expect(menu[2].isActive, 'menu[2].isActive').to.be.false;
+      done();
+    });
+
+    it('should limit the depth of the menu to 2 by default', function(done) {
+      let builder = new KssBuilderBase(),
+        menu;
+      builder.styleGuide = this.styleGuide;
+      menu = builder.createMenu('1');
+
+      expect(menu.length, 'menu.length').to.equal(3);
+      expect(menu[0].children.length).to.equal(2);
+      expect(menu[0].children[0].header).to.equal('Header 1.E');
+      expect(menu[0].children[1].header).to.equal('Header 1.E.A');
+      done();
+    });
+
+    it('should limit the depth of the menu to the specified depth', function(done) {
+      let builder = new KssBuilderBase(),
+        menu;
+      builder.styleGuide = this.styleGuide;
+      builder.addOptions({'nav-depth': 2});
+      menu = builder.createMenu('1');
+
+      expect(menu.length, 'menu.length').to.equal(3);
+      expect(menu[0].children.length).to.equal(1);
+      expect(menu[0].children[0].header).to.equal('Header 1.E');
+      done();
     });
   });
 });

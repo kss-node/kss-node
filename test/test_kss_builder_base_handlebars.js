@@ -101,13 +101,12 @@ describe('KssBuilderBaseHandlebars object API', function() {
 
     it('should implement the default option definitions', function() {
       let builder = new KssBuilderBaseHandlebars();
-      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'verbose', 'extend', 'homepage', 'placeholder', 'nav-depth']);
+      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'nav-depth', 'verbose', 'extend', 'homepage', 'placeholder']);
     });
   });
 
   /* eslint-disable guard-for-in,no-loop-func */
-  ['createMenu',
-    'buildPage'
+  ['buildPage'
   ].forEach(function(method) {
     it('implements ' + method + '() method', function() {
       expect((new KssBuilderBaseHandlebars())).to.respondTo(method);
@@ -229,17 +228,6 @@ describe('KssBuilderBaseHandlebars object API', function() {
       expect(stdout).to.include(' - section 2 [2]');
       expect(stdout).to.include(' - section 3 [Heading 3]');
       expect(stdout).to.include(' - homepage');
-    });
-  });
-
-  describe('.createMenu', function() {
-    it('should create a 2-level hierarchical menu', function() {
-      expect(this.files['section-1']).to.include('MENU-ITEM:[referenceURI:1, referenceNumber:1, header:1, isActive:true, children:yes]');
-      expect(this.files['section-1']).to.include('MENU-ITEM-CHILD:[referenceURI:1-e, referenceNumber:1.5, header:Heading 1.E, isGrandChild:false]');
-      expect(this.files['section-1']).to.include('MENU-ITEM-CHILD:[referenceURI:1-e-a, referenceNumber:1.5.1, header:Heading 1.E.A, isGrandChild:true]');
-      expect(this.files['section-1']).to.include('MENU-ITEM:[referenceURI:2, referenceNumber:2, header:2, isActive:false, children:yes]');
-      expect(this.files['section-1']).to.include('MENU-ITEM-CHILD:[referenceURI:2-a, referenceNumber:2.1, header:Heading 2.A, isGrandChild:false]');
-      expect(this.files['section-1']).to.include('MENU-ITEM:[referenceURI:3, referenceNumber:3, header:Heading 3, isActive:false, children:none]');
     });
   });
 
