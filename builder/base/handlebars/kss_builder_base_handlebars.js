@@ -76,63 +76,20 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
    */
   prepare(styleGuide) {
     return super.prepare(styleGuide).then(styleGuide => {
-      // Store the global Handlebars object.
-      this.Handlebars = require('handlebars');
-
       if (this.options.verbose) {
         this.log('');
-        this.log('Building your KSS style guide!');
-        this.log('');
-        this.log(' * KSS Source  : ' + this.options.source.join(', '));
-        this.log(' * Destination : ' + this.options.destination);
-        this.log(' * Builder     : ' + this.options.builder);
-        if (this.options.extend.length) {
-          this.log(' * Extend      : ' + this.options.extend.join(', '));
-        }
-        this.log('');
       }
+
+      // Store the global Handlebars object.
+      this.Handlebars = require('handlebars');
 
       let prepTasks = [];
 
       // Create a new destination directory.
-      prepTasks.push(
-        fs.mkdirsAsync(this.options.destination).then(() => {
-          // Optionally, copy the contents of the builder's "kss-assets" folder.
-          return fs.copyAsync(
-            path.join(this.options.builder, 'kss-assets'),
-            path.join(this.options.destination, 'kss-assets'),
-            {
-              clobber: true,
-              filter: filePath => {
-                // Only look at the part of the path inside the builder.
-                let relativePath = path.sep + path.relative(this.options.builder, filePath);
-                // Skip any files with a path matching: /node_modules or /.
-                return (new RegExp('^(?!.*\\' + path.sep + '(node_modules$|\\.))')).test(relativePath);
-              }
-            }
-          ).catch(() => {
-            // If the builder does not have a kss-assets folder, ignore the error.
-            return Promise.resolve();
-          });
-        })
-      );
+      prepTasks.push(this.prepareDestination('kss-assets'));
 
       // Load modules that extend Handlebars.
-      this.options.extend.forEach(directory => {
-        prepTasks.push(
-          fs.readdirAsync(directory).then(files => {
-            files.forEach(fileName => {
-              if (path.extname(fileName) === '.js') {
-                let extendFunction = require(path.join(directory, fileName));
-                // istanbul ignore else
-                if (typeof extendFunction === 'function') {
-                  extendFunction(this.Handlebars, this.options);
-                }
-              }
-            });
-          })
-        );
-      });
+      Array.prototype.push.apply(prepTasks, this.prepareExtend(this.Handlebars));
 
       return Promise.all(prepTasks).then(() => {
         return Promise.resolve(styleGuide);

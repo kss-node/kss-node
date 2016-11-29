@@ -88,17 +88,6 @@ class KssBuilderBaseTwig extends KssBuilderBase {
    */
   prepare(styleGuide) {
     return super.prepare(styleGuide).then(styleGuide => {
-      // Store the global Twig object.
-      this.Twig = require('twig');
-
-      // We need the ability to reset the template registry since the global
-      // Twig object is the same object every time it is require()d.
-      this.Twig.registryReset = (function() {
-        this.extend(function(Twig) {
-          Twig.Templates.registry = {};
-        });
-      }).bind(this.Twig);
-
       // Collect the namespaces to be used by Twig.
       this.namespaces = {
         builderTwig: path.resolve(this.options.builder)
@@ -110,6 +99,24 @@ class KssBuilderBaseTwig extends KssBuilderBase {
           this.namespaces[tokens[0]] = path.resolve(tokens[1]);
         }
       });
+
+      if (this.options.verbose) {
+        if (this.options.namespace.length) {
+          this.log(' * Namespace   : ' + this.options.namespace.join(', '));
+        }
+        this.log('');
+      }
+
+      // Store the global Twig object.
+      this.Twig = require('twig');
+
+      // We need the ability to reset the template registry since the global
+      // Twig object is the same object every time it is require()d.
+      this.Twig.registryReset = (function() {
+        this.extend(function(Twig) {
+          Twig.Templates.registry = {};
+        });
+      }).bind(this.Twig);
 
       // Promisify Twig.twig().
       let namespacesFromKSS = this.namespaces;
@@ -169,67 +176,16 @@ class KssBuilderBaseTwig extends KssBuilderBase {
       });
       this.safeMarkup = safeMarkup;
 
-      if (this.options.verbose) {
-        this.log('');
-        this.log('Building your KSS style guide!');
-        this.log('');
-        this.log(' * KSS Source  : ' + this.options.source.join(', '));
-        this.log(' * Destination : ' + this.options.destination);
-        this.log(' * Builder     : ' + this.options.builder);
-        if (this.options.extend.length) {
-          this.log(' * Extend      : ' + this.options.extend.join(', '));
-        }
-        if (this.options.namespace.length) {
-          this.log(' * Namespace   : ' + this.options.namespace.join(', '));
-        }
-        this.log('');
-      }
-
       let prepTasks = [];
 
       // Create a new destination directory.
-      prepTasks.push(
-        fs.mkdirsAsync(this.options.destination).then(() => {
-          // Optionally, copy the contents of the builder's "kss-assets" folder.
-          return fs.copyAsync(
-            path.join(this.options.builder, 'kss-assets'),
-            path.join(this.options.destination, 'kss-assets'),
-            {
-              clobber: true,
-              filter: filePath => {
-                // Only look at the part of the path inside the builder.
-                let relativePath = path.sep + path.relative(this.options.builder, filePath);
-                // Skip any files with a path matching: /node_modules or /.
-                return (new RegExp('^(?!.*\\' + path.sep + '(node_modules$|\\.))')).test(relativePath);
-              }
-            }
-          ).catch(() => {
-            // If the builder does not have a kss-assets folder, ignore the error.
-            // istanbul ignore next
-            return Promise.resolve();
-          });
-        })
-      );
+      prepTasks.push(this.prepareDestination('kss-assets'));
 
       // Load modules that extend Twig.
       if (this.options['extend-drupal8']) {
         this.options.extend.unshift(path.resolve(__dirname, 'extend-drupal8'));
       }
-      this.options.extend.forEach(directory => {
-        prepTasks.push(
-          fs.readdirAsync(directory).then(files => {
-            files.forEach(fileName => {
-              if (path.extname(fileName) === '.js') {
-                let extendFunction = require(path.join(directory, fileName));
-                // istanbul ignore else
-                if (typeof extendFunction === 'function') {
-                  extendFunction(this.Twig, this.options);
-                }
-              }
-            });
-          })
-        );
-      });
+      Array.prototype.push.apply(prepTasks, this.prepareExtend(this.Twig));
 
       return Promise.all(prepTasks).then(() => {
         return Promise.resolve(styleGuide);

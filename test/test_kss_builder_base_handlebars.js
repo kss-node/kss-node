@@ -101,7 +101,7 @@ describe('KssBuilderBaseHandlebars object API', function() {
 
     it('should implement the default option definitions', function() {
       let builder = new KssBuilderBaseHandlebars();
-      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'nav-depth', 'verbose', 'extend', 'homepage', 'placeholder']);
+      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'extend', 'nav-depth', 'verbose', 'homepage', 'placeholder']);
     });
   });
 

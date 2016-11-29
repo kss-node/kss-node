@@ -66,7 +66,7 @@ describe('KssBuilderBaseExample object API', function() {
 
     it('should implement the default option definitions', function() {
       let builder = new KssBuilderBaseExample();
-      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'nav-depth', 'verbose', 'example-option']);
+      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'extend', 'nav-depth', 'verbose', 'example-option']);
     });
   });
 

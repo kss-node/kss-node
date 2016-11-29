@@ -105,6 +105,12 @@ class KssBuilderBase {
         string: true,
         describe: 'Process a custom property name when parsing KSS comments'
       },
+      'extend': {
+        group: 'Style guide:',
+        string: true,
+        path: true,
+        describe: 'Location of modules to extend the templating system; see http://bit.ly/kss-wiki'
+      },
       'nav-depth': {
         group: 'Style guide:',
         multiple: false,
@@ -539,7 +545,86 @@ class KssBuilderBase {
       styleGuide.autoInit(true);
     }
 
+    if (this.options.verbose) {
+      this.log('');
+      this.log('Building your KSS style guide!');
+      this.log('');
+      this.log(' * KSS Source  : ' + this.options.source.join(', '));
+      this.log(' * Destination : ' + this.options.destination);
+      this.log(' * Builder     : ' + this.options.builder);
+      if (this.options.extend.length) {
+        this.log(' * Extend      : ' + this.options.extend.join(', '));
+      }
+    }
+
     return Promise.resolve(styleGuide);
+  }
+
+  /**
+   * A helper method that initializes the destination directory and optionally
+   * copies the given asset directory from the builder.
+   *
+   * @param {string} assetDirectory The name of the asset directory to copy from
+   *   builder.
+   * @returns {Promise} A promise to initialize the destination directory.
+   */
+  prepareDestination(assetDirectory) {
+    // Create a new destination directory.
+    return fs.mkdirsAsync(this.options.destination).then(() => {
+      if (assetDirectory) {
+        // Optionally, copy the contents of the builder's asset directory.
+        return fs.copyAsync(
+          path.join(this.options.builder, assetDirectory),
+          path.join(this.options.destination, assetDirectory),
+          {
+            clobber: true,
+            filter: filePath => {
+              // Only look at the part of the path inside the builder.
+              let relativePath = path.sep + path.relative(this.options.builder, filePath);
+              // Skip any files with a path matching: "/node_modules" or "/."
+              return (new RegExp('^(?!.*\\' + path.sep + '(node_modules$|\\.))')).test(relativePath);
+            }
+          }
+        ).catch(() => {
+          // If the builder does not have a kss-assets folder, ignore the error.
+          return Promise.resolve();
+        });
+      } else {
+        return Promise.resolve();
+      }
+    });
+  }
+
+  /**
+   * Helper method that loads modules to extend a templating system.
+   *
+   * The `--extend` option allows users to specify directories. This helper
+   * method requires all .js files in the specified directories and calls the
+   * default function exported with two parameters, the `templateEngine` object
+   * and the options added to the builder.
+   *
+   * @param {object} templateEngine The templating system's main object; used by
+   *   the loaded module to extend the templating system.
+   * @returns {Array.<Promise>} An array of `Promise` objects; one for each directory
+   *   given to the extend option.
+   */
+  prepareExtend(templateEngine) {
+    let promises = [];
+    this.options.extend.forEach(directory => {
+      promises.push(
+        fs.readdirAsync(directory).then(files => {
+          files.forEach(fileName => {
+            if (path.extname(fileName) === '.js') {
+              let extendFunction = require(path.join(directory, fileName));
+              if (typeof extendFunction === 'function') {
+                extendFunction(templateEngine, this.options);
+              }
+            }
+          });
+        })
+      );
+    });
+    return promises;
   }
 
   /**

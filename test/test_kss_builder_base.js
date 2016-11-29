@@ -20,6 +20,8 @@ describe('KssBuilderBase object API', function() {
     'setLogErrorFunction',
     'clone',
     'prepare',
+    'prepareDestination',
+    'prepareExtend',
     'build',
     'createMenu'
   ].forEach(function(method) {
@@ -49,7 +51,7 @@ describe('KssBuilderBase object API', function() {
 
     it('should implement the default option definitions', function() {
       let builder = new KssBuilderBase();
-      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'nav-depth', 'verbose']);
+      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'extend', 'nav-depth', 'verbose']);
     });
 
     it('should set the default log function', function() {
@@ -393,6 +395,132 @@ describe('KssBuilderBase object API', function() {
           expect(result.sections().map(section => { return section.reference(); })).to.deep.equal(['a', 'a - b', 'a - b - c']);
         });
       });
+    });
+  });
+
+  describe('.prepareDestination()', function() {
+    before(function() {
+      let builder = new KssBuilderBase();
+      this.destination = helperUtils.fixtures('..', 'output', 'prepare-destination');
+      builder.addOptions({
+        destination: this.destination,
+        builder: helperUtils.fixtures('builder')
+      });
+      return builder.prepareDestination('assets').then(() => {
+        return fs.readdirAsync(this.destination);
+      }).then(files => {
+        this.destinationListing = files;
+      }).catch(error => {
+        this.destinationError = error;
+        return Promise.resolve();
+      });
+    });
+
+    after(function() {
+      return fs.removeAsync(this.destination);
+    });
+
+    it('should make a destination directory', function(done) {
+      expect(this.destinationError).to.not.exist;
+      done();
+    });
+
+    it('should make an asset directory', function(done) {
+      expect(this.destinationListing.find(value => { return value === 'assets'; })).to.exist;
+      done();
+    });
+
+    it('should copy the contents of the asset directory', function() {
+      return fs.readdirAsync(path.resolve(this.destination, 'assets')).then(directoryListing => {
+        expect(directoryListing).to.deep.equal(['SHOULD_NOT_SKIP']);
+      });
+    });
+
+    it('should skip any dot directories in the asset directory', function(done) {
+      // Check for .svn folder.
+      expect(this.destinationListing.find(value => { return value === '.svn'; })).to.be.undefined;
+      done();
+    });
+
+    it('should skip any node_modules directory in the asset directory', function(done) {
+      // Check for node_modules folder.
+      expect(this.destinationListing.find(value => { return value === 'node_modules'; })).to.be.undefined;
+      done();
+    });
+
+    it('should not fail when the asset directory does not exist', function() {
+      let destination = helperUtils.fixtures('..', 'output', 'prepare-destination-2'),
+        builder = new KssBuilderBase();
+      builder.addOptions({
+        destination: destination,
+        builder: helperUtils.fixtures('builder')
+      });
+      return builder.prepareDestination('no-assets').then(() => {
+        return fs.readdirAsync(destination);
+      }).then(files => {
+        expect(files.find(value => { return value === 'assets'; })).to.be.undefined;
+        expect(files.find(value => { return value === 'no-assets'; })).to.be.undefined;
+        return fs.removeAsync(destination);
+      });
+    });
+
+    it('should not copy an asset directory by default', function() {
+      let destination = helperUtils.fixtures('..', 'output', 'prepare-destination-3'),
+        builder = new KssBuilderBase();
+      builder.addOptions({
+        destination: destination,
+        builder: helperUtils.fixtures('builder')
+      });
+      return builder.prepareDestination().then(() => {
+        return fs.readdirAsync(destination);
+      }).then(files => {
+        expect(files.find(value => { return value === 'assets'; })).to.be.undefined;
+        return fs.removeAsync(destination);
+      });
+    });
+  });
+
+  describe('.prepareExtend()', function() {
+    before(function() {
+      let builder = new KssBuilderBase();
+      builder.addOptions({
+        optionForExtend1: 'option for extend 1',
+        extend: [
+          helperUtils.fixtures('extend'),
+          helperUtils.fixtures('extend2')
+        ]
+      });
+      this.templateEngine = {
+        engine: true
+      };
+      return builder.prepareExtend(this.templateEngine);
+    });
+
+    it('should ignore non .js files in extend directories', function(done) {
+      expect(this.templateEngine.ignore).to.not.exist;
+      done();
+    });
+
+    it('should require all .js files', function(done) {
+      expect(this.templateEngine.extend1).to.exist;
+      expect(this.templateEngine.extend2).to.be.true;
+      expect(this.templateEngine.extend3).to.be.true;
+      done();
+    });
+
+    it('should ignore .js files that do not export a function', function(done) {
+      expect(this.templateEngine.nonFunction).to.not.exist;
+      done();
+    });
+
+    it('should pass the templating system object to the exported function', function(done) {
+      expect(this.templateEngine.extend1).to.exist;
+      done();
+    });
+
+    it('should pass the builder options to the exported function', function(done) {
+      expect(this.templateEngine.extend1).to.deep.equal({fromOptions: 'option for extend 1'});
+      done();
     });
   });
 
