@@ -2,12 +2,93 @@
 
 'use strict';
 
-const KssBuilderBase = require('../builder');
+const KssBuilderBase = require('../builder'),
+  KssBuilderBaseHandlebars = require('../builder/base/handlebars'),
+  mockStream = require('mock-utf8-stream');
 
 const pathToJSON = helperUtils.fixtures('cli-option-config.json'),
   API = '3.0';
 
+class TestKssBuilderBase extends KssBuilderBaseHandlebars {
+  constructor(options) {
+    super();
+
+    options = options || {};
+
+    if (!options.builder) {
+      throw new Error('Builder must be specified for this test.');
+    }
+
+    // For our tests, feed kss() log functions that mock stdout and stderr so we
+    // can capture the output easier.
+    this.testStreams = {};
+    this.testStreams.stdout = new mockStream.MockWritableStream();
+    this.testStreams.stderr = new mockStream.MockWritableStream();
+    this.testStreams.stdout.startCapture();
+    this.testStreams.stderr.startCapture();
+    options.logFunction = (function() {
+      let message = '';
+      for (let i = 0; i < arguments.length; i++) {
+        message += arguments[i];
+      }
+      this.testStreams.stdout.write(message + '\n');
+    }).bind(this);
+    options.logErrorFunction = (function(error) {
+      // Show the full error stack if the verbose option is used twice or more.
+      this.testStreams.stderr.write(((error.stack && options.verbose > 1) ? error.stack : error) + '\n');
+    }).bind(this);
+
+    this.addOptions(options);
+  }
+
+  getTestOutput(pipe) {
+    if (typeof pipe === 'undefined') {
+      return {
+        stdout: this.testStreams.stdout.capturedData,
+        stderr: this.testStreams.stderr.capturedData
+      };
+    } else {
+      return this.testStreams[pipe].capturedData;
+    }
+  }
+}
+
 describe('KssBuilderBase object API', function() {
+  before(function() {
+    this.files = {};
+    let source = helperUtils.fixtures('source-handlebars-builder-test'),
+      destination = path.resolve(__dirname, 'output', 'builder_base', 'build');
+    this.builder = new TestKssBuilderBase({
+      source: [
+        source,
+        helperUtils.fixtures('source-twig-builder-test')
+      ],
+      destination: destination,
+      builder: helperUtils.fixtures('builder-with-assets'),
+      css: ['styles-1.css', 'styles-2.css'],
+      js: ['javascript-1.js', 'javascript-2.js'],
+      verbose: true
+    });
+    return kss.traverse(source).then(styleGuide => {
+      return this.builder.prepare(styleGuide);
+    }).then(styleGuide => {
+      return this.builder.build(styleGuide);
+    }).then(() => {
+      return Promise.all(
+        [
+          'index',
+          'section-1',
+          'section-2',
+          'section-3'
+        ].map(fileName => {
+          return fs.readFileAsync(path.join(__dirname, 'output', 'builder_base', 'build', fileName + '.html'), 'utf8').then(data => {
+            this.files[fileName] = data;
+          });
+        })
+      );
+    });
+  });
+
   /* eslint-disable guard-for-in,no-loop-func */
   ['addOptions',
     'getOptions',
@@ -531,6 +612,141 @@ describe('KssBuilderBase object API', function() {
       return builder.build(styleGuide).then((result) => {
         expect(result).to.deep.equal(styleGuide);
       });
+    });
+  });
+
+  describe('.buildGuide', function() {
+    it('should load the templates using options.readBuilderTemplate', function() {
+      let builder = new KssBuilderBase(),
+        options = {
+          readBuilderTemplate: function(template) {
+            let templateFunction;
+            if (template === 'index') {
+              templateFunction = function() { return 'mockIndexTemplate'; };
+            } else if (template === 'section') {
+              templateFunction = function() { return 'mockSectionTemplate'; };
+            } else if (template === 'item') {
+              templateFunction = function() { return 'mockItemTemplate'; };
+            }
+            return Promise.resolve(templateFunction);
+          },
+          readSectionTemplate: '',
+          loadInlineTemplate: '',
+          loadContext: '',
+          getTemplate: '',
+          templateRender: '',
+          filenameToTemplateRef: '',
+          templateExtension: '',
+          emptyTemplate: ''
+        };
+      builder.buildPage = () => { return Promise.resolve(); };
+      return builder.buildGuide(new kss.KssStyleGuide({}), options).catch(error => {
+        return error;
+      }).then(() => {
+        expect(builder.templates.index).to.be.function;
+        expect(builder.templates.section).to.be.function;
+        expect(builder.templates.item).to.be.function;
+        expect(builder.templates.index()).to.equal('mockIndexTemplate');
+        expect(builder.templates.section()).to.equal('mockSectionTemplate');
+        expect(builder.templates.item()).to.equal('mockItemTemplate');
+      });
+    });
+
+    it('should use the index template when no section or item template', function() {
+      let builder = new KssBuilderBase(),
+        options = {
+          readBuilderTemplate: function(name) {
+            if (name === 'index') {
+              return Promise.resolve(function() { return 'mockIndexTemplate'; });
+            } else {
+              return Promise.reject(new Error('no template'));
+            }
+          },
+          readSectionTemplate: '',
+          loadInlineTemplate: '',
+          loadContext: '',
+          getTemplate: '',
+          templateRender: '',
+          filenameToTemplateRef: '',
+          templateExtension: '',
+          emptyTemplate: ''
+        };
+      builder.buildPage = () => { return Promise.resolve(); };
+      return builder.buildGuide(new kss.KssStyleGuide({}), options).catch(error => {
+        return error;
+      }).then(() => {
+        expect(builder.templates.index).to.be.function;
+        expect(builder.templates.section).to.be.function;
+        expect(builder.templates.item).to.be.function;
+        expect(builder.templates.index()).to.equal('mockIndexTemplate');
+        expect(builder.templates.section()).to.equal('mockIndexTemplate');
+        expect(builder.templates.item()).to.equal('mockIndexTemplate');
+      });
+    });
+
+    it('should save the KssStyleGuide', function() {
+      let styleGuide = new kss.KssStyleGuide({
+        sections: [
+          {header: 'Section A'},
+          {header: 'Section B'}
+        ]
+      });
+      let builder = new KssBuilderBase();
+      builder.templates = {
+        index: '',
+        section: '',
+        item: ''
+      };
+      builder.buildPage = () => { return Promise.resolve(); };
+      return builder.buildGuide(styleGuide, {}).catch(error => {
+        return error;
+      }).then(() => {
+        expect(builder.styleGuide).to.deep.equal(styleGuide);
+      });
+    });
+
+    it('should list the files parsed if the verbose option is set', function() {
+      let stdout = this.builder.getTestOutput('stdout');
+      expect(stdout).to.include(' - ' + helperUtils.fixtures('source-handlebars-builder-test/kss-source.scss'));
+      expect(stdout).to.include(' - ' + helperUtils.fixtures('source-handlebars-builder-test/kss-source-3.scss'));
+    });
+
+    it('should list the section templates found if the verbose option is set', function() {
+      let stdout = this.builder.getTestOutput('stdout');
+      expect(stdout).to.include(' - 1.B: inline markup');
+      expect(stdout).to.include(' - 1.E: inline markup');
+      expect(stdout).to.include(' - 1.C: 1c.hbs');
+      expect(stdout).to.include(' - 1.C.A: 1ca.hbs');
+    });
+
+    it('should register the section templates', function() {
+      expect(Object.keys(this.builder.sectionTemplates).sort()).to.deep.equal(['1.B', '1.C', '1.C.A', '1.D', '1.E']);
+    });
+
+    it('should note missing section templates', function() {
+      let stdout = this.builder.getTestOutput('stdout');
+      expect(stdout).to.include(' - 1.D: missing-file.hbs NOT FOUND!');
+
+      let builder = new TestKssBuilderBase({
+        source: helperUtils.fixtures('source-handlebars-builder-test'),
+        destination: path.resolve(__dirname, 'output', 'base_handlebars', 'build-no-verbose'),
+        builder: helperUtils.fixtures('builder-with-assets'),
+        extend: helperUtils.fixtures('builder-with-assets', 'extend')
+      });
+      let styleGuide = new kss.KssStyleGuide({sections: [{header: 'Heading 4.3', reference: '4.3', markup: '4.3.hbs'}]});
+      return builder.prepare(styleGuide).then(styleGuide => {
+        return builder.build(styleGuide);
+      }).then(() => {
+        expect(builder.getTestOutput('stdout')).to.include('WARNING: In section 4.3, 4.3.hbs NOT FOUND!');
+      });
+    });
+
+    it('should trigger buildPage() for each style guide root section', function() {
+      let stdout = this.builder.getTestOutput('stdout');
+      expect(stdout).to.include(' - section 1 [1]');
+      expect(stdout).to.include(' - section 2 [2]');
+      expect(stdout).to.include(' - section 3 [Heading 3]');
+      expect(stdout).to.include(' - homepage');
     });
   });
 
