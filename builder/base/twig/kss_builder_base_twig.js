@@ -130,7 +130,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
           options.autoescape = true;
           options.namespaces = namespacesFromKSS;
 
-          // twig() ignores load/error if data or ref are specified.
+          // twig() ignores options.load/error if data or ref are specified.
           if (options.data || options.ref) {
             try {
               resolve(this.twig(options));
@@ -155,6 +155,8 @@ class KssBuilderBaseTwig extends KssBuilderBase {
         });
       }).bind(this.Twig);
 
+      // The this.safeMarkup() function recursively goes through the given JSON
+      // object and marks all properties as safe markup.
       let safeMarkup;
       this.Twig.extend(Twig => {
         safeMarkup = function(input) {
@@ -201,75 +203,95 @@ class KssBuilderBaseTwig extends KssBuilderBase {
    *   `KssStyleGuide` object.
    */
   build(styleGuide) {
+    // Returns a promise to read/load a template provided by the builder.
+    let readBuilderTemplate = name => {
+      return this.Twig.twigAsync({
+        id: '@builderTwig/' + name + '.twig',
+        path: path.resolve(this.options.builder, name + '.twig')
+      });
+    };
+    // Returns a promise to read/load a template specified by a section.
+    let readSectionTemplate = (name, filepath) => {
+      return this.Twig.twigAsync({
+        id: name,
+        path: filepath
+      });
+    };
+    // Returns a promise to load an inline template from markup.
+    let loadInlineTemplate = (name, markup) => {
+      return this.Twig.twigAsync({
+        id: name,
+        data: markup
+      });
+    };
+    // Converts a filename into a Twig template name.
+    let filenameToTemplateRef = filename => {
+      // Return the filename without the full path.
+      return path.basename(filename);
+    };
+    let templateExtension = 'twig';
+    let emptyTemplate = '{# Cannot be an empty string. #}';
+
+    // Reset the Twig template registry so KSS can be run in a "watch" task that
+    // does not destroy the Node.js environment between builds.
+    this.Twig.registryReset();
+
     this.styleGuide = styleGuide;
-    this.userTemplates = {};
+    this.sectionTemplates = {};
 
     // istanbul ignore else
     if (typeof this.templates === 'undefined') {
       this.templates = {};
     }
 
-    // Reset the Twig template registry so KSS can be run in a "watch" task that
-    // does not destroy the Node.js environment between builds.
-    this.Twig.registryReset();
-
     let buildTasks = [],
-      loadTask;
+      readBuilderTask;
 
-    // Optionally load the index.twig Twig template.
+    // Optionally load/compile the index template.
     // istanbul ignore else
     if (typeof this.templates.index === 'undefined') {
-      loadTask = this.Twig.twigAsync({
-        id: '@builderTwig/index.twig',
-        path: path.resolve(this.options.builder, 'index.twig')
-      }).then(template => {
+      readBuilderTask = readBuilderTemplate('index').then(template => {
         this.templates.index = template;
         return Promise.resolve();
       });
     } else {
-      loadTask = Promise.resolve();
+      readBuilderTask = Promise.resolve();
     }
 
-    // Optionally load the section.twig Twig template.
+    // Optionally load/compile the section template.
     // istanbul ignore else
     if (typeof this.templates.section === 'undefined') {
-      loadTask = loadTask.then(() => {
-        return this.Twig.twigAsync({
-          id: '@builderTwig/section.twig',
-          path: path.resolve(this.options.builder, 'section.twig')
-        }).then(template => {
+      readBuilderTask = readBuilderTask.then(() => {
+        return readBuilderTemplate('section').then(template => {
           /* istanbul ignore next */
           this.templates.section = template;
           /* istanbul ignore next */
           return Promise.resolve();
         }).catch(() => {
-          // If the section.twig template cannot be read, use index.twig.
+          // If the section template cannot be read, use the index template.
           this.templates.section = this.templates.index;
           return Promise.resolve();
         });
       });
     }
 
-    // Optionally load the item.twig Twig template.
+    // Optionally load/compile the item template.
     // istanbul ignore else
     if (typeof this.templates.item === 'undefined') {
-      loadTask = loadTask.then(() => {
-        return this.Twig.twigAsync({
-          id: '@builderTwig/item.twig',
-          path: path.resolve(this.options.builder, 'item.twig')
-        }).then(template => {
+      readBuilderTask = readBuilderTask.then(() => {
+        return readBuilderTemplate('item').then(template => {
           /* istanbul ignore next */
           this.templates.item = template;
           /* istanbul ignore next */
           return Promise.resolve();
         }).catch(() => {
-          // If the item.twig template cannot be read, use section.twig or index.twig.
-          this.templates.item = this.templates.section ? this.templates.section : /* istanbul ignore next */ this.templates.index;
+          // If the item template cannot be read, use the section template.
+          this.templates.item = this.templates.section;
           return Promise.resolve();
         });
       });
     }
-    buildTasks.push(loadTask);
+    buildTasks.push(readBuilderTask);
 
     let sections = this.styleGuide.sections();
 
@@ -285,23 +307,13 @@ class KssBuilderBaseTwig extends KssBuilderBase {
 
     let sectionRoots = [];
 
-    // Compile an inline template in markup.
-    let compileInline = template => {
-      return this.Twig.twigAsync({
-        id: template.name,
-        data: template.markup
-      }).then(() => {
-        return template;
-      });
-    };
-
     // Save the name of the template and its context for retrieval in
     // buildPage(), where we only know the reference.
     let saveTemplate = template => {
-      this.userTemplates[template.reference] = {
-        ref: template.name,
+      this.sectionTemplates[template.reference] = {
+        name: template.name,
         context: template.context,
-        exampleRef: template.exampleFile ? template.exampleName : false,
+        exampleName: template.exampleName,
         exampleContext: template.exampleContext
       };
 
@@ -320,7 +332,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
         return;
       }
 
-      // Register all the markup blocks as Twig templates.
+      // Register all the markup blocks as templates.
       let template = {
         name: section.reference(),
         reference: section.reference(),
@@ -328,71 +340,67 @@ class KssBuilderBaseTwig extends KssBuilderBase {
         markup: section.markup(),
         context: {},
         exampleName: false,
-        exampleFile: '',
         exampleContext: {}
       };
 
       // Check if the markup is a file path.
-      if (!template.markup.match(/^[^\n]+\.twig$/)) {
+      if (template.markup.search('^[^\n]+\.(html|' + templateExtension + ')$') === -1) {
         // istanbul ignore else
         if (this.options.verbose) {
           this.log(' - ' + template.reference + ': inline markup');
         }
         buildTasks.push(
-          compileInline(template).then(saveTemplate)
+          loadInlineTemplate(template.name, template.markup).then(() => {
+            return saveTemplate(template);
+          })
         );
       } else {
         // Attempt to load the file path.
         section.custom('markupFile', template.markup);
         template.file = template.markup;
-        template.name = path.basename(template.file);
-        template.exampleName = 'kss-example-' + template.name;
+        template.name = filenameToTemplateRef(template.file);
 
-        let findTemplates = [];
+        let findTemplates = [],
+          matchFilename = path.basename(template.file),
+          matchExampleFilename = 'kss-example-' + matchFilename;
         this.options.source.forEach(source => {
           findTemplates.push(glob(source + '/**/' + template.file));
-          findTemplates.push(glob(source + '/**/kss-example-' + template.name));
+          findTemplates.push(glob(source + '/**/' + path.join(path.dirname(template.file), matchExampleFilename)));
         });
         buildTasks.push(
           Promise.all(findTemplates).then(globMatches => {
             let foundTemplate = false,
               foundExample = false,
-              compileTemplates = [];
+              loadTemplates = [];
             for (let files of globMatches) {
               if (!foundTemplate || !foundExample) {
                 for (let file of files) {
                   // Read the template from the first matched path.
                   let filename = path.basename(file);
-                  if (!foundTemplate && filename === template.name) {
+                  if (!foundTemplate && filename === matchFilename) {
                     foundTemplate = true;
                     template.file = file;
-                    compileTemplates.push(
-                      this.Twig.twigAsync({
-                        id: template.name,
-                        path: file
-                      }).then(() => {
+                    loadTemplates.push(
+                      readSectionTemplate(template.name, file).then(() => {
                         // Load sample context for the template from the sample
                         // .json file.
                         try {
-                          template.context = require(path.join(path.dirname(template.file), path.basename(template.name, '.twig') + '.json'));
+                          template.context = require(path.join(path.dirname(file), path.basename(file, path.extname(file)) + '.json'));
                         } catch (error) {
                           template.context = {};
                         }
                         return Promise.resolve();
                       })
                     );
-                  } else if (!foundExample && filename === template.exampleName) {
+                  } else if (!foundExample && filename === matchExampleFilename) {
                     foundExample = true;
-                    template.exampleFile = file;
-                    compileTemplates.push(
-                      this.Twig.twigAsync({
-                        id: template.exampleName,
-                        path: file
-                      }).then(() => {
+                    template.exampleName = 'kss-example-' + template.name;
+                    loadTemplates.push(
+                      readSectionTemplate(template.exampleName, file).then(() => {
                         // Load sample context for the template from the sample
                         // .json file.
                         try {
-                          template.exampleContext = require(path.join(path.dirname(template.exampleFile), path.basename(template.exampleName, '.twig') + '.json'));
+                          template.exampleContext = require(path.join(path.dirname(file), path.basename(file, path.extname(file)) + '.json'));
                         } catch (error) {
                           // istanbul ignore next
                           template.exampleContext = {};
@@ -411,17 +419,14 @@ class KssBuilderBaseTwig extends KssBuilderBase {
               if (!this.options.verbose) {
                 this.log('WARNING: In section ' + template.reference + ', ' + template.markup);
               }
-              compileTemplates.push(
-                compileInline(template)
+              loadTemplates.push(
+                loadInlineTemplate(template.name, template.markup)
               );
             } else /* istanbul ignore if */ if (!foundTemplate) {
-              // If we found an example, but no template, compile an empty
+              // If we found an example, but no template, load an empty
               // template.
-              compileTemplates.push(
-                this.Twig.twigAsync({
-                  id: template.name,
-                  data: '{# Cannot be an empty string. #}'
-                })
+              loadTemplates.push(
+                loadInlineTemplate(template.name, emptyTemplate)
               );
             }
 
@@ -429,7 +434,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
               this.log(' - ' + template.reference + ': ' + template.markup);
             }
 
-            return Promise.all(compileTemplates).then(() => {
+            return Promise.all(loadTemplates).then(() => {
               return template;
             });
           }).then(saveTemplate)
@@ -475,8 +480,8 @@ class KssBuilderBaseTwig extends KssBuilderBase {
    * @param {string|null} pageReference The reference of the current page's root
    *   section, or null if the current page is the homepage.
    * @param {Array} sections An array of KssSection objects.
-   * @param {Object} [context] Additional context to give to the Twig template
-   *   when it is rendered.
+   * @param {Object} [context] Additional context to give to the template when
+   *   it is rendered.
    * @returns {Promise} A `Promise` object.
    */
   buildPage(templateName, pageReference, sections, context) {
@@ -491,7 +496,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
       return section.toJSON();
     });
     context.hasNumericReferences = this.styleGuide.hasNumericReferences();
-    context.userTemplates = this.userTemplates;
+    context.sectionTemplates = this.sectionTemplates;
     context.options = this.options || /* istanbul ignore next */ {};
 
     // Render the template for each section markup and modifier.
@@ -499,9 +504,9 @@ class KssBuilderBaseTwig extends KssBuilderBase {
       context.sections.map(section => {
         if (section.markup) {
           // Load the information about this section's markup template.
-          let templateInfo = this.userTemplates[section.reference];
+          let templateInfo = this.sectionTemplates[section.reference];
           return this.Twig.twigAsync({
-            ref: templateInfo.ref
+            ref: templateInfo.name
           }).then(template => {
             // Copy the template.context so we can modify it.
             let data = JSON.parse(JSON.stringify(templateInfo.context));
@@ -519,9 +524,9 @@ class KssBuilderBaseTwig extends KssBuilderBase {
 
             let getExampleTemplate,
               templateContext;
-            if (templateInfo.exampleRef) {
+            if (templateInfo.exampleName) {
               getExampleTemplate = this.Twig.twigAsync({
-                ref: templateInfo.exampleRef
+                ref: templateInfo.exampleName
               });
               templateContext = templateInfo.exampleContext;
             } else {
@@ -531,7 +536,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
 
             /* eslint-disable max-nested-callbacks */
             return getExampleTemplate.then(template => {
-              if (templateInfo.exampleRef) {
+              if (templateInfo.exampleName) {
                 let data = JSON.parse(JSON.stringify(templateContext));
                 data.modifier_class = data.modifier_class || /* istanbul ignore next */ '';
                 // istanbul ignore else

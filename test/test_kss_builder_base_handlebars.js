@@ -201,7 +201,7 @@ describe('KssBuilderBaseHandlebars object API', function() {
       expect(this.builder.Handlebars.partials).to.have.property('1.E');
       expect(this.builder.Handlebars.partials).to.have.property('missing-file');
       expect(this.builder.Handlebars.partials).to.have.property('1c');
-      expect(Object.keys(this.builder.partials)).to.deep.equal(['1.B', '1.E', '1.D', '1.C']);
+      expect(Object.keys(this.builder.sectionTemplates)).to.deep.equal(['1.B', '1.E', '1.D', '1.C']);
     });
 
     it('should note missing partials', function() {

@@ -243,7 +243,7 @@ describe('KssBuilderBaseTwig object API', function() {
       });
     });
 
-    it('should register the templates in userTemplates', function() {
+    it('should register the templates in sectionTemplates', function() {
       [
         '1.B',
         '1.E',
@@ -251,7 +251,7 @@ describe('KssBuilderBaseTwig object API', function() {
         '1.C',
         '1.E.A'
       ].forEach(name => {
-        expect(this.builder.userTemplates).to.have.property(name);
+        expect(this.builder.sectionTemplates).to.have.property(name);
       });
     });
 

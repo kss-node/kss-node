@@ -105,8 +105,34 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
    *   `KssStyleGuide` object.
    */
   build(styleGuide) {
+    // Returns a promise to read/load a template provided by the builder.
+    let readBuilderTemplate = name => {
+      return fs.readFileAsync(path.resolve(this.options.builder, name + '.hbs'), 'utf8').then(content => {
+        return this.Handlebars.compile(content);
+      });
+    };
+    // Returns a promise to read/load a template specified by a section.
+    let readSectionTemplate = (name, filepath) => {
+      return fs.readFileAsync(filepath, 'utf8').then(contents => {
+        this.Handlebars.registerPartial(name, contents);
+        return contents;
+      });
+    };
+    // Returns a promise to load an inline template from markup.
+    let loadInlineTemplate = (name, markup) => {
+      this.Handlebars.registerPartial(name, markup);
+      return Promise.resolve();
+    };
+    // Converts a filename into a Handlebars partial name.
+    let filenameToTemplateRef = filename => {
+      // Return the filename without the full path or the file extension.
+      return path.basename(filename, path.extname(filename));
+    };
+    let templateExtension = 'hbs';
+    let emptyTemplate = '{{! Cannot be an empty string. }}';
+
     this.styleGuide = styleGuide;
-    this.partials = {};
+    this.sectionTemplates = {};
 
     // istanbul ignore else
     if (typeof this.templates === 'undefined') {
@@ -114,53 +140,53 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
     }
 
     let buildTasks = [],
-      loadTask;
+      readBuilderTask;
 
-    // Optionally load/compile the index.hbs Handlebars template.
+    // Optionally load/compile the index template.
     // istanbul ignore else
     if (typeof this.templates.index === 'undefined') {
-      loadTask = fs.readFileAsync(path.resolve(this.options.builder, 'index.hbs'), 'utf8').then(content => {
-        this.templates.index = this.Handlebars.compile(content);
+      readBuilderTask = readBuilderTemplate('index').then(template => {
+        this.templates.index = template;
         return Promise.resolve();
       });
     } else {
-      loadTask = Promise.resolve();
+      readBuilderTask = Promise.resolve();
     }
 
-    // Optionally load/compile the section.hbs Handlebars template.
+    // Optionally load/compile the section template.
     // istanbul ignore else
     if (typeof this.templates.section === 'undefined') {
-      loadTask = loadTask.then(() => {
-        return fs.readFileAsync(path.resolve(this.options.builder, 'section.hbs'), 'utf8').then(content => {
+      readBuilderTask = readBuilderTask.then(() => {
+        return readBuilderTemplate('section').then(template => {
           /* istanbul ignore next */
-          this.templates.section = this.Handlebars.compile(content);
+          this.templates.section = template;
           /* istanbul ignore next */
           return Promise.resolve();
         }).catch(() => {
-          // If the section.hbs template cannot be read, use index.hbs.
+          // If the section template cannot be read, use the index template.
           this.templates.section = this.templates.index;
           return Promise.resolve();
         });
       });
     }
 
-    // Optionally load/compile the item.hbs Handlebars template.
+    // Optionally load/compile the item template.
     // istanbul ignore else
     if (typeof this.templates.item === 'undefined') {
-      loadTask = loadTask.then(() => {
-        return fs.readFileAsync(path.resolve(this.options.builder, 'item.hbs'), 'utf8').then(content => {
+      readBuilderTask = readBuilderTask.then(() => {
+        return readBuilderTemplate('item').then(template => {
           /* istanbul ignore next */
-          this.templates.item = this.Handlebars.compile(content);
+          this.templates.item = template;
           /* istanbul ignore next */
           return Promise.resolve();
         }).catch(() => {
-          // If the item.hbs template cannot be read, use section.hbs or index.hbs.
-          this.templates.item = this.templates.section ? this.templates.section : /* istanbul ignore next */ this.templates.index;
+          // If the item template cannot be read, use the section template.
+          this.templates.item = this.templates.section;
           return Promise.resolve();
         });
       });
     }
-    buildTasks.push(loadTask);
+    buildTasks.push(readBuilderTask);
 
     let sections = this.styleGuide.sections();
 
@@ -176,20 +202,14 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
 
     let sectionRoots = [];
 
-    // Save the name of the partial and its context for retrieval in
+    // Save the name of the template and its context for retrieval in
     // buildPage(), where we only know the reference.
-    let savePartial = partial => {
-      // Register the partial using the file name (without extension) or using
-      // the style guide reference.
-      this.Handlebars.registerPartial(partial.name, partial.markup);
-      if (partial.exampleMarkup) {
-        this.Handlebars.registerPartial(partial.exampleName, partial.exampleMarkup);
-      }
-      this.partials[partial.reference] = {
-        name: partial.name,
-        context: partial.context,
-        exampleName: partial.exampleMarkup ? partial.exampleName : false,
-        exampleContext: partial.exampleContext
+    let saveTemplate = template => {
+      this.sectionTemplates[template.reference] = {
+        name: template.name,
+        context: template.context,
+        exampleName: template.exampleName,
+        exampleContext: template.exampleContext
       };
 
       return Promise.resolve();
@@ -207,78 +227,77 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
         return;
       }
 
-      // Register all the markup blocks as Handlebars partials.
-      let partial = {
+      // Register all the markup blocks as templates.
+      let template = {
         name: section.reference(),
         reference: section.reference(),
         file: '',
         markup: section.markup(),
         context: {},
         exampleName: false,
-        exampleMarkup: '',
         exampleContext: {}
       };
 
       // Check if the markup is a file path.
-      if (!partial.markup.match(/^[^\n]+\.(html|hbs)$/)) {
+      if (template.markup.search('^[^\n]+\.(html|' + templateExtension + ')$') === -1) {
         if (this.options.verbose) {
-          this.log(' - ' + partial.reference + ': inline markup');
+          this.log(' - ' + template.reference + ': inline markup');
         }
         buildTasks.push(
-          savePartial(partial)
+          loadInlineTemplate(template.name, template.markup).then(() => {
+            return saveTemplate(template);
+          })
         );
       } else {
         // Attempt to load the file path.
-        section.custom('markupFile', partial.markup);
-        partial.file = partial.markup;
-        partial.name = path.basename(partial.file, path.extname(partial.file));
-        partial.exampleName = 'kss-example-' + partial.name;
+        section.custom('markupFile', template.markup);
+        template.file = template.markup;
+        template.name = filenameToTemplateRef(template.file);
 
-        let findPartials = [],
-          matchFilename = path.basename(partial.file),
+        let findTemplates = [],
+          matchFilename = path.basename(template.file),
           matchExampleFilename = 'kss-example-' + matchFilename;
         this.options.source.forEach(source => {
-          findPartials.push(glob(source + '/**/' + partial.file));
-          findPartials.push(glob(source + '/**/' + matchExampleFilename));
+          findTemplates.push(glob(source + '/**/' + template.file));
+          findTemplates.push(glob(source + '/**/' + path.join(path.dirname(template.file), matchExampleFilename)));
         });
         buildTasks.push(
-          Promise.all(findPartials).then(globMatches => {
-            let foundPartial = false,
+          Promise.all(findTemplates).then(globMatches => {
+            let foundTemplate = false,
               foundExample = false,
-              readPartials = [];
+              loadTemplates = [];
             for (let files of globMatches) {
-              if (!foundPartial || !foundExample) {
+              if (!foundTemplate || !foundExample) {
                 for (let file of files) {
-                  // Read the partial from the first matched path.
+                  // Read the template from the first matched path.
                   let filename = path.basename(file);
-                  if (!foundPartial && filename === matchFilename) {
-                    foundPartial = true;
-                    partial.file = file;
-                    readPartials.push(
-                      fs.readFileAsync(partial.file, 'utf8').then(contents => {
-                        partial.markup = contents;
-                        // Load sample context for the partial from the sample
+                  if (!foundTemplate && filename === matchFilename) {
+                    foundTemplate = true;
+                    template.file = file;
+                    loadTemplates.push(
+                      readSectionTemplate(template.name, file).then(() => {
+                        // Load sample context for the template from the sample
                         // .json file.
                         try {
-                          partial.context = require(path.join(path.dirname(file), partial.name + '.json'));
+                          template.context = require(path.join(path.dirname(file), path.basename(file, path.extname(file)) + '.json'));
                         } catch (error) {
-                          partial.context = {};
+                          template.context = {};
                         }
                         return Promise.resolve();
                       })
                     );
                   } else if (!foundExample && filename === matchExampleFilename) {
                     foundExample = true;
-                    readPartials.push(
-                      fs.readFileAsync(file, 'utf8').then(contents => {
-                        partial.exampleMarkup = contents;
-                        // Load sample context for the partial from the sample
+                    template.exampleName = 'kss-example-' + template.name;
+                    loadTemplates.push(
+                      readSectionTemplate(template.exampleName, file).then(() => {
+                        // Load sample context for the template from the sample
                         // .json file.
                         try {
-                          partial.exampleContext = require(path.join(path.dirname(file), partial.exampleName + '.json'));
+                          template.exampleContext = require(path.join(path.dirname(file), path.basename(file, path.extname(file)) + '.json'));
                         } catch (error) {
                           // istanbul ignore next
-                          partial.exampleContext = {};
+                          template.exampleContext = {};
                         }
                         return Promise.resolve();
                       })
@@ -289,25 +308,30 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
             }
 
             // If the markup file is not found, note that in the style guide.
-            if (!foundPartial && !foundExample) {
-              partial.markup += ' NOT FOUND!';
+            if (!foundTemplate && !foundExample) {
+              template.markup += ' NOT FOUND!';
               if (!this.options.verbose) {
-                this.log('WARNING: In section ' + partial.reference + ', ' + partial.markup);
+                this.log('WARNING: In section ' + template.reference + ', ' + template.markup);
               }
-            } else /* istanbul ignore if */ if (!foundPartial) {
-              // If we found an example, but no partial, register an empty
-              // partial.
-              partial.markup = '{{! Cannot be an empty string. }}';
+              loadTemplates.push(
+                loadInlineTemplate(template.name, template.markup)
+              );
+            } else /* istanbul ignore if */ if (!foundTemplate) {
+              // If we found an example, but no template, load an empty
+              // template.
+              loadTemplates.push(
+                loadInlineTemplate(template.name, emptyTemplate)
+              );
             }
 
             if (this.options.verbose) {
-              this.log(' - ' + partial.reference + ': ' + partial.markup);
+              this.log(' - ' + template.reference + ': ' + template.markup);
             }
 
-            return Promise.all(readPartials).then(() => {
-              return partial;
+            return Promise.all(loadTemplates).then(() => {
+              return template;
             });
-          }).then(savePartial)
+          }).then(saveTemplate)
         );
       }
     });
@@ -350,8 +374,8 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
    * @param {string|null} pageReference The reference of the current page's root
    *   section, or null if the current page is the homepage.
    * @param {Array} sections An array of KssSection objects.
-   * @param {Object} [context] Additional context to give to the Handlebars
-   *   template when it is rendered.
+   * @param {Object} [context] Additional context to give to the template when
+   *   it is rendered.
    * @returns {Promise} A `Promise` object.
    */
   buildPage(templateName, pageReference, sections, context) {
@@ -366,146 +390,148 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
       return section.toJSON();
     });
     context.hasNumericReferences = this.styleGuide.hasNumericReferences();
-    context.partials = this.partials;
+    context.sectionTemplates = this.sectionTemplates;
     context.options = this.options || /* istanbul ignore next */ {};
 
     // Render the template for each section markup and modifier.
-    context.sections.forEach(section => {
-      // If the section does not have any markup, render an empty string.
-      if (section.markup) {
-        // Load the information about this section's markup partial.
-        let partialInfo = this.partials[section.reference];
-        let template = this.Handlebars.compile('{{> "' + partialInfo.name + '"}}');
+    return Promise.all(
+      context.sections.map(section => {
+        // If the section does not have any markup, render an empty string.
+        if (section.markup) {
+          // Load the information about this section's markup template.
+          let templateInfo = this.sectionTemplates[section.reference];
+          let template = this.Handlebars.compile('{{> "' + templateInfo.name + '"}}');
 
-        // Copy the template.context so we can modify it.
-        let data = JSON.parse(JSON.stringify(partialInfo.context));
+          // Copy the template.context so we can modify it.
+          let data = JSON.parse(JSON.stringify(templateInfo.context));
 
-        /* eslint-disable camelcase */
+          /* eslint-disable camelcase */
 
-        // Display the placeholder if the section has modifiers.
-        data.modifier_class = data.modifier_class || '';
-        if (section.modifiers.length !== 0 && this.options.placeholder) {
-          data.modifier_class += (data.modifier_class ? ' ' : '') + this.options.placeholder;
-        }
-
-        // We don't wrap the rendered template in "new handlebars.SafeString()" since
-        // we want the ability to display it as a code sample with {{ }} and as
-        // rendered HTML with {{{ }}}.
-        section.markup = template(data);
-        section.example = section.markup;
-
-        let templateContext;
-        if (partialInfo.exampleName) {
-          template = this.Handlebars.compile('{{> "' + partialInfo.exampleName + '"}}');
-          templateContext = partialInfo.exampleContext;
-
-          // Re-render the example variable with the example partial.
-          data = JSON.parse(JSON.stringify(templateContext));
-          data.modifier_class = data.modifier_class || /* istanbul ignore next */ '';
-          // istanbul ignore else
+          // Display the placeholder if the section has modifiers.
+          data.modifier_class = data.modifier_class || '';
           if (section.modifiers.length !== 0 && this.options.placeholder) {
-            data.modifier_class += (data.modifier_class ? ' ' : /* istanbul ignore next */ '') + this.options.placeholder;
+            data.modifier_class += (data.modifier_class ? ' ' : '') + this.options.placeholder;
           }
-          section.example = template(data);
-        } else {
-          templateContext = partialInfo.context;
-        }
 
+          // We don't wrap the rendered template in "new handlebars.SafeString()" since
+          // we want the ability to display it as a code sample with {{ }} and as
+          // rendered HTML with {{{ }}}.
+          section.markup = template(data);
+          section.example = section.markup;
 
-        section.modifiers.forEach(modifier => {
-          let data = JSON.parse(JSON.stringify(templateContext));
-          data.modifier_class = (data.modifier_class ? data.modifier_class + ' ' : '') + modifier.className;
-          modifier.markup = template(data);
-        });
-        /* eslint-enable camelcase */
-      }
-    });
+          let templateContext;
+          if (templateInfo.exampleName) {
+            template = this.Handlebars.compile('{{> "' + templateInfo.exampleName + '"}}');
+            templateContext = templateInfo.exampleContext;
 
-    // Create the HTML to load the optional CSS and JS (if a sub-class hasn't already built it.)
-    // istanbul ignore else
-    if (typeof context.styles === 'undefined') {
-      context.styles = '';
-      for (let key in this.options.css) {
-        // istanbul ignore else
-        if (this.options.css.hasOwnProperty(key)) {
-          context.styles = context.styles + '<link rel="stylesheet" href="' + this.options.css[key] + '">\n';
-        }
-      }
-    }
-    // istanbul ignore else
-    if (typeof context.scripts === 'undefined') {
-      context.scripts = '';
-      for (let key in this.options.js) {
-        // istanbul ignore else
-        if (this.options.js.hasOwnProperty(key)) {
-          context.scripts = context.scripts + '<script src="' + this.options.js[key] + '"></script>\n';
-        }
-      }
-    }
-
-    // Create a menu for the page (if a sub-class hasn't already built one.)
-    // istanbul ignore else
-    if (typeof context.menu === 'undefined') {
-      context.menu = this.createMenu(pageReference);
-    }
-
-    // Determine the file name to use for this page.
-    if (pageReference) {
-      let rootSection = this.styleGuide.sections(pageReference);
-      if (this.options.verbose) {
-        this.log(
-          ' - ' + templateName + ' ' + pageReference
-          + ' ['
-          + (rootSection.header() ? rootSection.header() : /* istanbul ignore next */ 'Unnamed')
-          + ']'
-        );
-      }
-      // Convert the pageReference to be URI-friendly.
-      pageReference = rootSection.referenceURI();
-    } else if (this.options.verbose) {
-      this.log(' - homepage');
-    }
-    let fileName = templateName + (pageReference ? '-' + pageReference : '') + '.html';
-
-    let getHomepageText;
-    if (templateName !== 'index') {
-      getHomepageText = Promise.resolve();
-      context.homepage = false;
-    } else {
-      // Grab the homepage text if it hasn't already been provided.
-      // istanbul ignore else
-      getHomepageText = (typeof context.homepage !== 'undefined') ? /* istanbul ignore next */ Promise.resolve() : Promise.all(
-        this.options.source.map(source => {
-          return glob(source + '/**/' + this.options.homepage);
-        })
-      ).then(globMatches => {
-        for (let files of globMatches) {
-          if (files.length) {
-            // Read the file contents from the first matched path.
-            return fs.readFileAsync(files[0], 'utf8');
+            // Re-render the example variable with the example partial.
+            data = JSON.parse(JSON.stringify(templateContext));
+            data.modifier_class = data.modifier_class || /* istanbul ignore next */ '';
+            // istanbul ignore else
+            if (section.modifiers.length !== 0 && this.options.placeholder) {
+              data.modifier_class += (data.modifier_class ? ' ' : /* istanbul ignore next */ '') + this.options.placeholder;
+            }
+            section.example = template(data);
+          } else {
+            templateContext = templateInfo.context;
           }
-        }
 
-        if (this.options.verbose) {
-          this.log('   ...no homepage content found in ' + this.options.homepage + '.');
-        } else {
-          this.log('WARNING: no homepage content found in ' + this.options.homepage + '.');
+          section.modifiers.forEach(modifier => {
+            let data = JSON.parse(JSON.stringify(templateContext));
+            data.modifier_class = (data.modifier_class ? data.modifier_class + ' ' : '') + modifier.className;
+            modifier.markup = template(data);
+          });
+          /* eslint-enable camelcase */
         }
-        return '';
-      }).then(homePageText => {
-        // Ensure homePageText is a non-false value. And run any results through
-        // Markdown.
-        context.homepage = homePageText ? marked(homePageText) : '';
         return Promise.resolve();
-      });
-    }
+      })
+    ).then(() => {
 
-    return getHomepageText.then(() => {
-      // Render the template and save it to the destination.
-      return fs.writeFileAsync(
-        path.join(this.options.destination, fileName),
-        this.templates[templateName](context)
-      );
+      // Create the HTML to load the optional CSS and JS (if a sub-class hasn't already built it.)
+      // istanbul ignore else
+      if (typeof context.styles === 'undefined') {
+        context.styles = '';
+        for (let key in this.options.css) {
+          // istanbul ignore else
+          if (this.options.css.hasOwnProperty(key)) {
+            context.styles = context.styles + '<link rel="stylesheet" href="' + this.options.css[key] + '">\n';
+          }
+        }
+      }
+      // istanbul ignore else
+      if (typeof context.scripts === 'undefined') {
+        context.scripts = '';
+        for (let key in this.options.js) {
+          // istanbul ignore else
+          if (this.options.js.hasOwnProperty(key)) {
+            context.scripts = context.scripts + '<script src="' + this.options.js[key] + '"></script>\n';
+          }
+        }
+      }
+
+      // Create a menu for the page (if a sub-class hasn't already built one.)
+      // istanbul ignore else
+      if (typeof context.menu === 'undefined') {
+        context.menu = this.createMenu(pageReference);
+      }
+
+      // Determine the file name to use for this page.
+      if (pageReference) {
+        let rootSection = this.styleGuide.sections(pageReference);
+        if (this.options.verbose) {
+          this.log(
+            ' - ' + templateName + ' ' + pageReference
+            + ' ['
+            + (rootSection.header() ? rootSection.header() : /* istanbul ignore next */ 'Unnamed')
+            + ']'
+          );
+        }
+        // Convert the pageReference to be URI-friendly.
+        pageReference = rootSection.referenceURI();
+      } else if (this.options.verbose) {
+        this.log(' - homepage');
+      }
+      let fileName = templateName + (pageReference ? '-' + pageReference : '') + '.html';
+
+      let getHomepageText;
+      if (templateName !== 'index') {
+        getHomepageText = Promise.resolve();
+        context.homepage = false;
+      } else {
+        // Grab the homepage text if it hasn't already been provided.
+        getHomepageText = (typeof context.homepage !== 'undefined') ? /* istanbul ignore next */ Promise.resolve() : Promise.all(
+          this.options.source.map(source => {
+            return glob(source + '/**/' + this.options.homepage);
+          })
+        ).then(globMatches => {
+          for (let files of globMatches) {
+            if (files.length) {
+              // Read the file contents from the first matched path.
+              return fs.readFileAsync(files[0], 'utf8');
+            }
+          }
+
+          if (this.options.verbose) {
+            this.log('   ...no homepage content found in ' + this.options.homepage + '.');
+          } else {
+            this.log('WARNING: no homepage content found in ' + this.options.homepage + '.');
+          }
+          return '';
+        }).then(homePageText => {
+          // Ensure homePageText is a non-false value. And run any results through
+          // Markdown.
+          context.homepage = homePageText ? marked(homePageText) : '';
+          return Promise.resolve();
+        });
+      }
+
+      return getHomepageText.then(() => {
+        // Render the template and save it to the destination.
+        return fs.writeFileAsync(
+          path.join(this.options.destination, fileName),
+          this.templates[templateName](context)
+        );
+      });
     });
   }
 }
