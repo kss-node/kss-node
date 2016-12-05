@@ -101,7 +101,7 @@ class KssBuilderCustom extends KssBuilderBase {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line24">line 24</a>
+        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line26">line 26</a>
     </li></ul></dd>
     
 
@@ -256,7 +256,7 @@ implements the correct builder API version.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line128">line 128</a>
+        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line156">line 156</a>
     </li></ul></dd>
     
 
@@ -424,7 +424,7 @@ normalized to a path, relative to the current working directory.</li>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line275">line 275</a>
+        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line303">line 303</a>
     </li></ul></dd>
     
 
@@ -578,7 +578,7 @@ normalized to a path, relative to the current working directory.</li>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line216">line 216</a>
+        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line244">line 244</a>
     </li></ul></dd>
     
 
@@ -732,7 +732,7 @@ normalized to a path, relative to the current working directory.</li>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line546">line 546</a>
+        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line653">line 653</a>
     </li></ul></dd>
     
 
@@ -772,6 +772,499 @@ normalized to a path, relative to the current working directory.</li>
     <dd>
         
 <span class="param-type">Promise.&lt;KssStyleGuide></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="buildGuide"><span class="type-signature"></span>buildGuide<span class="signature">(styleGuide, options)</span><span class="type-signature"> &rarr; {Promise.&lt;KssStyleGuide>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>A helper method that can be used by sub-classes of KssBuilderBase when
+implementing their build() method.</p>
+<p>The following options are required to use this helper method:</p>
+<ul>
+<li>readBuilderTemplate: A function that returns a promise to read/load a
+template provided by the builder.</li>
+<li>readSectionTemplate: A function that returns a promise to read/load a
+template specified by a section.</li>
+<li>loadInlineTemplate: A function that returns a promise to load an inline
+template from markup.</li>
+<li>loadContext: A function that returns a promise to load the data context
+given a template file path.</li>
+<li>getTemplate: A function that returns a promise to get a template by name.</li>
+<li>templateRender: A function that renders a template and returns the
+markup.</li>
+<li>filenameToTemplateRef: A function that converts a filename into a unique
+name used by the templating system.</li>
+<li>templateExtension: A string containing the file extension used by the
+templates.</li>
+<li>emptyTemplate: A string containing markup for an empty template.</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>styleGuide</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">KssStyleGuide</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The KSS style guide in object format.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The options necessary to use this helper method.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line684">line 684</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>A <code>Promise</code> object resolving to a
+  <code>KssStyleGuide</code> object.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;KssStyleGuide></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="buildPage"><span class="type-signature"></span>buildPage<span class="signature">(templateName, options, pageReference, sections, context<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Renders the template for a section and saves it to a file.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>templateName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The name of the template to use.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The <code>getTemplate</code> and <code>templateRender</code> options
+  necessary to use this helper method; should be the same as the options
+  passed to BuildGuide().</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pageReference</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+|
+
+<span class="param-type">null</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The reference of the current page's root
+  section, or null if the current page is the homepage.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sections</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>An array of KssSection objects.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>context</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>Additional context to give to the template when
+  it is rendered.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line932">line 932</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>A <code>Promise</code> object.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
 
 
     </dd>
@@ -913,7 +1406,7 @@ method, but it can if it needs to do something more complicated.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line450">line 450</a>
+        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line478">line 478</a>
     </li></ul></dd>
     
 
@@ -952,6 +1445,161 @@ method, but it can if it needs to do something more complicated.</p>
     <dd>
         
 <span class="param-type">Promise.&lt;null></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="createMenu"><span class="type-signature"></span>createMenu<span class="signature">(pageReference)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Creates a 2-level hierarchical menu from the style guide.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>pageReference</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The reference of the root section of the page
+  being built.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line1121">line 1121</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>An array of menu items that can be used as a template
+  variable.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array</span>
 
 
     </dd>
@@ -1079,7 +1727,7 @@ object containing all option definitions.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line303">line 303</a>
+        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line331">line 331</a>
     </li></ul></dd>
     
 
@@ -1246,7 +1894,7 @@ containing all options.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line249">line 249</a>
+        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line277">line 277</a>
     </li></ul></dd>
     
 
@@ -1414,7 +2062,7 @@ messages to the KSS system so it can report them to the user.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line376">line 376</a>
+        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line404">line 404</a>
     </li></ul></dd>
     
 
@@ -1571,7 +2219,7 @@ pass error messages to the KSS system so it can report them to the user.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line413">line 413</a>
+        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line441">line 441</a>
     </li></ul></dd>
     
 
@@ -1727,7 +2375,7 @@ how the options will be normalized.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line318">line 318</a>
+        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line346">line 346</a>
     </li></ul></dd>
     
 
@@ -1885,7 +2533,7 @@ guide is built.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line495">line 495</a>
+        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line523">line 523</a>
     </li></ul></dd>
     
 
@@ -1925,6 +2573,320 @@ guide is built.</p>
     <dd>
         
 <span class="param-type">Promise.&lt;KssStyleGuide></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="prepareDestination"><span class="type-signature"></span>prepareDestination<span class="signature">(assetDirectory)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>A helper method that initializes the destination directory and optionally
+copies the given asset directory from the builder.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>assetDirectory</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The name of the asset directory to copy from
+  builder.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line587">line 587</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>A promise to initialize the destination directory.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="prepareExtend"><span class="type-signature"></span>prepareExtend<span class="signature">(templateEngine)</span><span class="type-signature"> &rarr; {Array.&lt;Promise>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Helper method that loads modules to extend a templating system.</p>
+<p>The <code>--extend</code> option allows users to specify directories. This helper
+method requires all .js files in the specified directories and calls the
+default function exported with two parameters, the <code>templateEngine</code> object
+and the options added to the builder.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>templateEngine</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The templating system's main object; used by
+  the loaded module to extend the templating system.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line627">line 627</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>An array of <code>Promise</code> objects; one for each directory
+  given to the extend option.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;Promise></span>
 
 
     </dd>
@@ -2042,7 +3004,7 @@ wrapper around <code>console.error()</code>.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line431">line 431</a>
+        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line459">line 459</a>
     </li></ul></dd>
     
 
@@ -2199,7 +3161,7 @@ the message to the user. The default log function is a wrapper around
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line394">line 394</a>
+        <a href="builder_base_kss_builder_base.js.html">builder/base/kss_builder_base.js</a>, <a href="builder_base_kss_builder_base.js.html#line422">line 422</a>
     </li></ul></dd>
     
 
@@ -2270,7 +3232,7 @@ the message to the user. The default log function is a wrapper around
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.2</a>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
 </footer>
 
 <script> prettyPrint(); </script>

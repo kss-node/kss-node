@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="styles.css">
 
 </head>
-<body id="kss-node" >
+<body id="kss-node" class="kss-fullscreen-mode">
 
 <div class="kss-sidebar kss-style">
   <header class="kss-header">
@@ -46,41 +46,54 @@
 </div>
 <article role="main" class="kss-main">
 
-    <div id="kss-fullscreen-javascript-api" class="kss-section kss-section--depth-1 ">
+    <div id="kss-fullscreen-demo-mixins-example" class="kss-section kss-section--depth-3 is-fullscreen">
 
       <div class="kss-style">
-        <a id="kssref-javascript-api"></a>
-        <h1 class="kss-title kss-title--level-1">
-          <a class="kss-title__permalink" href="#kssref-javascript-api">
+        <a id="kssref-demo-mixins-example"></a>
+        <h3 class="kss-title kss-title--level-3">
+          <a class="kss-title__permalink" href="#kssref-demo-mixins-example">
             <span class="kss-title__ref">
-              2
+              3.1.2
               <span class="kss-title__permalink-hash">
-                  #javascript-api
+                  #demo.mixins.example
               </span>
             </span>
-            JavaScript API
+            .colors(@bg, @color)
           </a>
-        </h1>
+        </h3>
 
 
           <div class="kss-description">
-            <p>The JavaScript API documentation is available for many versions of kss-node:</p>
-<ul>
-<li><a href="./api/master/">kss-node master branch</a> (future 3.0.x version)</li>
-<li><a href="./api/2.4.x/">kss-node v2.4.0</a></li>
-<li><a href="./api/2.3.x/">kss-node v2.3.4</a></li>
-<li><a href="./api/2.2.x/">kss-node v2.2.0</a></li>
-<li><a href="./api/2.1.x/">kss-node v2.1.1</a></li>
-<li><a href="./api/2.0.x/">kss-node v2.0.2</a></li>
-</ul>
+            <p>Applies foreground and background colors.</p>
 
           </div>
 
+          <div class="kss-parameters__title">Parameters:</div>
+          <ul class="kss-parameters">
+            <li class="kss-parameters__item">
+              <div class="kss-parameters__name"><code>@bg</code></div>
+              <div class="kss-parameters__description">
+                Background color.
+                  <div class="kss-parameters__default-value">
+                    Defaults to: <code>#f5f5f5</code>
+                  </div>
+              </div>
+            </li>
+            <li class="kss-parameters__item">
+              <div class="kss-parameters__name"><code>@color</code></div>
+              <div class="kss-parameters__description">
+                Foreground color.
+                  <div class="kss-parameters__default-value">
+                    Defaults to: <code>#900</code>
+                  </div>
+              </div>
+            </li>
+          </ul>
       </div>
 
 
         <div class="kss-source kss-style">
-          Source: <code>kss-headings.less</code>, line 15
+          Source: <code>mixins/example.less</code>, line 1
         </div>
 
     </div>

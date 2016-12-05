@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="styles.css">
 
 </head>
-<body id="kss-node" >
+<body id="kss-node" class="kss-fullscreen-mode">
 
 <div class="kss-sidebar kss-style">
   <header class="kss-header">
@@ -40,39 +40,77 @@
         <a class="kss-nav__menu-link" href="section-demo.html">
           <span class="kss-nav__ref">3</span><span class="kss-nav__name">Demo</span>
         </a>
+            <ul class="kss-nav__menu-child">
+              <li class="kss-nav__menu-item">
+                <a class="kss-nav__menu-link" href="section-demo.html#kssref-demo-mixins">
+                  <span class="kss-nav__ref ">3.1</span
+                  ><span class="kss-nav__name">Mixins</span>
+                </a>
+              </li>
+              <li class="kss-nav__menu-item">
+                <a class="kss-nav__menu-link" href="section-demo.html#kssref-demo-mixins-button-colorize">
+                  <span class="kss-nav__ref kss-nav__ref-child">3.1.1</span
+                  ><span class="kss-nav__name">.button-colorize(@color)</span>
+                </a>
+              </li>
+              <li class="kss-nav__menu-item">
+                <a class="kss-nav__menu-link" href="section-demo.html#kssref-demo-mixins-example">
+                  <span class="kss-nav__ref kss-nav__ref-child">3.1.2</span
+                  ><span class="kss-nav__name">.colors(@bg, @color)</span>
+                </a>
+              </li>
+              <li class="kss-nav__menu-item">
+                <a class="kss-nav__menu-link" href="section-demo.html#kssref-demo-components">
+                  <span class="kss-nav__ref ">3.2</span
+                  ><span class="kss-nav__name">Components</span>
+                </a>
+              </li>
+              <li class="kss-nav__menu-item">
+                <a class="kss-nav__menu-link" href="section-demo.html#kssref-demo-components-buttons">
+                  <span class="kss-nav__ref kss-nav__ref-child">3.2.1</span
+                  ><span class="kss-nav__name">Buttons</span>
+                </a>
+              </li>
+              <li class="kss-nav__menu-item">
+                <a class="kss-nav__menu-link" href="section-demo.html#kssref-demo-forms">
+                  <span class="kss-nav__ref ">3.3</span
+                  ><span class="kss-nav__name">Forms</span>
+                </a>
+              </li>
+              <li class="kss-nav__menu-item">
+                <a class="kss-nav__menu-link" href="section-demo.html#kssref-demo-forms-text">
+                  <span class="kss-nav__ref kss-nav__ref-child">3.3.1</span
+                  ><span class="kss-nav__name">Text Input</span>
+                </a>
+              </li>
+            </ul>
       </li>
     </ul>
   </nav>
 </div>
 <article role="main" class="kss-main">
 
-    <div id="kss-fullscreen-javascript-api" class="kss-section kss-section--depth-1 ">
+    <div id="kss-fullscreen-demo" class="kss-section kss-section--depth-1 is-fullscreen">
 
       <div class="kss-style">
-        <a id="kssref-javascript-api"></a>
+        <a id="kssref-demo"></a>
         <h1 class="kss-title kss-title--level-1">
-          <a class="kss-title__permalink" href="#kssref-javascript-api">
+          <a class="kss-title__permalink" href="#kssref-demo">
             <span class="kss-title__ref">
-              2
+              3
               <span class="kss-title__permalink-hash">
-                  #javascript-api
+                  #demo
               </span>
             </span>
-            JavaScript API
+            Demo
           </a>
         </h1>
 
 
           <div class="kss-description">
-            <p>The JavaScript API documentation is available for many versions of kss-node:</p>
-<ul>
-<li><a href="./api/master/">kss-node master branch</a> (future 3.0.x version)</li>
-<li><a href="./api/2.4.x/">kss-node v2.4.0</a></li>
-<li><a href="./api/2.3.x/">kss-node v2.3.4</a></li>
-<li><a href="./api/2.2.x/">kss-node v2.2.0</a></li>
-<li><a href="./api/2.1.x/">kss-node v2.1.1</a></li>
-<li><a href="./api/2.0.x/">kss-node v2.0.2</a></li>
-</ul>
+            <p>The source files for this demo can be found in the
+<a href="https://github.com/kss-node/kss-node/tree/master/demo">demo folder</a> on
+GitHub.</p>
 
           </div>
 
@@ -80,7 +118,7 @@
 
 
         <div class="kss-source kss-style">
-          Source: <code>kss-headings.less</code>, line 15
+          Source: <code>kss-headings.less</code>, line 27
         </div>
 
     </div>
