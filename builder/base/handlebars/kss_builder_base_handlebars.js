@@ -35,16 +35,6 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
     // Store the version of the builder API that the builder instance is
     // expecting; we will verify this in loadBuilder().
     this.API = '3.0';
-
-    // Tell kss-node which Yargs-like options this builder has.
-    this.addOptionDefinitions({
-      extend: {
-        group: 'Style guide:',
-        string: true,
-        path: true,
-        describe: 'Location of modules to extend Handlebars; see http://bit.ly/kss-wiki'
-      }
-    });
   }
 
   /**

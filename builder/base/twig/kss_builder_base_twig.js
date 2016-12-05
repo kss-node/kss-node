@@ -38,12 +38,6 @@ class KssBuilderBaseTwig extends KssBuilderBase {
 
     // Tell kss-node which Yargs-like options this builder has.
     this.addOptionDefinitions({
-      'extend': {
-        group: 'Style guide:',
-        string: true,
-        path: true,
-        describe: 'Location of modules to extend Twig.js; see http://bit.ly/kss-wiki'
-      },
       'extend-drupal8': {
         group: 'Style guide:',
         boolean: true,
