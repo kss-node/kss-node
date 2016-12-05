@@ -132,7 +132,7 @@ describe('KssBuilderBase object API', function() {
 
     it('should implement the default option definitions', function() {
       let builder = new KssBuilderBase();
-      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'extend', 'nav-depth', 'verbose']);
+      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'extend', 'homepage', 'placeholder', 'nav-depth', 'verbose']);
     });
 
     it('should set the default log function', function() {
@@ -747,6 +747,72 @@ describe('KssBuilderBase object API', function() {
       expect(stdout).to.include(' - section 2 [2]');
       expect(stdout).to.include(' - section 3 [Heading 3]');
       expect(stdout).to.include(' - homepage');
+    });
+  });
+
+  describe('.buildPage', function() {
+    it('should build a page', function() {
+      expect(this.files['section-1']).to.include('<meta name="generator" content="kss-node" />');
+      expect(this.files['section-2']).to.include('<meta name="generator" content="kss-node" />');
+      expect(this.files['section-3']).to.include('<meta name="generator" content="kss-node" />');
+    });
+
+    it('should add CSS files to the output', function() {
+      expect(this.files['index']).to.include('<link rel="stylesheet" href="styles-1.css">');
+      expect(this.files['index']).to.include('<link rel="stylesheet" href="styles-2.css">');
+    });
+
+    it('should add JS files to the output', function() {
+      expect(this.files['index']).to.include('<script src="javascript-1.js"></script>');
+      expect(this.files['index']).to.include('<script src="javascript-2.js"></script>');
+    });
+
+    it('should build the homepage given "index" as templateName', function() {
+      expect(this.files['index']).to.include('<meta name="generator" content="kss-node" />');
+
+      let builder = new TestKssBuilderBase({
+        source: helperUtils.fixtures('source-handlebars-builder-test'),
+        destination: path.resolve(__dirname, 'output', 'builder_base', 'buildPage'),
+        builder: helperUtils.fixtures('builder-with-assets'),
+        homepage: 'alternate-homepage.md'
+      });
+      let styleGuide = new kss.KssStyleGuide({sections: [{header: 'Heading 4.3', reference: '4.3'}]});
+      return builder.prepare(styleGuide).then(styleGuide => {
+        // Instead of running builder.build(), we do 2 of its tasks manually:
+        // - save the style guide
+        // - compile the Handlebars template
+        builder.styleGuide = styleGuide;
+        return fs.readFileAsync(path.resolve(builder.options.builder, 'index.hbs'), 'utf8');
+      }).then(content => {
+        builder.templates = {};
+        builder.templates.index = builder.Handlebars.compile(content);
+        let options = {};
+
+        // Returns a promise to get a template by name.
+        options.getTemplate = name => {
+          // We don't wrap the rendered template in "new handlebars.SafeString()"
+          // since we want the ability to display it as a code sample with {{ }} and
+          // as rendered HTML with {{{ }}}.
+          return Promise.resolve(builder.Handlebars.compile('{{> "' + name + '"}}'));
+        };
+        // Renders a template and returns the markup.
+        options.templateRender = (template, context) => {
+          return template(context);
+        };
+
+        // Now generate the homepage to test this method directly.
+        return builder.buildPage('index', options, null, []);
+      }).then(() => {
+        return fs.readFileAsync(path.join(__dirname, 'output', 'builder_base', 'buildPage', 'index.html'), 'utf8');
+      }).then(homepageContent => {
+        expect(builder.getTestOutput('stdout')).to.not.include('WARNING: no homepage content found in ' + builder.options.homepage + '.');
+        expect(homepageContent).to.include('<p>This is the homepage text from the &quot;alternate-homepage.md&quot; file.</p>');
+      });
+    });
+
+    it('should warn if homepage content is not found', function() {
+      let stdout = this.builder.getTestOutput('stdout');
+      expect(stdout).to.include('   ...no homepage content found in homepage.md');
     });
   });
 

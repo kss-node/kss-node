@@ -113,7 +113,7 @@ describe('KssBuilderBaseTwig object API', function() {
 
     it('should implement the default option definitions', function() {
       let builder = new KssBuilderBaseTwig();
-      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'extend', 'nav-depth', 'verbose', 'extend-drupal8', 'namespace', 'homepage', 'placeholder']);
+      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'extend', 'homepage', 'placeholder', 'nav-depth', 'verbose', 'extend-drupal8', 'namespace']);
     });
   });
 
@@ -322,9 +322,21 @@ describe('KssBuilderBaseTwig object API', function() {
       }).then(template => {
         builder.templates = {};
         builder.templates.index = template;
+        let options = {};
+
+        // Returns a promise to get a template by name.
+        options.getTemplate = name => {
+          return this.Twig.twigAsync({
+            ref: name
+          });
+        };
+        // Renders a template and returns the markup.
+        options.templateRender = (template, context) => {
+          return template.render(context);
+        };
 
         // Now generate the homepage to test this method directly.
-        return builder.buildPage('index', null, []);
+        return builder.buildPage('index', options, null, []);
       }).then(() => {
         return fs.readFileAsync(path.join(__dirname, 'output', 'base_twig', 'buildPage', 'index.html'), 'utf8');
       }).then(homepageContent => {
@@ -371,7 +383,7 @@ describe('KssBuilderBaseTwig object API', function() {
     });
 
     it('should add safe markup from the example JSON data', function() {
-      expect(this.files['section-1']).to.include('An item in SampleArray');
+      expect(this.files['section-1']).to.include('An item in sampleArray');
       expect(this.files['section-1']).to.include('Empty sampleNull::');
       expect(this.files['section-1']).to.include('sampleProperty value');
     });

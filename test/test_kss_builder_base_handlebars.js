@@ -13,7 +13,7 @@ class TestKssBuilderBaseHandlebars extends KssBuilderBaseHandlebars {
     options = options || {};
 
     if (!options.builder) {
-      options.builder = path.resolve(__dirname, '..', 'builder', 'twig');
+      options.builder = path.resolve(__dirname, '..', 'builder', 'handlebars');
     }
 
     // For our tests, feed kss() log functions that mock stdout and stderr so we
@@ -101,7 +101,7 @@ describe('KssBuilderBaseHandlebars object API', function() {
 
     it('should implement the default option definitions', function() {
       let builder = new KssBuilderBaseHandlebars();
-      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'extend', 'nav-depth', 'verbose', 'homepage', 'placeholder']);
+      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'extend', 'homepage', 'placeholder', 'nav-depth', 'verbose']);
     });
   });
 
@@ -267,9 +267,22 @@ describe('KssBuilderBaseHandlebars object API', function() {
       }).then(content => {
         builder.templates = {};
         builder.templates.index = builder.Handlebars.compile(content);
+        let options = {};
+
+        // Returns a promise to get a template by name.
+        options.getTemplate = name => {
+          // We don't wrap the rendered template in "new handlebars.SafeString()"
+          // since we want the ability to display it as a code sample with {{ }} and
+          // as rendered HTML with {{{ }}}.
+          return Promise.resolve(builder.Handlebars.compile('{{> "' + name + '"}}'));
+        };
+        // Renders a template and returns the markup.
+        options.templateRender = (template, context) => {
+          return template(context);
+        };
 
         // Now generate the homepage to test this method directly.
-        return builder.buildPage('index', null, []);
+        return builder.buildPage('index', options, null, []);
       }).then(() => {
         return fs.readFileAsync(path.join(__dirname, 'output', 'base_handlebars', 'buildPage', 'index.html'), 'utf8');
       }).then(homepageContent => {
