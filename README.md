@@ -61,14 +61,14 @@ Style guide:
   --css          URL of a CSS file to include in the style guide
   --js           URL of a JavaScript file to include in the style guide
   --custom       Process a custom property name when parsing KSS comments
-  --extend       Location of modules to extend Handlebars; see
+  --extend       Location of modules to extend the templating system; see
                  http://bit.ly/kss-wiki
   --homepage     File name of the homepage's Markdown file
                                                         [default: "homepage.md"]
   --placeholder  Placeholder text to use for modifier classes
                                                    [default: "[modifier class]"]
-  --title        Title of the style guide           [default: "KSS Style Guide"]
   --nav-depth    Limit the navigation to the depth specified        [default: 3]
+  --title        Title of the style guide           [default: "KSS Style Guide"]
 
 Options:
   --verbose       Display verbose details while building
@@ -81,8 +81,6 @@ Since each builder has its own set of options, you can see the help for those op
 
 ```
 Style guide:
-  --extend          Location of modules to extend Twig.js; see
-                    http://bit.ly/kss-wiki
   --extend-drupal8  Extend Twig.js using kss's Drupal 8 extensions
   --namespace       Adds a Twig namespace, given the formatted string:
                     "namespace:path"
