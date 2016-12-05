@@ -131,6 +131,19 @@ describe('Command Line Interface', function() {
     });
   });
 
+  describe('given --json option', function() {
+    it('should output a JSON option', function() {
+      return kssNode('--demo --json').then(function(result) {
+        expect(result.error).to.not.exist;
+        expect(result.stdout).to.not.include(successMessage);
+        expect(result.stdout).to.not.include('WELCOME to the kss demo! We\'ve turned on the --verbose flag so you can see what kss is doing.');
+        let obj = JSON.parse(result.stdout);
+        expect(obj).to.be.an.object;
+        expect(obj).to.have.property('sections');
+      });
+    });
+  });
+
   describe('given --builder option', function() {
     it('should catch a failure when the builder API is not equal to the current API', function() {
       return kssNode('--builder ' + helperUtils.fixtures('old-builder')).then(result => {

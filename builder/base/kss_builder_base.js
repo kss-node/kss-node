@@ -67,6 +67,12 @@ class KssBuilderBase {
         describe: 'Destination directory of style guide',
         default: 'styleguide'
       },
+      'json': {
+        group: 'File locations:',
+        boolean: true,
+        multiple: false,
+        describe: 'Output a JSON object instead of building a style guide'
+      },
       'mask': {
         group: 'File locations:',
         alias: 'm',
