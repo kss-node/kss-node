@@ -95,6 +95,12 @@ class KssBuilderBase {
         describe: 'Destination directory of style guide',
         default: 'styleguide'
       },
+      'json': {
+        group: 'File locations:',
+        boolean: true,
+        multiple: false,
+        describe: 'Output a JSON object instead of building a style guide'
+      },
       'mask': {
         group: 'File locations:',
         alias: 'm',
@@ -147,6 +153,13 @@ class KssBuilderBase {
         multiple: false,
         describe: 'File name of the homepage\'s Markdown file',
         default: 'homepage.md'
+      },
+      'markup': {
+        group: 'Style guide:',
+        boolean: true,
+        multiple: false,
+        describe: 'Render "markup" templates to HTML with the placeholder text',
+        default: false
       },
       'placeholder': {
         group: 'Style guide:',
@@ -789,6 +802,7 @@ class KssBuilderBase {
       this.sectionTemplates[template.reference] = {
         name: template.name,
         context: template.context,
+        filename: template.file,
         exampleName: template.exampleName,
         exampleContext: template.exampleContext
       };
@@ -959,6 +973,7 @@ class KssBuilderBase {
    */
   buildPage(templateName, options, pageReference, sections, context) {
     let getTemplate = options.getTemplate,
+      getTemplateMarkup = options.getTemplateMarkup,
       templateRender = options.templateRender;
 
     context = context || {};
@@ -997,54 +1012,68 @@ class KssBuilderBase {
         } else {
           // Load the information about this section's markup template.
           let templateInfo = this.sectionTemplates[section.reference];
-          return getTemplate(templateInfo.name).then(template => {
-            let data = contextClone(templateInfo.context);
+          let markupTask,
+            exampleTask = false,
+            exampleContext,
+            modifierRender = (template, data, modifierClass) => {
+              data = contextClone(data);
+              /* eslint-disable camelcase */
+              data.modifier_class = (data.modifier_class ? data.modifier_class + ' ' : '') + modifierClass;
+              /* eslint-enable camelcase */
+              return templateRender(template, data);
+            };
 
-            /* eslint-disable camelcase */
-            data.modifier_class = data.modifier_class || '';
-
-            // Display the placeholder if the section has modifiers.
-            if (section.modifiers.length !== 0 &amp;&amp; this.options.placeholder) {
-              data.modifier_class += (data.modifier_class ? ' ' : '') + this.options.placeholder;
-            }
-
-            section.markup = templateRender(template, data);
-            section.example = section.markup;
-
-            let getExampleTemplate,
-              templateContext;
-            if (templateInfo.exampleName) {
-              getExampleTemplate = getTemplate(templateInfo.exampleName);
-              templateContext = templateInfo.exampleContext;
-            } else {
-              getExampleTemplate = Promise.resolve(template);
-              templateContext = templateInfo.context;
-            }
-
-            /* eslint-disable max-nested-callbacks */
-            return getExampleTemplate.then(template => {
-              if (templateInfo.exampleName) {
-                // Copy the templateContext.modifier_class so we can modify it.
-                let data = contextClone(templateContext);
-                data.modifier_class = data.modifier_class || '';
-
-                // Re-render the example variable with the example template.
-                // istanbul ignore else
-                if (section.modifiers.length !== 0 &amp;&amp; this.options.placeholder) {
-                  data.modifier_class += (data.modifier_class ? ' ' : /* istanbul ignore next */ '') + this.options.placeholder;
-                }
-                section.example = templateRender(template, data);
-              }
-
-              section.modifiers.forEach(modifier => {
-                // Copy the templateContext.modifier_class so we can modify it.
-                let data = contextClone(templateContext);
-                data.modifier_class = (data.modifier_class ? data.modifier_class + ' ' : '') + modifier.className;
-                modifier.markup = templateRender(template, data);
-              });
-              return Promise.resolve();
+          // Set the section's markup variable. It's either the template's raw
+          // markup or the rendered template.
+          if (!this.options.markup &amp;&amp; path.extname(templateInfo.filename) === '.' + options.templateExtension) {
+            markupTask = getTemplateMarkup(templateInfo.name).then(markup => {
+              // Copy the template's raw (unrendered) markup.
+              section.markup = markup;
             });
-            /* eslint-enable camelcase, max-nested-callbacks */
+          } else {
+            // Temporarily set it to "true" until we create a proper Promise.
+            exampleTask = !(templateInfo.exampleName);
+            markupTask = getTemplate(templateInfo.name).then(template => {
+              section.markup = modifierRender(
+                template,
+                templateInfo.context,
+                // Display the placeholder if the section has modifiers.
+                (section.modifiers.length !== 0 ? this.options.placeholder : '')
+              );
+
+              // If this section doesn't have a "kss-example" template, we will
+              // be re-using this template for the rendered examples.
+              if (!templateInfo.exampleName) {
+                exampleTask = Promise.resolve(template);
+              }
+            });
+          }
+
+          // Pick a template to use for the rendered example variable.
+          if (templateInfo.exampleName) {
+            exampleTask = getTemplate(templateInfo.exampleName);
+            exampleContext = templateInfo.exampleContext;
+          } else {
+            if (!exampleTask) {
+              exampleTask = getTemplate(templateInfo.name);
+            }
+            exampleContext = templateInfo.context;
+          }
+
+          // Render the example variable and each modifier's markup.
+          return markupTask.then(() => {
+            return exampleTask;
+          }).then(template => {
+            section.example = templateRender(template, contextClone(exampleContext));
+
+            section.modifiers.forEach(modifier => {
+              modifier.markup = modifierRender(
+                template,
+                exampleContext,
+                modifier.className
+              );
+            });
+            return Promise.resolve();
           });
         }
       })

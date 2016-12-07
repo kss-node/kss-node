@@ -149,11 +149,17 @@ class KssBuilderBaseTwig extends KssBuilderBase {
             // the path is not a valid file. So we have to double check for an
             // error and use reject() before calling twig().
             // @TODO Remove after upstream fix. https://github.com/twigjs/twig.js/pull/431
-            fs.stat(options.path, (err, stats) => {
-              if (err || !stats.isFile()) {
+            fs.readFile(options.path, 'utf8', (err, data) => {
+              if (err) {
                 reject(new Error('Unable to find template file ' + options.path));
                 return;
               }
+              // Call twig() with our load/error callbacks.
+              options.load = template => {
+                // Store the raw markup in the template.
+                template.rawMarkup = data;
+                resolve(template);
+              };
               // Call twig() with our load/error callbacks.
               this.twig(options);
             });
@@ -250,6 +256,16 @@ class KssBuilderBaseTwig extends KssBuilderBase {
     options.getTemplate = name => {
       return this.Twig.twigAsync({
         ref: name
+      });
+    };
+    // Returns a promise to get a template's markup by name.
+    options.getTemplateMarkup = name => {
+      // We don't wrap the rendered template in "new handlebars.SafeString()"
+      // since we want the ability to display it as a code sample with {{ }} and
+      // as rendered HTML with {{{ }}}.
+      return options.getTemplate(name).then(template => {
+         // The rawMarkup is a custom property set in twigAsync().
+        return template.rawMarkup;
       });
     };
     // Renders a template and returns the markup.

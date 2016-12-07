@@ -129,16 +129,14 @@
             <summary>
                 Markup: <code>forms.hbs</code>
             </summary>
-            <pre class="prettyprint linenums lang-html"><code data-language="html">&lt;form&gt;
-&lt;p&gt;&lt;input type&#x3D;&quot;text&quot; class&#x3D;&quot;&quot; value&#x3D;&quot;Text input&quot;/&gt;&lt;/p&gt;
-&lt;div class&#x3D;&quot;mod-input text &quot;&gt;
-  &lt;label&gt;Text Label&lt;/label&gt;
-  &lt;input type&#x3D;&quot;text&quot; class&#x3D;&quot;&quot; value&#x3D;&quot;Text input&quot;/&gt;&lt;/div&gt;
+            <pre class="prettyprint linenums lang-html"><code data-language="html">{{!-- Handlebars partials can nest other section&#x27;s partials. --}}
+&lt;form&gt;
+&lt;p&gt;{{&gt; &quot;demo.forms.text.single-line&quot; }}&lt;/p&gt;
+{{&gt; &quot;demo.forms.text.label-pairs&quot; }}
+
 
 &lt;p&gt;
-&lt;a href&#x3D;&quot;#&quot; class&#x3D;&quot;button &quot;&gt;Link Button&lt;/a&gt;
-&lt;button class&#x3D;&quot;button &quot;&gt;Button Element&lt;/button&gt;
-&lt;input type&#x3D;&quot;button&quot; class&#x3D;&quot;button &quot; value&#x3D;&quot;input[type&#x3D;&#x27;button&#x27;]&quot;/&gt;
+{{&gt; &quot;buttons&quot; }}
 &lt;/p&gt;
 &lt;/form&gt;
 </code></pre>

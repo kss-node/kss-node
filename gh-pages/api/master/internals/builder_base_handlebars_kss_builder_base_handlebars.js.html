@@ -147,6 +147,13 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
       // as rendered HTML with {{{ }}}.
       return Promise.resolve(this.Handlebars.compile('{{> "' + name + '"}}'));
     };
+    // Returns a promise to get a template's markup by name.
+    options.getTemplateMarkup = name => {
+      // We don't wrap the rendered template in "new handlebars.SafeString()"
+      // since we want the ability to display it as a code sample with {{ }} and
+      // as rendered HTML with {{{ }}}.
+      return Promise.resolve(this.Handlebars.partials[name]);
+    };
     // Renders a template and returns the markup.
     options.templateRender = (template, context) => {
       return template(context);

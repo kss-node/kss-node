@@ -74,7 +74,10 @@ const cli = function(opts) {
   if (args.indexOf('--demo') !== -1) {
     // Add the configuration file to the raw arguments list.
     args.push('--config', path.join(__dirname, '../demo/kss-config.json'));
-    reportMessage('WELCOME to the kss demo! We\'ve turned on the --verbose flag so you can see what kss is doing.');
+    if (args.indexOf('--json') === -1) {
+      args.push('--verbose');
+      reportMessage('WELCOME to the kss demo! We\'ve turned on the --verbose flag so you can see what kss is doing.');
+    }
   }
 
   const cliOptionDefinitions = {
@@ -227,7 +230,7 @@ const cli = function(opts) {
 
     // If we are building the demo, copy the styles.css file to the destination.
     let demo = true;
-    if (options.demo) {
+    if (options.demo &amp;&amp; !options.json) {
       // We save the Promise for the end of this function.
       demo = fs.copyAsync(
         path.resolve(__dirname, '../demo/styles.css'),
@@ -260,7 +263,12 @@ const cli = function(opts) {
 
     return Promise.all([
       demo,
-      kss(options)
+      kss(options).then(styleGuide => {
+        if (options.json) {
+          reportMessage(JSON.stringify(styleGuide));
+        }
+        return styleGuide;
+      })
     ]);
   });
 };

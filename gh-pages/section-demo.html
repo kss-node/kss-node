@@ -357,9 +357,9 @@ So far this just includes buttons.</p>
             </div>
 
           <div class="kss-modifier__example">
-            <a href="#" class="button [modifier class]">Link Button</a>
-<button class="button [modifier class]">Button Element</button>
-<input type="button" class="button [modifier class]" value="input[type='button']"/>
+            <a href="#" class="button ">Link Button</a>
+<button class="button ">Button Element</button>
+<input type="button" class="button " value="input[type='button']"/>
 
             <div class="kss-modifier__example-footer"></div>
           </div>
@@ -435,9 +435,9 @@ So far this just includes buttons.</p>
             <summary>
                 Markup: <code>buttons.hbs</code>
             </summary>
-            <pre class="prettyprint linenums lang-html"><code data-language="html">&lt;a href&#x3D;&quot;#&quot; class&#x3D;&quot;button [modifier class]&quot;&gt;Link Button&lt;/a&gt;
-&lt;button class&#x3D;&quot;button [modifier class]&quot;&gt;Button Element&lt;/button&gt;
-&lt;input type&#x3D;&quot;button&quot; class&#x3D;&quot;button [modifier class]&quot; value&#x3D;&quot;input[type&#x3D;&#x27;button&#x27;]&quot;/&gt;
+            <pre class="prettyprint linenums lang-html"><code data-language="html">&lt;a href&#x3D;&quot;#&quot; class&#x3D;&quot;button {{modifier_class}}&quot;&gt;Link Button&lt;/a&gt;
+&lt;button class&#x3D;&quot;button {{modifier_class}}&quot;&gt;Button Element&lt;/button&gt;
+&lt;input type&#x3D;&quot;button&quot; class&#x3D;&quot;button {{modifier_class}}&quot; value&#x3D;&quot;input[type&#x3D;&#x27;button&#x27;]&quot;/&gt;
 </code></pre>
           </details>
 
@@ -549,16 +549,14 @@ So far this just includes buttons.</p>
             <summary>
                 Markup: <code>forms.hbs</code>
             </summary>
-            <pre class="prettyprint linenums lang-html"><code data-language="html">&lt;form&gt;
-&lt;p&gt;&lt;input type&#x3D;&quot;text&quot; class&#x3D;&quot;&quot; value&#x3D;&quot;Text input&quot;/&gt;&lt;/p&gt;
-&lt;div class&#x3D;&quot;mod-input text &quot;&gt;
-  &lt;label&gt;Text Label&lt;/label&gt;
-  &lt;input type&#x3D;&quot;text&quot; class&#x3D;&quot;&quot; value&#x3D;&quot;Text input&quot;/&gt;&lt;/div&gt;
+            <pre class="prettyprint linenums lang-html"><code data-language="html">{{!-- Handlebars partials can nest other section&#x27;s partials. --}}
+&lt;form&gt;
+&lt;p&gt;{{&gt; &quot;demo.forms.text.single-line&quot; }}&lt;/p&gt;
+{{&gt; &quot;demo.forms.text.label-pairs&quot; }}
+
 
 &lt;p&gt;
-&lt;a href&#x3D;&quot;#&quot; class&#x3D;&quot;button &quot;&gt;Link Button&lt;/a&gt;
-&lt;button class&#x3D;&quot;button &quot;&gt;Button Element&lt;/button&gt;
-&lt;input type&#x3D;&quot;button&quot; class&#x3D;&quot;button &quot; value&#x3D;&quot;input[type&#x3D;&#x27;button&#x27;]&quot;/&gt;
+{{&gt; &quot;buttons&quot; }}
 &lt;/p&gt;
 &lt;/form&gt;
 </code></pre>
@@ -683,7 +681,7 @@ So far this just includes buttons.</p>
             </div>
 
           <div class="kss-modifier__example">
-            <input type="text" class="[modifier class]" value="Text input"/>
+            <input type="text" class="" value="Text input"/>
             <div class="kss-modifier__example-footer"></div>
           </div>
 
@@ -816,7 +814,7 @@ both layout convenience and specific styling.</p>
             </div>
 
           <div class="kss-modifier__example">
-            <div class="mod-input text [modifier class]">
+            <div class="mod-input text ">
   <label>Text Label</label>
   <input type="text" class="" value="Text input"/></div>
             <div class="kss-modifier__example-footer"></div>
