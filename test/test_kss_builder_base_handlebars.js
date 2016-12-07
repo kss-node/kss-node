@@ -201,7 +201,7 @@ describe('KssBuilderBaseHandlebars object API', function() {
       expect(this.builder.Handlebars.partials).to.have.property('1.E');
       expect(this.builder.Handlebars.partials).to.have.property('missing-file');
       expect(this.builder.Handlebars.partials).to.have.property('1c');
-      expect(Object.keys(this.builder.sectionTemplates).sort()).to.deep.equal(['1.B', '1.C', '1.C.A', '1.D', '1.E']);
+      expect(Object.keys(this.builder.sectionTemplates).sort()).to.deep.equal(['1.B', '1.C', '1.C.A', '1.C.B', '1.C.C', '1.D', '1.E']);
     });
 
     it('should note missing partials', function() {
@@ -236,16 +236,6 @@ describe('KssBuilderBaseHandlebars object API', function() {
       expect(this.files['section-1']).to.include('<meta name="generator" content="kss-node" />');
       expect(this.files['section-2']).to.include('<meta name="generator" content="kss-node" />');
       expect(this.files['section-3']).to.include('<meta name="generator" content="kss-node" />');
-    });
-
-    it('should add CSS files to the output', function() {
-      expect(this.files['index']).to.include('<link rel="stylesheet" href="styles-1.css">');
-      expect(this.files['index']).to.include('<link rel="stylesheet" href="styles-2.css">');
-    });
-
-    it('should add JS files to the output', function() {
-      expect(this.files['index']).to.include('<script src="javascript-1.js"></script>');
-      expect(this.files['index']).to.include('<script src="javascript-2.js"></script>');
     });
 
     it('should build the homepage given "index" as templateName', function() {
@@ -290,42 +280,16 @@ describe('KssBuilderBaseHandlebars object API', function() {
         expect(homepageContent).to.include('<p>This is the homepage text from the &quot;alternate-homepage.md&quot; file.</p>');
       });
     });
-
-    it('should warn if homepage content is not found', function() {
-      let stdout = this.builder.getTestOutput('stdout');
-      expect(stdout).to.include('   ...no homepage content found in homepage.md');
-    });
   });
 
   describe('Handlebars helper: {{markup}}', function() {
-    it('should render {{{markup}}}', function() {
-      expect(this.files['section-1']).to.include('ref:1.B:markup:<span>inline</span>');
+    it('should render {{markup}}', function() {
+      expect(this.files['section-1']).to.include('ref:1.B:markup:&lt;span&gt;inline&lt;/span&gt;');
       expect(this.files['section-1']).to.include('ref:1.D:markup:missing-file.hbs NOT FOUND!');
     });
 
-    it('should render kss-example-* {{ markup }}', function() {
-      expect(this.files['section-1']).to.include('<h1>Example 1c</h1>');
-    });
-
-    it('should render {{{markup}}} when there is no markup', function() {
+    it('should render {{markup}} when there is no markup', function() {
       expect(this.files['section-1']).to.include('ref:1.A:no-markup:\n');
-    });
-
-    it('should add modifier_class from the JSON data', function() {
-      expect(this.files['section-1']).to.include('ref:1.C:markup:<div class="one-cee-from-json [modifier class]">');
-    });
-
-    it('should add modifier_class from the example JSON data', function() {
-      expect(this.files['section-1']).to.include('ref:1.C:modifier:modifier-1:markup:<div class="one-cee-example-from-json modifier-1">');
-    });
-
-    it('should add modifier_class from the modifier\'s className property', function() {
-      expect(this.files['section-1']).to.include('ref:1.E:modifier:modifier-1:markup:<div class="modifier-1"></div>');
-      expect(this.files['section-1']).to.include('ref:1.E:modifier:pseudo-class-hover:markup:<div class="pseudo-class-hover"></div>');
-    });
-
-    it('should add modifier_class from the placeholder option if used on section', function() {
-      expect(this.files['section-1']).to.include('ref:1.E:markup:<div class="[modifier class]"></div>');
     });
   });
 

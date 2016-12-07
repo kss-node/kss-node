@@ -54,8 +54,8 @@ MENU-ITEM-CHILD:[referenceURI:{{referenceURI}}, referenceNumber:{{referenceNumbe
       {{/if}}
       {{#if modifiers}}modifiers:yes{{else}}modifiers:none{{/if}}
 
-      {{#if markup}}
-        ref:{{reference}}:markup:{{{markup}}}
+      {{#if example}}
+        ref:{{reference}}:example:{{{example}}}
         {{#if modifiers}}
           modifiers:
           {{#each modifiers}}
@@ -65,8 +65,11 @@ MENU-ITEM-CHILD:[referenceURI:{{referenceURI}}, referenceNumber:{{referenceNumbe
             ref:{{../reference}}:modifier:{{className}}:markup:{{{markup}}}
           {{/each}}
         {{/if}}
+      {{/if}}
+      {{#if markup}}
+        ref:{{reference}}:markup:{{markup}}
       {{else}}
-        ref:{{reference}}:no-markup:{{{markup}}}
+        ref:{{reference}}:no-markup:{{markup}}
       {{/if}}
     </section>
   {{/each}}

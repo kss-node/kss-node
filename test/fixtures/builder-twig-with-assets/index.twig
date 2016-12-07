@@ -71,16 +71,16 @@ MENU-ITEM-CHILD:[referenceURI:{{ menu_child.referenceURI }}, referenceNumber:{{ 
         ref:{{ section.reference }}:no-example:{{ section.example|raw }}
       {% endif %}
       {% if section.markup %}
-        ref:{{ section.reference }}:markup:{{ section.markup|raw }}
+        ref:{{ section.reference }}:markup:{{ section.markup }}
       {% else %}
-        ref:{{ section.reference }}:no-markup:{{ section.markup|raw }}
+        ref:{{ section.reference }}:no-markup:{{ section.markup }}
       {% endif %}
     </section>
   {% endfor %}
 {% endif %}
 
 <p>
-  kss-builder-base-handlebars--option-extend:{{ 'string'|example }}
+  kss-builder-base-twig--option-extend:{{ 'string'|example }}
 </p>
 
 <!-- JavaScripts -->

@@ -720,7 +720,7 @@ describe('KssBuilderBase object API', function() {
     });
 
     it('should register the section templates', function() {
-      expect(Object.keys(this.builder.sectionTemplates).sort()).to.deep.equal(['1.B', '1.C', '1.C.A', '1.D', '1.E']);
+      expect(Object.keys(this.builder.sectionTemplates).sort()).to.deep.equal(['1.B', '1.C', '1.C.A', '1.C.B', '1.C.C', '1.D', '1.E']);
     });
 
     it('should note missing section templates', function() {
@@ -755,6 +755,32 @@ describe('KssBuilderBase object API', function() {
       expect(this.files['section-1']).to.include('<meta name="generator" content="kss-node" />');
       expect(this.files['section-2']).to.include('<meta name="generator" content="kss-node" />');
       expect(this.files['section-3']).to.include('<meta name="generator" content="kss-node" />');
+    });
+
+    it('should render the kss-example-* template', function() {
+      expect(this.files['section-1']).to.include('<h1>Example 1c</h1>');
+    });
+
+    it('should add placeholder to modifier_class', function() {
+      expect(this.files['section-1']).to.include('ref:1.E:markup:&lt;div class&#x3D;&quot;[modifier class]&quot;&gt;&lt;/div&gt;');
+    });
+
+    it('should add modifier_class from the JSON data', function() {
+      expect(this.files['section-1']).to.include('ref:1.C.B:example:<div class="one-cee-bee-from-json">');
+      expect(this.files['section-1']).to.include('ref:1.C.B:markup:&lt;div class&#x3D;&quot;one-cee-bee-from-json [modifier class]&quot;&gt;');
+    });
+
+    it('should add modifier_class from the example JSON data', function() {
+      expect(this.files['section-1']).to.include('ref:1.C:modifier:modifier-1:markup:<div class="one-cee-example-from-json modifier-1">');
+    });
+
+    it('should add modifier_class from the modifier\'s className property', function() {
+      expect(this.files['section-1']).to.include('ref:1.E:modifier:modifier-1:markup:<div class="modifier-1"></div>');
+      expect(this.files['section-1']).to.include('ref:1.E:modifier:pseudo-class-hover:markup:<div class="pseudo-class-hover"></div>');
+    });
+
+    it('should add modifier_class from the placeholder option if used on section', function() {
+      expect(this.files['section-1']).to.include('ref:1.E:markup:&lt;div class&#x3D;&quot;[modifier class]&quot;&gt;&lt;/div&gt;');
     });
 
     it('should add CSS files to the output', function() {
