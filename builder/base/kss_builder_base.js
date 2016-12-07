@@ -126,6 +126,13 @@ class KssBuilderBase {
         describe: 'File name of the homepage\'s Markdown file',
         default: 'homepage.md'
       },
+      'markup': {
+        group: 'Style guide:',
+        boolean: true,
+        multiple: false,
+        describe: 'Render "markup" templates to HTML with the placeholder text',
+        default: false
+      },
       'placeholder': {
         group: 'Style guide:',
         string: true,
@@ -990,7 +997,7 @@ class KssBuilderBase {
 
           // Set the section's markup variable. It's either the template's raw
           // markup or the rendered template.
-          if (path.extname(templateInfo.filename) === '.' + options.templateExtension) {
+          if (!this.options.markup && path.extname(templateInfo.filename) === '.' + options.templateExtension) {
             markupTask = getTemplateMarkup(templateInfo.name).then(markup => {
               // Copy the template's raw (unrendered) markup.
               section.markup = markup;

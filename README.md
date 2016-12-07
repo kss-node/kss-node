@@ -65,6 +65,8 @@ Style guide:
                  http://bit.ly/kss-wiki
   --homepage     File name of the homepage's Markdown file
                                                         [default: "homepage.md"]
+  --markup       Render "markup" templates to HTML with the placeholder text
+                                                                [default: false]
   --placeholder  Placeholder text to use for modifier classes
                                                    [default: "[modifier class]"]
   --nav-depth    Limit the navigation to the depth specified        [default: 3]
