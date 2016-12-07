@@ -154,6 +154,33 @@ describe('kss object API', function() {
           expect(result.stdout).to.include(successMessage);
         });
       });
+
+      it('should read from a JSON file', function() {
+        let source = helperUtils.fixtures('json-input', 'with-include.json'),
+          source2 = helperUtils.fixtures('with-include');
+        return testKss({
+          verbose: true,
+          source: [source, source2],
+          destination: 'test/output/json'
+        }).then(function(result) {
+          expect(result.error).to.not.exist;
+          expect(result.stdout).to.include('* KSS Source  : ' + source + ', ' + source2);
+          expect(result.stdout).to.include(successMessage);
+        });
+      });
+
+      it('should report an error when failing to load a JSON file', function() {
+        let source = helperUtils.fixtures('json-input', 'not-found.json'),
+          source2 = helperUtils.fixtures('with-include');
+        return testKss({
+          verbose: true,
+          source: [source, source2],
+          destination: 'test/output/json'
+        }).then(function(result) {
+          expect(result.error).to.exist;
+          expect(result.stderr).to.include('Failed to open JSON file: ' + source);
+        });
+      });
     });
 
     describe('given "destination" option', function() {
