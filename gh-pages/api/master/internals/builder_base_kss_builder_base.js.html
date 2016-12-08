@@ -853,21 +853,30 @@ class KssBuilderBase {
           matchFilename = path.basename(template.file),
           matchExampleFilename = 'kss-example-' + matchFilename;
         this.options.source.forEach(source => {
-          findTemplates.push(glob(source + '/**/' + template.file));
-          findTemplates.push(glob(source + '/**/' + path.join(path.dirname(template.file), matchExampleFilename)));
+          let returnFilesAndSource = function(files) {
+            return {
+              source: source,
+              files: files
+            };
+          };
+          findTemplates.push(glob(source + '/**/' + template.file).then(returnFilesAndSource));
+          findTemplates.push(glob(source + '/**/' + path.join(path.dirname(template.file), matchExampleFilename)).then(returnFilesAndSource));
         });
         buildTasks.push(
           Promise.all(findTemplates).then(globMatches => {
             let foundTemplate = false,
               foundExample = false,
               loadTemplates = [];
-            for (let files of globMatches) {
+            for (let globMatch of globMatches) {
+              let files = globMatch.files,
+                source = globMatch.source;
               if (!foundTemplate || !foundExample) {
                 for (let file of files) {
                   // Read the template from the first matched path.
                   let filename = path.basename(file);
                   if (!foundTemplate &amp;&amp; filename === matchFilename) {
                     foundTemplate = true;
+                    section.custom('markupFile', path.relative(source, file));
                     template.file = file;
                     loadTemplates.push(
                       readSectionTemplate(template.name, file).then(() => {
