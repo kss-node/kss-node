@@ -21,15 +21,14 @@
   KssFullScreen.prototype.init = function () {
     // Check the location hash to see if it matches the idPrefix.
     if (window.location.hash.slice(0, this.idPrefix.length + 1) === '#' + this.idPrefix) {
-      this.setFocus(window.location.hash.slice(1));
+      this.setFocus(window.location.hash.slice(1 + this.idPrefix.length));
     }
 
     var self = this;
     // Initialize all fullscreen toggle buttons.
     document.querySelectorAll('a[data-kss-fullscreen]').forEach(function (button) {
       // Get the section reference from the data attribute.
-      var id = self.idPrefix + button.dataset.kssFullscreen;
-      button.onclick = self.setFocus.bind(self, id);
+      button.onclick = self.setFocus.bind(self, button.dataset.kssFullscreen);
     });
   };
 
@@ -45,7 +44,7 @@
 
       // When enabling the focus mode, change the location hash.
       if (el.classList.contains('is-fullscreen')) {
-        window.location.hash = '#' + id;
+        window.location.hash = '#' + this.idPrefix + id;
         // Don't follow the link location.
         return false;
       }
