@@ -176,6 +176,7 @@
 
           <div class="kss-modifier__example">
             {{ section.example|raw }}
+            <div class="kss-modifier__example-footer"></div>
           </div>
 
           {% for modifier in section.modifiers %}
@@ -187,14 +188,15 @@
             </div>
             <div class="kss-modifier__example">
               {{ modifier.markup|raw }}
+              <div class="kss-modifier__example-footer"></div>
             </div>
           {% endfor %}
         </div>
         {% if section.markup %}
           <details class="kss-markup kss-style">
             <summary>
-              {% if markupFile %}
-                Markup: <code>{{ markupFile }}</code>
+              {% if section.markupFile %}
+                Markup: <code>{{ section.markupFile }}</code>
               {% else %}
                 Markup
               {% endif %}
