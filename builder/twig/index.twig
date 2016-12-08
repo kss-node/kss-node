@@ -66,7 +66,7 @@
     {% set sectionElement = loop.first ? 'div' : 'section' %}
     <{{ sectionElement }} id="kss-fullscreen-{{ section.referenceURI }}" class="kss-section kss-section--depth-{{ section.depth }} {% if template.isItem %}is-fullscreen{% endif %}">
       <div class="kss-style">
-        <a id="kssref-{{referenceURI}}"></a>
+        <a id="kssref-{{ section.referenceURI }}"></a>
         {% set headerElement = (section.depth > 6) ? 'h6' : 'h' ~ section.depth %}
         <{{ headerElement }} class="kss-title kss-title--level-{{ section.depth }}">
           <a class="kss-title__permalink" href="#kssref-{{ section.referenceURI }}">
