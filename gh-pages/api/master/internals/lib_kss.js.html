@@ -19,11 +19,11 @@
 
     <h1 class="page-title">Source: lib/kss.js</h1>
 
-    
 
 
 
-    
+
+
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>'use strict';
@@ -179,9 +179,8 @@ const kss = function(options) {
       return builder.build(styleGuide);
     }).then(styleGuide => {
       if (builder.getOptions('verbose')) {
-        builder.log('');
+        builder.log('Style guide build completed successfully!');
       }
-      builder.log('Style guide build completed successfully!');
       return Promise.resolve(styleGuide);
     });
   }).catch(error => {
