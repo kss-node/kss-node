@@ -1,0 +1,36 @@
+# Exclude stuff specific to this project.
+node_modules
+/test/output
+coverage
+npm-debug.log
+
+# Exclude IDE management files.
+  # Eclipse
+.project
+.settings
+.buildpath
+  # Netbeans
+netbeans
+nbproject
+  # Komodo
+*.kpf
+  # WebStorm
+.idea
+
+# Exclude hidden OS files.
+.DS_Store
+._*
+Thumbs.db
+
+# All lines above should be identical with .gitignore
+
+# NPM: Prevent these files from being published.
+.editorconfig
+.eslintignore
+.eslintrc
+.travis.yml
+Makefile
+design/
+gh-pages
+gh-pages.sh
+test/
