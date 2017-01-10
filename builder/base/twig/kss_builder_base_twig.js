@@ -49,6 +49,13 @@ class KssBuilderBaseTwig extends KssBuilderBase {
         group: 'Style guide:',
         string: true,
         describe: 'Adds a Twig namespace, given the formatted string: "namespace:path"'
+      },
+      'global': {
+        group: 'Style guide:',
+        string: true,
+        multiple: true,
+        boolean: false,
+        describe: 'Adds a Twig global variable, given the formatted string: "key:value"'
       }
     });
   }
@@ -78,9 +85,21 @@ class KssBuilderBaseTwig extends KssBuilderBase {
         }
       });
 
+      // Collect all the globals to introduce to Twig.
+      this.globals = {}
+      this.options.global.forEach(globalVariable => {
+        let tokens = globalVariable.split(':', 2);
+        if (tokens[1]) {
+          this.globals[tokens[0]] = tokens[1];
+        }
+      })
+
       if (this.options.verbose) {
         if (this.options.namespace.length) {
           this.log(' * Namespace   : ' + this.options.namespace.join(', '));
+        }
+        if (this.options.globals.length) {
+          this.log(' * Globals    : ' + this.options.globals.join(', '));
         }
         this.log('');
       }
