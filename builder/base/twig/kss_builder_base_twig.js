@@ -117,6 +117,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
 
       // Promisify Twig.twig().
       let namespacesFromKSS = this.namespaces;
+      let globalsFromKSS = this.globals
       this.Twig.twigAsync = (function(options) {
         return new Promise((resolve, reject) => {
           // Use our Promise's functions.
@@ -126,6 +127,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
           options.async = true;
           options.autoescape = true;
           options.namespaces = namespacesFromKSS;
+          options.globals = globalsFromKSS;
 
           // twig() ignores options.load/error if data or ref are specified.
           if (options.data || options.ref) {
