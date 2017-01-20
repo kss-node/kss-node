@@ -128,7 +128,11 @@ class KssBuilderBaseTwig extends KssBuilderBase {
           options.async = true;
           options.autoescape = true;
           options.namespaces = namespacesFromKSS;
-          options.globals = globalsFromKSS;
+          for (let globalVar in globalsFromKSS) {
+            if (globalsFromKSS[globalVar]) {
+              options[globalVar] = globalsFromKSS[globalVar];
+            }
+          }
 
           // twig() ignores options.load/error if data or ref are specified.
           if (options.data || options.ref) {
