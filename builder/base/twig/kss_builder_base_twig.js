@@ -86,13 +86,14 @@ class KssBuilderBaseTwig extends KssBuilderBase {
       });
 
       // Collect all the globals to introduce to Twig.
-      this.globals = {}
+      this.globals = {};
+      this.options.globals = this.options.globals || [];
       this.options.global.forEach(globalVariable => {
         let tokens = globalVariable.split(':', 2);
         if (tokens[1]) {
           this.globals[tokens[0]] = tokens[1];
         }
-      })
+      });
 
       if (this.options.verbose) {
         if (this.options.namespace.length) {
@@ -117,7 +118,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
 
       // Promisify Twig.twig().
       let namespacesFromKSS = this.namespaces;
-      let globalsFromKSS = this.globals
+      let globalsFromKSS = this.globals;
       this.Twig.twigAsync = (function(options) {
         return new Promise((resolve, reject) => {
           // Use our Promise's functions.
