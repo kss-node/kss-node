@@ -18,10 +18,23 @@ module.exports = /* istanbul ignore next */ function(Twig) {
 
   // Add pass-through Twig functions to ensure Drupal's custom Twig functions do
   // not break Twig.js.
-  ['render_var', 'url', 'file_url', 'active_theme_path', 'active_theme'].forEach(functionName => {
+  ['render_var', 'file_url', 'active_theme_path', 'active_theme'].forEach(functionName => {
     Twig.extendFunction(functionName, function(value) {
       return value;
     });
+  });
+
+  /**
+   * Introduce a url Twig function.
+   */
+  Twig.extendFunction('url', function(url) {
+    // Return the URL if it's absolute.
+    if ((url.indexOf('http://') === 0 || url.indexOf('https://') === 0) || url.indexOf('/') === 0) {
+      return url;
+    }
+
+    console.log(url)
+    console.log(internalTwig)
   });
 
   Twig.extendFunction('link', function(text, url) {
