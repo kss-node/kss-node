@@ -319,7 +319,6 @@ $kss-vertical-rhythm      : $kss-font-size * 1.5;
 #kss-node {
 
   .kss-section {
-    max-width: 48em;
     margin-bottom: ($kss-vertical-rhythm * 2);
 
     // "fullscreen" styles copied from Mozilla's default stylesheet.
