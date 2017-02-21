@@ -18,7 +18,7 @@ module.exports = /* istanbul ignore next */ function(Twig) {
 
   // Add pass-through Twig functions to ensure Drupal's custom Twig functions do
   // not break Twig.js.
-  ['render_var', 'url', 'file_url', 'active_theme_path', 'active_theme'].forEach(functionName => {
+  ['render_var', 'url', 'file_url', 'active_theme_path', 'active_theme', 'path'].forEach(functionName => {
     Twig.extendFunction(functionName, function(value) {
       return value;
     });
