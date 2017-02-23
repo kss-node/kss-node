@@ -19,5 +19,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Removed the `max-width` on components in the base builders CSS
 
-[Unreleased]: https://github.com/kss-node/kss-node/compare/v3.0.0-beta.18...HEAD
-[3.0.0-beta.18]: https://github.com/kss-node/kss-node/compare/v3.0.0-beta.17...v3.0.0-beta.18
+[Unreleased]: https://github.com/kss-node/kss-node/compare/3.0.0-beta.18...HEAD
+[3.0.0-beta.18]: https://github.com/kss-node/kss-node/compare/3.0.0-beta.17...3.0.0-beta.18
