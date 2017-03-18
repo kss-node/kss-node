@@ -133,7 +133,8 @@ describe('kss object API', function() {
       it('should warn if homepage content is not found', function() {
         return testKss({
           source: helperUtils.fixtures('missing-homepage'),
-          destination: 'test/output/nested'
+          destination: 'test/output/nested',
+          verbose: true
         }).then(function(result) {
           expect(result.error).to.not.exist;
           expect(result.stdout).to.include(noHomepageWarning);
