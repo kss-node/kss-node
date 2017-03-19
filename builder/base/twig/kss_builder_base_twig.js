@@ -11,7 +11,8 @@
 
 const KssBuilderBase = require('../kss_builder_base.js'),
   path = require('path'),
-  Promise = require('bluebird');
+  Promise = require('bluebird'),
+  Twig = require('twig');
 
 const fs = Promise.promisifyAll(require('fs-extra'));
 
@@ -86,7 +87,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
       }
 
       // Store the global Twig object.
-      this.Twig = require('twig');
+      this.Twig = Twig;
 
       // We need the ability to reset the template registry since the global
       // Twig object is the same object every time it is require()d.
@@ -171,7 +172,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
       if (this.options['extend-drupal8']) {
         this.options.extend.unshift(path.resolve(__dirname, 'extend-drupal8'));
       }
-      Array.prototype.push.apply(prepTasks, this.prepareExtend(this.Twig));
+      prepTasks.push(this.prepareExtend(this.Twig));
 
       return Promise.all(prepTasks).then(() => {
         return Promise.resolve(styleGuide);
@@ -232,9 +233,6 @@ class KssBuilderBaseTwig extends KssBuilderBase {
     };
     // Returns a promise to get a template's markup by name.
     options.getTemplateMarkup = name => {
-      // We don't wrap the rendered template in "new handlebars.SafeString()"
-      // since we want the ability to display it as a code sample with {{ }} and
-      // as rendered HTML with {{{ }}}.
       return options.getTemplate(name).then(template => {
          // The rawMarkup is a custom property set in twigAsync().
         return template.rawMarkup;

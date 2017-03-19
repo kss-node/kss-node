@@ -11,7 +11,8 @@
 
 const KssBuilderBase = require('../kss_builder_base.js'),
   path = require('path'),
-  Promise = require('bluebird');
+  Promise = require('bluebird'),
+  Handlebars = require('handlebars');
 
 const fs = Promise.promisifyAll(require('fs-extra'));
 
@@ -55,7 +56,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
       }
 
       // Store the global Handlebars object.
-      this.Handlebars = require('handlebars');
+      this.Handlebars = Handlebars;
 
       let prepTasks = [];
 
@@ -63,7 +64,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
       prepTasks.push(this.prepareDestination('kss-assets'));
 
       // Load modules that extend Handlebars.
-      Array.prototype.push.apply(prepTasks, this.prepareExtend(this.Handlebars));
+      prepTasks.push(this.prepareExtend(this.Handlebars));
 
       return Promise.all(prepTasks).then(() => {
         return Promise.resolve(styleGuide);
