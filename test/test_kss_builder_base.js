@@ -403,7 +403,7 @@ describe('KssBuilderBase object API', function() {
     it('should clone the given directory to the given destination', function() {
       let destination = helperUtils.fixtures('..', 'output', 'clone'),
         builder = new KssBuilderBase();
-      return builder.clone(helperUtils.fixtures('builder'), destination).catch(error => {
+      return builder.clone(helperUtils.fixtures('builder-handlebars'), destination).catch(error => {
         expect(error).to.not.exist;
       }).then(result => {
         expect(result).to.be.undefined;
@@ -413,7 +413,7 @@ describe('KssBuilderBase object API', function() {
 
     it('should fail to clone if the given destination exists', function() {
       let builder = new KssBuilderBase();
-      return builder.clone(helperUtils.fixtures('builder'), helperUtils.fixtures('traverse-directories')).then(result => {
+      return builder.clone(helperUtils.fixtures('builder-handlebars'), helperUtils.fixtures('traverse-directories')).then(result => {
         expect(result).to.not.be.undefined;
       }).catch(error => {
         expect(error.message).to.equal('This folder already exists: ' + helperUtils.fixtures('traverse-directories'));
@@ -423,7 +423,7 @@ describe('KssBuilderBase object API', function() {
     it('should skip node_modules and dot-hidden paths', function() {
       let destination = helperUtils.fixtures('..', 'output', 'clone-skip'),
         builder = new KssBuilderBase();
-      return builder.clone(helperUtils.fixtures('builder'), destination).then(() => {
+      return builder.clone(helperUtils.fixtures('builder-handlebars'), destination).then(() => {
         return fs.readdirAsync(destination);
       }).then(files => {
         // Check for node_modules folder.
@@ -485,7 +485,7 @@ describe('KssBuilderBase object API', function() {
       this.destination = helperUtils.fixtures('..', 'output', 'prepare-destination');
       builder.addOptions({
         destination: this.destination,
-        builder: helperUtils.fixtures('builder')
+        builder: helperUtils.fixtures('builder-handlebars')
       });
       return builder.prepareDestination('assets').then(() => {
         return fs.readdirAsync(this.destination);
@@ -534,7 +534,7 @@ describe('KssBuilderBase object API', function() {
         builder = new KssBuilderBase();
       builder.addOptions({
         destination: destination,
-        builder: helperUtils.fixtures('builder')
+        builder: helperUtils.fixtures('builder-handlebars')
       });
       return builder.prepareDestination('no-assets').then(() => {
         return fs.readdirAsync(destination);
@@ -550,7 +550,7 @@ describe('KssBuilderBase object API', function() {
         builder = new KssBuilderBase();
       builder.addOptions({
         destination: destination,
-        builder: helperUtils.fixtures('builder')
+        builder: helperUtils.fixtures('builder-handlebars')
       });
       return builder.prepareDestination().then(() => {
         return fs.readdirAsync(destination);

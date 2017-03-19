@@ -18,7 +18,7 @@ describe('KssBuilderHandlebars builder (default)', function() {
     return cli({
       stdout: stdout,
       stderr: stderr,
-      argv: ['node', 'bin/kss', 'test/fixtures/with-include', 'test/output/nested', '--builder', 'test/fixtures/builder']
+      argv: ['node', 'bin/kss', 'test/fixtures/with-include', 'test/output/nested', '--builder', 'test/fixtures/builder-handlebars']
     }).then(() => {
       this.stdout = stdout.capturedData;
       return Promise.all(

@@ -226,7 +226,7 @@ describe('kss object API', function() {
         return testKss({
           source: 'test/fixtures/with-include',
           destination: 'test/output/custom',
-          builder: 'test/fixtures/builder',
+          builder: 'test/fixtures/builder-handlebars',
           custom: ['custom', 'custom2']
         }).then(function(result) {
           expect(result.error).to.not.exist;
@@ -268,7 +268,7 @@ describe('kss object API', function() {
       });
 
       it('should error if the destination folder exists', function() {
-        let existingFolder = path.resolve('test', 'fixtures', 'builder');
+        let existingFolder = path.resolve('test', 'fixtures', 'builder-handlebars');
         return testKss({
           clone: existingFolder
         }).then(function(result) {
