@@ -256,8 +256,7 @@ class KssBuilderBase {
    */
   addOptions(options) {
     for (let key in options) {
-      // istanbul ignore else
-      if (options.hasOwnProperty(key)) {
+      if (options.hasOwnProperty(key) && ['logFunction', 'logErrorFunction'].indexOf(key) === -1) {
         this.options[key] = options[key];
       }
     }
