@@ -1,5 +1,7 @@
 (function() {
-  var KssStateGenerator;
+  var KssStateGenerator,
+    forEachHelper;
+
 
   KssStateGenerator = (function() {
     var pseudo_selectors;
@@ -48,6 +50,18 @@
 
   })();
 
+  // This function was made for fixing IE browser compatibility issue since IE borwser does not support `NodeList.forEach` method.
+  // More detail: https://toddmotto.com/ditch-the-array-foreach-call-nodelist-hack/
+  // forEach method, could be shipped as part of an Object Literal/Module
+  forEachHelper = function(array, callback, scope) {
+      for (var i = 0; i < array.length; i++) {
+          callback.call(scope, i, array[i]); // passes back stuff we need
+      }
+  }
+
   new KssStateGenerator;
+
+  // Export to global scope.
+  this.forEachHelper = forEachHelper;
 
 }).call(this);
