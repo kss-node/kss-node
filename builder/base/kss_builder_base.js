@@ -163,8 +163,8 @@ class KssBuilderBase {
    *
    * @param {string|function} builderClass The path to a builder or a builder
    *   class to load.
-   * @returns {Promise.<KssBuilder>} A `Promise` object resolving to a
-   *   `KssBuilder` object, or one of its sub-classes.
+   * @returns {Promise.<KssBuilderBase>} A `Promise` object resolving to a
+   *   `KssBuilderBase` object, or one of its sub-classes.
    */
   static loadBuilder(builderClass) {
     return new Promise((resolve, reject) => {
