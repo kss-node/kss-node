@@ -2,7 +2,7 @@
 
 'use strict';
 
-const KssBuilderBase = require('../builder'),
+const KssBuilderBase = require('../builder/base'),
   KssBuilderBaseHandlebars = require('../builder/base/handlebars'),
   mockStream = require('mock-utf8-stream');
 
