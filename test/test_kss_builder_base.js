@@ -574,7 +574,7 @@ describe('KssBuilderBase object API', function() {
       this.templateEngine = {
         engine: true
       };
-      return builder.prepareExtend(this.templateEngine);
+      return Promise.all(builder.prepareExtend(this.templateEngine));
     });
 
     it('should ignore non .js files in extend directories', function(done) {
@@ -602,6 +602,45 @@ describe('KssBuilderBase object API', function() {
     it('should pass the builder options to the exported function', function(done) {
       expect(this.templateEngine.extend1).to.deep.equal({fromOptions: 'option for extend 1'});
       done();
+    });
+
+    it('should warn when the "--extend" directory does not exist', function() {
+      let builder = new TestKssBuilderBase({
+        builder: 'mockBuilder',
+        extend: [
+          helperUtils.fixtures('dev/null/example')
+        ],
+        verbose: true
+      });
+      this.templateEngine = {
+        engine: true
+      };
+      return Promise.all(builder.prepareExtend(this.templateEngine)).catch(error => {
+        expect(error).to.not.exist;
+      }).then(() => {
+        expect(builder.getTestOutput('stderr')).to.include('An error occurred when attempting to use the "extend" directory');
+        expect(builder.getTestOutput('stderr')).to.include('ENOENT: no such file or directory, scandir');
+        expect(builder.getTestOutput('stderr')).to.include('/test/fixtures/dev/null/example: ');
+      });
+    });
+
+    it('should NOT warn of "--extend" directory errors if --verbose is not set', function() {
+      let builder = new TestKssBuilderBase({
+        builder: 'mockBuilder',
+        extend: [
+          helperUtils.fixtures('dev/null/example')
+        ]
+      });
+      this.templateEngine = {
+        engine: true
+      };
+      return Promise.all(builder.prepareExtend(this.templateEngine)).catch(error => {
+        expect(error).to.not.exist;
+      }).then(() => {
+        expect(builder.getTestOutput('stderr')).to.not.include('An error occurred when attempting to use the "extend" directory');
+        expect(builder.getTestOutput('stderr')).to.not.include('ENOENT: no such file or directory, scandir');
+        expect(builder.getTestOutput('stderr')).to.not.include('/test/fixtures/dev/null/example: ');
+      });
     });
   });
 

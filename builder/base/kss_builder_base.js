@@ -650,6 +650,12 @@ class KssBuilderBase {
               }
             }
           });
+        }).catch((error) => {
+          // Log the error, but allow operation to continue.
+          if (this.options.verbose) {
+            this.logError(new Error('An error occurred when attempting to use the "extend" directory, ' + directory + ': ' + error.message));
+          }
+          return Promise.resolve();
         })
       );
     });
