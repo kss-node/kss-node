@@ -187,7 +187,7 @@ class KssBuilderBase {
           return reject(new Error('Unexpected value for "builder"; should be a path to a module or a JavaScript Class.'));
         }
 
-        // Check for a kss-node 2.0 template and KssGenenerator. Template's were
+        // Check for a kss-node 2.0 template and KssGenerator. Template's were
         // objects that provided the builder (generator) as a property.
         if (typeof SomeBuilder === 'object'
           && SomeBuilder.hasOwnProperty('generator')
