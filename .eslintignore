@@ -6,7 +6,7 @@ builder/*/kss-assets/*.js
 
 # Ignore the demo pages.
 demo/**
-gh-pages/**
+docs/**
 styleguide/**
 
 # Ignore old test runs.

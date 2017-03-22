@@ -31,6 +31,5 @@ Thumbs.db
 .travis.yml
 Makefile
 design/
-gh-pages
-gh-pages.sh
+docs/
 test/

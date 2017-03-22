@@ -8,6 +8,6 @@
     "sass": "./node_modules/.bin/node-sass --output-style compressed kss-assets/kss.scss kss-assets/kss.css"
   },
   "devDependencies": {
-    "node-sass": "^3.4.2"
+    "node-sass": "^4.5.1"
   }
 }

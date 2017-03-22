@@ -149,7 +149,7 @@ Forking, hacking, and tearing apart of this software is welcome! It still needs 
 
 After you've cloned this repository, run `npm install` and then you'll be able to run the module's mocha and eslint tests with `npm test`.
 
-To build a new version of the demo style guide, use `make docs`. After committing your changes to master you can use the `gh-pages.sh` script to move this over to the `gh-pages` branch real quick.
+To build a new version of the demo style guide and JavaScript documentation, use `make docs` and commit your changes to master.
 
 ## Contributors
 

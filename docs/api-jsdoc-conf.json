@@ -13,8 +13,8 @@
     ]
   },
   "opts": {
-    "destination": "./gh-pages/api/master/",
-    "readme": "./gh-pages/api-homepage.md",
+    "destination": "./docs/api/master/",
+    "readme": "./docs/api-homepage.md",
     "recurse": true,
     "verbose": true
   },
