@@ -11,8 +11,9 @@
   KssMarkup.prototype.init = function () {
     var self = this;
     // Initialize all markup toggle buttons.
-    forEachHelper(document.querySelectorAll('a[data-kss-markup]'), function(index, el) {
-      el.onclick = self.showGuides.bind(self);
+    var elementList = document.querySelectorAll('a[data-kss-markup]');
+    for (var button of elementList) {
+      button.onclick = self.showGuides.bind(self);
     });
   };
 
@@ -22,7 +23,8 @@
     var body = document.getElementsByTagName('body')[0],
       enabled = body.classList.contains(this.bodyClass);
 
-    forEachHelper(document.querySelectorAll('.' + this.detailsClass), function(index, el) {
+    var elementList = document.querySelectorAll('.' + this.detailsClass);
+    for (var el of elementList) {
       if (enabled) {
         el.removeAttribute('open');
       } else {
