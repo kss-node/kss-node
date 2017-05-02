@@ -4,6 +4,8 @@
 
 # kss-node
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/kss-node/kss-node.svg)](https://greenkeeper.io/)
+
 This is a Node.js implementation of [KSS](https://github.com/kneath/kss), "a documentation syntax for CSS" that's intended to have syntax readable by humans *and* machines. Hence, the kss-node software can be used to create a "living style guide".
 
 1. Write human-readable documentation using "KSS syntax" comments.
