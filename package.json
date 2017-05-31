@@ -39,7 +39,7 @@
     "yargs": "^8.0.1"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
+    "chai": "^4.0.1",
     "coveralls": "^2.11.9",
     "eslint": "^3.0.0",
     "istanbul": "^0.4.3",
