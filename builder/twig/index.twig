@@ -34,7 +34,7 @@
           <ul class="kss-nav__menu-child">
           {% for menu_child in menu_item.children %}
             <li class="kss-nav__menu-item">
-              <a class="kss-nav__menu-link" href="section-{{ menu_item.referenceURI }}.html#kssref-{{ menu_child.referenceURI }}">
+              <a class="kss-nav__menu-link" href="section-{{ menu_item.referenceURI }}.html#kss-fullscreen-{{ menu_child.referenceURI }}">
                 <span class="kss-nav__ref {% if menu_child.isGrandChild %}kss-nav__ref-child{% endif %}">{{ menu_child.referenceNumber }}</span
                 ><span class="kss-nav__name">{{ menu_child.header }}</span>
               </a>
