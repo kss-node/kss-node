@@ -2,5 +2,8 @@
   "//"          : "A JSON comment",
   "source"      : "source-twig-builder-test",
   "destination" : "../output/nested",
-  "builder"     : "builder/twig"
+  "builder"     : "builder/twig",
+  "global"      : [
+    "globalVariable:This is a global variable!"
+  ]
 }

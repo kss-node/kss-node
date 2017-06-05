@@ -50,6 +50,13 @@ class KssBuilderBaseTwig extends KssBuilderBase {
         group: 'Style guide:',
         string: true,
         describe: 'Adds a Twig namespace, given the formatted string: "namespace:path"'
+      },
+      'global': {
+        group: 'Style guide:',
+        string: true,
+        multiple: true,
+        boolean: false,
+        describe: 'Adds a Twig global variable, given the formatted string: "key:value"'
       }
     });
   }
@@ -79,9 +86,22 @@ class KssBuilderBaseTwig extends KssBuilderBase {
         }
       });
 
+      // Collect all the globals to introduce to Twig.
+      this.globals = {};
+      this.options.globals = this.options.globals || [];
+      this.options.global.forEach(globalVariable => {
+        let tokens = globalVariable.split(':', 2);
+        if (tokens[1]) {
+          this.globals[tokens[0]] = tokens[1];
+        }
+      });
+
       if (this.options.verbose) {
         if (this.options.namespace.length) {
           this.log(' * Namespace   : ' + this.options.namespace.join(', '));
+        }
+        if (this.options.globals.length) {
+          this.log(' * Globals    : ' + this.options.globals.join(', '));
         }
         this.log('');
       }
@@ -99,6 +119,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
 
       // Promisify Twig.twig().
       let namespacesFromKSS = this.namespaces;
+      let globalsFromKSS = this.globals;
       this.Twig.twigAsync = (function(options) {
         return new Promise((resolve, reject) => {
           // Use our Promise's functions.
@@ -108,6 +129,11 @@ class KssBuilderBaseTwig extends KssBuilderBase {
           options.async = true;
           options.autoescape = true;
           options.namespaces = namespacesFromKSS;
+          for (let globalVar in globalsFromKSS) {
+            if (globalsFromKSS[globalVar]) {
+              options[globalVar] = globalsFromKSS[globalVar];
+            }
+          }
 
           // twig() ignores options.load/error if data or ref are specified.
           if (options.data || options.ref) {
