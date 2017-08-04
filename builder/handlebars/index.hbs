@@ -49,14 +49,15 @@
     </ul>
   </nav>
 </div>
-<article role="main" class="kss-main">
-{{#if template.isHomepage}}
-  {{#if homepage}}
-    <div id="kssref-0" class="kss-section kss-section--depth-0 kss-overview kss-style">
-      {{{homepage}}}
-    </div>
-  {{/if}}
-{{else}}
+<main class="kss-main" aria-label="Content">
+  <article>
+  {{#if template.isHomepage}}
+    {{#if homepage}}
+      <div id="kssref-0" class="kss-section kss-section--depth-0 kss-overview kss-style">
+        {{{homepage}}}
+      </div>
+    {{/if}}
+  {{else}}
 
   {{!
     Display each section, in order.
@@ -220,6 +221,7 @@
   {{/each}}
 {{/if}}
 </article>
+</main>
 
 <!-- SCRIPTS -->
 <script src="kss-assets/kss.js"></script>
