@@ -206,9 +206,13 @@ class KssBuilderBase {
         // builder. If the loader fails when given a string, we check if the
         // caller (either cli.js or kss.js) wanted the Twig builder and let the
         // caller recover from the thrown error.
+        const supportedBuilders = [
+          'builder/twig',
+          'builder/nunjucks'
+        ];
         // istanbul ignore if
-        if (builderClass === 'builder/twig') {
-          return reject(new Error('The specified builder, "builder/twig", is not relative to the current working directory.'));
+        if (supportedBuilders.indexOf(builderClass) > -1) {
+          return reject(new Error(`The specified builder, "${builderClass}", is not relative to the current working directory.`));
         } else {
           let KssBuilderHandlebars = require('../handlebars');
           newBuilder = new KssBuilderHandlebars();

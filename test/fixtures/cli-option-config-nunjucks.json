@@ -1,0 +1,6 @@
+{
+  "//"          : "A JSON comment",
+  "source"      : "source-nunjucks-builder-test",
+  "destination" : "../output/nested",
+  "builder"     : "builder/nunjucks"
+}
