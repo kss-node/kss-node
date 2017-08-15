@@ -182,7 +182,7 @@ describe('kss.parse()', function() {
 
       describe('.modifiers', function() {
         before(function() {
-          return helperUtils.traverseFixtures({mask: 'property-modifiers.less', markdown: false}).then(styleGuide => {
+          return helperUtils.traverseFixtures({mask: 'property-modifiers.less', markdown: false, emoji: false}).then(styleGuide => {
             this.styleGuide = styleGuide;
           });
         });
@@ -280,7 +280,7 @@ describe('kss.parse()', function() {
 
       describe('.deprecated/.experimental', function() {
         before(function() {
-          return helperUtils.traverseFixtures({mask: 'property-deprecated-experimental.less', markdown: false, header: true}).then(styleGuide => {
+          return helperUtils.traverseFixtures({mask: 'property-deprecated-experimental.less', markdown: false, header: true, emoji: false}).then(styleGuide => {
             this.styleGuide = styleGuide;
           });
         });
