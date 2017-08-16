@@ -90,6 +90,14 @@ describe('Command Line Interface', function() {
       });
     });
 
+    it('should load the Nunjucks builder when the config file uses "builder/nunjucks"', function() {
+      return kssCLI('--config test/fixtures/cli-option-config-nunjucks.json --verbose').then(result => {
+        expect(result.error).to.not.exist;
+        expect(result.stdout).to.include(successMessage);
+        expect(result.stdout).to.include('Builder     : ' + path.resolve(__dirname, '..', 'builder', 'nunjucks'));
+      });
+    });
+
     it('should catch an error if the builder path does not exist', function() {
       return kssCLI('--config test/fixtures/cli-option-config-builder-nonexistant.json --verbose').then(result => {
         expect(result.error).to.exist;
@@ -157,6 +165,14 @@ describe('Command Line Interface', function() {
         expect(result.error).to.not.exist;
         expect(result.stdout).to.include(successMessage);
         expect(result.stdout).to.include('Builder     : ' + path.resolve(__dirname, '..', 'builder', 'twig'));
+      });
+    });
+
+    it('should load the Nunjucks builder when given "--builder builder/nunjucks"', function() {
+      return kssCLI('--builder builder/nunjucks --verbose --source ' + helperUtils.fixtures('source-nunjucks-builder-test') + ' --destination ' + helperUtils.fixtures('..', 'output', 'nested')).then(result => {
+        expect(result.error).to.not.exist;
+        expect(result.stdout).to.include(successMessage);
+        expect(result.stdout).to.include('Builder     : ' + path.resolve(__dirname, '..', 'builder', 'nunjucks'));
       });
     });
   });
