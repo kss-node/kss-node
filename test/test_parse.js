@@ -3,6 +3,7 @@
 'use strict';
 
 const marked = require('marked');
+const emoji = require('node-emoji');
 
 describe('kss.parse()', function() {
   before(function(done) {
@@ -407,6 +408,34 @@ describe('kss.parse()', function() {
       it('should not add HTML when disabled', function() {
         return helperUtils.traverseFixtures({mask: 'property-header.less', markdown: false}).then(styleGuide => {
           expect(styleGuide.sections('header.three-paragraphs').description()).to.equal('ANOTHER PARAGRAPH\n\nAND ANOTHER');
+        });
+      });
+    });
+
+    describe('.emoji:', function() {
+      it('should be enabled by default', function() {
+        return helperUtils.traverseFixtures({
+          mask: 'options-emoji.less',
+          markdown: false
+        }).then(styleGuide => {
+          let section = styleGuide.sections('emoji');
+          let modifiers = section.modifiers();
+          expect(section.header()).to.equal(emoji.emojify('HEADER :smile:'));
+          expect(section.description()).to.equal(emoji.emojify('DESCRIPTION :smile:'));
+          expect(modifiers[0].description()).to.equal(emoji.emojify('HOVER :smile:'));
+        });
+      });
+      it('should not add emoji when disabled', function() {
+        return helperUtils.traverseFixtures({
+          mask: 'options-emoji.less',
+          markdown: false,
+          emoji: false
+        }).then(styleGuide => {
+          let section = styleGuide.sections('emoji');
+          let modifiers = section.modifiers();
+          expect(section.header()).to.equal('HEADER :smile:');
+          expect(section.description()).to.equal('DESCRIPTION :smile:');
+          expect(modifiers[0].description()).to.equal('HOVER :smile:');
         });
       });
     });
