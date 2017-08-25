@@ -887,15 +887,10 @@ class KssBuilderBase {
               }
             }
 
-            // If the markup file is not found, note that in the style guide.
+            // If the markup file is not found, fail.
             if (!foundTemplate && !foundExample) {
               template.markup += ' NOT FOUND!';
-              if (!this.options.verbose) {
-                this.log('WARNING: In section ' + template.reference + ', ' + template.markup);
-              }
-              loadTemplates.push(
-                loadInlineTemplate(template.name, template.markup)
-              );
+              throw new Error('ERROR: In section ' + template.reference + ', ' + template.markup);
             } else if (!foundTemplate) {
               // If we found an example, but no template, load an empty
               // template.
