@@ -96,7 +96,7 @@ class KssBuilderBase {
         path: true,
         multiple: false,
         describe: 'Use the specified builder when building your style guide',
-        default: path.relative(process.cwd(), path.join(__dirname, '..', 'handlebars'))
+        default: path.relative(process.cwd(), path.join(__dirname, '..', 'liquid'))
       },
       'css': {
         group: 'Style guide:',
@@ -208,14 +208,15 @@ class KssBuilderBase {
         // caller recover from the thrown error.
         const supportedBuilders = [
           'builder/twig',
-          'builder/nunjucks'
+          'builder/nunjucks',
+          'builder/liquid'
         ];
         // istanbul ignore if
         if (supportedBuilders.indexOf(builderClass) > -1) {
           return reject(new Error(`The specified builder, "${builderClass}", is not relative to the current working directory.`));
         } else {
-          let KssBuilderHandlebars = require('../handlebars');
-          newBuilder = new KssBuilderHandlebars();
+          let KssBuilderLiquid = require('../liquid');
+          newBuilder = new KssBuilderLiquid();
         }
       }
 
