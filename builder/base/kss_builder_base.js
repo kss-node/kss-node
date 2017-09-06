@@ -834,13 +834,13 @@ class KssBuilderBase {
         let findTemplates = [],
           matchFilename = path.basename(template.file),
           matchExampleFilename = 'kss-example-' + matchFilename;
-        this.options.source.forEach(source => {
-          let returnFilesAndSource = function(files) {
-            return {
-              source: source,
-              files: files
+          this.options.source.forEach(source => {
+            let returnFilesAndSource = function(files) {
+              return {
+                source: source,
+                files: files
+              };
             };
-          };
           findTemplates.push(glob(source + '/**/' + template.file).then(returnFilesAndSource));
           findTemplates.push(glob(source + '/**/' + path.join(path.dirname(template.file), matchExampleFilename)).then(returnFilesAndSource));
         });
@@ -1150,10 +1150,13 @@ class KssBuilderBase {
 
       return getHomepageText.then(() => {
         // Render the template and save it to the destination.
-        return fs.writeFileAsync(
-          path.join(this.options.destination, fileName),
-          templateRender(this.templates[templateName], context)
-        );
+        return templateRender(this.templates[templateName], context).then(result => {
+          console.log(result);
+          return fs.writeFileAsync(
+            path.join(this.options.destination, fileName),
+            result
+          );
+        });
       });
     });
   }

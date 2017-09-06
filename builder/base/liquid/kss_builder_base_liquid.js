@@ -24,8 +24,6 @@ class KssBuilderBaseLiquid extends KssBuilderBase {
 
     this.engine = new Liquid.Engine;
 
-    console.log();
-
 
     let prepTasks = [];
 
@@ -43,6 +41,10 @@ class KssBuilderBaseLiquid extends KssBuilderBase {
   build(styleGuide) {
 
     let options = {};
+
+    options =  function(tp, contex) {
+      ;
+    }
 
     options.readBuilderTemplate = name => {
       return fs.readFileAsync(path.resolve(this.options.builder, name + '.liquid'), 'utf8').then(content => {
@@ -66,7 +68,6 @@ class KssBuilderBaseLiquid extends KssBuilderBase {
 
       try {
         context = require(path.join(path.dirname(filepath), path.basename(filepath, path.extname(filepath)) + '.json'));
-
         context = JSON.parse(JSON.stringify(context));
       } catch (error) {
         context = {};
@@ -79,11 +80,16 @@ class KssBuilderBaseLiquid extends KssBuilderBase {
     };
 
     options.getTemplateMarkup = name => {
-      return Promise.resolve(this.engine.render(name));
+      return Promise.resolve(this.engine.tags[name]);
     };
 
     options.templateRender = (template, context) => {
-      return template(context);
+      return template.render(context);
+      // return new Promise((resolve, reject) => {
+      //   template.render(context).then(result => {
+      //       Promise.resolve(result);
+      //   });
+      // });
     };
 
     options.filenameToTemplateRef = filename => {
