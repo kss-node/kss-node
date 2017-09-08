@@ -18,12 +18,11 @@ class KssBuilderBaseLiquid extends KssBuilderBase {
   prepare(styleGuide) {
     return super.prepare(styleGuide).then(styleGuide => {
 
-      if(this.options.verbose) {
+    if(this.options.verbose) {
       this.log('');
     }
 
     this.engine = new Liquid.Engine;
-
 
     let prepTasks = [];
 
@@ -41,10 +40,7 @@ class KssBuilderBaseLiquid extends KssBuilderBase {
   build(styleGuide) {
 
     let options = {};
-
-    options =  function(tp, contex) {
-      ;
-    }
+    this.templates = {};
 
     options.readBuilderTemplate = name => {
       return fs.readFileAsync(path.resolve(this.options.builder, name + '.liquid'), 'utf8').then(content => {
@@ -54,13 +50,20 @@ class KssBuilderBaseLiquid extends KssBuilderBase {
 
     options.readSectionTemplate = (name, filepath) => {
       return fs.readFileAsync(filepath, 'utf8').then(contents => {
-          return this.engine.registerTag(name, contents);
+        return this.engine.parse(contents).then(result => {
+            this.templates[name] = result;
+            return contents;
+          });
         });
+
     };
 
     options.loadInlineTemplate = (name, markup) => {
-      this.engine.registerTag(name, contents);
-      return Promise.resolve();
+      return this.engine.parse(markup).then(result => {
+        console.log(result);
+        this.templates[name] = result;
+        return Promise.resolve(result);
+      });
     };
 
     options.loadContext = filepath => {
@@ -76,20 +79,15 @@ class KssBuilderBaseLiquid extends KssBuilderBase {
     };
 
     options.getTemplate = name => {
-      return Promise.resolve(this.engine.parse('{{> "' + name + '"}}'));
+      return Promise.resolve(this.templates[name]);
     };
 
     options.getTemplateMarkup = name => {
-      return Promise.resolve(this.engine.tags[name]);
+      return Promise.resolve(this.templates[name]);
     };
 
     options.templateRender = (template, context) => {
       return template.render(context);
-      // return new Promise((resolve, reject) => {
-      //   template.render(context).then(result => {
-      //       Promise.resolve(result);
-      //   });
-      // });
     };
 
     options.filenameToTemplateRef = filename => {
