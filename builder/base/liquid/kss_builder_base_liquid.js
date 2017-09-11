@@ -50,18 +50,14 @@ class KssBuilderBaseLiquid extends KssBuilderBase {
 
     options.readSectionTemplate = (name, filepath) => {
       return fs.readFileAsync(filepath, 'utf8').then(contents => {
-        return this.engine.parse(contents).then(result => {
             this.engine.registerTag(name, contents);
             return contents;
-          });
         });
-
     };
 
     options.loadInlineTemplate = (name, markup) => {
       return this.engine.parse(markup).then(result => {
-        console.log(result);
-        this.templates[name] = result;
+        this.engine.registerTag(name, markup);
         return Promise.resolve(result);
       });
     };
@@ -79,7 +75,9 @@ class KssBuilderBaseLiquid extends KssBuilderBase {
     };
 
     options.getTemplate = name => {
-      return Promise.resolve(this.engine.parse('{{> "' + name + '"}}'));
+      return this.engine.parse(this.engine.tags[name]).then(result => {
+        return Promise.resolve(result);
+      });
     };
 
     options.getTemplateMarkup = name => {

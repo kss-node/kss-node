@@ -169,87 +169,87 @@ class KssBuilderBase {
   static loadBuilder(builderClass) {
     return new Promise((resolve, reject) => {
       let newBuilder = {},
-        SomeBuilder,
-        isCompatible = true,
-        builderAPI = 'undefined';
+      SomeBuilder,
+      isCompatible = true,
+      builderAPI = 'undefined';
 
-      try {
-        // The parameter can be a class or constructor function.
-        if (typeof builderClass === 'function') {
-          SomeBuilder = builderClass;
+    try {
+      // The parameter can be a class or constructor function.
+      if (typeof builderClass === 'function') {
+        SomeBuilder = builderClass;
 
         // If the parameter is a path, try to load the module.
-        } else if (typeof builderClass === 'string') {
-          SomeBuilder = require(path.resolve(builderClass));
+      } else if (typeof builderClass === 'string') {
+        SomeBuilder = require(path.resolve(builderClass));
 
         // Unexpected parameter.
-        } else {
-          return reject(new Error('Unexpected value for "builder"; should be a path to a module or a JavaScript Class.'));
-        }
+      } else {
+        return reject(new Error('Unexpected value for "builder"; should be a path to a module or a JavaScript Class.'));
+      }
 
-        // Check for a kss-node 2.0 template and KssGenerator. Template's were
-        // objects that provided the builder (generator) as a property.
-        if (typeof SomeBuilder === 'object'
-          && SomeBuilder.hasOwnProperty('generator')
-          && SomeBuilder.generator.hasOwnProperty('implementsAPI')) {
-          isCompatible = false;
-          builderAPI = SomeBuilder.generator.implementsAPI;
+      // Check for a kss-node 2.0 template and KssGenerator. Template's were
+      // objects that provided the builder (generator) as a property.
+      if (typeof SomeBuilder === 'object'
+        && SomeBuilder.hasOwnProperty('generator')
+        && SomeBuilder.generator.hasOwnProperty('implementsAPI')) {
+        isCompatible = false;
+        builderAPI = SomeBuilder.generator.implementsAPI;
 
         // Try to create a new builder.
-        } else {
-          newBuilder = new SomeBuilder();
-        }
-
-      } catch (e) {
-        // Builders don't have to export their own builder class. If the builder
-        // fails to export a builder class, we assume it wanted the default
-        // builder. If the loader fails when given a string, we check if the
-        // caller (either cli.js or kss.js) wanted the Twig builder and let the
-        // caller recover from the thrown error.
-        const supportedBuilders = [
-          'builder/twig',
-          'builder/nunjucks',
-          'builder/liquid'
-        ];
-        // istanbul ignore if
-        if (supportedBuilders.indexOf(builderClass) > -1) {
-          return reject(new Error(`The specified builder, "${builderClass}", is not relative to the current working directory.`));
-        } else {
-          let KssBuilderLiquid = require('../liquid');
-          newBuilder = new KssBuilderLiquid();
-        }
-      }
-
-      // Grab the builder API version.
-      if (newBuilder.hasOwnProperty('API')) {
-        builderAPI = newBuilder.API;
-      }
-
-      // Ensure KssBuilderBase is the base class.
-      if (!(newBuilder instanceof KssBuilderBase)) {
-        isCompatible = false;
-      } else if (builderAPI.indexOf('.') === -1) {
-        isCompatible = false;
       } else {
-        let version = kssBuilderAPI.split('.');
-        let apiMajor = parseInt(version[0]);
-        let apiMinor = parseInt(version[1]);
-
-        version = builderAPI.split('.');
-        let builderMajor = parseInt(version[0]);
-        let builderMinor = parseInt(version[1]);
-
-        if (builderMajor !== apiMajor || builderMinor > apiMinor) {
-          isCompatible = false;
-        }
+        newBuilder = new SomeBuilder();
       }
 
-      if (!isCompatible) {
-        return reject(new Error('kss expected the builder to implement KssBuilderBase API version ' + kssBuilderAPI + '; version "' + builderAPI + '" is being used instead.'));
+    } catch (e) {
+      // Builders don't have to export their own builder class. If the builder
+      // fails to export a builder class, we assume it wanted the default
+      // builder. If the loader fails when given a string, we check if the
+      // caller (either cli.js or kss.js) wanted the Twig builder and let the
+      // caller recover from the thrown error.
+      const supportedBuilders = [
+        'builder/twig',
+        'builder/nunjucks',
+        'builder/liquid'
+      ];
+      // istanbul ignore if
+      if (supportedBuilders.indexOf(builderClass) > -1) {
+        return reject(new Error(`The specified builder, "${builderClass}", is not relative to the current working directory.`));
+      } else {
+        let KssBuilderHandlebars = require('../liquid');
+        newBuilder = new KssBuilderLiquid();
       }
+    }
 
-      return resolve(newBuilder);
-    });
+    // Grab the builder API version.
+    if (newBuilder.hasOwnProperty('API')) {
+      builderAPI = newBuilder.API;
+    }
+
+    // Ensure KssBuilderBase is the base class.
+    if (!(newBuilder instanceof KssBuilderBase)) {
+      isCompatible = false;
+    } else if (builderAPI.indexOf('.') === -1) {
+      isCompatible = false;
+    } else {
+      let version = kssBuilderAPI.split('.');
+      let apiMajor = parseInt(version[0]);
+      let apiMinor = parseInt(version[1]);
+
+      version = builderAPI.split('.');
+      let builderMajor = parseInt(version[0]);
+      let builderMinor = parseInt(version[1]);
+
+      if (builderMajor !== apiMajor || builderMinor > apiMinor) {
+        isCompatible = false;
+      }
+    }
+
+    if (!isCompatible) {
+      return reject(new Error('kss expected the builder to implement KssBuilderBase API version ' + kssBuilderAPI + '; version "' + builderAPI + '" is being used instead.'));
+    }
+
+    return resolve(newBuilder);
+  });
   }
 
   /**
@@ -393,7 +393,7 @@ class KssBuilderBase {
             /* eslint-disable no-loop-func */
             this.options[key] = this.options[key].map(value => {
               return path.resolve(value);
-            });
+          });
             /* eslint-enable no-loop-func */
           } else if (typeof this.options[key] === 'string') {
             this.options[key] = path.resolve(this.options[key]);
@@ -496,33 +496,33 @@ class KssBuilderBase {
     return fs.statAsync(destinationPath).catch(error => {
       // Pass the error on to the next .then().
       return error;
-    }).then(result => {
+  }).then(result => {
       // If we successfully get stats, the destination exists.
       if (!(result instanceof Error)) {
-        return Promise.reject(new Error('This folder already exists: ' + destinationPath));
-      }
+      return Promise.reject(new Error('This folder already exists: ' + destinationPath));
+    }
 
-      // If the destination path does not exist, we copy the builder to it.
-      // istanbul ignore else
-      if (result.code === 'ENOENT') {
-        return fs.copyAsync(
-          builderPath,
-          destinationPath,
-          {
-            clobber: true,
-            filter: filePath => {
-              // Only look at the part of the path inside the builder.
-              let relativePath = path.sep + path.relative(builderPath, filePath);
-              // Skip any files with a path matching: /node_modules or /.
-              return (new RegExp('^(?!.*\\' + path.sep + '(node_modules$|\\.))')).test(relativePath);
-            }
-          }
-        );
-      } else {
-        // Otherwise, report the error.
-        return Promise.reject(result);
-      }
-    });
+    // If the destination path does not exist, we copy the builder to it.
+    // istanbul ignore else
+    if (result.code === 'ENOENT') {
+      return fs.copyAsync(
+        builderPath,
+        destinationPath,
+        {
+          clobber: true,
+          filter: filePath => {
+          // Only look at the part of the path inside the builder.
+          let relativePath = path.sep + path.relative(builderPath, filePath);
+      // Skip any files with a path matching: /node_modules or /.
+      return (new RegExp('^(?!.*\\' + path.sep + '(node_modules$|\\.))')).test(relativePath);
+    }
+    }
+    );
+    } else {
+      // Otherwise, report the error.
+      return Promise.reject(result);
+    }
+  });
   }
 
   /**
@@ -545,7 +545,7 @@ class KssBuilderBase {
     // Create a list of references in the style guide.
     sectionReferences = styleGuide.sections().map(section => {
       return section.reference();
-    });
+  });
 
     // Return an error if no KSS sections are found.
     if (sectionReferences.length === 0) {
@@ -554,24 +554,24 @@ class KssBuilderBase {
 
     sectionReferences.forEach(reference => {
       let refParts = reference.split(delim),
-        checkReference = '';
-      // Split the reference into parts and ensure there are existing sections
-      // for each level of the reference. e.g. For "a.b.c", check for existing
-      // sections for "a" and "a.b".
-      for (let i = 0; i < refParts.length - 1; i++) {
-        checkReference += (checkReference ? delim : '') + refParts[i];
-        if (sectionReferences.indexOf(checkReference) === -1 && newSections.indexOf(checkReference) === -1) {
-          newSections.push(checkReference);
-          // Add the missing section to the style guide.
-          styleGuide
-            .autoInit(false)
-            .sections({
-              header: checkReference,
-              reference: checkReference
-            });
-        }
+      checkReference = '';
+    // Split the reference into parts and ensure there are existing sections
+    // for each level of the reference. e.g. For "a.b.c", check for existing
+    // sections for "a" and "a.b".
+    for (let i = 0; i < refParts.length - 1; i++) {
+      checkReference += (checkReference ? delim : '') + refParts[i];
+      if (sectionReferences.indexOf(checkReference) === -1 && newSections.indexOf(checkReference) === -1) {
+        newSections.push(checkReference);
+        // Add the missing section to the style guide.
+        styleGuide
+          .autoInit(false)
+          .sections({
+            header: checkReference,
+            reference: checkReference
+          });
       }
-    });
+    }
+  });
 
     // Re-init the style guide if we added new sections.
     if (newSections.length) {
@@ -612,20 +612,20 @@ class KssBuilderBase {
           {
             clobber: true,
             filter: filePath => {
-              // Only look at the part of the path inside the builder.
-              let relativePath = path.sep + path.relative(this.options.builder, filePath);
-              // Skip any files with a path matching: "/node_modules" or "/."
-              return (new RegExp('^(?!.*\\' + path.sep + '(node_modules$|\\.))')).test(relativePath);
-            }
-          }
-        ).catch(() => {
+            // Only look at the part of the path inside the builder.
+            let relativePath = path.sep + path.relative(this.options.builder, filePath);
+        // Skip any files with a path matching: "/node_modules" or "/."
+        return (new RegExp('^(?!.*\\' + path.sep + '(node_modules$|\\.))')).test(relativePath);
+      }
+      }
+      ).catch(() => {
           // If the builder does not have a kss-assets folder, ignore the error.
           return Promise.resolve();
-        });
+      });
       } else {
         return Promise.resolve();
-      }
-    });
+  }
+  });
   }
 
   /**
@@ -645,24 +645,24 @@ class KssBuilderBase {
     let promises = [];
     this.options.extend.forEach(directory => {
       promises.push(
-        fs.readdirAsync(directory).then(files => {
-          files.forEach(fileName => {
-            if (path.extname(fileName) === '.js') {
-              let extendFunction = require(path.join(directory, fileName));
-              if (typeof extendFunction === 'function') {
-                extendFunction(templateEngine, this.options);
-              }
-            }
-          });
-        }).catch((error) => {
-          // Log the error, but allow operation to continue.
-          if (this.options.verbose) {
-            this.logError(new Error('An error occurred when attempting to use the "extend" directory, ' + directory + ': ' + error.message));
-          }
-          return Promise.resolve();
-        })
-      );
-    });
+      fs.readdirAsync(directory).then(files => {
+        files.forEach(fileName => {
+        if (path.extname(fileName) === '.js') {
+      let extendFunction = require(path.join(directory, fileName));
+      if (typeof extendFunction === 'function') {
+        extendFunction(templateEngine, this.options);
+      }
+    }
+  });
+  }).catch((error) => {
+      // Log the error, but allow operation to continue.
+      if (this.options.verbose) {
+      this.logError(new Error('An error occurred when attempting to use the "extend" directory, ' + directory + ': ' + error.message));
+    }
+    return Promise.resolve();
+  })
+  );
+  });
     return promises;
   }
 
@@ -729,8 +729,8 @@ class KssBuilderBase {
     if (typeof this.templates.index === 'undefined') {
       readBuilderTask = readBuilderTemplate('index').then(template => {
         this.templates.index = template;
-        return Promise.resolve();
-      });
+      return Promise.resolve();
+    });
     } else {
       readBuilderTask = Promise.resolve();
     }
@@ -740,13 +740,13 @@ class KssBuilderBase {
       readBuilderTask = readBuilderTask.then(() => {
         return readBuilderTemplate('section').then(template => {
           this.templates.section = template;
-          return Promise.resolve();
-        }).catch(() => {
-          // If the section template cannot be read, use the index template.
-          this.templates.section = this.templates.index;
-          return Promise.resolve();
-        });
-      });
+      return Promise.resolve();
+    }).catch(() => {
+        // If the section template cannot be read, use the index template.
+        this.templates.section = this.templates.index;
+      return Promise.resolve();
+    });
+    });
     }
 
     // Optionally load/compile the item template.
@@ -754,13 +754,13 @@ class KssBuilderBase {
       readBuilderTask = readBuilderTask.then(() => {
         return readBuilderTemplate('item').then(template => {
           this.templates.item = template;
-          return Promise.resolve();
-        }).catch(() => {
-          // If the item template cannot be read, use the section template.
-          this.templates.item = this.templates.section;
-          return Promise.resolve();
-        });
-      });
+      return Promise.resolve();
+    }).catch(() => {
+        // If the item template cannot be read, use the section template.
+        this.templates.item = this.templates.section;
+      return Promise.resolve();
+    });
+    });
     }
     buildTasks.push(readBuilderTask);
 
@@ -769,7 +769,7 @@ class KssBuilderBase {
     if (this.options.verbose && this.styleGuide.meta.files) {
       this.log(this.styleGuide.meta.files.map(file => {
         return ' - ' + file;
-      }).join('\n'));
+    }).join('\n'));
     }
 
     if (this.options.verbose) {
@@ -796,155 +796,159 @@ class KssBuilderBase {
       // Accumulate an array of section references for all sections at the root
       // of the style guide.
       let currentRoot = section.reference().split(/(?:\.|\ \-\ )/)[0];
-      if (sectionRoots.indexOf(currentRoot) === -1) {
-        sectionRoots.push(currentRoot);
+    if (sectionRoots.indexOf(currentRoot) === -1) {
+      sectionRoots.push(currentRoot);
+    }
+
+    if (!section.markup()) {
+      return;
+    }
+
+    // Register all the markup blocks as templates.
+    let template = {
+      name: section.reference(),
+      reference: section.reference(),
+      file: '',
+      markup: section.markup(),
+      context: {},
+      exampleName: false,
+      exampleContext: {}
+    };
+
+    // Check if the markup is a file path.
+    if (template.markup.search('^[^\n]+\.(html|' + templateExtension + ')$') === -1) {
+      if (this.options.verbose) {
+        this.log(' - ' + template.reference + ': inline markup');
       }
+      console.log('hey');
+      buildTasks.push(
+        loadInlineTemplate(template.name, template.markup).then(() => {
+          return saveTemplate(template);
+    })
+    );
+    } else {
+      // Attempt to load the file path.
+      section.custom('markupFile', template.markup);
+      template.file = template.markup;
+      template.name = filenameToTemplateRef(template.file);
 
-      if (!section.markup()) {
-        return;
-      }
-
-      // Register all the markup blocks as templates.
-      let template = {
-        name: section.reference(),
-        reference: section.reference(),
-        file: '',
-        markup: section.markup(),
-        context: {},
-        exampleName: false,
-        exampleContext: {}
-      };
-
-      // Check if the markup is a file path.
-      if (template.markup.search('^[^\n]+\.(html|' + templateExtension + ')$') === -1) {
-        if (this.options.verbose) {
-          this.log(' - ' + template.reference + ': inline markup');
-        }
-        buildTasks.push(
-          loadInlineTemplate(template.name, template.markup).then(() => {
-            return saveTemplate(template);
-          })
-        );
-      } else {
-        // Attempt to load the file path.
-        section.custom('markupFile', template.markup);
-        template.file = template.markup;
-        template.name = filenameToTemplateRef(template.file);
-
-        let findTemplates = [],
-          matchFilename = path.basename(template.file),
-          matchExampleFilename = 'kss-example-' + matchFilename;
-          this.options.source.forEach(source => {
-            let returnFilesAndSource = function(files) {
-              return {
-                source: source,
-                files: files
-              };
-            };
-          findTemplates.push(glob(source + '/**/' + template.file).then(returnFilesAndSource));
-          findTemplates.push(glob(source + '/**/' + path.join(path.dirname(template.file), matchExampleFilename)).then(returnFilesAndSource));
-        });
-        buildTasks.push(
-          Promise.all(findTemplates).then(globMatches => {
-            let foundTemplate = false,
-              foundExample = false,
-              loadTemplates = [];
-            for (let globMatch of globMatches) {
-              let files = globMatch.files,
-                source = globMatch.source;
-              if (!foundTemplate || !foundExample) {
-                for (let file of files) {
-                  // Read the template from the first matched path.
-                  let filename = path.basename(file);
-                  if (!foundTemplate && filename === matchFilename) {
-                    foundTemplate = true;
-                    section.custom('markupFile', path.relative(source, file));
-                    template.file = file;
-                      readSectionTemplate(template.name, file).then(() => {
-                        /* eslint-disable max-nested-callbacks */
-                        return loadContext(file).then(context => {
-                          template.context = context;
-                          loadTemplates.push(context);
-                          return Promise.resolve();
-                        });
-                        /* eslint-enable max-nested-callbacks */
-                      })
-                  } else if (!foundExample && filename === matchExampleFilename) {
-                    foundExample = true;
-                    template.exampleName = 'kss-example-' + template.name;
-                    loadTemplates.push(
-                      readSectionTemplate(template.exampleName, file).then(() => {
-                        /* eslint-disable max-nested-callbacks */
-                        return loadContext(file).then(context => {
-                          template.exampleContext = context;
-                          return Promise.resolve();
-                        });
-                        /* eslint-enable max-nested-callbacks */
-                      })
-                    );
-                  }
-                }
-              }
-            }
-
-            // If the markup file is not found, note that in the style guide.
-            if (!foundTemplate && !foundExample) {
-              template.markup += ' NOT FOUND!';
-              if (!this.options.verbose) {
-                this.log('WARNING: In section ' + template.reference + ', ' + template.markup);
-              }
-              loadTemplates.push(
-                loadInlineTemplate(template.name, template.markup)
-              );
-            } else if (!foundTemplate) {
-              // If we found an example, but no template, load an empty
-              // template.
-              loadTemplates.push(
-                loadInlineTemplate(template.name, emptyTemplate)
-              );
-            }
-
-            if (this.options.verbose) {
-              this.log(' - ' + template.reference + ': ' + template.markup);
-            }
-
-            return Promise.all(loadTemplates).then(() => {
-              return template;
-            });
-          }).then(saveTemplate)
-        );
-      }
+      let findTemplates = [],
+        matchFilename = path.basename(template.file),
+        matchExampleFilename = 'kss-example-' + matchFilename;
+      this.options.source.forEach(source => {
+        let returnFilesAndSource = function(files) {
+          return {
+            source: source,
+            files: files
+          };
+        };
+      findTemplates.push(glob(source + '/**/' + template.file).then(returnFilesAndSource));
+      findTemplates.push(glob(source + '/**/' + path.join(path.dirname(template.file), matchExampleFilename)).then(returnFilesAndSource));
     });
+      buildTasks.push(
+        Promise.all(findTemplates).then(globMatches => {
+          let foundTemplate = false,
+          foundExample = false,
+          loadTemplates = [];
+      for (let globMatch of globMatches) {
+        let files = globMatch.files,
+          source = globMatch.source;
+        if (!foundTemplate || !foundExample) {
+          for (let file of files) {
+            // Read the template from the first matched path.
+            let filename = path.basename(file);
+            if (!foundTemplate && filename === matchFilename) {
+              foundTemplate = true;
+              section.custom('markupFile', path.relative(source, file));
+              template.file = file;
+                readSectionTemplate(template.name, file).then(result => {
+                  /* eslint-disable max-nested-callbacks */
+                  loadTemplates.push(result);
+
+                  // changed it from pushing a whole promise object the loadTemplate array to
+                  // Pushing only thr section.
+                  return loadContext(file).then(context => {
+                    template.context = context;
+              return Promise.resolve();
+            });
+              /* eslint-enable max-nested-callbacks */
+            })
+            } else if (!foundExample && filename === matchExampleFilename) {
+              foundExample = true;
+              template.exampleName = 'kss-example-' + template.name;
+              loadTemplates.push(
+                readSectionTemplate(template.exampleName, file).then(() => {
+                  /* eslint-disable max-nested-callbacks */
+                  return loadContext(file).then(context => {
+                    template.exampleContext = context;
+              return Promise.resolve();
+            });
+              /* eslint-enable max-nested-callbacks */
+            })
+            );
+            }
+          }
+        }
+      }
+
+      // If the markup file is not found, note that in the style guide.
+      if (!foundTemplate && !foundExample) {
+        template.markup += ' NOT FOUND!';
+        if (!this.options.verbose) {
+          this.log('WARNING: In section ' + template.reference + ', ' + template.markup);
+        }
+        loadTemplates.push(
+          loadInlineTemplate(template.name, template.markup)
+        );
+      } else if (!foundTemplate) {
+        // If we found an example, but no template, load an empty
+        // template.
+        loadTemplates.push(
+          loadInlineTemplate(template.name, emptyTemplate)
+        );
+      }
+
+      if (this.options.verbose) {
+        this.log(' - ' + template.reference + ': ' + template.markup);
+      }
+
+      return Promise.all(loadTemplates).then(() => {
+        return template;
+    });
+    }).then(saveTemplate)
+    );
+    }
+  });
 
     return Promise.all(buildTasks).then(() => {
       if (this.options.verbose) {
-        this.log('...Building style guide pages:');
-      }
+      this.log('...Building style guide pages:');
+    }
 
-      let buildPageTasks = [];
+    let buildPageTasks = [];
 
-      // Build the homepage.
-      buildPageTasks.push(this.buildPage('index', options, null, []));
+    // Build the homepage.
+    buildPageTasks.push(this.buildPage('index', options, null, []));
 
-      // Group all of the sections by their root reference, and make a page for
-      // each.
-      sectionRoots.forEach(rootReference => {
-        buildPageTasks.push(this.buildPage('section', options, rootReference, this.styleGuide.sections(rootReference + '.*')));
-      });
+    // Group all of the sections by their root reference, and make a page for
+    // each.
+    sectionRoots.forEach(rootReference => {
+      buildPageTasks.push(this.buildPage('section', options, rootReference, this.styleGuide.sections(rootReference + '.*')));
+  });
 
-      // For each section, build a page which only has a single section on it.
-      // istanbul ignore else
-      if (this.templates.item) {
-        sections.forEach(section => {
-          buildPageTasks.push(this.buildPage('item', options, section.reference(), [section]));
-        });
-      }
+    // For each section, build a page which only has a single section on it.
+    // istanbul ignore else
+    if (this.templates.item) {
+      sections.forEach(section => {
+        buildPageTasks.push(this.buildPage('item', options, section.reference(), [section]));
+    });
+    }
 
-      return Promise.all(buildPageTasks);
-    }).then(() => {
+    return Promise.all(buildPageTasks);
+  }).then(() => {
       // We return the KssStyleGuide, just like KssBuilderBase.build() does.
       return Promise.resolve(styleGuide);
-    });
+  });
   }
 
   /**
@@ -975,7 +979,7 @@ class KssBuilderBase {
     context.styleGuide = this.styleGuide;
     context.sections = sections.map(section => {
       return section.toJSON();
-    });
+  });
     context.hasNumericReferences = this.styleGuide.hasNumericReferences();
     context.sectionTemplates = this.sectionTemplates;
     context.options = this.options;
@@ -998,167 +1002,166 @@ class KssBuilderBase {
       context.sections.map(section => {
         // If the section does not have any markup, render an empty string.
         if (!section.markup) {
-          return Promise.resolve();
-        } else {
-          // Load the information about this section's markup template.
-          let templateInfo = this.sectionTemplates[section.reference];
-          let markupTask,
-            exampleTask = false,
-            exampleContext,
-            modifierRender = (template, data, modifierClass) => {
-              data = contextClone(data);
-              /* eslint-disable camelcase */
-              data.modifier_class = (data.modifier_class ? data.modifier_class + ' ' : '') + modifierClass;
-              /* eslint-enable camelcase */
-              return templateRender(template, data);
-            };
+      return Promise.resolve();
+    } else {
+      // Load the information about this section's markup template.
+      let templateInfo = this.sectionTemplates[section.reference];
+      let markupTask,
+        exampleTask = false,
+        exampleContext,
+        modifierRender = (template, data, modifierClass) => {
+        data = contextClone(data);
+        /* eslint-disable camelcase */
+        data.modifier_class = (data.modifier_class ? data.modifier_class + ' ' : '') + modifierClass;
+        /* eslint-enable camelcase */
+        return templateRender(template, data);
+      };
 
-          // Set the section's markup variable. It's either the template's raw
-          // markup or the rendered template.
-          if (!this.options.markup && path.extname(templateInfo.filename) === '.' + options.templateExtension) {
-            markupTask = getTemplateMarkup(templateInfo.name).then(markup => {
-              // Copy the template's raw (unrendered) markup.
-              section.markup = markup;
-            });
-          } else {
-            // Temporarily set it to "true" until we create a proper Promise.
-            exampleTask = !(templateInfo.exampleName);
-            markupTask = getTemplate(templateInfo.name).then(template => {
-              section.markup = modifierRender(
-                template,
-                templateInfo.context,
-                // Display the placeholder if the section has modifiers.
-                (section.modifiers.length !== 0 ? this.options.placeholder : '')
-              );
+      // Set the section's markup variable. It's either the template's raw
+      // markup or the rendered template.
+      if (!this.options.markup && path.extname(templateInfo.filename) === '.' + options.templateExtension) {
+        markupTask = getTemplateMarkup(templateInfo.name).then(markup => {
+          // Copy the template's raw (unrendered) markup.
+          section.markup = markup;
+      });
+      } else {
+        // Temporarily set it to "true" until we create a proper Promise.
+        exampleTask = !(templateInfo.exampleName);
+        markupTask = getTemplate(templateInfo.name).then(template => {
+          section.markup = modifierRender(
+          template,
+          templateInfo.context,
+          // Display the placeholder if the section has modifiers.
+          (section.modifiers.length !== 0 ? this.options.placeholder : '')
+        );
 
-              // If this section doesn't have a "kss-example" template, we will
-              // be re-using this template for the rendered examples.
-              if (!templateInfo.exampleName) {
-                exampleTask = Promise.resolve(template);
-              }
-            });
-          }
-
-          // Pick a template to use for the rendered example variable.
-          if (templateInfo.exampleName) {
-            exampleTask = getTemplate(templateInfo.exampleName);
-            exampleContext = templateInfo.exampleContext;
-          } else {
-            if (!exampleTask) {
-              exampleTask = getTemplate(templateInfo.name);
-            }
-            exampleContext = templateInfo.context;
-          }
-
-          // Render the example variable and each modifier's markup.
-          return markupTask.then(() => {
-            return exampleTask;
-          }).then(template => {
-            templateRender(template, contextClone(exampleContext)).then(result => {
-              section.example = result;
-
-              section.modifiers.forEach(modifier => {
-                modifier.markup = modifierRender(
-                  template,
-                  exampleContext,
-                  modifier.className
-                );
-              });
-              return Promise.resolve();
-            });
-          });
+        // If this section doesn't have a "kss-example" template, we will
+        // be re-using this template for the rendered examples.
+        if (!templateInfo.exampleName) {
+          exampleTask = Promise.resolve(template);
         }
-      })
-    ).then(() => {
+      });
+      }
+
+      // Pick a template to use for the rendered example variable.
+      if (templateInfo.exampleName) {
+        exampleTask = getTemplate(templateInfo.exampleName);
+        exampleContext = templateInfo.exampleContext;
+      } else {
+        if (!exampleTask) {
+          exampleTask = getTemplate(templateInfo.name);
+        }
+        exampleContext = templateInfo.context;
+      }
+
+      // Render the example variable and each modifier's markup.
+      return markupTask.then(() => {
+        return exampleTask;
+    }).then(template => {
+        section.example = templateRender(template, contextClone(exampleContext));
+
+      section.modifiers.forEach(modifier => {
+        modifier.markup = modifierRender(
+        template,
+        exampleContext,
+        modifier.className
+      );
+    });
+      return Promise.resolve();
+    });
+    }
+  })
+  ).then(() => {
 
       // Create the HTML to load the optional CSS and JS (if a sub-class hasn't already built it.)
       // istanbul ignore else
       if (typeof context.styles === 'undefined') {
-        context.styles = '';
-        for (let key in this.options.css) {
-          // istanbul ignore else
-          if (this.options.css.hasOwnProperty(key)) {
-            context.styles = context.styles + '<link rel="stylesheet" href="' + this.options.css[key] + '">\n';
-          }
+      context.styles = '';
+      for (let key in this.options.css) {
+        // istanbul ignore else
+        if (this.options.css.hasOwnProperty(key)) {
+          context.styles = context.styles + '<link rel="stylesheet" href="' + this.options.css[key] + '">\n';
         }
       }
-      // istanbul ignore else
-      if (typeof context.scripts === 'undefined') {
-        context.scripts = '';
-        for (let key in this.options.js) {
-          // istanbul ignore else
-          if (this.options.js.hasOwnProperty(key)) {
-            context.scripts = context.scripts + '<script src="' + this.options.js[key] + '"></script>\n';
-          }
+    }
+    // istanbul ignore else
+    if (typeof context.scripts === 'undefined') {
+      context.scripts = '';
+      for (let key in this.options.js) {
+        // istanbul ignore else
+        if (this.options.js.hasOwnProperty(key)) {
+          context.scripts = context.scripts + '<script src="' + this.options.js[key] + '"></script>\n';
+        }
+      }
+    }
+
+    // Create a menu for the page (if a sub-class hasn't already built one.)
+    // istanbul ignore else
+    if (typeof context.menu === 'undefined') {
+      context.menu = this.createMenu(pageReference);
+    }
+
+    // Determine the file name to use for this page.
+    if (pageReference) {
+      let rootSection = this.styleGuide.sections(pageReference);
+      if (this.options.verbose) {
+        this.log(
+          ' - ' + templateName + ' ' + pageReference
+          + ' ['
+          + (rootSection.header() ? rootSection.header() : /* istanbul ignore next */ 'Unnamed')
+          + ']'
+        );
+      }
+      // Convert the pageReference to be URI-friendly.
+      pageReference = rootSection.referenceURI();
+    } else if (this.options.verbose) {
+      this.log(' - homepage');
+    }
+    let fileName = templateName + (pageReference ? '-' + pageReference : '') + '.html';
+
+    let getHomepageText;
+    if (templateName !== 'index') {
+      getHomepageText = Promise.resolve();
+      context.homepage = false;
+    } else {
+      // Grab the homepage text if it hasn't already been provided.
+      getHomepageText = (typeof context.homepage !== 'undefined') ? /* istanbul ignore next */ Promise.resolve() : Promise.all(
+        this.options.source.map(source => {
+          return glob(source + '/**/' + this.options.homepage);
+    })
+    ).then(globMatches => {
+        for (let files of globMatches) {
+        if (files.length) {
+          // Read the file contents from the first matched path.
+          return fs.readFileAsync(files[0], 'utf8');
         }
       }
 
-      // Create a menu for the page (if a sub-class hasn't already built one.)
-      // istanbul ignore else
-      if (typeof context.menu === 'undefined') {
-        context.menu = this.createMenu(pageReference);
-      }
-
-      // Determine the file name to use for this page.
-      if (pageReference) {
-        let rootSection = this.styleGuide.sections(pageReference);
-        if (this.options.verbose) {
-          this.log(
-            ' - ' + templateName + ' ' + pageReference
-            + ' ['
-            + (rootSection.header() ? rootSection.header() : /* istanbul ignore next */ 'Unnamed')
-            + ']'
-          );
-        }
-        // Convert the pageReference to be URI-friendly.
-        pageReference = rootSection.referenceURI();
-      } else if (this.options.verbose) {
-        this.log(' - homepage');
-      }
-      let fileName = templateName + (pageReference ? '-' + pageReference : '') + '.html';
-
-      let getHomepageText;
-      if (templateName !== 'index') {
-        getHomepageText = Promise.resolve();
-        context.homepage = false;
+      if (this.options.verbose) {
+        this.log('   ...no homepage content found in ' + this.options.homepage + '.');
       } else {
-        // Grab the homepage text if it hasn't already been provided.
-        getHomepageText = (typeof context.homepage !== 'undefined') ? /* istanbul ignore next */ Promise.resolve() : Promise.all(
-          this.options.source.map(source => {
-            return glob(source + '/**/' + this.options.homepage);
-          })
-        ).then(globMatches => {
-          for (let files of globMatches) {
-            if (files.length) {
-              // Read the file contents from the first matched path.
-              return fs.readFileAsync(files[0], 'utf8');
-            }
-          }
-
-          if (this.options.verbose) {
-            this.log('   ...no homepage content found in ' + this.options.homepage + '.');
-          } else {
-            this.log('WARNING: no homepage content found in ' + this.options.homepage + '.');
-          }
-          return '';
-        }).then(homePageText => {
-          // Ensure homePageText is a non-false value. And run any results through
-          // Markdown.
-          context.homepage = homePageText ? marked(homePageText) : '';
-          return Promise.resolve();
-        });
+        this.log('WARNING: no homepage content found in ' + this.options.homepage + '.');
       }
+      return '';
+    }).then(homePageText => {
+        // Ensure homePageText is a non-false value. And run any results through
+        // Markdown.
+        context.homepage = homePageText ? marked(homePageText) : '';
+      return Promise.resolve();
+    });
+    }
 
-      return getHomepageText.then(() => {
-        // Render the template and save it to the destination.
-        return templateRender(this.templates[templateName], context).then(result => {
+    return getHomepageText.then(() => {
+      // Render the template and save it to the destination.
+      //console.log(context);
+      return templateRender(this.templates[templateName], context).then(template => {
           return fs.writeFileAsync(
-            path.join(this.options.destination, fileName),
-            result
+          path.join(this.options.destination, fileName),
+          template
           );
-        });
       });
     });
+  });
   }
 
   /**
@@ -1194,16 +1197,16 @@ class KssBuilderBase {
     return this.styleGuide.sections('x').map(rootSection => {
       let menuItem = toMenuItem(rootSection);
 
-      // Retrieve the child sections for each of the root sections.
-      menuItem.children = this.styleGuide.sections(rootSection.reference() + '.*').slice(1).map(toMenuItem);
+    // Retrieve the child sections for each of the root sections.
+    menuItem.children = this.styleGuide.sections(rootSection.reference() + '.*').slice(1).map(toMenuItem);
 
-      // Remove menu items that are deeper than the nav-depth option.
-      menuItem.children = menuItem.children.filter(item => {
-        return item.depth <= this.options['nav-depth'];
-      }, this);
+    // Remove menu items that are deeper than the nav-depth option.
+    menuItem.children = menuItem.children.filter(item => {
+      return item.depth <= this.options['nav-depth'];
+  }, this);
 
-      return menuItem;
-    });
+    return menuItem;
+  });
   }
 }
 
