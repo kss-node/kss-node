@@ -38,7 +38,7 @@
     "nunjucks": "^3.0.1",
     "twig": "^1.10.4",
     "twig-drupal-filters": "^1.0.0",
-    "yargs": "^8.0.1"
+    "yargs": "^9.0.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
