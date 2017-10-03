@@ -13,6 +13,7 @@
    *************************************************************** */
 
 const marked = require('marked'),
+  emoji = require('node-emoji'),
   path = require('path'),
   Promise = require('bluebird');
 
@@ -146,7 +147,13 @@ class KssBuilderBase {
         describe: 'Limit the navigation to the depth specified',
         default: 3
       },
-
+      'emoji': {
+        group: 'Style guide:',
+        boolean: true,
+        multiple: false,
+        describe: 'Add emoji support',
+        default: true
+      },
       'verbose': {
         count: true,
         multiple: false,
@@ -1143,6 +1150,9 @@ class KssBuilderBase {
           // Ensure homePageText is a non-false value. And run any results through
           // Markdown.
           context.homepage = homePageText ? marked(homePageText) : '';
+          if (this.options.emoji) {
+            context.homepage = emoji.emojify(context.homepage);
+          }
           return Promise.resolve();
         });
       }

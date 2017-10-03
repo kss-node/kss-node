@@ -101,7 +101,7 @@ describe('KssBuilderBaseNunjucks object API', function() {
 
     it('should implement the default option definitions', function() {
       let builder = new KssBuilderBaseNunjucks();
-      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'json', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'extend', 'homepage', 'markup', 'placeholder', 'nav-depth', 'verbose', 'extension']);
+      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'json', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'extend', 'homepage', 'markup', 'placeholder', 'nav-depth', 'emoji', 'verbose', 'extension']);
     });
   });
 

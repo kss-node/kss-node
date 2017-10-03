@@ -132,7 +132,7 @@ describe('KssBuilderBase object API', function() {
 
     it('should implement the default option definitions', function() {
       let builder = new KssBuilderBase();
-      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'json', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'extend', 'homepage', 'markup', 'placeholder', 'nav-depth', 'verbose']);
+      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'json', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'extend', 'homepage', 'markup', 'placeholder', 'nav-depth', 'emoji', 'verbose']);
     });
 
     it('should set the default log function', function() {
@@ -770,7 +770,8 @@ describe('KssBuilderBase object API', function() {
         source: helperUtils.fixtures('source-handlebars-builder-test'),
         destination: path.resolve(__dirname, 'output', 'base_handlebars', 'build-no-verbose'),
         builder: helperUtils.fixtures('builder-with-assets'),
-        extend: helperUtils.fixtures('builder-with-assets', 'extend')
+        extend: helperUtils.fixtures('builder-with-assets', 'extend'),
+        emoji: false
       });
       let styleGuide = new kss.KssStyleGuide({sections: [{header: 'Heading 4.3', reference: '4.3', markup: '4.3.hbs'}]});
       return builder.prepare(styleGuide).then(styleGuide => {
