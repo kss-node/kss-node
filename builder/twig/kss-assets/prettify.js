@@ -190,7 +190,7 @@ window['PR_SHOULD_USE_CONTINUATION'] = true;
  * seen in languages that don't support regular expression literals.
  *
  * <p>Specifically, I've removed any keywords that can't precede a regexp
- * literal in a syntactically legal javascript program, and I've removed the
+ * literal in a syntactically legal JavaScript program, and I've removed the
  * "in" keyword since it's not a keyword in many languages, and might be used
  * as a count of inches.
  *
@@ -1207,7 +1207,7 @@ var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|\\!|\\!=|\\!==|\\#|\\%|\\%=|&|&&|&
            ['lang-',        /^<%([\s\S]+?)(?:%>|$)/],
            [PR_PUNCTUATION, /^(?:<[%?]|[%?]>)/],
            ['lang-',        /^<xmp\b[^>]*>([\s\S]+?)<\/xmp\b[^>]*>/i],
-           // Unescaped content in javascript.  (Or possibly vbscript).
+           // Unescaped content in JavaScript.  (Or possibly vbscript).
            ['lang-js',      /^<script\b[^>]*>([\s\S]*?)(<\/script\b[^>]*>)/i],
            // Contains unescaped stylesheet content
            ['lang-css',     /^<style\b[^>]*>([\s\S]*?)(<\/style\b[^>]*>)/i],
