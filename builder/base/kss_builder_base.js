@@ -1036,6 +1036,7 @@ class KssBuilderBase {
               if (!templateInfo.exampleName) {
                 exampleTask = Promise.resolve(template);
               }
+              return null;
             });
           }
 
