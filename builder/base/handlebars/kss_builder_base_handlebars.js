@@ -15,6 +15,7 @@ const KssBuilderBase = require('../kss_builder_base.js'),
   Handlebars = require('handlebars');
 
 const fs = Promise.promisifyAll(require('fs-extra'));
+const crypto = require('crypto');
 
 /**
  * A kss-node builder takes input files and builds a style guide using
@@ -133,8 +134,8 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
     };
     // Converts a filename into a Handlebars partial name.
     options.filenameToTemplateRef = filename => {
-      // Return the filename without the full path or the file extension.
-      return path.basename(filename, path.extname(filename));
+      // Return hash by full path.
+      return crypto.createHash('md5').update(filename).digest("hex");
     };
     options.templateExtension = 'hbs';
     options.emptyTemplate = '{{! Cannot be an empty string. }}';

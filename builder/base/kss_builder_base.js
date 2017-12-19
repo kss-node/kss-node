@@ -840,6 +840,8 @@ class KssBuilderBase {
               files: files
             };
           };
+
+          findTemplates.push(glob(source + '/**/' + path.join(path.dirname(section.sourceFileName()), template.file)).then(returnFilesAndSource));
           findTemplates.push(glob(source + '/**/' + template.file).then(returnFilesAndSource));
           findTemplates.push(glob(source + '/**/' + path.join(path.dirname(template.file), matchExampleFilename)).then(returnFilesAndSource));
         });
@@ -859,6 +861,7 @@ class KssBuilderBase {
                     foundTemplate = true;
                     section.custom('markupFile', path.relative(source, file));
                     template.file = file;
+                    template.name = filenameToTemplateRef(file);
                     loadTemplates.push(
                       readSectionTemplate(template.name, file).then(() => {
                         /* eslint-disable max-nested-callbacks */
