@@ -135,7 +135,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
     // Converts a filename into a Handlebars partial name.
     options.filenameToTemplateRef = filename => {
       // Return hash by full path.
-      return crypto.createHash('md5').update(filename).digest("hex");
+      return crypto.createHash('md5').update(filename).digest('hex');
     };
     options.templateExtension = 'hbs';
     options.emptyTemplate = '{{! Cannot be an empty string. }}';

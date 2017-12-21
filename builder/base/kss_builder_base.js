@@ -841,8 +841,22 @@ class KssBuilderBase {
             };
           };
 
+          // Search Template in node_modules
+          try {
+            let module = require.resolve(template.file);
+
+            findTemplates.push(Promise.resolve(returnFilesAndSource([module])));
+          } catch ($e) {
+            // Module not found
+          }
+
+          // Search Template relative to section source file
           findTemplates.push(glob(source + '/**/' + path.join(path.dirname(section.sourceFileName()), template.file)).then(returnFilesAndSource));
+
+          // Search Template relative to configuration source directory
           findTemplates.push(glob(source + '/**/' + template.file).then(returnFilesAndSource));
+
+          // Search Template relative to configuration source directory with kss-example prefix
           findTemplates.push(glob(source + '/**/' + path.join(path.dirname(template.file), matchExampleFilename)).then(returnFilesAndSource));
         });
         buildTasks.push(

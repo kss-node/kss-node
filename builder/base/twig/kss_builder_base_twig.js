@@ -246,7 +246,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
     // Converts a filename into a Twig template name.
     options.filenameToTemplateRef = filename => {
       // Return hash by full path.
-      return crypto.createHash('md5').update(filename).digest("hex");
+      return crypto.createHash('md5').update(filename).digest('hex');
     };
     options.templateExtension = 'twig';
     options.emptyTemplate = '{# Cannot be an empty string. #}';

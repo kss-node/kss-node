@@ -167,7 +167,7 @@ class KssBuilderBaseNunjucks extends KssBuilderBase {
     // Converts a filename into a Handlebars partial name.
     options.filenameToTemplateRef = (filename) => {
       // Return hash by full path.
-      return crypto.createHash('md5').update(filename).digest("hex");
+      return crypto.createHash('md5').update(filename).digest('hex');
     };
 
     return this.buildGuide(styleGuide, options);
