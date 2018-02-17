@@ -85,6 +85,7 @@
     "wrap-iife": 2,
     "yoda": [2, "never"],
     // Disabled.
-    "no-console": 0
+    "no-console": 0,
+    "no-useless-escape": 0
   }
 }
