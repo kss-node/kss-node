@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width">
 
   <link rel="stylesheet" href="kss-assets/kss.css">
-  {{ styles|raw }}
+  {{ styles }}
 </head>
 <body id="kss-node" {% if template.isItem %}class="kss-fullscreen-mode"{% endif %}>
 
@@ -30,7 +30,7 @@
         <a class="kss-nav__menu-link" href="section-{{ menu_item.referenceURI }}.html">
           <span class="kss-nav__ref">{{ menu_item.referenceNumber }}</span><span class="kss-nav__name">{{ menu_item.header }}</span>
         </a>
-        {% if menu_item.isActive and menu_item.children is not empty %}
+        {% if menu_item.isActive %}
           <ul class="kss-nav__menu-child">
           {% for menu_child in menu_item.children %}
             <li class="kss-nav__menu-item">
@@ -52,28 +52,34 @@
 {% if template.isHomepage %}
   {% if homepage %}
     <div id="kssref-0" class="kss-section kss-section--depth-0 kss-overview kss-style">
-      {{ homepage|raw }}
+      {{ homepage }}
     </div>
   {% endif %}
 {% else %}
-
-  {#
-    Display each section, in order.
-
-    The "root" element comes first in this loop, and can be detected using the
-    "loop.first" variable as seen below.
-  #}
+  
   {% for section in sections %}
-    {% set sectionElement = loop.first ? 'div' : 'section' %}
+    {% if loop.first == true %}
+      {% assign sectionElement = 'div' %}
+    {% else %}
+      {% assign sectionElement = 'section' %}
+    {% endif %}
     <{{ sectionElement }} id="kssref-{{ section.referenceURI }}" class="kss-section kss-section--depth-{{ section.depth }} {% if template.isItem %}is-fullscreen{% endif %}">
       <div class="kss-style">
-        {% set headerElement = (section.depth > 6) ? 'h6' : 'h' ~ section.depth %}
+        {% if section.depth > 6 %}
+          {% assign headerElement = 'h6' %}
+        {% else %}
+          {% assign headerElement = 'h' + section.depth %}
+        {% endif %}
         <{{ headerElement }} class="kss-title kss-title--level-{{ section.depth }}">
           <a class="kss-title__permalink" href="#kssref-{{ section.referenceURI }}">
             <span class="kss-title__ref">
               {{ section.referenceNumber }}
               <span class="kss-title__permalink-hash">
-                {{ hasNumericReferences ? '#permalink' : section.reference }}
+                {% if hasNumericReferences %}
+                  '#permalink'
+                {% else %}
+                  {{ section.reference }}
+                {% endif %}
               </span>
             </span>
             {{ section.header }}
@@ -82,7 +88,7 @@
 
         {% if section.example %}
           <p class="kss-toolbar">
-            {% if not template.isItem %}
+            {% if template.isItem %}
               <a href="#kssref-{{section.referenceURI}}" data-kss-fullscreen="kssref-{{section.referenceURI}}">
                 <span class="kss-toolbar__tooltip">Toggle full screen</span>
                 <svg focusable="false" aria-hidden="true" class="off" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" viewBox="0 0 64 64">
@@ -137,7 +143,7 @@
 
         {% if section.description %}
           <div class="kss-description">
-            {{ section.description|raw }}
+            {{ section.description }}
           </div>
         {% endif %}
 
@@ -149,7 +155,7 @@
             <li class="kss-parameters__item">
               <div class="kss-parameters__name"><code>{{ parameter.name }}</code></div>
               <div class="kss-parameters__description">
-                {{ parameter.description|raw }}
+                {{ parameter.description }}
                 {% if parameter.defaultValue %}
                   <div class="kss-parameters__default-value">
                     Defaults to: <code>{{ parameter.defaultValue }}</code>
@@ -244,9 +250,8 @@
     detailsClass: 'kss-markup'
   });
 </script>
-{{ scripts|raw }}
+{{ scripts }}
 
-{# This will only be included in the demo page. #}
 {% if options.demo %}
   <footer class="kss-github">
     <!-- https://github.com/blog/273-github-ribbons -->

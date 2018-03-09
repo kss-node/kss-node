@@ -83,8 +83,8 @@ describe('kss.traverse()', function() {
           expect(this.styleGuide).to.containFixture('traverse-directories/file-type.scss');
           done();
         });
-        it('should find file includes/buttons.less', function(done) {
-          expect(this.styleGuide).to.containFixture('traverse-directories/includes/buttons.less');
+        it('should find file includes/buttons.scss', function(done) {
+          expect(this.styleGuide).to.containFixture('traverse-directories/includes/buttons.scss');
           done();
         });
         it('should not find file includes/buttons.js', function(done) {
@@ -104,8 +104,8 @@ describe('kss.traverse()', function() {
           expect(this.styleGuide).to.containFixture('traverse-directories/includes/buttons.js');
           done();
         });
-        it('should find file includes/buttons.less', function(done) {
-          expect(this.styleGuide).to.not.containFixture('traverse-directories/includes/buttons.less');
+        it('should find file includes/buttons.scss', function(done) {
+          expect(this.styleGuide).to.not.containFixture('traverse-directories/includes/buttons.scss');
           done();
         });
         it('should find file style.css', function(done) {
@@ -125,8 +125,8 @@ describe('kss.traverse()', function() {
           expect(this.styleGuide).to.containFixture('traverse-directories/includes/buttons.js');
           done();
         });
-        it('should find file includes/buttons.less', function(done) {
-          expect(this.styleGuide).to.not.containFixture('traverse-directories/includes/buttons.less');
+        it('should find file includes/buttons.scss', function(done) {
+          expect(this.styleGuide).to.not.containFixture('traverse-directories/includes/buttons.scss');
           done();
         });
         it('should find file style.css', function(done) {
@@ -146,8 +146,8 @@ describe('kss.traverse()', function() {
           expect(this.styleGuide).to.containFixture('traverse-directories/includes/buttons.js');
           done();
         });
-        it('should find file includes/buttons.less', function(done) {
-          expect(this.styleGuide).to.containFixture('traverse-directories/includes/buttons.less');
+        it('should find file includes/buttons.scss', function(done) {
+          expect(this.styleGuide).to.containFixture('traverse-directories/includes/buttons.scss');
           done();
         });
         it('should find file style.css', function(done) {
@@ -167,8 +167,8 @@ describe('kss.traverse()', function() {
           expect(this.styleGuide).to.containFixture('traverse-directories/includes/buttons.js');
           done();
         });
-        it('should find file includes/buttons.less', function(done) {
-          expect(this.styleGuide).to.containFixture('traverse-directories/includes/buttons.less');
+        it('should find file includes/buttons.scss', function(done) {
+          expect(this.styleGuide).to.containFixture('traverse-directories/includes/buttons.scss');
           done();
         });
         it('should find file style.css', function(done) {
