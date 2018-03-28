@@ -276,6 +276,12 @@ describe('kss.parse()', function() {
           expect(modifiers.length).to.equal(2);
           done();
         });
+
+        it('should find attributes modifiers', function(done) {
+          let modifiers = this.styleGuide.sections('modifiers.attributes').modifiers();
+          expect(modifiers.length).to.equal(3);
+          done();
+        });
       });
 
       describe('.deprecated/.experimental', function() {

@@ -140,6 +140,13 @@ class KssBuilderBase {
         describe: 'Placeholder text to use for modifier classes',
         default: '[modifier class]'
       },
+      'attributes-placeholder': {
+        group: 'Style guide:',
+        string: true,
+        multiple: false,
+        describe: 'Placeholder text to use for modifier attributes',
+        default: '[modifier attribute]'
+      },
       'nav-depth': {
         group: 'Style guide:',
         multiple: false,
@@ -1038,10 +1045,14 @@ class KssBuilderBase {
           let markupTask,
             exampleTask = false,
             exampleContext,
-            modifierRender = (template, data, modifierClass) => {
+            modifierRender = (template, data, modifier) => {
               data = contextClone(data);
               /* eslint-disable camelcase */
-              data.modifier_class = (data.modifier_class ? data.modifier_class + ' ' : '') + modifierClass;
+              if (/^\[.*\]$/i.test(modifier.name)) {
+                data.modifier_class = (data.modifier_class ? data.modifier_class + ' ' : '') + modifier;
+              } else {
+                data.modifier_attribute = (data.modifier_attribute ? data.modifier_attribute + ' ' : '') + modifier;
+              }
               /* eslint-enable camelcase */
               return templateRender(template, data);
             };
@@ -1091,6 +1102,7 @@ class KssBuilderBase {
             section.example = templateRender(template, contextClone(exampleContext));
 
             section.modifiers.forEach(modifier => {
+              console.log(modifier);
               modifier.markup = modifierRender(
                 template,
                 exampleContext,
