@@ -15,6 +15,7 @@ const KssBuilderBase = require('../kss_builder_base.js'),
   Twig = require('twig');
 
 const fs = Promise.promisifyAll(require('fs-extra'));
+const crypto = require('crypto');
 
 /**
  * A kss-node builder takes input files and builds a style guide using
@@ -244,8 +245,8 @@ class KssBuilderBaseTwig extends KssBuilderBase {
     };
     // Converts a filename into a Twig template name.
     options.filenameToTemplateRef = filename => {
-      // Return the filename without the full path.
-      return path.basename(filename);
+      // Return hash by full path.
+      return crypto.createHash('md5').update(filename).digest('hex');
     };
     options.templateExtension = 'twig';
     options.emptyTemplate = '{# Cannot be an empty string. #}';

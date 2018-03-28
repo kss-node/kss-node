@@ -18,6 +18,7 @@ const nunjucks = require('nunjucks');
 const Promise = require('bluebird');
 
 const fs = Promise.promisifyAll(require('fs-extra'));
+const crypto = require('crypto');
 
 // Define "KssBuilderBaseNunjucks" as the name of our nunjucks builder class.
 //
@@ -165,8 +166,8 @@ class KssBuilderBaseNunjucks extends KssBuilderBase {
 
     // Converts a filename into a Handlebars partial name.
     options.filenameToTemplateRef = (filename) => {
-      // Return the filename without the full path or the file extension.
-      return path.basename(filename, path.extname(filename));
+      // Return hash by full path.
+      return crypto.createHash('md5').update(filename).digest('hex');
     };
 
     return this.buildGuide(styleGuide, options);
