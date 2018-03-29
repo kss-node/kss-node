@@ -234,7 +234,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
     // Returns a promise to get a template's markup by name.
     options.getTemplateMarkup = name => {
       return options.getTemplate(name).then(template => {
-         // The rawMarkup is a custom property set in twigAsync().
+        // The rawMarkup is a custom property set in twigAsync().
         return template.rawMarkup;
       });
     };
