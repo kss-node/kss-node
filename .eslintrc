@@ -86,6 +86,7 @@
     "yoda": [2, "never"],
     // Disabled.
     "no-console": 0,
+    // Disable no-useless-escape as there are regex masks that are required.
     "no-useless-escape": 0
   }
 }
