@@ -44,7 +44,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
         boolean: true,
         default: false,
         multiple: false,
-        describe: 'Extend Twig.js using kss\'s Drupal 8 extensions'
+        describe: 'Extend Twig.js using kss’s Drupal 8 extensions'
       },
       'namespace': {
         group: 'Style guide:',
@@ -69,7 +69,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
     return super.prepare(styleGuide).then(styleGuide => {
       // Collect the namespaces to be used by Twig.
       this.namespaces = {
-        builderTwig: path.resolve(this.options.builder)
+        builderTwig: this.options.builder
       };
       this.options.namespace.forEach(namespace => {
         // namespace should be of the form "namespace:path";
