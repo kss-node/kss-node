@@ -14,7 +14,8 @@
 
 const marked = require('marked'),
   path = require('path'),
-  Promise = require('bluebird');
+  Promise = require('bluebird'),
+  resolve = require('resolve'); // replace by require.resolve for node >= 8.9
 
 const fs = Promise.promisifyAll(require('fs-extra')),
   glob = Promise.promisify(require('glob')),
@@ -81,7 +82,6 @@ class KssBuilderBase {
         describe: 'Use a mask for detecting files containing KSS comments',
         default: '*.css|*.less|*.sass|*.scss|*.styl|*.stylus'
       },
-
       'clone': {
         group: 'Builder:',
         string: true,
@@ -96,7 +96,7 @@ class KssBuilderBase {
         path: true,
         multiple: false,
         describe: 'Use the specified builder when building your style guide',
-        default: path.relative(process.cwd(), path.join(__dirname, '..', 'handlebars'))
+        default: path.join('builder', 'handlebars')
       },
       'css': {
         group: 'Style guide:',
@@ -155,6 +155,35 @@ class KssBuilderBase {
     });
   }
 
+
+  /**
+   * Resolve the builder path from the given file path.
+   *
+   * Call this static method to resolve the builder path.
+   *
+   * @param {string} builder The path to a builder or a builder
+   *    to load.
+   * @returns {string} resolved path
+   */
+  static builderResolve(builder) {
+    const cmdDir = process.cwd();
+    const kssDir = path.resolve(__dirname, '../..');
+    const pathsToResolve = [
+      cmdDir, // looking from commande path
+      path.resolve(cmdDir, 'node_modules'), // looking for external module
+      kssDir, // kss native builder
+      path.resolve(kssDir, 'node_modules') // old npm version
+    ];
+    let relsolvedPath = builder;
+    try {
+      relsolvedPath = path.dirname(resolve.sync(builder, {paths: pathsToResolve}));
+    } catch (e) {
+      // console.log(`Your builder path "${builder}" is maybe wrong.`);
+    }
+    return relsolvedPath;
+  }
+
+
   /**
    * Loads the builder from the given file path or class.
    *
@@ -180,7 +209,7 @@ class KssBuilderBase {
 
         // If the parameter is a path, try to load the module.
         } else if (typeof builderClass === 'string') {
-          SomeBuilder = require(path.resolve(builderClass));
+          SomeBuilder = require(builderClass);
 
         // Unexpected parameter.
         } else {
@@ -201,7 +230,7 @@ class KssBuilderBase {
         }
 
       } catch (e) {
-        // Builders don't have to export their own builder class. If the builder
+        // Builders don’t have to export their own builder class. If the builder
         // fails to export a builder class, we assume it wanted the default
         // builder. If the loader fails when given a string, we check if the
         // caller (either cli.js or kss.js) wanted the Twig builder and let the
@@ -388,14 +417,18 @@ class KssBuilderBase {
         }
         // Resolve any paths relative to the working directory.
         if (this.optionDefinitions[key].path) {
-          if (this.options[key] instanceof Array) {
-            /* eslint-disable no-loop-func */
-            this.options[key] = this.options[key].map(value => {
-              return path.resolve(value);
-            });
-            /* eslint-enable no-loop-func */
-          } else if (typeof this.options[key] === 'string') {
-            this.options[key] = path.resolve(this.options[key]);
+          if (key === 'builder') {
+            this.options[key] = KssBuilderBase.builderResolve(this.options[key]);
+          } else {
+            if (this.options[key] instanceof Array) {
+              /* eslint-disable no-loop-func */
+              this.options[key] = this.options[key].map(value => {
+                return path.resolve(value);
+              });
+              /* eslint-enable no-loop-func */
+            } else if (typeof this.options[key] === 'string') {
+              this.options[key] = path.resolve(this.options[key]);
+            }
           }
         }
       }
