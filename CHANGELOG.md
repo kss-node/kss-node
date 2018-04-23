@@ -4,12 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [3.0.0-beta.19] - 2018-04-23
 ### Added
-- Nothing
+- Accessibility fixes
+  - By [@scottaohara](https://github.com/scottaohara)
+- External builder support
+  - By [@ryuran](https://github.com/ryuran)
 
 ### Changed
-- Nothing
+- Updated dependencies
+  - By [@RobLoach](http://github.com/robloach)
+
+### Fixed
+- Nunjucks tests
+  - By [@jeremy-green](http://github.com/jeremy-green)
 
 ## [3.0.0-beta.18] - 2017-02-23
 ### Added
