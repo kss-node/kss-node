@@ -19,11 +19,11 @@
 
     <h1 class="page-title">Source: lib/kss.js</h1>
 
+    
 
 
 
-
-
+    
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>'use strict';
@@ -72,7 +72,7 @@
  * @module kss
  */
 
-const KssBuilderBase = require('../builder'),
+const KssBuilderBase = require('../builder/base'),
   KssStyleGuide = require('./kss_style_guide.js'),
   path = require('path'),
   Promise = require('bluebird'),
@@ -93,12 +93,16 @@ const kss = function(options) {
   // Confirm this is a compatible builder.
   return KssBuilderBase.loadBuilder(options.builder || require('../builder/handlebars')).catch(error => {
     let catchLoadFailure;
-    // If the builder specified was "builder/twig" and there was no existing
+    const supportedBuilders = [
+      'builder/twig',
+      'builder/nunjucks'
+    ];
+    // If the builder was specified and there was no existing
     // path relative to the working directory, we should try again while using
-    // the path to kss-node's Twig builder.
+    // the path to kss-node's builder.
     // istanbul ignore if
-    if (options.builder === 'builder/twig') {
-      options.builder = path.resolve(__dirname, '..', 'builder', 'twig');
+    if (supportedBuilders.indexOf(options.builder) > -1) {
+      options.builder = path.resolve(__dirname, '..', options.builder);
       catchLoadFailure = KssBuilderBase.loadBuilder(options.builder);
     } else {
       catchLoadFailure = Promise.reject(error);
@@ -137,8 +141,8 @@ const kss = function(options) {
 
     // Check the 'source' array for paths ending in .json and convert the first
     // one into a KssStyleGuide object.
-    let jsonInput = builder.getOptions('source').find(filepath => {
-      return (path.extname(filepath) === '.json');
+    let jsonInput = builder.getOptions('source').find(filePath => {
+      return (path.extname(filePath) === '.json');
     });
 
     if (jsonInput) {
@@ -206,13 +210,13 @@ module.exports.traverse = traverse;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder_base.html">kss/builder/base</a></li><li><a href="module-kss_builder_base_handlebars.html">kss/builder/base/handlebars</a></li><li><a href="module-kss_builder_base_twig.html">kss/builder/base/twig</a></li><li><a href="module-kss_builder_handlebars.html">kss/builder/handlebars</a></li><li><a href="module-kss_builder_twig.html">kss/builder/twig</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder_base_handlebars-KssBuilderBaseHandlebars.html">KssBuilderBaseHandlebars</a></li><li><a href="module-kss_builder_base_twig-KssBuilderBaseTwig.html">KssBuilderBaseTwig</a></li><li><a href="module-kss_builder_base-KssBuilderBase.html">KssBuilderBase</a></li><li><a href="module-kss_builder_handlebars-KssBuilderHandlebars.html">KssBuilderHandlebars</a></li><li><a href="module-kss_builder_twig-KssBuilderTwig.html">KssBuilderTwig</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder_base.html">kss/builder/base</a></li><li><a href="module-kss_builder_base_handlebars.html">kss/builder/base/handlebars</a></li><li><a href="module-kss_builder_base_nunjucks.html">kss/builder/base/nunjucks</a></li><li><a href="module-kss_builder_base_twig.html">kss/builder/base/twig</a></li><li><a href="module-kss_builder_handlebars.html">kss/builder/handlebars</a></li><li><a href="module-kss_builder_nunjucks.html">kss/builder/nunjucks</a></li><li><a href="module-kss_builder_twig.html">kss/builder/twig</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder_base_handlebars-KssBuilderBaseHandlebars.html">KssBuilderBaseHandlebars</a></li><li><a href="module-kss_builder_base_nunjucks-KssBuilderBaseNunjucks.html">KssBuilderBaseNunjucks</a></li><li><a href="module-kss_builder_base_twig-KssBuilderBaseTwig.html">KssBuilderBaseTwig</a></li><li><a href="module-kss_builder_base-KssBuilderBase.html">KssBuilderBase</a></li><li><a href="module-kss_builder_handlebars-KssBuilderHandlebars.html">KssBuilderHandlebars</a></li><li><a href="module-kss_builder_nunjucks-KssBuilderNunjucks.html">KssBuilderNunjucks</a></li><li><a href="module-kss_builder_twig-KssBuilderTwig.html">KssBuilderTwig</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
 </footer>
 
 <script> prettyPrint(); </script>

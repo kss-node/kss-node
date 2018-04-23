@@ -52,16 +52,147 @@
 
 
 
+
+
+
+<section>
+
+<header>
+    
+        <h2>builder/nunjucks/kss-assets/prettify.js</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description"><p>some functions for browser-side pretty printing of code contained in html.</p>
+<p><p>
+For a fairly comprehensive set of languages see the
+<a href="http://google-code-prettify.googlecode.com/svn/trunk/README.html#langs">README</a>
+file that came with this source.  At a minimum, the lexer should work on a
+number of languages including C and friends, Java, Python, Bash, SQL, HTML,
+XML, CSS, Javascript, and Makefiles.  It works passably on Ruby, PHP and Awk
+and a subset of Perl, but, because of commenting conventions, doesn't work on
+Smalltalk, Lisp-like, or CAML-like languages without an explicit lang class.</p>
+<p><p>
+Usage: <ol></p>
+<p><li> include this source file in an html page via
+  {@code <script type="text/javascript" src="/path/to/prettify.js"></script>}</p>
+<p><li> define style rules.  See the example page for examples.</p>
+<p><li> mark the {@code <pre>} and {@code <code>} tags in your source with
+   {@code class=prettyprint.}
+   You can also use the (html deprecated) {@code <xmp>} tag, but the pretty
+   printer needs to do more substantial DOM manipulations to support that, so
+   some css styles may not be preserved.
+</ol>
+That's it.  I wanted to keep the API as simple as possible, so there's no
+need to specify which language the code is in, but if you wish, you can add
+another class to the {@code <pre>} or {@code <code>} element to specify the
+language, as in {@code <pre class="prettyprint lang-java">}.  Any class that
+starts with &quot;lang-&quot; followed by a file extension, specifies the file type.
+See the &quot;lang-*.js&quot; files in this directory for code that implements
+per-language file handlers.</p>
+<p><p>
+Change log:<br>
+cbeust, 2006/08/22</p>
+<blockquote>
+  Java annotations (start with &quot;@&quot;) are now captured as literals (&quot;lit&quot;)
+</blockquote></div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="builder_nunjucks_kss-assets_prettify.js.html">builder/nunjucks/kss-assets/prettify.js</a>, <a href="builder_nunjucks_kss-assets_prettify.js.html#line16">line 16</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+        <h3 class="subsection-title">Requires</h3>
+
+        <ul>
+            <li>module:console</li>
+        </ul>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder_base.html">kss/builder/base</a></li><li><a href="module-kss_builder_base_handlebars.html">kss/builder/base/handlebars</a></li><li><a href="module-kss_builder_base_twig.html">kss/builder/base/twig</a></li><li><a href="module-kss_builder_handlebars.html">kss/builder/handlebars</a></li><li><a href="module-kss_builder_twig.html">kss/builder/twig</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder_base_handlebars-KssBuilderBaseHandlebars.html">KssBuilderBaseHandlebars</a></li><li><a href="module-kss_builder_base_twig-KssBuilderBaseTwig.html">KssBuilderBaseTwig</a></li><li><a href="module-kss_builder_base-KssBuilderBase.html">KssBuilderBase</a></li><li><a href="module-kss_builder_handlebars-KssBuilderHandlebars.html">KssBuilderHandlebars</a></li><li><a href="module-kss_builder_twig-KssBuilderTwig.html">KssBuilderTwig</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder_base.html">kss/builder/base</a></li><li><a href="module-kss_builder_base_handlebars.html">kss/builder/base/handlebars</a></li><li><a href="module-kss_builder_base_nunjucks.html">kss/builder/base/nunjucks</a></li><li><a href="module-kss_builder_base_twig.html">kss/builder/base/twig</a></li><li><a href="module-kss_builder_handlebars.html">kss/builder/handlebars</a></li><li><a href="module-kss_builder_nunjucks.html">kss/builder/nunjucks</a></li><li><a href="module-kss_builder_twig.html">kss/builder/twig</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder_base_handlebars-KssBuilderBaseHandlebars.html">KssBuilderBaseHandlebars</a></li><li><a href="module-kss_builder_base_nunjucks-KssBuilderBaseNunjucks.html">KssBuilderBaseNunjucks</a></li><li><a href="module-kss_builder_base_twig-KssBuilderBaseTwig.html">KssBuilderBaseTwig</a></li><li><a href="module-kss_builder_base-KssBuilderBase.html">KssBuilderBase</a></li><li><a href="module-kss_builder_handlebars-KssBuilderHandlebars.html">KssBuilderHandlebars</a></li><li><a href="module-kss_builder_nunjucks-KssBuilderNunjucks.html">KssBuilderNunjucks</a></li><li><a href="module-kss_builder_twig-KssBuilderTwig.html">KssBuilderTwig</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
 </footer>
 
 <script> prettyPrint(); </script>

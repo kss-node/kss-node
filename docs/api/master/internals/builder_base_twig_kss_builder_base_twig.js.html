@@ -39,7 +39,8 @@
 
 const KssBuilderBase = require('../kss_builder_base.js'),
   path = require('path'),
-  Promise = require('bluebird');
+  Promise = require('bluebird'),
+  Twig = require('twig');
 
 const fs = Promise.promisifyAll(require('fs-extra'));
 
@@ -71,7 +72,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
         boolean: true,
         default: false,
         multiple: false,
-        describe: 'Extend Twig.js using kss\'s Drupal 8 extensions'
+        describe: 'Extend Twig.js using kss’s Drupal 8 extensions'
       },
       'namespace': {
         group: 'Style guide:',
@@ -96,7 +97,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
     return super.prepare(styleGuide).then(styleGuide => {
       // Collect the namespaces to be used by Twig.
       this.namespaces = {
-        builderTwig: path.resolve(this.options.builder)
+        builderTwig: this.options.builder
       };
       this.options.namespace.forEach(namespace => {
         // namespace should be of the form "namespace:path";
@@ -114,7 +115,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
       }
 
       // Store the global Twig object.
-      this.Twig = require('twig');
+      this.Twig = Twig;
 
       // We need the ability to reset the template registry since the global
       // Twig object is the same object every time it is require()d.
@@ -199,7 +200,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
       if (this.options['extend-drupal8']) {
         this.options.extend.unshift(path.resolve(__dirname, 'extend-drupal8'));
       }
-      Array.prototype.push.apply(prepTasks, this.prepareExtend(this.Twig));
+      prepTasks.push(this.prepareExtend(this.Twig));
 
       return Promise.all(prepTasks).then(() => {
         return Promise.resolve(styleGuide);
@@ -260,11 +261,8 @@ class KssBuilderBaseTwig extends KssBuilderBase {
     };
     // Returns a promise to get a template's markup by name.
     options.getTemplateMarkup = name => {
-      // We don't wrap the rendered template in "new handlebars.SafeString()"
-      // since we want the ability to display it as a code sample with {{ }} and
-      // as rendered HTML with {{{ }}}.
       return options.getTemplate(name).then(template => {
-         // The rawMarkup is a custom property set in twigAsync().
+        // The rawMarkup is a custom property set in twigAsync().
         return template.rawMarkup;
       });
     };
@@ -299,13 +297,13 @@ module.exports = KssBuilderBaseTwig;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder_base.html">kss/builder/base</a></li><li><a href="module-kss_builder_base_handlebars.html">kss/builder/base/handlebars</a></li><li><a href="module-kss_builder_base_twig.html">kss/builder/base/twig</a></li><li><a href="module-kss_builder_handlebars.html">kss/builder/handlebars</a></li><li><a href="module-kss_builder_twig.html">kss/builder/twig</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder_base_handlebars-KssBuilderBaseHandlebars.html">KssBuilderBaseHandlebars</a></li><li><a href="module-kss_builder_base_twig-KssBuilderBaseTwig.html">KssBuilderBaseTwig</a></li><li><a href="module-kss_builder_base-KssBuilderBase.html">KssBuilderBase</a></li><li><a href="module-kss_builder_handlebars-KssBuilderHandlebars.html">KssBuilderHandlebars</a></li><li><a href="module-kss_builder_twig-KssBuilderTwig.html">KssBuilderTwig</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder_base.html">kss/builder/base</a></li><li><a href="module-kss_builder_base_handlebars.html">kss/builder/base/handlebars</a></li><li><a href="module-kss_builder_base_nunjucks.html">kss/builder/base/nunjucks</a></li><li><a href="module-kss_builder_base_twig.html">kss/builder/base/twig</a></li><li><a href="module-kss_builder_handlebars.html">kss/builder/handlebars</a></li><li><a href="module-kss_builder_nunjucks.html">kss/builder/nunjucks</a></li><li><a href="module-kss_builder_twig.html">kss/builder/twig</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder_base_handlebars-KssBuilderBaseHandlebars.html">KssBuilderBaseHandlebars</a></li><li><a href="module-kss_builder_base_nunjucks-KssBuilderBaseNunjucks.html">KssBuilderBaseNunjucks</a></li><li><a href="module-kss_builder_base_twig-KssBuilderBaseTwig.html">KssBuilderBaseTwig</a></li><li><a href="module-kss_builder_base-KssBuilderBase.html">KssBuilderBase</a></li><li><a href="module-kss_builder_handlebars-KssBuilderHandlebars.html">KssBuilderHandlebars</a></li><li><a href="module-kss_builder_nunjucks-KssBuilderNunjucks.html">KssBuilderNunjucks</a></li><li><a href="module-kss_builder_twig-KssBuilderTwig.html">KssBuilderTwig</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
 </footer>
 
 <script> prettyPrint(); </script>
