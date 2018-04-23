@@ -34,7 +34,7 @@
     "fs-extra": "^5.0.0",
     "glob": "^7.0.3",
     "handlebars": "^4.0.0",
-    "marked": "^0.3.6",
+    "marked": "^0.3.19",
     "nunjucks": "^3.0.1",
     "resolve": "^1.6.0",
     "twig": "^1.10.4",
@@ -45,7 +45,7 @@
     "chai": "^3.5.0",
     "coveralls": "^3.0.0",
     "eslint": "^4.19.1",
-    "istanbul": "^0.4.3",
+    "istanbul": "^0.4.5",
     "jsdoc": "^3.4.0",
     "mocha": "^5.0.0",
     "mock-utf8-stream": "^0.1.1"
