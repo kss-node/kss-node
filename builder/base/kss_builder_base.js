@@ -174,13 +174,13 @@ class KssBuilderBase {
       kssDir, // kss native builder
       path.resolve(kssDir, 'node_modules') // old npm version
     ];
-    let relsolvedPath = builder;
+    let resolvedPath = builder;
     try {
-      relsolvedPath = path.dirname(resolve.sync(builder, {paths: pathsToResolve}));
+      resolvedPath = path.dirname(resolve.sync(builder, {paths: pathsToResolve}));
     } catch (e) {
       // console.log(`Your builder path "${builder}" is maybe wrong.`);
     }
-    return relsolvedPath;
+    return resolvedPath;
   }
 
 
