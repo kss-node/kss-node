@@ -2,7 +2,7 @@
 
 'use strict';
 
-const marked = require('marked');
+const md = require('../lib/md.js');
 
 describe('kss.parse()', function() {
   before(function(done) {
@@ -436,7 +436,7 @@ describe('kss.parse()', function() {
     describe('.markdown:', function() {
       it('should be enabled by default', function() {
         return helperUtils.traverseFixtures({mask: 'property-header.less'}).then(styleGuide => {
-          expect(styleGuide.sections('header.three-paragraphs').description()).to.equal(marked('ANOTHER PARAGRAPH\n\nAND ANOTHER'));
+          expect(styleGuide.sections('header.three-paragraphs').description()).to.equal(md.render('ANOTHER PARAGRAPH\n\nAND ANOTHER'));
         });
       });
       it('should not add HTML when disabled', function() {

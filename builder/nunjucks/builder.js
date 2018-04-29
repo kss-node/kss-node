@@ -16,6 +16,7 @@
  * @module kss/builder/nunjucks
  */
 
+const path = require('path');
 
 // We want to extend kss-node's Nunjucks builder so we can add options that
 // are used in our templates.
@@ -57,6 +58,13 @@ class KssBuilderNunjucks extends KssBuilderBaseNunjucks {
         default: 'KSS Style Guide'
       }
     });
+  }
+
+  // add builder extend
+  prepareExtend(templateEngine) {
+    this.options.extend.push(path.resolve(__dirname, 'extend'));
+
+    return super.prepareExtend(templateEngine);
   }
 }
 

@@ -6,7 +6,8 @@ This software is a Node.js implementation of [Knyle Style Sheets](https://github
 2. Have the `kss` tool automatically build a style guide from your stylesheets.
 
 Here's an example KSS comment:
-<pre class="prettyprint linenums lang-css"><code data-language="css">/*
+```css
+/*
 Button
 
 Your standard button suitable for clicking.
@@ -19,12 +20,12 @@ Markup: button.html
 Style guide: components.button
 */
 .button {
-  ...
+  /* … */
 }
 .button.shiny {
-  ...
+  /* … */
 }
-</code></pre>
+```
 
 **For more information on how to write KSS comments, see the [KSS spec](https://github.com/kss-node/kss/blob/spec/SPEC.md).**
 

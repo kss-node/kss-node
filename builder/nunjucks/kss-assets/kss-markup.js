@@ -11,9 +11,10 @@
   KssMarkup.prototype.init = function () {
     var self = this;
     // Initialize all markup toggle buttons.
-    document.querySelectorAll('a[data-kss-markup]').forEach(function (el) {
-      el.onclick = self.showGuides.bind(self);
-    });
+    var elementList = document.querySelectorAll('a[data-kss-markup]');
+    for (var button of elementList) {
+      button.onclick = self.showGuides.bind(self);
+    };
   };
 
   // Activation function that takes the ID of the element that will receive
@@ -22,13 +23,14 @@
     var body = document.getElementsByTagName('body')[0],
       enabled = body.classList.contains(this.bodyClass);
 
-    document.querySelectorAll('.' + this.detailsClass).forEach(function (el) {
+    var elementList = document.querySelectorAll('.' + this.detailsClass);
+    for (var el of elementList) {
       if (enabled) {
         el.removeAttribute('open');
       } else {
         el.setAttribute('open', '');
       }
-    });
+    }
 
     // Toggle the markup mode.
     body.classList.toggle(this.bodyClass);
