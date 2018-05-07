@@ -1,10 +1,8 @@
-[![Build Status](https://secure.travis-ci.org/kss-node/kss-node.png?branch=master)](http://travis-ci.org/kss-node/kss-node/builds) [![Coverage Status](https://coveralls.io/repos/kss-node/kss-node/badge.svg?branch=master&service=github)](https://coveralls.io/github/kss-node/kss-node?branch=master) [![Dependency Status](https://david-dm.org/kss-node/kss-node.svg)](https://david-dm.org/kss-node/kss-node)
+[![Build Status](https://secure.travis-ci.org/kss-node/kss-node.png?branch=master)](http://travis-ci.org/kss-node/kss-node/builds) [![Coverage Status](https://coveralls.io/repos/kss-node/kss-node/badge.svg?branch=master&service=github)](https://coveralls.io/github/kss-node/kss-node?branch=master) [![Dependency Status](https://david-dm.org/kss-node/kss-node.svg)](https://david-dm.org/kss-node/kss-node) [![Greenkeeper badge](https://badges.greenkeeper.io/kss-node/kss-node.svg)](https://greenkeeper.io/)
 
 **Note:** This README is for the `master` branch of this project. To see the README for the latest stable release see [https://www.npmjs.com/package/kss](https://www.npmjs.com/package/kss).
 
 # kss-node
-
-[![Greenkeeper badge](https://badges.greenkeeper.io/kss-node/kss-node.svg)](https://greenkeeper.io/)
 
 This is a Node.js implementation of [KSS](https://github.com/kneath/kss), "a documentation syntax for CSS" that's intended to have syntax readable by humans *and* machines. Hence, the kss-node software can be used to create a "living style guide".
 
