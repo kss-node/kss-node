@@ -145,7 +145,7 @@ describe('KssBuilderBaseNunjucks object API', function() {
         expect(output).to.contain(' * Extend      : /dev/null/example1, /dev/null/example2');
         return error;
       }).then(error => {
-        expect(error.message).to.equal('Path must be a string. Received null');
+        expect(error.message).to.include('string');
       });
     });
 
