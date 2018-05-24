@@ -398,6 +398,31 @@ describe('kss.parse()', function() {
       });
     });
 
+    describe('.colors', function() {
+      before(function() {
+        return helperUtils.traverseFixtures({mask: 'property-colors.less', markdown: false}).then(styleGuide => {
+          this.styleGuide = styleGuide;
+        });
+      });
+
+      it('should find colors property', function(done) {
+        let section = this.styleGuide.sections('Colors.complete');
+        const colors = section.colors();
+        expect(colors.length).to.equal(22);
+        expect(colors[0].name).to.equal('@shortHexColor');
+        expect(colors[0].color).to.equal('#f00');
+        expect(colors[0].description).to.equal('short hexa color');
+        expect(colors[3].name).to.equal('$rgbColor');
+        expect(colors[3].color).to.equal('rgb(255,0,0)');
+        expect(colors[3].description).to.equal('simple rgb');
+        expect(colors[14].name).to.equal('hsl');
+        expect(colors[14].color).to.equal('hsl(0, 100%, 50%)');
+        expect(colors[14]).to.not.have.property('description');
+        expect(section.description()).to.equal('');
+        done();
+      });
+    });
+
     describe('.markdown:', function() {
       it('should be enabled by default', function() {
         return helperUtils.traverseFixtures({mask: 'property-header.less'}).then(styleGuide => {
