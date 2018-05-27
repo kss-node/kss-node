@@ -153,6 +153,9 @@
                 <figure class="kss-color">
                   <div class="kss-color-figure" style="background-color:{{color}}"></div>
                   <figcaption class="kss-color-caption">
+                    {{#if name }}
+                      <strong class="kss-color-name">{{ color.name }}</strong>
+                    {{/if}}
                     <strong class="kss-color-name">{{name}}</strong>
                     <code class="kss-color-code">{{color}}</code>
                     {{#if description}}

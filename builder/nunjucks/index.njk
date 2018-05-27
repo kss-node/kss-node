@@ -147,7 +147,9 @@
                 <figure class="kss-color">
                   <div class="kss-color-figure" style="background-color:{{ color.color }}"></div>
                   <figcaption class="kss-color-caption">
-                    <strong class="kss-color-name">{{ color.name }}</strong>
+                    {% if color.name %}
+                      <strong class="kss-color-name">{{ color.name }}</strong>
+                    {% endif %}
                     <code class="kss-color-code">{{ color.color }}</code>
                     {% if color.description %}
                       <p class="kss-color-desc">{{ color.description }}</p>
