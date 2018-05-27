@@ -23,6 +23,7 @@ describe('KssSection object API', function() {
     'weight',
     'depth',
     'markup',
+    'colors',
     'source',
     'sourceFileName',
     'sourceLine',
@@ -55,6 +56,7 @@ describe('KssSection object API', function() {
       expect(obj.data).to.have.property('referenceURI');
       expect(obj.data).to.have.property('weight');
       expect(obj.data).to.have.property('markup');
+      expect(obj.data).to.have.property('colors');
       expect(obj.data).to.have.property('source');
       expect(obj.data.source).to.have.property('filename');
       expect(obj.data.source).to.have.property('path');
@@ -424,6 +426,29 @@ describe('KssSection object API', function() {
     it('should return itself if given a value', function(done) {
       let section = new kss.KssSection({markup: 'original'});
       expect(section.markup('new')).to.deep.equal(section);
+      done();
+    });
+  });
+
+  describe('.colors()', function() {
+    it('should return data.colors', function(done) {
+      this.styleGuide.sections().map(function(section) {
+        expect(section.colors()).to.equal(section.data.colors);
+      });
+      done();
+    });
+
+    it('should set data.colors if given a value', function(done) {
+      let section = new kss.KssSection({colors: 'original'});
+      section.colors('new');
+      expect(section.data.colors).to.equal('new');
+      expect(section.colors()).to.equal(section.data.colors);
+      done();
+    });
+
+    it('should return itself if given a value', function(done) {
+      let section = new kss.KssSection({colors: 'original'});
+      expect(section.colors('new')).to.deep.equal(section);
       done();
     });
   });
