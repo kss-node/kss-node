@@ -665,6 +665,41 @@ $kss-vertical-rhythm      : $kss-font-size * 1.5;
     }
   }
 
+  .kss-colors {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .kss-color {
+    padding: 1px;
+    background: $kss-colors-background;
+    border: 1px solid #ccc;
+
+    &-figure {
+      height: 3em;
+    }
+
+    &-caption {
+      padding: .5em;
+    }
+
+    &-name {
+      display: block;
+      font-weight: bold;
+      color: $kss-colors-foreground;
+    }
+
+    &-code {
+      display: block;
+      color: $kss-colors-quotes;
+    }
+
+    &-desc {
+      font-size: .875em;
+    }
+  }
+
   .kss-source {
     font-size: 80%;
   }

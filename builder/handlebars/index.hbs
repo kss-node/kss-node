@@ -146,6 +146,30 @@
           </div>
         {{/if}}
 
+        {{#if colors }}
+          <ul class="kss-colors">
+            {{#each colors}}
+              <li>
+                <figure class="kss-color">
+                  <div class="kss-color-figure" style="background-color:{{color}}"></div>
+                  <figcaption class="kss-color-caption">
+                    {{#if name }}
+                      <strong class="kss-color-name">{{ color.name }}</strong>
+                    {{/if}}
+                    <strong class="kss-color-name">{{name}}</strong>
+                    <code class="kss-color-code">{{color}}</code>
+                    {{#if description}}
+                      <p class="kss-color-desc">{{description}}</p>
+                    {{/if}}
+                  </figcaption>
+                </figure>
+              </li>
+                {{name}}: {{color}}
+              </li>
+            {{/each}}
+          </ul>
+        {{/if}}
+
         {{#if parameters}}
           <div class="kss-parameters__title">Parameters:</div>
           <ul class="kss-parameters">

@@ -665,6 +665,58 @@ $kss-vertical-rhythm      : $kss-font-size * 1.5;
     }
   }
 
+  .kss-colors {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: stretch;
+    flex-wrap: wrap;
+    margin: 0 -.5em;
+
+    > * {
+      flex: 0 0 auto;
+      padding: 0 .5em;
+      margin-bottom: 1em;
+      width: 16em;
+    }
+
+    .kss-color {
+      height: 100%
+    }
+  }
+
+  .kss-color {
+    background: $kss-colors-background;
+    border: 1px solid #ccc;
+    margin: 0;
+    padding: 0;
+
+    &-figure {
+      height: 3em;
+    }
+
+    &-caption {
+      padding: .5em;
+    }
+
+    &-name {
+      display: block;
+      font-weight: bold;
+      color: $kss-colors-foreground;
+    }
+
+    &-code {
+      display: block;
+      color: $kss-colors-quotes;
+    }
+
+    &-desc {
+      font-size: .875em;
+    }
+  }
+
   .kss-source {
     font-size: 80%;
   }

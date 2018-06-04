@@ -398,6 +398,41 @@ describe('kss.parse()', function() {
       });
     });
 
+    describe('.colors', function() {
+      before(function() {
+        return helperUtils.traverseFixtures({mask: 'property-colors.less', markdown: false}).then(styleGuide => {
+          this.styleGuide = styleGuide;
+        });
+      });
+
+      it('should find colors property', function(done) {
+        let section = this.styleGuide.sections('Colors.complete');
+        const colors = section.colors();
+        expect(colors.length).to.equal(25);
+        expect(colors[0].name).to.equal('@shortHexColor');
+        expect(colors[0].color).to.equal('#f00');
+        expect(colors[0].description).to.equal('short hexa color');
+        expect(colors[2].name).to.equal('--hex8');
+        expect(colors[2].color).to.equal('#ff00FF00');
+        expect(colors[2].description).to.equal('8 digit hexa color with alpha and css custom property');
+        expect(colors[3].name).to.equal('$rgbColor');
+        expect(colors[3].color).to.equal('rgb(255,0,0)');
+        expect(colors[3].description).to.equal('simple rgb');
+        expect(colors[14].name).to.equal('hsl');
+        expect(colors[14].color).to.equal('hsl(0, 100%, 50%)');
+        expect(colors[14]).to.not.have.property('description');
+        expect(colors[22].name).to.equal('namedGrey');
+        expect(colors[22].color).to.equal('grey');
+        expect(colors[22].description).to.equal('color name');
+        expect(colors[23]).to.not.have.property('name');
+        expect(colors[23].color).to.equal('#facdea');
+        expect(colors[24]).to.not.have.property('name');
+        expect(colors[24].color).to.equal('ghostwhite');
+        expect(section.description()).to.equal('');
+        done();
+      });
+    });
+
     describe('.markdown:', function() {
       it('should be enabled by default', function() {
         return helperUtils.traverseFixtures({mask: 'property-header.less'}).then(styleGuide => {
