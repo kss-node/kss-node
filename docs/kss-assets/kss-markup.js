@@ -14,7 +14,7 @@
     var elementList = document.querySelectorAll('a[data-kss-markup]');
     for (var button of elementList) {
       button.onclick = self.showGuides.bind(self);
-    });
+    };
   };
 
   // Activation function that takes the ID of the element that will receive
@@ -30,7 +30,7 @@
       } else {
         el.setAttribute('open', '');
       }
-    });
+    };
 
     // Toggle the markup mode.
     body.classList.toggle(this.bodyClass);
