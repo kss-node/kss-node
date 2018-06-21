@@ -34,7 +34,7 @@
     "fs-extra": "^6.0.0",
     "glob": "^7.0.3",
     "handlebars": "^4.0.0",
-    "marked": "^0.3.19",
+    "marked": "^0.4.0",
     "nunjucks": "^3.0.1",
     "resolve": "^1.6.0",
     "twig": "^1.10.4",
