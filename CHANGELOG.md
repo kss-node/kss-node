@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.0.0-beta.21] - 2018-06-28
+### Fixed
+- [#482](https://github.com/kss-node/kss-node/pull/482) Color support
+  - By [@ryuran](https://github.com/ryuran)
+- [#485](https://github.com/kss-node/kss-node/pull/485) Fix syntax error in kss-assets
+  - By [@Guillaume-Duchemin](https://github.com/guillaume-duchemin)
+- Updated dependencies
+  - By [@RobLoach](https://github.com/robloach)
+
 ## [3.0.0-beta.20] - 2018-04-26
 ### Fixed
 - path to KSS builder
