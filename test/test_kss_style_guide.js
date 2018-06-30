@@ -77,6 +77,7 @@ describe('KssStyleGuide object API', function() {
             experimental: false,
             header: 'example',
             markup: '<div class="example">lorem ipsum</div>',
+            colors: [],
             modifiers: [],
             parameters: [],
             reference: '1.1',
