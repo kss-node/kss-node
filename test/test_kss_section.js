@@ -102,7 +102,8 @@ describe('KssSection object API', function() {
         header: 'example',
         description: 'lorem ipsum',
         reference: '1.1',
-        markup: '<div class="example">lorem ipsum</div>'
+        markup: '<div class="example">lorem ipsum</div>',
+        colors: []
       };
       let section = new kss.KssSection(data);
       for (let property in data) {
