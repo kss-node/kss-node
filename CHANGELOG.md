@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.0.0-beta.222] - 2018-07-03
+### Fixed
+- [#493](https://github.com/kss-node/kss-node/pull/493) Fix Color support
+  - By [@ryuran](https://github.com/ryuran)
+- [#491](https://github.com/kss-node/kss-node/pull/491) Fix some js syntaxe in handelbars builder template
+  - By [@aNickzz](https://github.com/aNickzz)
+- Updated yargs
+  - By [@RobLoach](https://github.com/robloach)
+
 ## [3.0.0-beta.21] - 2018-06-28
 ### Fixed
 - [#482](https://github.com/kss-node/kss-node/pull/482) Color support
