@@ -381,9 +381,11 @@ describe('KssBuilderBase object API', function() {
         };
       let builder = new KssBuilderBase();
       builder.setLogErrorFunction(logErrorFunction);
-      builder.logError(new Error('test1'));
-      builder.logError(new Error('test2'));
-      expect(loggedErrors).to.deep.equal([new Error('test1'), new Error('test2')]);
+      const error1 = new Error('test1');
+      const error2 = new Error('test2');
+      builder.logError(error1);
+      builder.logError(error2);
+      expect(loggedErrors).to.deep.equal([error1, error2]);
     });
   });
 
@@ -658,14 +660,14 @@ describe('KssBuilderBase object API', function() {
     it('should load the templates using options.readBuilderTemplate', function() {
       let builder = new KssBuilderBase(),
         options = {
-          readBuilderTemplate: function(template) {
+          readBuilderTemplate: (template) => {
             let templateFunction;
             if (template === 'index') {
-              templateFunction = function() { return 'mockIndexTemplate'; };
+              templateFunction = () => 'mockIndexTemplate';
             } else if (template === 'section') {
-              templateFunction = function() { return 'mockSectionTemplate'; };
+              templateFunction = () => 'mockSectionTemplate';
             } else if (template === 'item') {
-              templateFunction = function() { return 'mockItemTemplate'; };
+              templateFunction = () => 'mockItemTemplate';
             }
             return Promise.resolve(templateFunction);
           },
@@ -682,9 +684,9 @@ describe('KssBuilderBase object API', function() {
       return builder.buildGuide(new kss.KssStyleGuide({}), options).catch(error => {
         return error;
       }).then(() => {
-        expect(builder.templates.index).to.be.function;
-        expect(builder.templates.section).to.be.function;
-        expect(builder.templates.item).to.be.function;
+        expect(builder.templates.index).to.be.a('function');
+        expect(builder.templates.section).to.be.a('function');
+        expect(builder.templates.item).to.be.a('function');
         expect(builder.templates.index()).to.equal('mockIndexTemplate');
         expect(builder.templates.section()).to.equal('mockSectionTemplate');
         expect(builder.templates.item()).to.equal('mockItemTemplate');
@@ -694,9 +696,9 @@ describe('KssBuilderBase object API', function() {
     it('should use the index template when no section or item template', function() {
       let builder = new KssBuilderBase(),
         options = {
-          readBuilderTemplate: function(name) {
+          readBuilderTemplate: (name) => {
             if (name === 'index') {
-              return Promise.resolve(function() { return 'mockIndexTemplate'; });
+              return Promise.resolve(() => 'mockIndexTemplate');
             } else {
               return Promise.reject(new Error('no template'));
             }
@@ -714,9 +716,9 @@ describe('KssBuilderBase object API', function() {
       return builder.buildGuide(new kss.KssStyleGuide({}), options).catch(error => {
         return error;
       }).then(() => {
-        expect(builder.templates.index).to.be.function;
-        expect(builder.templates.section).to.be.function;
-        expect(builder.templates.item).to.be.function;
+        expect(builder.templates.index).to.be.a('function');
+        expect(builder.templates.section).to.be.a('function');
+        expect(builder.templates.item).to.be.a('function');
         expect(builder.templates.index()).to.equal('mockIndexTemplate');
         expect(builder.templates.section()).to.equal('mockIndexTemplate');
         expect(builder.templates.item()).to.equal('mockIndexTemplate');

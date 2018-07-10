@@ -12,10 +12,10 @@
    See kss_builder_base_example.js for how to implement a builder.
    *************************************************************** */
 
-const marked = require('marked'),
-  path = require('path'),
-  Promise = require('bluebird'),
-  resolve = require('resolve'); // replace by require.resolve for node >= 8.9
+const md = require('../../lib/md.js');
+const path = require('path');
+const Promise = require('bluebird');
+const resolve = require('resolve'); // replace by require.resolve for node >= 8.9
 
 const fs = Promise.promisifyAll(require('fs-extra')),
   glob = Promise.promisify(require('glob')),
@@ -1176,7 +1176,7 @@ class KssBuilderBase {
         }).then(homePageText => {
           // Ensure homePageText is a non-false value. And run any results through
           // Markdown.
-          context.homepage = homePageText ? marked(homePageText) : '';
+          context.homepage = homePageText ? md.render(homePageText) : '';
           return Promise.resolve();
         });
       }

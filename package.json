@@ -34,7 +34,8 @@
     "fs-extra": "^6.0.0",
     "glob": "^7.0.3",
     "handlebars": "^4.0.0",
-    "marked": "^0.4.0",
+    "highlight.js": "^9.12.0",
+    "markdown-it": "^8.4.1",
     "nunjucks": "^3.0.1",
     "resolve": "^1.6.0",
     "twig": "^1.10.4",
@@ -42,7 +43,7 @@
     "yargs": "^12.0.1"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
+    "chai": "^4.1.2",
     "coveralls": "^3.0.0",
     "eslint": "^5.0.0",
     "istanbul": "^0.4.5",

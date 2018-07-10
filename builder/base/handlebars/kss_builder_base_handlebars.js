@@ -82,7 +82,7 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
   build(styleGuide) {
     let options = {};
     // Returns a promise to read/load a template provided by the builder.
-    options.readBuilderTemplate = name => {
+    options.readBuilderTemplate = (name) => {
       return fs.readFileAsync(path.resolve(this.options.builder, name + '.hbs'), 'utf8').then(content => {
         return this.Handlebars.compile(content);
       });

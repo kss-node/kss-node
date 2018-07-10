@@ -130,7 +130,7 @@ describe('KssBuilderBaseHandlebars object API', function() {
 
     it('stores the global Handlebars object', function() {
       expect(this.builderPrepared).to.have.property('Handlebars');
-      expect(this.builderPrepared.Handlebars).to.be.object;
+      expect(this.builderPrepared.Handlebars).to.be.an('object');
     });
 
     it('outputs settings if the verbose option is set', function() {
@@ -163,9 +163,9 @@ describe('KssBuilderBaseHandlebars object API', function() {
 
   describe('.build', function() {
     it('compiles the Handlebars templates', function() {
-      expect(this.builder.templates.index).to.be.function;
-      expect(this.builder.templates.section).to.be.function;
-      expect(this.builder.templates.item).to.be.function;
+      expect(this.builder.templates.index).to.be.a('function');
+      expect(this.builder.templates.section).to.be.a('function');
+      expect(this.builder.templates.item).to.be.a('function');
     });
 
     it('should save the KssStyleGuide', function() {

@@ -7,6 +7,10 @@ docs:
 	if [[ ! -e ./builder/twig/node_modules/.bin/node-sass ]]; then cd builder/twig && npm install; fi
 	cd builder/twig && npm run-script sass
 
+	# Build the nunjucks builder's Sass.
+	if [[ ! -e ./builder/nunjucks/node_modules/.bin/node-sass ]]; then cd builder/nunjucks && npm install; fi
+	cd builder/nunjucks && npm run-script sass
+
 	# Build the kss-node demo.
 	./bin/kss --destination docs --demo
 	# Build the JS docs.

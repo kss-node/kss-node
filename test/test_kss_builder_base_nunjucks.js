@@ -129,7 +129,7 @@ describe('KssBuilderBaseNunjucks object API', function() {
 
     it('stores the global Nunjucks object', function() {
       expect(this.builderPrepared).to.have.property('Nunjucks');
-      expect(this.builderPrepared.Nunjucks).to.be.object;
+      expect(this.builderPrepared.Nunjucks).to.be.an('object');
     });
 
     it('outputs settings if the verbose option is set', function() {
@@ -163,9 +163,9 @@ describe('KssBuilderBaseNunjucks object API', function() {
 
   describe('.build', function() {
     it('compiles the Nunjucks templates', function() {
-      expect(this.builder.templates.index).to.be.function;
-      expect(this.builder.templates.section).to.be.function;
-      expect(this.builder.templates.item).to.be.function;
+      expect(this.builder.templates.index).to.be.a('object');
+      expect(this.builder.templates.section).to.be.a('object');
+      expect(this.builder.templates.item).to.be.a('object');
     });
 
     it('should save the KssStyleGuide', function() {

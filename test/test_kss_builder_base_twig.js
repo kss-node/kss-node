@@ -144,7 +144,7 @@ describe('KssBuilderBaseTwig object API', function() {
 
     it('stores the global Twig object', function() {
       expect(this.builderPrepared).to.have.property('Twig');
-      expect(this.builderPrepared.Twig).to.be.object;
+      expect(this.builderPrepared.Twig).to.be.an('object');
     });
 
     it('collects the namespaces to be used by Twig', function() {
@@ -194,9 +194,9 @@ describe('KssBuilderBaseTwig object API', function() {
 
   describe('.build', function() {
     it('compiles the Twig templates', function() {
-      expect(this.builder.templates.index).to.be.function;
-      expect(this.builder.templates.section).to.be.function;
-      expect(this.builder.templates.item).to.be.function;
+      expect(this.builder.templates.index).to.be.a('object');
+      expect(this.builder.templates.section).to.be.a('object');
+      expect(this.builder.templates.item).to.be.a('object');
     });
 
     it('should save the KssStyleGuide', function() {

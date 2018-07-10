@@ -16,6 +16,7 @@
  * @module kss/builder/twig
  */
 
+const path = require('path');
 
 // We want to extend kss-node's Twig builder so we can add options that
 // are used in our templates.
@@ -59,6 +60,15 @@ class KssBuilderTwig extends KssBuilderBaseTwig {
       }
     });
   }
+
+  // add builder extend
+  prepareExtend(templateEngine) {
+    this.options.extend.push(path.resolve(__dirname, 'extend'));
+
+    return super.prepareExtend(templateEngine);
+  }
 }
+
+
 
 module.exports = KssBuilderTwig;

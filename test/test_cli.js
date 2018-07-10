@@ -146,7 +146,7 @@ describe('Command Line Interface', function() {
         expect(result.stdout).to.not.include(successMessage);
         expect(result.stdout).to.not.include('WELCOME to the kss demo! We\'ve turned on the --verbose flag so you can see what kss is doing.');
         let obj = JSON.parse(result.stdout);
-        expect(obj).to.be.an.object;
+        expect(obj).to.be.an('object');
         expect(obj).to.have.property('sections');
       });
     });
