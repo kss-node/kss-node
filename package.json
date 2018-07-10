@@ -56,6 +56,6 @@
     "kss-node": "./bin/kss-node"
   },
   "engines": {
-    "node": ">=4.0"
+    "node": ">=6.0"
   }
 }
