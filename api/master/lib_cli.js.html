@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>KSS JavaScript API: Source: lib/cli.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: lib/cli.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict';
+
+/**
+ * The `kss/lib/cli` module is a wrapper around the code used by the
+ * `bin/kss` command line utility.
+ *
+ * ```
+ * const cli = require('kss/lib/cli');
+ * ```
+ *
+ * @module kss/lib/cli
+ */
+
+const Promise = require('bluebird'),
+  kss = require('./kss'),
+  KssBuilderBase = require('../builder/base'),
+  path = require('path'),
+  version = require('../package.json').version,
+  yargs = require('yargs');
+
+const fs = Promise.promisifyAll(require('fs-extra'));
+
+/**
+ * Parses command line arguments in `opts.argv` and outputs messages and errors
+ * on `opts.stdout` and `opts.stderr`, respectively.
+ *
+ * @param {Object} opts The `stdout`, `stderr` and `argv` options to use.
+ * @returns {Promise.&lt;KssStyleGuide|null>} A `Promise` object resolving to a
+ *   `KssStyleGuide` object, or to `null` if the clone option is used.
+ */
+const cli = function(opts) {
+  // First 2 args are "node" and path to kss script; we don't need them.
+  const args = opts.argv.slice(2) || /* istanbul ignore next */ [];
+  const supportedBuilders = [
+    'builder/twig',
+    'builder/nunjucks'
+  ];
+  // Set up a logging function for any messages we need to send to stdout.
+  // We will set up the error function after we know what options to use.
+  const reportMessage = function() {
+    let message = '';
+    for (let i = 0; i &lt; arguments.length; i++) {
+      message += arguments[i];
+    }
+    opts.stdout.write(message + '\n');
+  };
+
+  // If the demo is requested, load the settings from its config file.
+  if (args.indexOf('--demo') !== -1) {
+    // Add the configuration file to the raw arguments list.
+    args.push('--config', path.join(__dirname, '../demo/kss-config.json'));
+    if (args.indexOf('--json') === -1) {
+      args.push('--verbose');
+      reportMessage('WELCOME to the kss demo! We\'ve turned on the --verbose flag so you can see what kss is doing.');
+    }
+  }
+
+  const cliOptionDefinitions = {
+    'config': {
+      group: 'File locations:',
+      alias: 'c',
+      config: true,
+      multiple: false,
+      describe: 'Load the kss options from a json file'
+    },
+    'demo': {
+      multiple: false,
+      boolean: true,
+      describe: 'Builds a KSS demo.',
+      default: false
+    },
+    // Prevent yargs from complaining about JSON comments in the config file.
+    '//': {
+      describe: 'Comments in JSON files will be ignored'
+    }
+  };
+
+  // We need to know which builder to use, so we do a quick first parse of the
+  // arguments using yargs.
+  let options = yargs(args).options(
+    // We merge the CLI option definitions with the default KssBuilderBase
+    // option definitions.
+    (new KssBuilderBase()).addOptionDefinitions(cliOptionDefinitions).getOptionDefinitions()
+  ).argv;
+
+  // Check if there are settings coming from a JSON config file. We need to note
+  // the config file's values and the directory where it is located.
+  let configFileOptions = {},
+    configFileDirectory = '',
+    checkBuilderPath = Promise.resolve();
+  if (options.config) {
+    let configFilePath = path.resolve(options.config);
+    configFileOptions = require(configFilePath);
+    configFileDirectory = path.dirname(configFilePath);
+    // First, ensure the path to the builder is relative to the config file's
+    // location. Later, we will do the same for other paths in the config file.
+    if (configFileOptions.builder) {
+      options.builder = path.resolve(configFileDirectory, configFileOptions.builder);
+      checkBuilderPath = fs.statAsync(options.builder).then(stats => {
+        if (!stats.isDirectory()) {
+          throw new Error();
+        }
+        return Promise.resolve();
+      }).catch(() => {
+        // If the resolved builder path does not work, check if the a supported
+        // builder was desired.
+        if (supportedBuilders.indexOf(configFileOptions.builder) > -1) {
+          options.builder = path.resolve(__dirname, '..', configFileOptions.builder);
+          return Promise.resolve();
+        } else {
+          throw new Error('The builder path, "' + options.builder + '", is not a directory.');
+        }
+      });
+    }
+  }
+
+  // Set up an error handler for Promised tasks in this module; kss() will
+  // handle its own errors, so we don't want to double-catch/report its errors.
+  const reportError = function(error) {
+    // Make sure the standard error handler is writable.
+    // istanbul ignore else
+    if (opts &amp;&amp; opts.stderr &amp;&amp; opts.stderr.write) {
+      // Show the full error stack if the verbose option is used twice or more.
+      opts.stderr.write(((error.stack &amp;&amp; options.verbose > 1) ? error.stack : error) + '\n');
+    } else {
+      // If the standard output for errors is not there, use console.error().
+      console.error(error);
+    }
+  };
+
+  // Confirm this is a compatible builder.
+  return checkBuilderPath.then(() => {
+    return KssBuilderBase.loadBuilder(KssBuilderBase.builderResolve(options.builder));
+  }).catch(error => {
+    return Promise.reject(error).catch(error => {
+      reportError(error);
+      throw error;
+    });
+  }).then(builder => {
+    builder.addOptionDefinitions(cliOptionDefinitions);
+
+    // After the builder is loaded, we finally know all the option definitions.
+    // So we re-run yargs one last time with all the yarg definitions we need.
+    options = yargs(args)
+      .options(builder.getOptionDefinitions())
+      // Make a --help option available.
+      .usage('Usage: kss [options]')
+      .help('help')
+      .alias('help', 'h')
+      .alias('help', '?')
+      .wrap(yargs.terminalWidth())
+      // Make a --version option available.
+      .version('version', version)
+      // Complain if the user tries to configure a non-existent option.
+      .strict()
+      .argv;
+
+    // If no arguments given, display help and exit.
+    if (args.length === 0) {
+      yargs.showHelp(reportMessage);
+      return Promise.resolve();
+    }
+
+    // All paths from the config file are relative to the file.
+    for (let key in configFileOptions) {
+      if (configFileOptions.hasOwnProperty(key) &amp;&amp; builder.getOptionDefinitions()[key] &amp;&amp; builder.getOptionDefinitions()[key].path) {
+        if (options[key] instanceof Array) {
+          /* eslint-disable no-loop-func */
+          options[key] = options[key].map(value => {
+            return path.resolve(configFileDirectory, value);
+          });
+          /* eslint-enable no-loop-func */
+        } else if (key !== 'builder' || supportedBuilders.indexOf(options[key]) === -1) {
+          options[key] = path.resolve(configFileDirectory, options[key]);
+        }
+      }
+    }
+
+    // Check for source and destination set as unnamed parameters.
+    if (options._.length > 0) {
+      let positionalParams = options._;
+      // Check for a second unnamed parameter, the destination.
+      if (positionalParams.length > 1) {
+        options.destination = positionalParams[1];
+      }
+
+      // The source directory is the first unnamed parameter.
+      if (!(options.source instanceof Array)) {
+        options.source = (typeof options.source === 'undefined') ? [] : [options.source];
+      }
+      options.source.unshift(positionalParams[0]);
+    }
+
+    // If we are building the demo, copy the styles.css file to the destination.
+    let demo = true;
+    if (options.demo &amp;&amp; !options.json) {
+      // We save the Promise for the end of this function.
+      demo = fs.copyAsync(
+        path.resolve(__dirname, '../demo/styles.css'),
+        path.resolve(options.destination, 'styles.css'),
+        {clobber: true}
+      ).catch(/* istanbul ignore next @TODO change back to an arrow function when istanbul adds support */ function(error) {
+        reportError(error);
+        return Promise.reject(error);
+      });
+    }
+
+    // Clean up the settings by removing object properties that yargs adds, but
+    // that we don't need for kss().
+    ['config', '_', '//', 'help', 'h', '?', 'version', '$0'].forEach(key => delete options[key]);
+    let optionDefinitions = builder.getOptionDefinitions();
+    for (let key in optionDefinitions) {
+      if (optionDefinitions[key].alias) {
+        delete options[optionDefinitions[key].alias];
+      }
+    }
+    for (let key in options) {
+      if (typeof options[key] === 'undefined') {
+        delete options[key];
+      }
+    }
+
+    // Pass on cli()'s stdout/stderr reporters to kss().
+    options.logFunction = reportMessage;
+    options.logErrorFunction = reportError;
+
+    return Promise.all([
+      demo,
+      kss(options).then(styleGuide => {
+        if (options.json) {
+          reportMessage(JSON.stringify(styleGuide));
+        }
+        return styleGuide;
+      })
+    ]);
+  });
+};
+
+module.exports = cli;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder_base.html">kss/builder/base</a></li><li><a href="module-kss_builder_base_handlebars.html">kss/builder/base/handlebars</a></li><li><a href="module-kss_builder_base_nunjucks.html">kss/builder/base/nunjucks</a></li><li><a href="module-kss_builder_base_twig.html">kss/builder/base/twig</a></li><li><a href="module-kss_builder_handlebars.html">kss/builder/handlebars</a></li><li><a href="module-kss_builder_nunjucks.html">kss/builder/nunjucks</a></li><li><a href="module-kss_builder_twig.html">kss/builder/twig</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder_base_handlebars-KssBuilderBaseHandlebars.html">KssBuilderBaseHandlebars</a></li><li><a href="module-kss_builder_base_nunjucks-KssBuilderBaseNunjucks.html">KssBuilderBaseNunjucks</a></li><li><a href="module-kss_builder_base_twig-KssBuilderBaseTwig.html">KssBuilderBaseTwig</a></li><li><a href="module-kss_builder_base-KssBuilderBase.html">KssBuilderBase</a></li><li><a href="module-kss_builder_handlebars-KssBuilderHandlebars.html">KssBuilderHandlebars</a></li><li><a href="module-kss_builder_nunjucks-KssBuilderNunjucks.html">KssBuilderNunjucks</a></li><li><a href="module-kss_builder_twig-KssBuilderTwig.html">KssBuilderTwig</a></li></ul><h3>Global</h3><ul><li><a href="global.html#md">md</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
