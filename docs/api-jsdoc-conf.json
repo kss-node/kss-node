@@ -9,7 +9,9 @@
       "builder/handlebars/kss-assets",
       "builder/handlebars/node_modules",
       "builder/twig/kss-assets",
-      "builder/twig/node_modules"
+      "builder/twig/node_modules",
+      "builder/nunjucks/kss-assets",
+      "builder/nunjucks/node_modules"
     ]
   },
   "opts": {
