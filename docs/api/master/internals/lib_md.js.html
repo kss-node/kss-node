@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>KSS JavaScript API: Module: kss/lib/kss_section</title>
+    <title>KSS JavaScript API: Source: lib/md.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,132 +17,44 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: kss/lib/kss_section</h1>
+    <h1 class="page-title">Source: lib/md.js</h1>
 
     
 
 
 
-
-<section>
-
-<header>
     
-        
-            
-        
-    
-</header>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict';
 
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description"><p>The <code>kss/lib/kss_section</code> module is normally accessed via the
-<a href="module-kss.KssSection.html"><code>KssSection()</code></a> class of the <code>kss</code> module:</p>
-<pre class="prettyprint source"><code>const KssSection = require('kss').KssSection;</code></pre></div>
-        
+const hljs = require('highlight.js'); // https://highlightjs.org/
+const MarkdownIt = require('markdown-it');
 
-        
-            
+/**
+ * `md` is the kss’s markdown engine.
+ *
+ * It’s an intance of [Markdown-it](https://github.com/markdown-it/markdown-it)
+ */
+const md = new MarkdownIt({
+  html: true, // Enable HTML tags in source
+  highlight: function(str, lang) {
+    if (lang &amp;&amp; hljs.getLanguage(lang)) {
+      try {
+        return `&lt;pre class="hljs">&lt;code class="language-${lang}">${hljs.highlight(lang, str, true).value}&lt;/code>&lt;/pre>`;
+      } catch (e) {
+        // higllight fail
+      }
+    }
 
+    return `&lt;pre class="hljs">&lt;code class="language-${lang}">${md.utils.escapeHtml(str)}&lt;/code>&lt;/pre>`;
+  }
+});
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="lib_kss_section.js.html">lib/kss_section.js</a>, <a href="lib_kss_section.js.html#line6">line 6</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+module.exports = md;
+</code></pre>
+        </article>
+    </section>
 
 
 

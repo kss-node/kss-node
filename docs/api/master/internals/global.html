@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>KSS JavaScript API: Class: KssBuilderHandlebars</title>
+    <title>KSS JavaScript API: Global</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: KssBuilderHandlebars</h1>
+    <h1 class="page-title">Global</h1>
 
     
 
@@ -28,11 +28,7 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>
-            <span class="ancestors"><a href="module-kss_builder_handlebars.html">kss/builder/handlebars</a>~</span>KssBuilderHandlebars<span class="signature">()</span><span class="type-signature"></span></h2>
-        
-            <div class="class-description"><p>A kss-node builder that takes input files and builds a style guide using
-Handlebars templates.</p></div>
+        <h2></h2>
         
     
 </header>
@@ -42,32 +38,7 @@ Handlebars templates.</p></div>
     
         
 
-    
-    <h2>Constructor</h2>
-    
-
-    
-    <h4 class="name" id="KssBuilderHandlebars"><span class="type-signature"></span>new KssBuilderHandlebars<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Create a builder object.</p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
+        
 
 
 <dl class="details">
@@ -97,11 +68,6 @@ Handlebars templates.</p></div>
     
 
     
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="builder_handlebars_builder.js.html">builder/handlebars/builder.js</a>, <a href="builder_handlebars_builder.js.html#line44">line 44</a>
-    </li></ul></dd>
-    
 
     
 
@@ -111,22 +77,7 @@ Handlebars templates.</p></div>
 </dl>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
     
     </div>
 
@@ -143,91 +94,20 @@ Handlebars templates.</p></div>
     
 
     
-
-    
-        <h3 class="subsection-title">Methods</h3>
+        <h3 class="subsection-title">Members</h3>
 
         
             
+<h4 class="name" id="md"><span class="type-signature">(constant) </span>md<span class="type-signature"></span></h4>
 
-    
-
-    
-    <h4 class="name" id="prepare"><span class="type-signature"></span>prepare<span class="signature">(styleGuide)</span><span class="type-signature"> &rarr; {Promise.&lt;KssStyleGuide>}</span></h4>
-    
-
-    
 
 
 
 <div class="description">
-    <p>Allow the builder to preform pre-build tasks or modify the KssStyleGuide
-object.</p>
-<p>The method can be set by any KssBuilderBase sub-class to do any custom
-tasks after the KssStyleGuide object is created and before the HTML style
-guide is built.</p>
-<p>The builder could also take this opportunity to do tasks like special
-handling of &quot;custom&quot; properties or running Sass or Bower tasks.</p>
-<p>The parent class sets up access for this builder to an object containing
-the options of the requested build (as <code>this.options</code>), and the global
-Handlebars object (as <code>this.Handlebars</code>).</p>
+    <p><code>md</code> is the kss’s markdown engine.</p>
+<p>It’s an intance of <a href="https://github.com/markdown-it/markdown-it">Markdown-it</a></p>
 </div>
 
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>styleGuide</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">KssStyleGuide</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The KSS style guide in object format.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -263,7 +143,7 @@ Handlebars object (as <code>this.Handlebars</code>).</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="builder_handlebars_builder.js.html">builder/handlebars/builder.js</a>, <a href="builder_handlebars_builder.js.html#line83">line 83</a>
+        <a href="lib_md.js.html">lib/md.js</a>, <a href="lib_md.js.html#line11">line 11</a>
     </li></ul></dd>
     
 
@@ -279,42 +159,9 @@ Handlebars object (as <code>this.Handlebars</code>).</p>
 
 
 
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
         
-<div class="param-desc">
-    <p>A <code>Promise</code> object resolving to a
-  <code>KssStyleGuide</code> object.</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise.&lt;KssStyleGuide></span>
-
-
-    </dd>
-</dl>
-
     
 
-
-
-
-
-        
     
 
     

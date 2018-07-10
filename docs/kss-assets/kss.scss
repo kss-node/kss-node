@@ -84,7 +84,10 @@ $kss-vertical-rhythm      : $kss-font-size * 1.5;
     padding: 0;
   }
 
-  pre, code, kbd, samp {
+  pre,
+  code,
+  kbd,
+  samp {
     font-family: $kss-font-code;
     color: mix($kss-colors-foreground, $kss-colors-heading, 50%);
     font-size: 1em;
@@ -653,7 +656,6 @@ $kss-vertical-rhythm      : $kss-font-size * 1.5;
 
     &[open] summary {
       border-bottom: 1px solid #ccc;
-      margin-bottom: 3px;
     }
 
     summary {
@@ -662,6 +664,58 @@ $kss-vertical-rhythm      : $kss-font-size * 1.5;
 
     pre {
       margin: 0;
+    }
+  }
+
+  .kss-colors {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: stretch;
+    flex-wrap: wrap;
+    margin: 0 -.5em;
+
+    > * {
+      flex: 0 0 auto;
+      padding: 0 .5em;
+      margin-bottom: 1em;
+      width: 16em;
+    }
+
+    .kss-color {
+      height: 100%
+    }
+  }
+
+  .kss-color {
+    background: $kss-colors-background;
+    border: 1px solid #ccc;
+    margin: 0;
+    padding: 0;
+
+    &-figure {
+      height: 3em;
+    }
+
+    &-caption {
+      padding: .5em;
+    }
+
+    &-name {
+      display: block;
+      font-weight: bold;
+      color: $kss-colors-foreground;
+    }
+
+    &-code {
+      display: block;
+      color: $kss-colors-quotes;
+    }
+
+    &-desc {
+      font-size: .875em;
     }
   }
 
@@ -684,62 +738,9 @@ $kss-vertical-rhythm      : $kss-font-size * 1.5;
     }
   }
 
-  // ------------------------------------------------------------------------------
-  // prettify.js styles
-  // ------------------------------------------------------------------------------
-
-  /* SPAN elements with the classes below are added by prettyprint. */
-  .pln { color: #000 }  /* plain text */
-
-  .str { color: #080 }  /* string content */
-  .kwd { color: #008 }  /* a keyword */
-  .com { color: #800 }  /* a comment */
-  .typ { color: #606 }  /* a type name */
-  .lit { color: #066 }  /* a literal value */
-  /* punctuation, lisp open bracket, lisp close bracket */
-  .pun, .opn, .clo { color: #660 }
-  .tag { color: #008 }  /* a markup tag name */
-  .atn { color: #606 }  /* a markup attribute name */
-  .atv { color: #080 }  /* a markup attribute value */
-  .dec, .var { color: #606 }  /* a declaration; a variable name */
-  .fun { color: red }  /* a function name */
-
-  /* Use higher contrast and text-weight for printable form. */
-  @media print, projection {
-    .str { color: #060 }
-    .kwd { color: #006; font-weight: bold }
-    .com { color: #600; font-style: italic }
-    .typ { color: #404; font-weight: bold }
-    .lit { color: #044 }
-    .pun, .opn, .clo { color: #440 }
-    .tag { color: #006; font-weight: bold }
-    .atn { color: #404 }
-    .atv { color: #060 }
+  pre.hljs code {
+    color: inherit;
   }
 
-  /* Specify class=linenums on a pre to get line numbering */
-  ol.linenums {
-    margin: 0;
-    padding: 0 0 3px 0;
-    list-style-type: none;
-
-    li {
-      min-height: $kss-vertical-rhythm;
-      border-bottom: 1px solid #eee;
-      padding: 0 10px;
-      background: #fff;
-
-      &:first-child {
-        padding-top: 3px;
-      }
-    }
-    /* Alternate shading for lines */
-    li.L0,
-    li.L2,
-    li.L4,
-    li.L6,
-    li.L8 {
-      background: #fcfcfc;
-    }
-  }
+  @import '../node_modules/highlight.js/styles/vs2015';
 }

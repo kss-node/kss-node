@@ -47,14 +47,14 @@
 <main class="kss-main" aria-label="Content">
   <article>
       <div id="kssref-0" class="kss-section kss-section--depth-0 kss-overview kss-style">
-        <h1 id="building-style-guides-with-kss-node">Building style guides with kss-node</h1>
-<p>This software is a Node.js implementation of <a href="https://github.com/kneath/kss">Knyle Style Sheets</a> (KSS), &quot;a documentation syntax for CSS&quot; that&#39;s intended to have syntax readable by humans <em>and</em> machines. Hence, the kss-node software can be used to create a &quot;living style guide&quot;.</p>
+        <h1>Building style guides with kss-node</h1>
+<p>This software is a Node.js implementation of <a href="https://github.com/kneath/kss">Knyle Style Sheets</a> (KSS), &quot;a documentation syntax for CSS&quot; that's intended to have syntax readable by humans <em>and</em> machines. Hence, the kss-node software can be used to create a &quot;living style guide&quot;.</p>
 <ol>
 <li>Write human-readable documentation using &quot;KSS syntax&quot; comments. Can be added to CSS, Sass, LESS, or any other CSS Preprocessor files.</li>
 <li>Have the <code>kss</code> tool automatically build a style guide from your stylesheets.</li>
 </ol>
-<p>Here&#39;s an example KSS comment:</p>
-<pre class="prettyprint linenums lang-css"><code data-language="css">/*
+<p>Here's an example KSS comment:</p>
+<pre class="hljs"><code class="language-css"><span class="hljs-comment">/*
 Button
 
 Your standard button suitable for clicking.
@@ -65,30 +65,29 @@ Your standard button suitable for clicking.
 Markup: button.html
 
 Style guide: components.button
-*/
-.button {
-  ...
+*/</span>
+<span class="hljs-selector-class">.button</span> {
+  <span class="hljs-comment">/* … */</span>
 }
-.button.shiny {
-  ...
+<span class="hljs-selector-class">.button</span><span class="hljs-selector-class">.shiny</span> {
+  <span class="hljs-comment">/* … */</span>
 }
 </code></pre>
-
 <p><strong>For more information on how to write KSS comments, see the <a href="https://github.com/kss-node/kss/blob/spec/SPEC.md">KSS spec</a>.</strong></p>
-<h2 id="kss-demo">kss demo</h2>
+<h2>kss demo</h2>
 <p>This site is built with the <code>kss</code> command-line tool and parses the KSS documentation found in this <a href="https://github.com/kss-node/kss-node/tree/master/demo">demo project</a>.</p>
-<p>The styling of this site is a demo of <a href="https://github.com/kss-node/kss-node">kss-node</a>&#39;s default style guide builder. By using the site navigation to the left (or above), you can see how your documentation would look with the default builder. Note that alternate builders are available.</p>
-<h2 id="quick-start-guide">Quick start guide</h2>
-<p>Documentation on how to get started with kss-node (and with Node.js&#39; npm) is available on the <a href="https://github.com/kss-node/kss-node/wiki">kss-node wiki</a>.</p>
-<h2 id="javascript-api">JavaScript API</h2>
-<p>If you don&#39;t wish to use the default style guide builder, you can either:</p>
+<p>The styling of this site is a demo of <a href="https://github.com/kss-node/kss-node">kss-node</a>'s default style guide builder. By using the site navigation to the left (or above), you can see how your documentation would look with the default builder. Note that alternate builders are available.</p>
+<h2>Quick start guide</h2>
+<p>Documentation on how to get started with kss-node (and with Node.js' npm) is available on the <a href="https://github.com/kss-node/kss-node/wiki">kss-node wiki</a>.</p>
+<h2>JavaScript API</h2>
+<p>If you don't wish to use the default style guide builder, you can either:</p>
 <ul>
 <li>write your own builder that uses the KssBuilderBaseHandlebars class, or</li>
 <li>write your own builder and class that extends KssBuilderBase, or</li>
 <li>use the JavaScript object representation of the style guide, KssStyleGuide.</li>
 </ul>
 <p><strong>For more information on how to integrate kss-node with your own JavaScript, see the <a href="./section-javascript-api.html">JavaScript API documentation</a>.</strong></p>
-<h2 id="project-homepage">Project homepage</h2>
+<h2>Project homepage</h2>
 <p>Check out the <a href="https://github.com/kss-node/kss-node">project on Github</a> for more information about the code.</p>
 
       </div>
@@ -98,12 +97,10 @@ Style guide: components.button
 <!-- SCRIPTS -->
 <script src="kss-assets/kss.js"></script>
 <script src="kss-assets/scrollspy.js"></script>
-<script src="kss-assets/prettify.js"></script>
 <script src="kss-assets/kss-fullscreen.js"></script>
 <script src="kss-assets/kss-guides.js"></script>
 <script src="kss-assets/kss-markup.js"></script>
 <script>
-  prettyPrint();
   var spy = new ScrollSpy('#kss-node', {
     nav: '.kss-nav__menu-child > li > a',
     className: 'is-in-viewport'

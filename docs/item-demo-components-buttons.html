@@ -53,7 +53,7 @@
         <h3 class="kss-title kss-title--level-3">
           <a class="kss-title__permalink" href="#kssref-demo-components-buttons">
             <span class="kss-title__ref">
-              3.2.1
+              3.3.1
               <span class="kss-title__permalink-hash">
                   #demo.components.buttons
               </span>
@@ -97,6 +97,7 @@
             <p>A majority of buttons in the site are built from the same base class.</p>
 
           </div>
+
 
       </div>
 
@@ -188,10 +189,10 @@
             <summary>
                 Markup: <code>components/buttons.hbs</code>
             </summary>
-            <pre class="prettyprint linenums lang-html"><code data-language="html">&lt;a href&#x3D;&quot;#&quot; class&#x3D;&quot;button {{modifier_class}}&quot;&gt;Link Button&lt;/a&gt;
-&lt;button class&#x3D;&quot;button {{modifier_class}}&quot;&gt;Button Element&lt;/button&gt;
-&lt;input type&#x3D;&quot;button&quot; class&#x3D;&quot;button {{modifier_class}}&quot; value&#x3D;&quot;input[type&#x3D;&#x27;button&#x27;]&quot;/&gt;
-</code></pre>
+            <pre class="hljs"><code class="language-handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">"#"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"button </span></span></span><span class="hljs-template-variable">{{modifier_class}}</span><span class="xml"><span class="hljs-tag"><span class="hljs-string">"</span>&gt;</span>Link Button<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"button </span></span></span><span class="hljs-template-variable">{{modifier_class}}</span><span class="xml"><span class="hljs-tag"><span class="hljs-string">"</span>&gt;</span>Button Element<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"button"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"button </span></span></span><span class="hljs-template-variable">{{modifier_class}}</span><span class="xml"><span class="hljs-tag"><span class="hljs-string">"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"input[type='button']"</span>/&gt;</span>
+</span></code></pre>
           </details>
 
         <div class="kss-source kss-style">
@@ -205,12 +206,10 @@
 <!-- SCRIPTS -->
 <script src="kss-assets/kss.js"></script>
 <script src="kss-assets/scrollspy.js"></script>
-<script src="kss-assets/prettify.js"></script>
 <script src="kss-assets/kss-fullscreen.js"></script>
 <script src="kss-assets/kss-guides.js"></script>
 <script src="kss-assets/kss-markup.js"></script>
 <script>
-  prettyPrint();
   var spy = new ScrollSpy('#kss-node', {
     nav: '.kss-nav__menu-child > li > a',
     className: 'is-in-viewport'
