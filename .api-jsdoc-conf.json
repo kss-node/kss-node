@@ -1,0 +1,30 @@
+{
+  "source": {
+    "include": [
+      "lib",
+      "builder"
+    ],
+    "exclude": [
+      "builder/base/example",
+      "builder/handlebars/kss-assets",
+      "builder/handlebars/node_modules",
+      "builder/twig/kss-assets",
+      "builder/twig/node_modules",
+      "builder/nunjucks/kss-assets",
+      "builder/nunjucks/node_modules"
+    ]
+  },
+  "opts": {
+    "destination": "./docs/api/master/",
+    "readme": "./.api-homepage.md",
+    "recurse": true,
+    "verbose": true
+  },
+  "plugins": [
+    "plugins/markdown"
+  ],
+  "templates": {},
+  "tags": {
+    "allowUnknownTags": false
+  }
+}
