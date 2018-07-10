@@ -53,7 +53,7 @@
         <h4 class="kss-title kss-title--level-4">
           <a class="kss-title__permalink" href="#kssref-demo-forms-text-label-pairs">
             <span class="kss-title__ref">
-              3.3.1.2
+              3.4.1.2
               <span class="kss-title__permalink-hash">
                   #demo.forms.text.label-pairs
               </span>
@@ -98,6 +98,7 @@
 both layout convenience and specific styling.</p>
 
           </div>
+
 
       </div>
 
@@ -159,9 +160,9 @@ both layout convenience and specific styling.</p>
             <summary>
                 Markup
             </summary>
-            <pre class="prettyprint linenums lang-html"><code data-language="html">&lt;div class&#x3D;&quot;mod-input text [modifier class]&quot;&gt;
-  &lt;label&gt;Text Label&lt;/label&gt;
-  &lt;input type&#x3D;&quot;text&quot; class&#x3D;&quot;&quot; value&#x3D;&quot;Text input&quot;/&gt;&lt;/div&gt;</code></pre>
+            <pre class="hljs"><code class="language-handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"mod-input text [modifier class]"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">label</span>&gt;</span>Text Label<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">""</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"Text input"</span>/&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span></code></pre>
           </details>
 
         <div class="kss-source kss-style">
@@ -175,12 +176,10 @@ both layout convenience and specific styling.</p>
 <!-- SCRIPTS -->
 <script src="kss-assets/kss.js"></script>
 <script src="kss-assets/scrollspy.js"></script>
-<script src="kss-assets/prettify.js"></script>
 <script src="kss-assets/kss-fullscreen.js"></script>
 <script src="kss-assets/kss-guides.js"></script>
 <script src="kss-assets/kss-markup.js"></script>
 <script>
-  prettyPrint();
   var spy = new ScrollSpy('#kss-node', {
     nav: '.kss-nav__menu-child > li > a',
     className: 'is-in-viewport'

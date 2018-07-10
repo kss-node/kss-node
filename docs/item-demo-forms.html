@@ -53,7 +53,7 @@
         <h2 class="kss-title kss-title--level-2">
           <a class="kss-title__permalink" href="#kssref-demo-forms">
             <span class="kss-title__ref">
-              3.3
+              3.4
               <span class="kss-title__permalink-hash">
                   #demo.forms
               </span>
@@ -98,6 +98,7 @@
 
           </div>
 
+
       </div>
 
         <div class="kss-modifier__wrapper">
@@ -129,21 +130,21 @@
             <summary>
                 Markup: <code>forms/forms.hbs</code>
             </summary>
-            <pre class="prettyprint linenums lang-html"><code data-language="html">{{!-- Handlebars partials can nest other section&#x27;s partials. --}}
-&lt;form&gt;
-&lt;p&gt;{{&gt; &quot;demo.forms.text.single-line&quot; }}&lt;/p&gt;
-{{&gt; &quot;demo.forms.text.label-pairs&quot; }}
+            <pre class="hljs"><code class="language-handlebars"><span class="xml"></span><span class="hljs-comment">{{!-- Handlebars partials can nest other section's partials. --}}</span><span class="xml">
+<span class="hljs-tag">&lt;<span class="hljs-name">form</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span></span><span class="hljs-template-variable">{{&gt; "demo.forms.text.single-line" }}</span><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+</span><span class="hljs-template-variable">{{&gt; "demo.forms.text.label-pairs" }}</span><span class="xml">
 
 
-&lt;p&gt;
-{{&gt; &quot;buttons&quot; }}
-&lt;/p&gt;
-&lt;/form&gt;
-</code></pre>
+<span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>
+</span><span class="hljs-template-variable">{{&gt; "buttons" }}</span><span class="xml">
+<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span>
+</span></code></pre>
           </details>
 
         <div class="kss-source kss-style">
-          Source: <code>styles.less</code>, line 18
+          Source: <code>styles.less</code>, line 38
         </div>
 
     </div>
@@ -153,12 +154,10 @@
 <!-- SCRIPTS -->
 <script src="kss-assets/kss.js"></script>
 <script src="kss-assets/scrollspy.js"></script>
-<script src="kss-assets/prettify.js"></script>
 <script src="kss-assets/kss-fullscreen.js"></script>
 <script src="kss-assets/kss-guides.js"></script>
 <script src="kss-assets/kss-markup.js"></script>
 <script>
-  prettyPrint();
   var spy = new ScrollSpy('#kss-node', {
     nav: '.kss-nav__menu-child > li > a',
     className: 'is-in-viewport'

@@ -13,7 +13,7 @@
     var elementList = document.querySelectorAll('a[data-kss-guides]');
     for (var button of elementList) {
       button.onclick = self.showGuides.bind(self);
-    };
+    }
   };
 
   // Toggle the guides mode.

@@ -30,7 +30,7 @@
       } else {
         el.setAttribute('open', '');
       }
-    };
+    }
 
     // Toggle the markup mode.
     body.classList.toggle(this.bodyClass);
