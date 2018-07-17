@@ -16,7 +16,7 @@
   },
   "opts": {
     "destination": "./docs/api/master/",
-    "readme": "./docs/api-homepage.md",
+    "readme": "./.api-homepage.md",
     "recurse": true,
     "verbose": true
   },
