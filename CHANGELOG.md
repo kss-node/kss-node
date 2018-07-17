@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.0.0-beta.23] - 2018-07-17
+### Fixed
+- [#496](https://github.com/kss-node/kss-node/pull/496) Fix Handlebars template
+  - By [@ryuran](https://github.com/ryuran)
+
+### Added
+- [#472](https://github.com/kss-node/kss-node/pull/472) Add Highlight code block
+  - By [@ryuran](https://github.com/ryuran)
+
+### Changed
+- [#497](https://github.com/kss-node/kss-node/pull/497) Remove documentation from source
+  - By [@RobLoach](https://github.com/RobLoach)
+
 ## [3.0.0-beta.22] - 2018-07-03
 ### Fixed
 - [#493](https://github.com/kss-node/kss-node/pull/493) Fix Color support
