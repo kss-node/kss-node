@@ -3,6 +3,7 @@ node_modules
 /test/output
 coverage
 npm-debug.log
+/docs
 
 # Exclude IDE management files.
   # Eclipse

@@ -151,7 +151,7 @@ Forking, hacking, and tearing apart of this software is welcome! It still needs 
 
 After you've cloned this repository, run `npm install` and then you'll be able to run the module's mocha and eslint tests with `npm test`.
 
-To build a new version of the demo style guide and JavaScript documentation, use `make docs` and commit your changes to master.
+To build a new version of the demo style guide and JavaScript documentation, use `make docs` and commit your changes to master. To publish the documentation to http://kss-node.github.io/kss-node/ , run `npm run docs-deploy`.
 
 ## Contributors
 
