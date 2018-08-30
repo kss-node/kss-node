@@ -222,7 +222,7 @@
                 Markup
               {% endif %}
             </summary>
-            <pre class="hljs"><code class="language-twig">{{ section.markup|hljs('twig') }}</code></pre>
+            <pre class="hljs"><code class="language-twig">{% raw %}{{ section.markup|hljs('twig') }}{% endraw %}</code></pre>
           </details>
         {% endif %}
       {% endif %}
