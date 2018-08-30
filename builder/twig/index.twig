@@ -223,7 +223,7 @@
                 Markup
               {% endif %}
             </summary>
-            <pre class="hljs"><code class="language-twig">{{ section.markup|hljs('twig') }}</code></pre>
+            <pre class="hljs"><code class="language-twig">{{ section.markup|hljs('twig')|raw }}</code></pre>
           </details>
         {% endif %}
       {% endif %}
