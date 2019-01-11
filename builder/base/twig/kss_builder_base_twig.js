@@ -106,7 +106,7 @@ class KssBuilderBaseTwig extends KssBuilderBase {
           options.error = reject;
           // We enforce some options.
           options.async = true;
-          options.autoescape = true;
+          options.autoescape = false;
           options.namespaces = namespacesFromKSS;
 
           // twig() ignores options.load/error if data or ref are specified.
