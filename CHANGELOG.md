@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.0.0-beta.24] - 2019-01-11
+### Fixed
+- [#505](https://github.com/kss-node/kss-node/pull/505) Nunjucks: Add raw block to highlight
+- [#506](https://github.com/kss-node/kss-node/pull/506) Nunjucks: Fix Nunjucks safe filter
+- [#520](https://github.com/kss-node/kss-node/pull/520) Twig: Update to 1.13.0
+
 ## [3.0.0-beta.23] - 2018-07-17
 ### Fixed
 - [#496](https://github.com/kss-node/kss-node/pull/496) Fix Handlebars template
