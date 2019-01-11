@@ -4,7 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [3.0.0-beta.24] - 2019-01-11
+## [3.0.0-beta.25] - 2019-01-11
+### Fixed
+- [#521](https://github.com/kss-node/kss-node/pull/521) Twig: Disable autoescape for now
+
+## [3.0.0-beta.24] - 2019-01-10
 ### Fixed
 - [#505](https://github.com/kss-node/kss-node/pull/505) Nunjucks: Add raw block to highlight
 - [#506](https://github.com/kss-node/kss-node/pull/506) Nunjucks: Fix Nunjucks safe filter
