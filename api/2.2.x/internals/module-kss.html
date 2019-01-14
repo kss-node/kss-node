@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>kss-node JavaScript API: Module: kss</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Module: kss</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        
+            
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description"><p>The core kss API can be imported with:</p>
+<pre class="prettyprint source"><code>var kss = require('kss');</code></pre><p>The various constructors and methods can then be accessed with:</p>
+<pre class="prettyprint source"><code>var kssStyleguide = new kss.KssStyleguide();
+var kssSection    = new kss.KssSection();
+var kssModifier   = new kss.KssModifier();
+var kssParameter  = new kss.KssParameter();
+kss.parse();
+kss.traverse();
+var kssConfig     = new kss.KssConfig();</code></pre></div>
+        
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_kss.js.html">lib/kss.js</a>, <a href="lib_kss.js.html#line5">line 5</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Classes</h3>
+
+        <dl>
+            <dt><a href="module-kss.KssConfig.html">KssConfig</a></dt>
+            <dd></dd>
+        
+            <dt><a href="module-kss.KssModifier.html">KssModifier</a></dt>
+            <dd></dd>
+        
+            <dt><a href="module-kss.KssParameter.html">KssParameter</a></dt>
+            <dd></dd>
+        
+            <dt><a href="module-kss.KssSection.html">KssSection</a></dt>
+            <dd></dd>
+        
+            <dt><a href="module-kss.KssStyleguide.html">KssStyleguide</a></dt>
+            <dd></dd>
+        </dl>
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id=".parse"><span class="type-signature">(static) </span>parse<span class="signature">(input, options, callback)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Parse an array/string of documented CSS, or an object of files
+and their content.</p>
+<p>File object formatted as <code>{ &quot;absolute filename&quot;: content, ... }</code>.</p>
+<p>This is called automatically as part of <code>traverse</code> but is publicly
+accessible as well.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>input</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Mixed</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The input to parse</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Options to alter the output content. Same as the options in <a href="module-kss.html#.traverse"><code>traverse()</code></a>.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Called when parsing is complete</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_parse.js.html">lib/parse.js</a>, <a href="lib_parse.js.html#line47">line 47</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".traverse"><span class="type-signature">(static) </span>traverse<span class="signature">(directory, options, callback)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Traverse a directory, parse its contents, and create a KssStyleguide.</p>
+<p>Callbacks receive an instance of <code>KssStyleguide</code>.</p>
+<p>If you want to parse anything other than css, less, sass, or stylus files
+then you'll want to use options.mask to target a different set of file
+extensions.</p>
+<pre class="prettyprint source"><code>kss.traverse('./stylesheets', { mask: '*.css' }, function(err, styleguide) {
+    if (err) throw err;
+
+    styleguide.section('2.1.1') // &lt;KssSection>
+});</code></pre><p>There a few extra <code>options</code> you can pass to <code>kss.traverse</code> which will effect
+the output generated:</p>
+<ul>
+<li>mask: Use a regex or string (e.g. <code>*.less|*.css</code>) to only parse files
+matching this value. Defaults to:
+<code>*.css|*.less|*.sass|*.scss|*.styl|*.stylus</code></li>
+<li>markdown: kss-node supports built-in Markdown formatting of its
+documentation, thanks to <a href="https://github.com/chjj/marked">marked</a>. It's
+enabled by default, but you can disable it by adding <code>markdown: false</code> to
+the <code>options</code> object.</li>
+<li>multiline: kss-node makes the header available separately from the
+description. To make kss-node behave like the Ruby KSS, disable this option
+and the title will remain a part of the description. This setting is
+enabled by default, but you can disable it by adding <code>multiline: false</code> to
+your options.</li>
+<li>typos: Thanks to <a href="https://github.com/NaturalNode/natural">natural</a>,
+kss-node can parse keywords phonetically rather then by their string value.
+In short: make a typo and the library will do its best to read it anyway.
+Enabled by default.</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>directory</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The directory(s) to traverse</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Options to alter the output content (optional)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Called when traversal AND parsing is complete</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lib_traverse.js.html">lib/traverse.js</a>, <a href="lib_traverse.js.html#line64">line 64</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_generator.html">kss/generator</a></li><li><a href="module-kss_generator_handlebars.html">kss/generator/handlebars</a></li><li><a href="module-kss_lib_kss_config.html">kss/lib/kss_config</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="KssGenerator.html">KssGenerator</a></li><li><a href="module-kss.KssConfig.html">KssConfig</a></li><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleguide.html">KssStyleguide</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

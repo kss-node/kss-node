@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>kss-node JavaScript API: Source: traverse.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: traverse.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * The `kss/lib/traverse` module is normally accessed via the
+ * [`traverse()`]{@link module:kss.traverse} method of the `kss` module:
+ * ```
+ * var kss = require('kss');
+ * kss.traverse(directory, options, callback);
+ * ```
+ * @private
+ * @module kss/lib/traverse
+ */
+
+var parse = require('./parse.js'),
+	path = require('path'),
+	fs = require('fs'),
+	traverse;
+
+/**
+ * Traverse a directory, parse its contents, and create a KssStyleguide.
+ *
+ * Callback returns an instance of `KssStyleguide`
+ *
+ * @alias module:kss.traverse
+ * @param {String|Array} directory The directory(s) to traverse
+ * @param {Object}       options   Options to alter the output content (optional)
+ * @param {Function}     callback  Called when traversal AND parsing is complete
+ */
+traverse = function(directory, options, callback) {
+	var self = this,
+		files = [],
+		fileCounter = 0,
+		filesRemaining = 0,
+		loopsRemaining = 0,
+		walkFinished,
+		walk;
+
+	options = options || {};
+	if (typeof options === 'function') {
+		callback = options;
+		options = {};
+	}
+	if (typeof callback === 'undefined') {
+		throw new Error('No callback supplied for KSS.traverse!');
+	}
+
+	// Mask to search for particular file types - defaults to common precompilers.
+	options.mask = options.mask || /\.css|\.less|\.sass|\.scss|\.styl|\.stylus/;
+
+	// If the mask is a string, convert it into a RegExp.
+	if (!(options.mask instanceof RegExp)) {
+		options.mask = new RegExp(
+			'(?:' + options.mask.replace(/\./g, '\\.').replace(/\*/g, '.*') + ')$'
+		);
+	}
+
+	// Normalize all the directory paths.
+	if (!Array.isArray(directory)) {
+		directory = [directory];
+	}
+	for (var key in directory) {
+		directory[key] = path.normalize(directory[key]);
+	}
+
+	// Callback for walk() when it has finished traversing all directories.
+	walkFinished = function(err) {
+		/* jshint loopfunc: true */
+		var i, l = files.length, fileContents = [], orderedObject = {};
+
+		files.sort();
+		for (i = 0; i &lt; l; i += 1) {
+			(function(j){
+				fs.readFile(files[j], 'utf8', function(err, contents) {
+					if (err) { callback(err); return; }
+
+					fileContents[j] = contents;
+					fileCounter -= 1;
+
+					if (fileCounter === 0) {
+						fileContents.map(function(contents, index) {
+							var filename = files[index];
+							orderedObject[filename] = contents;
+							return '';
+						});
+						parse(orderedObject, options, callback);
+					}
+				});
+			}(i));
+		}
+	};
+
+	// Courtesy of [stygstra](https://gist.github.com/514983)
+	walk = function(directories, options, callback) {
+		options = options || {};
+		if (typeof callback !== 'function') { callback = function(){}; }
+
+		if (!Array.isArray(directories)) {
+			directories = [directories];
+		}
+
+		// Loop through all the given directories.
+		loopsRemaining += directories.length;
+		directories.forEach(function(directory, index, directories) {
+			loopsRemaining -= 1;
+
+			// Start an asynchronous search of the file system.
+			filesRemaining += 1;
+			fs.readdir(directory, function(err, relnames) {
+				if (err) {
+					callback(err);
+					return;
+				}
+
+				// About to start looping through the directory contents.
+				loopsRemaining += relnames.length;
+				// The fs.readdir() callback has returned.
+				filesRemaining -= 1;
+
+				// If there is no more file system to search, call .finished().
+				if (filesRemaining === 0 &amp;&amp; loopsRemaining === 0) {
+				  callback(null);
+				}
+
+				// Otherwise, if readdir() has results, loop through them.
+				relnames.forEach(function(relname, index, relnames) {
+					loopsRemaining -= 1;
+					var name = path.join(directory, relname);
+
+					// Start an asynchronous stat of this file system item.
+					filesRemaining += 1;
+					fs.stat(name, function(err, stat) {
+						if (err) {
+							callback(err);
+							return;
+						}
+
+						if (stat.isDirectory()) {
+							if (name !== '.svn' &amp;&amp; name !== '.git') {
+								walk(name, options, callback);
+							}
+						}
+						else if (!options.mask || name.match(options.mask)) {
+							name = name.replace(/\\/g, '/');
+							files.push(name);
+							fileCounter += 1;
+						}
+
+						// The fs.stat() callback has returned.
+						filesRemaining -= 1;
+
+						// If there is no more file system to search, call .finished().
+						if (filesRemaining === 0 &amp;&amp; loopsRemaining === 0) {
+							callback(null);
+						}
+					});
+				});
+			});
+		});
+	};
+
+	// Get each file in the target directory, order them alphabetically and then
+	// parse their output.
+	walk(directory, options, walkFinished);
+};
+module.exports = traverse;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleguide.html">KssStyleguide</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-beta3</a>
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

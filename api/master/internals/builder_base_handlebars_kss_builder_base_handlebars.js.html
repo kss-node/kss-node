@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: builder/base/handlebars/kss_builder_base_handlebars.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: builder/base/handlebars/kss_builder_base_handlebars.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict';
+
+/**
+ * The `kss/builder/base/handlebars` module loads the KssBuilderBaseHandlebars
+ * class, a `{@link KssBuilderBase}` sub-class using Handlebars templating.
+ * ```
+ * const KssBuilderBaseHandlebars = require('kss/builder/base/handlebars');
+ * ```
+ * @module kss/builder/base/handlebars
+ */
+
+const KssBuilderBase = require('../kss_builder_base.js'),
+  path = require('path'),
+  Promise = require('bluebird'),
+  Handlebars = require('handlebars');
+
+const fs = Promise.promisifyAll(require('fs-extra'));
+
+/**
+ * A kss-node builder takes input files and builds a style guide using
+ * Handlebars templates.
+ */
+class KssBuilderBaseHandlebars extends KssBuilderBase {
+
+  /**
+   * Create a KssBuilderBaseHandlebars object.
+   *
+   * ```
+   * const KssBuilderBaseHandlebars = require('kss/builder/base/handlebars');
+   * const builder = new KssBuilderBaseHandlebars();
+   * ```
+   */
+  constructor() {
+    super();
+
+    // Store the version of the builder API that the builder instance is
+    // expecting; we will verify this in loadBuilder().
+    this.API = '3.0';
+  }
+
+  /**
+   * Allow the builder to preform pre-build tasks or modify the KssStyleGuide
+   * object.
+   *
+   * The method can be set by any KssBuilderBase sub-class to do any custom
+   * tasks after the KssStyleGuide object is created and before the HTML style
+   * guide is built.
+   *
+   * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
+   * @returns {Promise.&lt;null>} A `Promise` object resolving to `null`.
+   */
+  prepare(styleGuide) {
+    return super.prepare(styleGuide).then(styleGuide => {
+      if (this.options.verbose) {
+        this.log('');
+      }
+
+      // Store the global Handlebars object.
+      this.Handlebars = Handlebars;
+
+      let prepTasks = [];
+
+      // Create a new destination directory.
+      prepTasks.push(this.prepareDestination('kss-assets'));
+
+      // Load modules that extend Handlebars.
+      prepTasks.push(this.prepareExtend(this.Handlebars));
+
+      return Promise.all(prepTasks).then(() => {
+        return Promise.resolve(styleGuide);
+      });
+    });
+  }
+
+  /**
+   * Build the HTML files of the style guide given a KssStyleGuide object.
+   *
+   * @param {KssStyleGuide} styleGuide The KSS style guide in object format.
+   * @returns {Promise.&lt;KssStyleGuide>} A `Promise` object resolving to a
+   *   `KssStyleGuide` object.
+   */
+  build(styleGuide) {
+    let options = {};
+    // Returns a promise to read/load a template provided by the builder.
+    options.readBuilderTemplate = (name) => {
+      return fs.readFileAsync(path.resolve(this.options.builder, name + '.hbs'), 'utf8').then(content => {
+        return this.Handlebars.compile(content);
+      });
+    };
+    // Returns a promise to read/load a template specified by a section.
+    options.readSectionTemplate = (name, filepath) => {
+      return fs.readFileAsync(filepath, 'utf8').then(contents => {
+        this.Handlebars.registerPartial(name, contents);
+        return contents;
+      });
+    };
+    // Returns a promise to load an inline template from markup.
+    options.loadInlineTemplate = (name, markup) => {
+      this.Handlebars.registerPartial(name, markup);
+      return Promise.resolve();
+    };
+    // Returns a promise to load the data context given a template file path.
+    options.loadContext = filepath => {
+      let context;
+      // Load sample context for the template from the sample .json file.
+      try {
+        context = require(path.join(path.dirname(filepath), path.basename(filepath, path.extname(filepath)) + '.json'));
+        // require() returns a cached object. We want an independent clone of
+        // the object so we can make changes without affecting the original.
+        context = JSON.parse(JSON.stringify(context));
+      } catch (error) {
+        context = {};
+      }
+      return Promise.resolve(context);
+    };
+    // Returns a promise to get a template by name.
+    options.getTemplate = name => {
+      // We don't wrap the rendered template in "new handlebars.SafeString()"
+      // since we want the ability to display it as a code sample with {{ }} and
+      // as rendered HTML with {{{ }}}.
+      return Promise.resolve(this.Handlebars.compile('{{> "' + name + '"}}'));
+    };
+    // Returns a promise to get a template's markup by name.
+    options.getTemplateMarkup = name => {
+      // We don't wrap the rendered template in "new handlebars.SafeString()"
+      // since we want the ability to display it as a code sample with {{ }} and
+      // as rendered HTML with {{{ }}}.
+      return Promise.resolve(this.Handlebars.partials[name]);
+    };
+    // Renders a template and returns the markup.
+    options.templateRender = (template, context) => {
+      return template(context);
+    };
+    // Converts a filename into a Handlebars partial name.
+    options.filenameToTemplateRef = filename => {
+      // Return the filename without the full path or the file extension.
+      return path.basename(filename, path.extname(filename));
+    };
+    options.templateExtension = 'hbs';
+    options.emptyTemplate = '{{! Cannot be an empty string. }}';
+
+    return this.buildGuide(styleGuide, options);
+  }
+}
+
+module.exports = KssBuilderBaseHandlebars;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-kss.html">kss</a></li><li><a href="module-kss_builder_base.html">kss/builder/base</a></li><li><a href="module-kss_builder_base_handlebars.html">kss/builder/base/handlebars</a></li><li><a href="module-kss_builder_base_nunjucks.html">kss/builder/base/nunjucks</a></li><li><a href="module-kss_builder_base_twig.html">kss/builder/base/twig</a></li><li><a href="module-kss_builder_handlebars.html">kss/builder/handlebars</a></li><li><a href="module-kss_builder_nunjucks.html">kss/builder/nunjucks</a></li><li><a href="module-kss_builder_twig.html">kss/builder/twig</a></li><li><a href="module-kss_lib_cli.html">kss/lib/cli</a></li><li><a href="module-kss_lib_kss_modifier.html">kss/lib/kss_modifier</a></li><li><a href="module-kss_lib_kss_parameter.html">kss/lib/kss_parameter</a></li><li><a href="module-kss_lib_kss_section.html">kss/lib/kss_section</a></li><li><a href="module-kss_lib_kss_styleguide.html">kss/lib/kss_styleguide</a></li><li><a href="module-kss_lib_parse.html">kss/lib/parse</a></li><li><a href="module-kss_lib_traverse.html">kss/lib/traverse</a></li></ul><h3>Classes</h3><ul><li><a href="module-kss.KssModifier.html">KssModifier</a></li><li><a href="module-kss.KssParameter.html">KssParameter</a></li><li><a href="module-kss.KssSection.html">KssSection</a></li><li><a href="module-kss.KssStyleGuide.html">KssStyleGuide</a></li><li><a href="module-kss_builder_base_handlebars-KssBuilderBaseHandlebars.html">KssBuilderBaseHandlebars</a></li><li><a href="module-kss_builder_base_nunjucks-KssBuilderBaseNunjucks.html">KssBuilderBaseNunjucks</a></li><li><a href="module-kss_builder_base_twig-KssBuilderBaseTwig.html">KssBuilderBaseTwig</a></li><li><a href="module-kss_builder_base-KssBuilderBase.html">KssBuilderBase</a></li><li><a href="module-kss_builder_handlebars-KssBuilderHandlebars.html">KssBuilderHandlebars</a></li><li><a href="module-kss_builder_nunjucks-KssBuilderNunjucks.html">KssBuilderNunjucks</a></li><li><a href="module-kss_builder_twig-KssBuilderTwig.html">KssBuilderTwig</a></li></ul><h3>Global</h3><ul><li><a href="global.html#md">md</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Jan 14 2019 22:26:08 GMT+0100 (GMT+01:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
