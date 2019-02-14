@@ -24,6 +24,16 @@ describe('kss.traverse()', function() {
       });
     });
 
+    it('should function with a wildcard', function() {
+      return kss.traverse(helperUtils.fixtures('traverse-directories') + '/**/*.css', {}).then(styleGuide => {
+        expect(styleGuide).to.be.instanceof(kss.KssStyleGuide);
+        expect(styleGuide.data.sections).to.have.length(2);
+        expect(styleGuide.meta.files).to.have.length(1);
+      }, error => {
+        expect(error).to.not.exist;
+      });
+    });
+
     it('should function with an array of directories given', function() {
       return kss.traverse([helperUtils.fixtures('with-include'), helperUtils.fixtures('missing-homepage')], {}).then(styleGuide => {
         expect(styleGuide.meta.files).to.have.length(2);

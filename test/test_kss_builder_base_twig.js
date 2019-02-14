@@ -296,7 +296,7 @@ describe('KssBuilderBaseTwig object API', function() {
         source: helperUtils.fixtures('source-twig-builder-test'),
         destination: path.resolve(__dirname, 'output', 'base_twig', 'buildPage'),
         builder: helperUtils.fixtures('builder-twig-with-assets'),
-        homepage: 'alternate-homepage.md'
+        homepage: helperUtils.fixtures('source-twig-builder-test', 'alternate-homepage.md')
       });
       let styleGuide = new kss.KssStyleGuide({sections: [{header: 'Heading 4.3', reference: '4.3'}]});
       return builder.prepare(styleGuide).then(styleGuide => {

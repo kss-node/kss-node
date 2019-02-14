@@ -58,7 +58,7 @@ class KssBuilderBase {
         group: 'File locations:',
         string: true,
         path: true,
-        describe: 'Source directory to recursively parse for KSS comments, homepage, and markup'
+        describe: 'Source directory or wildcard to recursively parse for KSS comments, homepage, and markup'
       },
       'destination': {
         group: 'File locations:',
@@ -123,8 +123,8 @@ class KssBuilderBase {
         group: 'Style guide:',
         string: true,
         multiple: false,
-        describe: 'File name of the homepage\'s Markdown file',
-        default: 'homepage.md'
+        describe: 'File name of the homepage’s Markdown file related to working directory',
+        default: path.join(process.cwd(), 'homepage.md')
       },
       'markup': {
         group: 'Style guide:',
@@ -1153,32 +1153,25 @@ class KssBuilderBase {
       if (templateName !== 'index') {
         getHomepageText = Promise.resolve();
         context.homepage = false;
+      } else if (typeof context.homepage !== 'undefined') {
+        getHomepageText = Promise.resolve();
       } else {
-        // Grab the homepage text if it hasn't already been provided.
-        getHomepageText = (typeof context.homepage !== 'undefined') ? /* istanbul ignore next */ Promise.resolve() : Promise.all(
-          this.options.source.map(source => {
-            return glob(source + '/**/' + this.options.homepage);
+        // Grab the homepage text if it hasn’t already been provided.
+        getHomepageText = fs.readFile(this.options.homepage, 'utf8')
+          .then(homePageText => {
+            // Ensure homePageText is a non-false value. And run any results through
+            // Markdown.
+            context.homepage = homePageText ? md.render(homePageText) : '';
+            return Promise.resolve();
           })
-        ).then(globMatches => {
-          for (let files of globMatches) {
-            if (files.length) {
-              // Read the file contents from the first matched path.
-              return fs.readFileAsync(files[0], 'utf8');
+          .catch(() => {
+            if (this.options.verbose) {
+              this.log('   ...no homepage content found in ' + path.relative(process.cwd(), this.options.homepage) + '.');
+            } else {
+              this.log('WARNING: no homepage content found in ' + path.relative(process.cwd(), this.options.homepage) + '.');
             }
-          }
-
-          if (this.options.verbose) {
-            this.log('   ...no homepage content found in ' + this.options.homepage + '.');
-          } else {
-            this.log('WARNING: no homepage content found in ' + this.options.homepage + '.');
-          }
-          return '';
-        }).then(homePageText => {
-          // Ensure homePageText is a non-false value. And run any results through
-          // Markdown.
-          context.homepage = homePageText ? md.render(homePageText) : '';
-          return Promise.resolve();
-        });
+            return '';
+          });
       }
 
       return getHomepageText.then(() => {
