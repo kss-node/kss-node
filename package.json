@@ -34,7 +34,7 @@
     "bluebird": "^3.3.3",
     "fs-extra": "^7.0.0",
     "glob": "^7.0.3",
-    "handlebars": "^4.0.0",
+    "handlebars": "^4.1.0",
     "highlight.js": "^9.12.0",
     "markdown-it": "^8.4.1",
     "nunjucks": "^3.0.1",
