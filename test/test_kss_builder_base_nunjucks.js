@@ -247,7 +247,7 @@ describe('KssBuilderBaseNunjucks object API', function() {
         destination: path.resolve(__dirname, 'output', 'base_nunjucks', 'buildPage'),
         builder: helperUtils.fixtures('builder-nunjucks-with-assets'),
         extend: helperUtils.fixtures('builder-nunjucks-with-assets', 'extend'),
-        homepage: 'alternate-homepage.md'
+        homepage: helperUtils.fixtures('source-nunjucks-builder-test', 'alternate-homepage.md')
       });
       let styleGuide = new kss.KssStyleGuide({sections: [{header: 'Heading 4.3', reference: '4.3'}]});
       return builder.prepare(styleGuide).then(styleGuide => {

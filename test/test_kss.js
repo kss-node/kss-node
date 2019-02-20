@@ -156,6 +156,21 @@ describe('kss object API', function() {
         });
       });
 
+      it('should read multiple source wildcards', function() {
+        let source = helperUtils.fixtures('with-include') + '/**/*.scss',
+          source2 = helperUtils.fixtures('empty-source') + '/**/*.css';
+        return testKss({
+          verbose: true,
+          source: [source, source2],
+          destination: 'test/output/nested'
+        }).then(function(result) {
+          expect(result.error).to.not.exist;
+          expect(result.stdout).to.include('* KSS Source  : ' + source + ', ' + source2);
+          expect(result.stdout).to.include('...no homepage content found in homepage.md');
+          expect(result.stdout).to.include(successMessage);
+        });
+      });
+
       it('should read from a JSON file', function() {
         let source = helperUtils.fixtures('json-input', 'with-include.json'),
           source2 = helperUtils.fixtures('with-include');

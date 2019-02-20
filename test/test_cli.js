@@ -134,7 +134,7 @@ describe('Command Line Interface', function() {
       return kssCLI('--demo --destination ' + helperUtils.fixtures('..', 'output', 'nested')).then(function(result) {
         expect(result.error).to.not.exist;
         expect(result.stdout).to.include(successMessage);
-        expect(result.stdout).to.include('WELCOME to the kss demo! We\'ve turned on the --verbose flag so you can see what kss is doing.');
+        expect(result.stdout).to.include('WELCOME to the kss demo! We’ve turned on the --verbose flag so you can see what kss is doing.');
       });
     });
   });
@@ -144,7 +144,7 @@ describe('Command Line Interface', function() {
       return kssCLI('--demo --json').then(function(result) {
         expect(result.error).to.not.exist;
         expect(result.stdout).to.not.include(successMessage);
-        expect(result.stdout).to.not.include('WELCOME to the kss demo! We\'ve turned on the --verbose flag so you can see what kss is doing.');
+        expect(result.stdout).to.not.include('WELCOME to the kss demo! We’ve turned on the --verbose flag so you can see what kss is doing.');
         let obj = JSON.parse(result.stdout);
         expect(obj).to.be.an('object');
         expect(obj).to.have.property('sections');

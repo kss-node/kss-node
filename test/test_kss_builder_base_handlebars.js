@@ -245,7 +245,7 @@ describe('KssBuilderBaseHandlebars object API', function() {
         source: helperUtils.fixtures('source-handlebars-builder-test'),
         destination: path.resolve(__dirname, 'output', 'base_handlebars', 'buildPage'),
         builder: helperUtils.fixtures('builder-with-assets'),
-        homepage: 'alternate-homepage.md'
+        homepage: helperUtils.fixtures('source-handlebars-builder-test', 'alternate-homepage.md')
       });
       let styleGuide = new kss.KssStyleGuide({sections: [{header: 'Heading 4.3', reference: '4.3'}]});
       return builder.prepare(styleGuide).then(styleGuide => {

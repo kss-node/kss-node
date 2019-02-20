@@ -51,8 +51,8 @@ To get you up and running quickly, a style guide builder is included that can be
 Usage: kss [options]
 
 File locations:
-  --source       Source directory to recursively parse for KSS comments,
-                 homepage, and markup
+  --source       Source directory or wildcard to recursively parse for KSS
+                 comments and markup
   --destination  Destination directory of style guide    [default: "styleguide"]
   --mask, -m     Use a mask for detecting files containing KSS comments
                          [default: "*.css|*.less|*.sass|*.scss|*.styl|*.stylus"]
@@ -69,8 +69,7 @@ Style guide:
   --custom       Process a custom property name when parsing KSS comments
   --extend       Location of modules to extend the templating system; see
                  http://bit.ly/kss-wiki
-  --homepage     File name of the homepage's Markdown file
-                                                        [default: "homepage.md"]
+  --homepage     Path to the homepage’s Markdown file   [default: "homepage.md"]
   --markup       Render "markup" templates to HTML with the placeholder text
                                                                 [default: false]
   --placeholder  Placeholder text to use for modifier classes
@@ -119,7 +118,7 @@ Unlike the default Ruby implementation at kneath/kss, kss-node includes a few op
 
 **Language Agnostic**. kss-node does not care what language your application is written in (Ruby, Node.js, PHP, whatever). It just scans your CSS source files looking for KSS docs so that it can build a living style guide. And since it only looks for properly formatted KSS comments, it also doesn't need to know what kind of CSS preprocessor you use either.
 
-**Homepage Text**. The overview text needed for the style guide homepage is built from a Markdown file, which you should place in a `--source` directory, just name it `homepage.md` and it will be included in the final style guide automatically.
+**Homepage Text**. The overview text needed for the style guide homepage is built from a Markdown file. The file path must be relative to config file or working directory if given by command line. Just name it `homepage.md` and put it in directory of config file.
 
 Additional kss-node specifics are detailed in this version of the [KSS spec](https://github.com/kss-node/kss/blob/spec/SPEC.md).
 
