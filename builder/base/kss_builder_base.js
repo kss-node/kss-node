@@ -1110,7 +1110,7 @@ class KssBuilderBase {
         for (let key in this.options.css) {
           // istanbul ignore else
           if (this.options.css.hasOwnProperty(key)) {
-            context.styles = context.styles + '<link rel="stylesheet" href="' + this.options.css[key] + '">\n';
+            context.styles = context.styles + '<link rel="stylesheet" href="' + this.options.css[key] + '"/>\n';
           }
         }
       }

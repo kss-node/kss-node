@@ -825,8 +825,8 @@ describe('KssBuilderBase object API', function() {
     });
 
     it('should add CSS files to the output', function() {
-      expect(this.files['index']).to.include('<link rel="stylesheet" href="styles-1.css">');
-      expect(this.files['index']).to.include('<link rel="stylesheet" href="styles-2.css">');
+      expect(this.files['index']).to.include('<link rel="stylesheet" href="styles-1.css"/>');
+      expect(this.files['index']).to.include('<link rel="stylesheet" href="styles-2.css"/>');
     });
 
     it('should add JS files to the output', function() {
