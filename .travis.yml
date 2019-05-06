@@ -3,10 +3,11 @@
 sudo: false
 language: node_js
 node_js:
-  - '6'
-  - '7'
+  - '8'
   - '9'
   - '10'
+  - '11'
+  - '12'
 script: npm test && (npm run report-coverage || test 1)
 
 notifications:
