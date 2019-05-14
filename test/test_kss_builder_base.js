@@ -132,7 +132,7 @@ describe('KssBuilderBase object API', function() {
 
     it('should implement the default option definitions', function() {
       let builder = new KssBuilderBase();
-      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'json', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'extend', 'homepage', 'markup', 'placeholder', 'nav-depth', 'verbose']);
+      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'json', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'extend', 'homepage', 'markup', 'placeholder', 'attributes-placeholder', 'nav-depth', 'verbose']);
     });
 
     it('should set the default log function', function() {
@@ -804,6 +804,10 @@ describe('KssBuilderBase object API', function() {
 
     it('should add placeholder to modifier_class', function() {
       expect(this.files['section-1']).to.include('ref:1.E:markup:&lt;div class&#x3D;&quot;[modifier class]&quot;&gt;&lt;/div&gt;');
+    });
+
+    it('should add modifier_class and modifier_attribute from the JSON data', function() {
+      expect(this.files['section-1']).to.include('ref:1.C:markup:<div class="one-cee-from-json [modifier class]" [modifier attribute]>');
     });
 
     it('should add modifier_class from the JSON data', function() {

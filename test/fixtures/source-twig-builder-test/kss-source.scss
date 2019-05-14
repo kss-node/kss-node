@@ -16,6 +16,9 @@
 //
 // .modifier-1 - Modifier #1
 // :hover - Modifier Hover
+// [data-modifier] - attribute modifier
+// [data-modifier=modifier] - attribute modifier with value
+// [data-modifier="other modifier"] - attribute modifier with quoted value
 //
 // Style guide: 1.C
 
@@ -27,10 +30,13 @@
 
 // Heading 1.E
 //
-// Markup: <div class="{{ modifier_class }}"></div>
+// Markup: <div class="{{ modifier_class }}" {{modifier_attribute}}></div>
 //
 // .modifier-1 - Modifier #1
 // :hover - Modifier Hover
+// [data-modifier] - attribute modifier
+// [data-modifier=modifier] - attribute modifier with value
+// [data-modifier="other modifier"] - attribute modifier with quoted value
 //
 // Style guide: 1.E
 
