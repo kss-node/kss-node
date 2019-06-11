@@ -113,7 +113,7 @@ describe('KssBuilderBaseTwig object API', function() {
 
     it('should implement the default option definitions', function() {
       let builder = new KssBuilderBaseTwig();
-      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'destination', 'json', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'extend', 'homepage', 'markup', 'placeholder', 'nav-depth', 'verbose', 'extend-drupal8', 'namespace']);
+      expect(Object.getOwnPropertyNames(builder.optionDefinitions)).to.deep.equal(['source', 'base', 'destination', 'json', 'mask', 'clone', 'builder', 'css', 'js', 'custom', 'extend', 'homepage', 'markup', 'placeholder', 'nav-depth', 'verbose', 'extend-drupal8', 'namespace']);
     });
   });
 
