@@ -52,43 +52,50 @@ Usage: kss [options]
 
 File locations:
   --source       Source directory or wildcard to recursively parse for KSS
-                 comments and markup
-  --destination  Destination directory of style guide    [default: "styleguide"]
+                 comments, homepage, and markup                         [string]
+  --base         Base directory, used to resolve sources, homepage, etc.
+                            [string] [default: "/Users/yliechti/Sites/kss-node"]
+  --destination  Destination directory of style guide
+                                                [string] [default: "styleguide"]
+  --json         Output a JSON object instead of building a style guide[boolean]
   --mask, -m     Use a mask for detecting files containing KSS comments
-                         [default: "*.css|*.less|*.sass|*.scss|*.styl|*.stylus"]
+                [string] [default: "*.css|*.less|*.sass|*.scss|*.styl|*.stylus"]
   --config, -c   Load the kss options from a json file
 
 Builder:
-  --clone        Clone a style guide builder to customize
+  --clone        Clone a style guide builder to customize               [string]
   --builder, -b  Use the specified builder when building your style guide
-                                                 [default: "builder/handlebars"]
+                                        [string] [default: "builder/handlebars"]
 
 Style guide:
-  --css          URL of a CSS file to include in the style guide
-  --js           URL of a JavaScript file to include in the style guide
+  --css          URL of a CSS file to include in the style guide        [string]
+  --js           URL of a JavaScript file to include in the style guide [string]
   --custom       Process a custom property name when parsing KSS comments
+                                                                        [string]
   --extend       Location of modules to extend the templating system; see
-                 http://bit.ly/kss-wiki
-  --homepage     Path to the homepage’s Markdown file   [default: "homepage.md"]
+                 http://bit.ly/kss-wiki                                 [string]
+  --homepage     File name of the homepage’s Markdown file related to working
+                 directory
+                [string] [default: "/Users/yliechti/Sites/kss-node/homepage.md"]
   --markup       Render "markup" templates to HTML with the placeholder text
-                                                                [default: false]
+                                                      [boolean] [default: false]
   --placeholder  Placeholder text to use for modifier classes
-                                                   [default: "[modifier class]"]
+                                          [string] [default: "[modifier class]"]
   --nav-depth    Limit the navigation to the depth specified        [default: 3]
-  --title        Title of the style guide           [default: "KSS Style Guide"]
 
 Options:
-  --verbose       Display verbose details while building
-  --demo          Builds a KSS demo.
-  --help, -h, -?  Show help
-  --version       Show version number
+  --help     Show help                                                 [boolean]
+  --version  Show version number                                       [boolean]
+  --verbose  Display verbose details while building                      [count]
+  --demo     Builds a KSS demo.                       [boolean] [default: false]
+  --//       Comments in JSON files will be ignored
 ```
 
 Since each builder has its own set of options, you can see the help for those options by using `--builder` with `--help`. For example, running `kss --help --builder builder/twig` will show these additional options:
 
 ```
 Style guide:
-  --extend-drupal8  Extend Twig.js using kss's Drupal 8 extensions
+  --extend-drupal8  Extend Twig.js using kss’s Drupal 8 extensions
   --namespace       Adds a Twig namespace, given the formatted string:
                     "namespace:path"
 ```
