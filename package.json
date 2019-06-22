@@ -46,7 +46,7 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "coveralls": "^3.0.3",
-    "eslint": "^5.16.0",
+    "eslint": "^6.0.0",
     "gh-pages": "^2.0.1",
     "istanbul": "^0.4.5",
     "jsdoc": "^3.5.5",
