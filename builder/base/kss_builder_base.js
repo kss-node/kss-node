@@ -60,6 +60,13 @@ class KssBuilderBase {
         path: true,
         describe: 'Source directory or wildcard to recursively parse for KSS comments, homepage, and markup'
       },
+      'base': {
+        group: 'File locations:',
+        string: true,
+        multiple: false,
+        describe: 'Base directory, used to resolve sources, homepage, etc.',
+        default: process.cwd()
+      },
       'destination': {
         group: 'File locations:',
         string: true,
