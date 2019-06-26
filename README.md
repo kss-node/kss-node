@@ -5,6 +5,7 @@
 # kss-node
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/kss-node/kss-node.svg)](https://greenkeeper.io/)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkss-node%2Fkss-node.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkss-node%2Fkss-node?ref=badge_shield)
 
 This is a Node.js implementation of [KSS](https://github.com/kneath/kss), "a documentation syntax for CSS" that's intended to have syntax readable by humans *and* machines. Hence, the kss-node software can be used to create a "living style guide".
 
@@ -162,3 +163,7 @@ To build a new version of the demo style guide and JavaScript documentation, use
 ## Contributors
 
 Lots! And more are welcome. https://github.com/kss-node/kss-node/graphs/contributors
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkss-node%2Fkss-node.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkss-node%2Fkss-node?ref=badge_large)
