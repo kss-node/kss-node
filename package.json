@@ -57,6 +57,7 @@
     "kss": "./bin/kss",
     "kss-node": "./bin/kss-node"
   },
+  "preferGlobal": true,
   "engines": {
     "node": ">=6.0"
   }
