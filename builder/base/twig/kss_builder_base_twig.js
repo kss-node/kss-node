@@ -73,9 +73,10 @@ class KssBuilderBaseTwig extends KssBuilderBase {
       };
       this.options.namespace.forEach(namespace => {
         // namespace should be of the form "namespace:path";
-        let tokens = namespace.split(':', 2);
-        if (tokens[1]) {
-          this.namespaces[tokens[0]] = path.resolve(tokens[1]);
+        const namespacePart = namespace.substr(0, namespace.indexOf(':'));
+        const pathPart = namespace.substr(namespace.indexOf(':') + 1);
+        if (pathPart) {
+          this.namespaces[namespacePart] = path.resolve(pathPart);
         }
       });
 
