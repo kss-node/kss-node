@@ -133,7 +133,7 @@ describe('KssBuilderBaseTwig object API', function() {
         'builder': helperUtils.fixtures('builder-twig-with-assets'),
         'extend': [helperUtils.fixtures('builder-twig-with-assets', 'extend')],
         'extend-drupal8': true,
-        'namespace': ['example:/dev/null/twig', 'invalid-without-semi-colon']
+        'namespace': ['example:/dev/null/twig', 'invalid-without-colon']
       });
       return this.builderPrepared.prepare(new kss.KssStyleGuide({sections: [{header: 'Section 1', reference: 'one'}]}));
     });
