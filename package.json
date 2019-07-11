@@ -58,6 +58,6 @@
     "kss-node": "./bin/kss-node"
   },
   "engines": {
-    "node": ">=6.0"
+    "node": ">=8.0"
   }
 }
