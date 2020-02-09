@@ -25,7 +25,7 @@
   "scripts": {
     "test": "nyc mocha",
     "posttest": "eslint bin/kss bin/kss-node .",
-    "report-coverage": "cat ./coverage/lcov.info | coveralls",
+    "report-coverage": "nyc report --reporter=text-lcov | coveralls",
     "docs": "make docs",
     "docs-deploy": "gh-pages -d docs"
   },

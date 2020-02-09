@@ -1,7 +1,7 @@
 # Exclude stuff specific to this project.
 node_modules
 /test/output
-coverage
+.nyc_output
 npm-debug.log
 /docs
 
