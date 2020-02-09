@@ -23,7 +23,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "istanbul cover _mocha",
+    "test": "nyc mocha",
     "posttest": "eslint bin/kss bin/kss-node .",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "docs": "make docs",
@@ -48,10 +48,10 @@
     "coveralls": "^3.0.3",
     "eslint": "^5.16.0",
     "gh-pages": "^2.0.1",
-    "istanbul": "^0.4.5",
     "jsdoc": "^3.6.3",
     "mocha": "^7.0.1",
-    "mock-utf8-stream": "^0.1.1"
+    "mock-utf8-stream": "^0.1.1",
+    "nyc": "^15.0.0"
   },
   "bin": {
     "kss": "./bin/kss",
