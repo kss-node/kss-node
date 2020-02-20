@@ -41,7 +41,7 @@
     "nunjucks": "^3.2.0",
     "resolve": "^1.10.1",
     "twig": "^1.13.3 <1.14.0",
-    "twig-drupal-filters": "^2.0.0",
+    "twig-drupal-filters": "^3.0.0",
     "yargs": "^15.1.0"
   },
   "devDependencies": {
