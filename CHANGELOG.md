@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.0.1] - 2020-04-16
+### Fixed
+- Update dependencies
+
+## [3.0.0] - 2020-02-09
+### Fixed
+- Stable Release
+
 ## [3.0.0-beta.25] - 2019-01-11
 ### Fixed
 - [#521](https://github.com/kss-node/kss-node/pull/521) Twig: Disable autoescape for now
