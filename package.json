@@ -52,7 +52,7 @@
     "jsdoc": "^3.6.4",
     "mocha": "^7.1.1",
     "mock-utf8-stream": "^0.1.1",
-    "nyc": "^15.0.1"
+    "nyc": "^15.1.0"
   },
   "bin": {
     "kss": "./bin/kss",
