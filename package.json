@@ -1,6 +1,6 @@
 {
   "name": "kss",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "The Node.js port of KSS: A methodology for documenting CSS and building style guides",
   "homepage": "http://kss-node.github.io/kss-node",
   "bugs": {
@@ -16,7 +16,7 @@
     "kss",
     "kss-node"
   ],
-  "main": "index.js",
+  "main": "lib/kss.js",
   "directories": {
     "bin": "bin",
     "example": "demo",
@@ -33,26 +33,26 @@
   "license": "(MIT OR GPL-2.0)",
   "dependencies": {
     "bluebird": "^3.7.2",
-    "fs-extra": "^9.0.0",
+    "fs-extra": "^9.0.1",
     "glob": "^7.1.6",
     "handlebars": "^4.7.6",
-    "highlight.js": "^10.0.0",
-    "markdown-it": "^11.0.0",
-    "nunjucks": "^3.2.1",
-    "resolve": "^1.16.0",
-    "twig": "^1.15.1",
-    "twig-drupal-filters": "^3.1.1",
-    "yargs": "^15.3.1"
+    "highlight.js": "^10.4.0",
+    "markdown-it": "^12.0.2",
+    "nunjucks": "^3.2.2",
+    "resolve": "^1.19.0",
+    "twig": "^1.15.4",
+    "twig-drupal-filters": "^3.1.2",
+    "yargs": "^16.1.1"
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "coveralls": "^3.0.11",
-    "eslint": "^6.8.0",
-    "gh-pages": "^2.2.0",
-    "jsdoc": "^3.6.4",
-    "mocha": "^7.1.1",
+    "coveralls": "^3.1.0",
+    "eslint": "^7.14.0",
+    "gh-pages": "^3.1.0",
+    "jsdoc": "^3.6.6",
+    "mocha": "^8.2.1",
     "mock-utf8-stream": "^0.1.1",
-    "nyc": "^15.0.1"
+    "nyc": "^15.1.0"
   },
   "bin": {
     "kss": "./bin/kss",
