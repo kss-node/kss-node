@@ -6,7 +6,8 @@ node_js:
   - '10'
   - '12'
   - '13'
-  - 'stable'
+  - '14'
+  - '15'
 script: npm test && (npm run report-coverage || test 1)
 
 notifications:
