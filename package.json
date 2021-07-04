@@ -36,7 +36,7 @@
     "fs-extra": "^9.0.1",
     "glob": "^7.1.6",
     "handlebars": "^4.7.6",
-    "highlight.js": "^10.4.0",
+    "highlight.js": "^10.4.1",
     "markdown-it": "^12.0.2",
     "nunjucks": "^3.2.2",
     "resolve": "^1.19.0",
