@@ -4,9 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [3.1.0] - xxxx-xx-xx
+## [3.1.0] - 2022-08-03
 ### Changed
-- Update dependencies
+- Update markdown-it to the latest version 🚀 by @greenkeeper in https://github.com/kss-node/kss-node/pull/578
+- Update highlight.js to the latest version 🚀 by @greenkeeper in https://github.com/kss-node/kss-node/pull/577
+- Update dependencies and add newer Node.js versions by @RobLoach in https://github.com/kss-node/kss-node/pull/581
+- Update highlight.js to version 10.4.1 by @wojsmol in https://github.com/kss-node/kss-node/pull/584
 
 ## [3.0.1] - 2020-04-16
 ### Changed
