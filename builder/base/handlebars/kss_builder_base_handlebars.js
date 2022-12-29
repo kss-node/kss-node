@@ -11,6 +11,7 @@
 
 const KssBuilderBase = require('../kss_builder_base.js'),
   path = require('path'),
+  pug = require('pug'),
   Promise = require('bluebird'),
   Handlebars = require('handlebars');
 
@@ -89,9 +90,18 @@ class KssBuilderBaseHandlebars extends KssBuilderBase {
     };
     // Returns a promise to read/load a template specified by a section.
     options.readSectionTemplate = (name, filepath) => {
-      return fs.readFileAsync(filepath, 'utf8').then(contents => {
-        this.Handlebars.registerPartial(name, contents);
-        return contents;
+      return fs.readFileAsync(filepath, 'utf8').then(fileContent => {
+        let output = fileContent;
+
+        const isPugFile = path.extname(filepath) === '.pug';
+        if (isPugFile) {
+          const pugFn = pug.compileFile(filepath);
+          output = pugFn();
+        }
+
+        this.Handlebars.registerPartial(name, output);
+        console.log(1672332077920, output);
+        return output;
       });
     };
     // Returns a promise to load an inline template from markup.

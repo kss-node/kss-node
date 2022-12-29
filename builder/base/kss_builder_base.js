@@ -855,7 +855,7 @@ class KssBuilderBase {
       };
 
       // Check if the markup is a file path.
-      if (template.markup.search('^[^\n]+\.(html|' + templateExtension + ')$') === -1) {
+      if (template.markup.search('^[^\n]+\.(html|pug|' + templateExtension + ')$') === -1) {
         if (this.options.verbose) {
           this.log(' - ' + template.reference + ': inline markup');
         }
