@@ -5,10 +5,10 @@
   "main": "builder.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "sass": "node-sass --output-style compressed kss-assets/kss.scss kss-assets/kss.css"
+    "sass": "sass --style compressed kss-assets/kss.scss kss-assets/kss.css"
   },
   "devDependencies": {
-    "highlight.js": "^9.18.1",
-    "node-sass": "^4.13.1"
+    "highlight.js": "^11.7.0",
+    "sass": "^1.6.0"
   }
 }
