@@ -7,7 +7,7 @@ module.exports = function(mainTwig) {
     Twig.exports.extendFilter('hljs', (value, args) => {
       const lang = args && args[0] ? args[0] : 'html';
       try {
-        return hljs.highlight(lang, value, true).value;
+        return hljs.highlight(value, {language: lang}).value;
       } catch (e) {
         console.log(e);
       }
