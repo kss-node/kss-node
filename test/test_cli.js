@@ -17,6 +17,9 @@ const kssCLI = function(args) {
   stdout.startCapture();
   stderr.startCapture();
   if (args) {
+    if (typeof args === 'string') {
+      args = args.split(process.cwd() + path.sep).join('');
+    }
     Array.prototype.push.apply(argv, args.split(' '));
   }
 
@@ -95,6 +98,14 @@ describe('Command Line Interface', function() {
         expect(result.error).to.not.exist;
         expect(result.stdout).to.include(successMessage);
         expect(result.stdout).to.include('Builder     : ' + path.resolve(__dirname, '..', 'builder', 'nunjucks'));
+      });
+    });
+
+    it('should load the Handlebars builder when the config file uses "builder/handlebars"', function() {
+      return kssCLI('--config test/fixtures/cli-option-config-handlebars.json --verbose').then(result => {
+        expect(result.error).to.not.exist;
+        expect(result.stdout).to.include(successMessage);
+        expect(result.stdout).to.include('Builder     : ' + path.resolve(__dirname, '..', 'builder', 'handlebars'));
       });
     });
 
